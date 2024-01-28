@@ -2,11 +2,13 @@ let products = [];
 const productsContainer = document.querySelector(".products");
 const searchInput = document.getElementById("searchProduct");
 const categoryFilter = document.getElementById("categoryFilter");
+const spinner = document.getElementById('spinner');
 
 async function loadProducts() {
   try {
     const response = await fetch('https://api.mbktechstudio.com/api/Unilib/Book');
     products = await response.json(); // Parse the JSON response directly
+    spinner.style.display = 'none';
     filterProducts();
   } catch (error) {
     console.error("Error loading products:", error);
@@ -98,11 +100,10 @@ fetch("https://api.mbktechstudio.com/api/Unilib/QuizAss")
                         <span>
                             <strong>${item.subject}:</strong>
                             <span class="description">${shortDescription}</span>
-                              ${
-                                isTruncated
-                                  ? `<span class="see-more">...</span><button class="toggle-more-inline">+ See More</button>`
-                                  : ""
-                              }
+                              ${isTruncated
+            ? `<span class="see-more">...</span><button class="toggle-more-inline">+ See More</button>`
+            : ""
+          }
                             </span>
                     </div>
                 `;

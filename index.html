@@ -85,6 +85,27 @@
         color: #8a6d3b;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
+
+    .spinner {
+        border: 16px solid #f3f3f3;
+        border-top: 16px solid #377a77; 
+        border-radius: 50%;
+        width: 100px;
+        height: 100px;
+        animation: spin 2s linear infinite;
+        margin: auto;
+        margin-top: 50px;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
 </style>
 
 <!-- Ask For Cookie Consent-->
@@ -123,8 +144,9 @@
                 <div class="submit"><button type="submit"><i class="fas fa-search"></i></button></div>
                 <button type="button" id="clearSearch" class="clear-btn"><i class="fas fa-times"></i></button>
             </div>
+            <div id="spinner" class="spinner" style="display: block;"></div>
+
             <div class="products">
-                <!-- Products will be dynamically inserted here -->
             </div>
 
         </div>
@@ -137,6 +159,8 @@
         <div class="content">
             <h1 class="section-title">Assignments & Quiz</h1>
             <div id="detailsContainer" class="details-container">
+                <div id="spinner" class="spinner" style="display: none;"></div>
+
                 <!-- Assigments And Quiz will be dynamically inserted here -->
             </div>
             <div id="noAss">
