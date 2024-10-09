@@ -1,0 +1,43 @@
+[{
+        "imageURL": "Assets/Images/book_cover.jfif",
+        "name": "Using Information Technology",
+        "category": ["CourseBooks"],
+        "description": "",
+        "link": "https://drive.google.com/file/d/19-ySH4dlDw2jIW-cMSx2Pi1PMZSCRgKw/view?usp=sharing"
+    },
+    {
+        "imageURL": "Assets/Images/book_cover.jfif",
+        "name": "Thomas Calculus 11th Edition",
+        "category": ["CourseBooks"],
+        "description": "",
+        "link": "https://drive.google.com/file/d/19-ySH4dlDw2jIW-cMSx2Pi1PMZSCRgKw/view?usp=sharing"
+    },
+    {
+        "imageURL": "Assets/Images/book_cover.jfif",
+        "name": "Fundamentals Of Physics Halliday 9th Edition",
+        "category": ["CourseBooks"],
+        "description": "",
+        "link": "https://drive.google.com/file/d/19-ySH4dlDw2jIW-cMSx2Pi1PMZSCRgKw/view?usp=sharing"
+    },
+    {
+        "imageURL": "Assets/Images/book_cover.jfif",
+        "name": "Book4",
+        "category": ["CourseBooks"],
+        "description": "",
+        "link": "https://drive.google.com/file/d/19-ySH4dlDw2jIW-cMSx2Pi1PMZSCRgKw/view?usp=sharing"
+    },
+    {
+        "imageURL": "Assets/Images/book_cover.jfif",
+        "name": "Book5",
+        "category": ["CourseBooks"],
+        "description": "",
+        "link": "https://drive.google.com/file/d/19-ySH4dlDw2jIW-cMSx2Pi1PMZSCRgKw/view?usp=sharing"
+    },
+    {
+        "imageURL": "Assets/Images/book_cover.jfif",
+        "name": "LabManuals1",
+        "category": ["LabManuals"],
+        "description": "",
+        "link": "https://drive.google.com/file/d/19-ySH4dlDw2jIW-cMSx2Pi1PMZSCRgKw/view?usp=sharing"
+    }
+]
