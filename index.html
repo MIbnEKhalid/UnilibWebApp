@@ -1,0 +1,124 @@
+<!DOCTYPE html> 
+<html lang="en" dir="ltr">
+   <head>
+      <meta charset="UTF-8"/>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
+      <title>Uni Books etc</title>
+      <link rel="stylesheet" href="Assets/project.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
+      <link rel="icon" type="image/x-icon" href="https://mbktechstudio.com/Assets/Images/dgicon.svg">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   </head> 
+   <div id="cookie"></div>
+   <header>
+      <nav>
+         <div class="navbar">
+            <div class="logo">
+               <div class="image">
+                  <img src="Assets/Images/dg.svg" alt=""/>
+               </div>
+               <div class="text">
+                  <a href="https://mbktechstudio.com/">MBK Tech Studio</a>
+               </div>
+            </div>
+            <div class="media-icons">
+               <a href="https://www.facebook.com/people/MBK-Tech-Studio/61559079077988/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+               <a href="https://x.com/ibnekhalid28"                                      target="_blank"><i class="fab fa-twitter"></i></a>
+               <a href="https://instagram.com/mbktech.studios"                           target="_blank"><i class="fab fa-instagram"></i></a>
+               <a href="https://github.com/MIbnEKhalid"                                  target="_blank"><i class="fab fa-github"></i></a>
+               <a href="https://www.linkedin.com/in/muhammad-bin-khalid-89711b25b"       target="_blank"><i class="fab fa-linkedin"></i></a>
+               <a href="https://youtube.com/@mibnekhalid"                                target="_blank"><i class="fab fa-youtube"></i></a>
+               <a href="https://discord.gg/MUAyAeckrM"                                   target="_blank"><i class="fab fa-discord"></i></a>
+            </div>
+         </div>
+      </nav>
+   </header>
+   <body>
+      <div class="scroll-button">
+         <a href="#about"><i class="fas fa-arrow-up"></i></a>
+      </div>
+      <section class="about" id="about">
+         <div class="content">
+            <br>
+            <br>
+            <div class="title"><span>Uni Course Materials</span></div>
+      <!--      <div class="select-dropdown">
+               <select id="categoryFilter" name="topics">
+                  <option value="Semester1">Semester1</option>
+                  <option value="Semester1">Semester2</option> 
+               </select>
+            </div>  -->   
+            <div class="select-dropdown">
+               <select id="categoryFilter" name="topics">
+                  <option value="all">All</option>
+                  <option value="CourseBooks">Course Books</option>
+                  <option value="LabManuals">Lab Manuals</option>
+                  <option value="CompletedAssigments">Completed Assigments</option>
+                  <option value="other">Other</option> 
+               </select>
+            </div>
+            <div class="search-bar">
+               <input type="text" id="searchProduct" placeholder="Search Book Name...">
+               <div class="submit"><button type="submit"><i class="fas fa-search"></i></button></div>
+               <button type="button" id="clearSearch" class="clear-btn"><i class="fas fa-times"></i></button>
+           </div>
+           
+            <div class="products">
+               <!-- Products will be dynamically inserted here -->
+            </div>
+ 
+            <div class="button field is-grouped" style="display: flex; justify-content: center;">
+               <div class="control"><button class="button is-primary" onclick="openSupport()" id="submit-button">Request To Add Book</button></div>
+           </div>
+         </div>
+      </section>
+      <footer>
+         <div class="text">
+            <span>Developed By <a href="https://github.com/MIbnEKhalid">Muhammad Bin Khalid</a> | &#169; 2024 All Rights Reserved | <a href="https://privacy.mbktechstudio.com/" target="_blank">Terms & Conditions</a> | <a href="mailto:support@mbktechstudio.com">support@mbktechstudio.com</a></span>
+         </div>
+      </footer>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/intlTelInput-jquery.min.js"></script>
+      <script src="Assets/script.js"></script>
+      <script src="Assets/project.js"></script>  
+      <script>
+
+         document.addEventListener("DOMContentLoaded", function() {
+            AskForCookieConsent();         
+
+            // Get the hash from the URL (e.g., "#web" or "#cpp")
+            const hash = window.location.hash.substring(1); // Remove the '#' symbol
+            const categoryFilter = document.getElementById('categoryFilter');
+            // If there is a hash in the URL, set the dropdown to the corresponding value
+            if (hash) {
+               categoryFilter.value = hash; // Set dropdown to the category from the URL hash
+            }
+            // Always trigger filtering based on the current dropdown value
+            filterProducts();
+             
+            const searchInput = document.getElementById('searchProduct');
+            const clearBtn = document.getElementById('clearSearch');
+
+            // Show clear button when there is input
+            searchInput.addEventListener('input', function() {
+               if (this.value.length > 0) {
+                  clearBtn.style.display = 'block';
+               } 
+               else {
+                  clearBtn.style.display = 'none';
+               }
+            });
+
+            // Clear input when clear button is clicked
+            clearBtn.addEventListener('click', function() {
+               searchInput.value = '';
+               clearBtn.style.display = 'none';
+               filterProducts(); // Optionally trigger the filter function to show all products again
+            });
+         });
+         function openSupport() {
+    window.open('https://www.mbktechstudio.com/Support/', '_blank'); 
+  }
+      </script>
+   </body>
+</html>
