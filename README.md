@@ -2,131 +2,77 @@
 
 https://mbktechstudio.com/ or https://MIbnEKhalid.github.io/
 
-Detailed Documentation of this website will be available soon on: [docs.mbktechstudio.com/mbktechstudio.com](https://docs.mbktechstudio.com/mbktechstudio.com)
-
-# **Deployed Branches**
-
-| **Branch**                                                                                  | **Custom Domain**          | **Primary Domain**                           | **Deployment**                                                                                           |
-|---------------------------------------------------------------------------------------------|-----------------------------|-----------------------------------------|-----------------------------------------------------------------------------------------------------------|
-| [**Main Branch**](https://github.com/MIbnEKhalid/MIbnEKhalid.github.io/tree/main)           | [mbktechstudio.com](https://mbktechstudio.com)         | [mibnekhalid.github.io](https://mibnekhalid.github.io)                   | Hosted using GitHub Pages. The main branch deploys the primary site.                                       |
-| [**Maintenance Branch**](https://github.com/MIbnEKhalid/MIbnEKhalid.github.io/tree/Maintenance) | [mbktechstudio.com](https://mbktechstudio.com)         | [mibnekhalid.github.io](https://mibnekhalid.github.io)                 | Used for deploying a maintenance page on mbktechstudio.com during maintenance periods.                   |
-| [**Privacy Branch**](https://github.com/MIbnEKhalid/MIbnEKhalid.github.io/tree/Privacy)     | [privacy.mbktechstudio.com](https://privacy.mbktechstudio.com) | [privacy-mbktechstudio.netlify.app](https://privacy-mbktechstudio.netlify.app)     | Hosted using Netlify. Linked to the Privacy branch, this deployment is for the privacy-related subdomain.  |
-| [**Docs Branch**](https://github.com/MIbnEKhalid/MIbnEKhalid.github.io/tree/Docs)           | [docs.mbktechstudio.com](https://docs.mbktechstudio.com)    | [docs-mbktechstudio.netlify.app](https://docs-mbktechstudio.netlify.app)        | Hosted using Netlify. Linked to the Docs branch, this deployment is for the documentation subdomain.       |
-|            | [project.mbktechstudio.com](https://project.mbktechstudio.com)    |         |        |
-| [**Test Branch**](https://github.com/MIbnEKhalid/MIbnEKhalid.github.io/tree/test)           | [test.mbktechstudio.com](https://test.mbktechstudio.com)    | [test-mbktechstudio.netlify.app](https://test-mbktechstudio.netlify.app)        | Hosted using Netlify. Linked to the test branch, this deployment is for the testing purpose.       |
-
-
-**Note:** `mibnekhalid.github.io`, `privacy-mbktechstudio.netlify.app`, and `docs-mbktechstudio.netlify.app` are original domains. The `mbktechstudio.com` domain is a custom domains with CNAME records redirecting to the original domains.
-
-
-
-
-
-
-
-
 Website Source Code 
+
 https://github.com/MIbnEKhalid/MIbnEKhalid.github.io/ or https://github.com/MIbnEKhalid/mbktech.studios/
 
-https://mbktechstudio.com/ or https://mbktechstudio.com/mbktech.studios/
+Detailed Documentation of this website will be available soon on: [docs.mbktechstudio.com/mbktechstudio.com](https://docs.mbktechstudio.com/mbktechstudio.com)
+
+### List Of Main Domains 
+
+|                         | Domains                                        | Purpose                                                                                                 |
+|-------------------------|------------------------------------------------|---------------------------------------------------------------------------------------------------------|
+| **Main Domain**         | [mbktechstudio.com](https://mbktechstudio.com) | Main Domain Used For all purposes for personal and official                                             |
+| **Secondary Domain**    | [mbktech.xyz](https://mbktech.xyz)             | Backup domain, rarely used.                                                                             |
+| **Portfolio Domain**    | [ibnekhalid.me](https://ibnekhalid.me)         | The primary website for my personal portfolio, domain was provided as part of the GitHub Student Pack.  |
+
+
+### List Of mbktechstudio.com sub domains
+
+| **Repository Name**        | **Repo Link**                                                                                              | **Website Link**                                                                       | **Purpose**                                                                      |
+|----------------------------|------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+| **Main Website**           | [MIbnEKhalid.github.io](https://github.com/MIbnEKhalid/MIbnEKhalid.github.io)                              | [mbktechstudio.com](https://mbktechstudio.com)                                         | Main Page of MBK Tech Studio                                                     |
+| **Maintenance Website**    | [MIbnEKhalid.github.io/Maintenance](https://github.com/MIbnEKhalid/MIbnEKhalid.github.io/tree/Maintenance) | [mbktechstudio.com](https://mbktechstudio.com)                                         | Maintenance page deploy when websiye under Maintenance                           |
+|                            |                                                                                                            | [maintenance.mbktechstudio.com](https://maintenance.mbktechstudio.com)                 |                                                                                  |
+|                            |                                                                                                            | [maintenance-mbktechstudio.netlify.app](https://maintenance-mbktechstudio.netlify.app) |                                                                                  |
+| **Domain Website**         | [MIbnEKhalid.github.io/domain](https://github.com/MIbnEKhalid/MIbnEKhalid.github.io/tree/domain)           | [domain.mbktechstudio.com](https://domain.mbktechstudio.com)                           | Website that showcase all subdomains)                                            |
+|                            |                                                                                                            | [domains.mbktechstudio.com](https://domains.mbktechstudio.com)                         |                                                                                  |
+|                            |                                                                                                            | [domain-mbktechstudio.netlify.app](https://domain-mbktechstudio.netlify.app)           |                                                                                  |
+| **Main Test Website**      | [MIbnEKhalid.github.io/test](https://github.com/MIbnEKhalid/MIbnEKhalid.github.io/tree/test)               | [test.mbktechstudio.com](https://test.mbktechstudio.com)                               | Main Website Test Page                                                           |
+|                            |                                                                                                            | [test-mbktechstudio.netlify.app](https://test-mbktechstudio.netlify.app)               |                                                                                  |
+| **Privacy Policy Website** | [Privacy.MIbnEKhalid.github.io](https://github.com/MIbnEKhalid/Privacy.MIbnEKhalid.github.io)              | [privacy.mbktechstudio.com](https://Privacy.mbktechstudio.com)                         | Website for Privacy Policy                                                       |
+|                            |                                                                                                            | [privacy-mbktechstudio.netlify.app](https://privacy-mbktechstudio.netlify.app)         |                                                                                  |
+| **Docs Website**           | [Docs.MIbnEKhalid.github.io](https://github.com/MIbnEKhalid/Docs.MIbnEKhalid.github.io)                    | [Docs.mbktechstudio.com](https://docs.mbktechstudio.com)                               | Website for documentation of MBK Tech Studio's Projects, Products and apps (etc) |
+|                            |                                                                                                            | [project.mbktechstudio.com](https://Project.mbktechstudio.com)                         |                                                                                  |
+|                            |                                                                                                            | [docs-mbktechstudio.netlify.app](https://docs-mbktechstudio.netlify.app)               |                                                                                  |
+| **Portal Website**         | [Portal.MIbnEKhalid.github.io](https://github.com/MIbnEKhalid/Portal.MIbnEKhalid.github.io)                | [portal.mbktechstudio.com](https://portal.mbktechstudio.com)                           | Website For Admins and Test Users                                                |
+|                            |                                                                                                            | [portal-mbktechstudio.netlify.app](https://portal-mbktechstudio.netlify.app)           |                                                                                  |
+| **Portfolio Website**      | [Portfolio.MIbnEKhalid.github.io](https://github.com/MIbnEKhalid/Portal.MIbnEKhalid.github.io)             | [portfolio.mbktechstudio.com](https://portfolio.mbktechstudio.com)                     | My Personal Portfolio Website                                                    |
+|                            |                                                                                                            | [ibnekhalid.me](https://ibnekhalid.me)                                                 |                                                                                  |
+|                            |                                                                                                            | [portfolio-mbktechstudio.netlify.app](https://portfolio-mbktechstudio.netlify.app)     |                                                                                  |
+| **Uni Library Website**    | [Unilib.MIbnEKhalid.github.io](https://github.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io)                | [unilib.mbktechstudio.com](https://unilib.mbktechstudio.com)                           | Website For My Uni Classmates                                                    |
+|                            |                                                                                                            | [unilib-mbktechstudio.netlify.app](https://unilib-mbktechstudio.netlify.app)           |                                                                                  |
+
+ 
+**Note:** `mibnekhalid.github.io`, `privacy-mbktechstudio.netlify.app`, `docs-mbktechstudio.netlify.app`, `portal-mbktechstudio.netlify.app`, `portfolio-mbktechstudio.netlify.app`, `unilib-mbktechstudio.netlify.app`, `test-mbktechstudio.netlify.app`, `protfolio-mbktechstudio.netlify.app`, `domain-mbktechstudio.netlify.app` and `maintenance-mbktechstudio.netlify.app` are original domains. The `mbktechstudio.com` domain is a custom domains with CNAME records redirecting to the original domains.
+
 
 ## Hosting:
-- The Website Is Hosted On GitHub, With A Custom Domain Purchased From [NameCheap](https://namecheap.com).
-  *Note: If you are using a custom domain, ensure it is properly configured to point to your GitHub repository.* [How To Add A Custom Domain On Github Pages](#how-to-add-a-custom-domain-on-github-pages)
-- Buying a domain is not necessary; you can use a GitHub domain for free, such as `user.github.io`.
+The Main Website (MBKTechStudio.com) Is Hosted On GitHub, While Other Website (SubDomains Of MBKTechStudio) Is Hosted On Netlify
 
-## Directory Tree:
+<h2 align="center">
+  Stats ⚡️
+</h2>
+<table style="border:none;margin:0 auto" align="center">
+  <tr style="border:none;">
+    <td style="border:none;">
+      <img src="https://github-readme-streak-stats.herokuapp.com?user=MIbnEKhalid&theme=transparent&hide_border=true&date_format=j%20M%5B%20Y%5D"
+      alt="GitHub Streak" />
+    </td>
+    <td style="border:none;">
+      <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=MIbnEKhalid&layout=compact&theme=transparent&hide_border=true"
+      alt="MIbnEKhalid Stats" />
+    </td>
+  </tr>
+</table>
 
-```
-root
-├───Assets/
-│ ├───Images/
-│ │ ├───about9.jpg
-│ │ ├───background.png
-│ │ ├───cat.png
-│ │ ├───close-icon.svg
-│ │ ├───cookie-icon.svg
-│ │ ├───dg.svg
-│ │ ├───dgicon.svg
-│ │ ├───logo.png
-│ ├───cookie.css
-│ ├───cookie.html
-│ ├───script.js
-│ ├───style.css
-├───Project/
-│ ├───Img/
-│ │ ├───download.svg
-│ │ ├───CTMCpp.png
-│ │ ├───cpp.png
-│ ├───index.html
-│ ├───style.css
-├───Protfolio/
-│ ├───index.html
-├───404.html
-├───CNAME
-├───index.html
-├───README.md
-```
+<table style="border:none;margin:0 auto" align="center">
+  <tr style="border:none;margin:0 auto" align="center">
+    <td style="border:none;">
+      <img src="https://github-readme-activity-graph.vercel.app/graph?username=MIbnEKhalid&theme=github-dark&hide_border=true"
+      alt="Muhammad Bin Khalid Activity Graph" />
+    </td>
+  </tr>
+</table>
 
-*Note: To ensure clean and user-friendly URLs, HTML files are organized within directories named after their respective content, with each directory containing an `index.html` file. This approach facilitates clean URLs, enhancing readability and SEO performance.*
-
-#### Example:
-
-Instead of using `UserAgreement.html`:
-- Bad URL: [https://mbktech.xyz/UserAgreement.html](https://mbktech.xyz/UserAgreement.html)
-
-Use `UserAgreement/index.html`:
-  - Good URL: [https://mbktech.xyz/UserAgreement/](https://mbktech.xyz/UserAgreement/)
-
-### How To Add A Custom Domain On Github Pages
-
-## 1. Buy a Domain
-- Purchase a domain from a domain registrar (e.g., Namecheap). Only the domain purchase is necessary; additional tools are not required.
-- **Optional:** If you need a business email and have a low budget, you can use Zoho's free services to configure a business email for your custom domain.
-
-## 2. Configure DNS Settings
-- After purchasing your domain, go to the DNS settings or Advanced DNS settings of your domain registrar.
-
-- Add the following CNAME Record:
-
-    - **Type:** CNAME
-    - **Host:** www
-    - **Value:** `username.github.io.` (Replace `username` with your actual GitHub username)
-
-- Add the following A Records:
-
-    **Record 1:**
-    - **Type:** A
-    - **Host:** @
-    - **Value:** 185.199.108.153
-
-    **Record 2:**
-    - **Type:** A
-    - **Host:** @
-    - **Value:** 185.199.109.153
-
-    **Record 3:**
-    - **Type:** A
-    - **Host:** @
-    - **Value:** 185.199.110.153
-
-    **Record 4:**
-    - **Type:** A
-    - **Host:** @
-    - **Value:** 185.199.111.153
-
-
-## 3. GitHub Repository Settings
-- Navigate to your `username.github.io` repository on GitHub.
-- Go to the repository's **Settings**.
-- Under **Code and Automation**, click on **Pages**.
-- In the **Custom domain** field, enter your domain name (e.g., `example.com`) and click the **Save** button.
-- Wait a few minutes for the domain to verify. Once verified, you will see the link change from `https://username.github.io/` to `http://example.com`.
-- You will also see a `CNAME` file in your repository.
-
-## 4. Enforce HTTPS
-- In the same **Pages** section under **Custom domain**, check the **Enforce HTTPS** checkbox to ensure your site uses HTTPS.
-
-## 5. Additional Notes
-- If you create a repository named `<username>.github.io`, it will serve as the root of `https://<username>.github.io`. All other repository pages will be nested under this link. For example, a repository named `project1` would be accessible at `https://<username>.github.io/project1`.
-- If you add a custom domain to `<username>.github.io`, all other repository pages will also be accessible under the new custom domain. For example, if your custom domain is `www.example.com`, the `project1` repository would be accessible at `https://www.example.com/project1`.
+<p  align="center"> <img src="https://github-profile-trophy.vercel.app/?username=MIbnEKhalid&theme=onestar" alt="rgr" /></a> </p>
