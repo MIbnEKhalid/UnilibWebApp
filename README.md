@@ -8,6 +8,9 @@ https://github.com/MIbnEKhalid/MIbnEKhalid.github.io/ or https://github.com/MIbn
 
 Detailed Documentation of this website will be available soon on: [docs.mbktechstudio.com/mbktechstudio.com](https://docs.mbktechstudio.com/mbktechstudio.com)
 
+### NOTE:
+Only The Source Code Of This Website Is Covered Under The [WTFP LICENSE](https://choosealicense.com/licenses/wtfpl/). The Project Documentation, Some Images, Blog Posts, And Other Content Are NOT Covered Under This License And Remain The Intellectual Property Of The Author.
+
 ### List Of Main Domains 
 
 |                         | Domains                                        | Purpose                                                                                                 |
