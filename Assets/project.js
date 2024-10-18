@@ -43,7 +43,11 @@ function filterProducts() {
     if (selectedCategory !== 'all') {
         filteredProducts = products.filter(product => product.category.includes(selectedCategory));
     }
+
+    // Perform search filtering
     filteredProducts = searchProducts(filteredProducts);
+
+    // Display the filtered products
     displayProducts(filteredProducts);
 }
 
@@ -52,6 +56,7 @@ function searchProducts(productsArray) {
     return productsArray.filter(product => product.name.toLowerCase().includes(searchText));
 }
 
+// Event listeners for category filter and search input
 categoryFilter.addEventListener('change', filterProducts);
 searchInput.addEventListener('input', filterProducts);
 
