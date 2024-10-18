@@ -200,9 +200,10 @@
                     </div>
                 </div>
             </div>
-            <button id="toggleButton" class="toggle-button">Show More</button>
 
-
+            <div class="button field is-grouped" style="display: flex; justify-content: center;">
+                <div class="control"><button class="button is-primary" id="toggleButton">Show More</button></div>
+            </div>
 
         </div>
     </section>
@@ -397,12 +398,10 @@
                 expires = "; expires=" + date.toUTCString();
             }
             var domainP = "; domain=.mbktechstudio.com";
-            var domainS0 = "; domain=.mbktech.xyz";
-            var domainS1 = "; domain=.ibnekhalid.me";
+            var domainS = "; domain=.mbktech.xyz";
 
             document.cookie = name + "=" + (value || "") + expires + "; path=/" + domainP;
-            document.cookie = name + "=" + (value || "") + expires + "; path=/" + domainS0;
-            document.cookie = name + "=" + (value || "") + expires + "; path=/" + domainS1;
+            document.cookie = name + "=" + (value || "") + expires + "; path=/" + domainS;
         }
 
         function getCookie(name) {
