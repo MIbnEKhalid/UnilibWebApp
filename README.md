@@ -54,29 +54,10 @@ Only The Source Code Of This Website Is Covered Under The [WTFP LICENSE](https:/
 ## Hosting:
 The Main Website (MBKTechStudio.com) Is Hosted On GitHub, While Other Website (SubDomains Of MBKTechStudio) Is Hosted On Netlify
 
-<h2 align="center">
-  Stats ⚡️
-</h2>
-<table style="border:none;margin:0 auto" align="center">
-  <tr style="border:none;">
-    <td style="border:none;">
-      <img src="https://github-readme-streak-stats.herokuapp.com?user=MIbnEKhalid&theme=transparent&hide_border=true&date_format=j%20M%5B%20Y%5D"
-      alt="GitHub Streak" />
-    </td>
-    <td style="border:none;">
-      <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=MIbnEKhalid&layout=compact&theme=transparent&hide_border=true"
-      alt="MIbnEKhalid Stats" />
-    </td>
-  </tr>
-</table>
+## License
 
-<table style="border:none;margin:0 auto" align="center">
-  <tr style="border:none;margin:0 auto" align="center">
-    <td style="border:none;">
-      <img src="https://github-readme-activity-graph.vercel.app/graph?username=MIbnEKhalid&theme=github-dark&hide_border=true"
-      alt="Muhammad Bin Khalid Activity Graph" />
-    </td>
-  </tr>
-</table>
+This project is licensed under the WTFPL - see the [LICENSE](LICENSE) file for details.
+ 
+## Contact
 
-<p  align="center"> <img src="https://github-profile-trophy.vercel.app/?username=MIbnEKhalid&theme=onestar" alt="rgr" /></a> </p>
+For questions or contributions, please contact Muhammad Bin Khalid at [mbktechstudio.com/Support](https://mbktechstudio.com/Support/?Project=.MIbnEKhalid.github.io), [support@mbktechstudio.com](mailto:support@mbktechstudio.com) or [chmuhammadbinkhalid28.com](mailto:chmuhammadbinkhalid28.com).
