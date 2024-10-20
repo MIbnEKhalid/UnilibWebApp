@@ -3,9 +3,3 @@
   to = "https://unilib.mbktechstudio.com/:splat"
   status = 301
   force = true
-
-[[redirects]]
-  from = "https://unilib.mbktechstudio.com/*"
-  to = "https://unilib.mbktechstudio.com/:splat"
-  status = 301
-  force = true
