@@ -1,11 +1,11 @@
 [[redirects]]
-  from = "https://docs-mbktechstudio.netlify.app/*"
-  to = "https://project.mbktechstudio.com/:splat"
+  from = "https://unilib-mbktechstudio.netlify.app/*"
+  to = "https://unilib.mbktechstudio.com/:splat"
   status = 301
   force = true
 
 [[redirects]]
-  from = "https://docs.mbktechstudio.com/*"
-  to = "https://project.mbktechstudio.com/:splat"
+  from = "https://unilib.mbktechstudio.com/*"
+  to = "https://unilib.mbktechstudio.com/:splat"
   status = 301
   force = true
