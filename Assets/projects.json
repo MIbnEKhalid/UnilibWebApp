@@ -26,5 +26,12 @@
     "category": ["CourseBooks"],
     "description": "Halliday & Resnick",
     "link": "https://drive.google.com/file/d/12MBSYwqn4BiV9lIk2l13dvW5ymGrebqH/view?usp=sharing"
+},
+{
+    "imageURL": "Assets/Images/BookCovers/FundamentalsofPhysics9thEdition.png",
+    "name": "Fundamentals of Physics 9th Edition (Solution)",
+    "category": ["CourseBooks"],
+    "description": "Halliday & Resnick",
+    "link": "https://drive.google.com/file/d/18wwfu9nYUjBTwFzlB4F4KOKLXAJFJtaj/view?usp=sharing"
 }
 ]
