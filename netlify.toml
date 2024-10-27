@@ -3,3 +3,15 @@
   to = "https://unilib.mbktechstudio.com/:splat"
   status = 301
   force = true
+
+[[redirects]]
+  from = "https://unilib.ibnekhalid.me/*"
+  to = "https://unilib.mbktechstudio.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://unilib.mbktech.xyz/*"
+  to = "https://unilib.mbktechstudio.com/:splat"
+  status = 301
+  force = true
