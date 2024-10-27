@@ -10,8 +10,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head> 
-<div id="cookie"></div>
-<header>
+ <header>
     <nav>
         <div class="navbar">
             <div class="logo">
@@ -42,8 +41,7 @@
             </div>
         </div>
     </nav>
-</header>
-
+</header> 
 <body>
     <div class="scroll-button">
         <a href="#about"><i class="fas fa-arrow-up"></i></a>
@@ -91,7 +89,14 @@
                 </div>
             </div>
         </div>
-    </section>
+
+    </section>        
+    <div class="disqus_Container">
+        <div  id="disqus_thread"></div>
+    </div>
+
+
+        
     <footer>
         <div class="text">
             <span>Developed By <a href="https://github.com/MIbnEKhalid">Muhammad Bin Khalid</a> | &#169; 2024 All Rights    Reserved | <a href="https://privacy.mbktechstudio.com/" target="_blank">Terms & Conditions</a> | <a href="mailto:support@mbktechstudio.com">support@mbktechstudio.com</a></span>
@@ -297,7 +302,21 @@
             }
         });
     </script> 
-
+    <script>
+        var disqus_config = function () {
+            this.page.url = window.location.href; // Use the full current URL
+            this.page.identifier = window.location.pathname; // Use the path as a unique identifier
+            console.log('window.location.href:',window.location.href);
+            console.log('window.location.pathname:',window.location.pathname);
+        };
+        
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://mbktechstudio.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
 </body>
 
 </html>
