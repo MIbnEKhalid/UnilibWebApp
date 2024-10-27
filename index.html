@@ -91,22 +91,15 @@
         </div>
 
     </section>        
-
-
-    <div class="disqus_Container">
-    <script async src="https://talk.hyvor.com/embed/embed.js" type="module"></script>
-    <hyvor-talk-comments id="hyvor-comments" website-id="12088"></hyvor-talk-comments>
-</div>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        document.querySelector("#hyvor-comments").setAttribute("page-id", window.location.pathname);
-    });
-</script>
-
-
-
-        
+    <div class="talk_Container">
+        <script async src="https://talk.hyvor.com/embed/embed.js" type="module"></script>
+        <hyvor-talk-comments id="hyvor-comments" website-id="12088"></hyvor-talk-comments>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                document.querySelector("#hyvor-comments").setAttribute("page-id", window.location.pathname);
+            });
+        </script>
+    </div>
     <footer>
         <div class="text">
             <span>Developed By <a href="https://github.com/MIbnEKhalid">Muhammad Bin Khalid</a> | &#169; 2024 All Rights    Reserved | <a href="https://privacy.mbktechstudio.com/" target="_blank">Terms & Conditions</a> | <a href="mailto:support@mbktechstudio.com">support@mbktechstudio.com</a></span>

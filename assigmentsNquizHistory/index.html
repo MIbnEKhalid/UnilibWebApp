@@ -70,15 +70,16 @@
             <div id="detailsContainer" class=" ">
                 <!-- Assigments And Quiz will be dynamically inserted here -->
              </div>
-             
         </div>
     </section>
-    <div class="disqus_Container">
-         <script async src="https://talk.hyvor.com/embed/embed.js" type="module"></script>
-<hyvor-talk-comments
-    website-id="12088" 
-    page-id="<script>document.write(window.location.pathname)</script>"
-></hyvor-talk-comments>
+    <div class="talk_Container">
+        <script async src="https://talk.hyvor.com/embed/embed.js" type="module"></script>
+        <hyvor-talk-comments id="hyvor-comments" website-id="12088"></hyvor-talk-comments>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                document.querySelector("#hyvor-comments").setAttribute("page-id", window.location.pathname);
+            });
+        </script>
     </div>
     <footer>
         <div class="text">

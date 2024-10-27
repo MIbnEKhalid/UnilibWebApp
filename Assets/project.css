@@ -579,7 +579,7 @@ footer {
         font-weight: bold;
         color: rgb(255, 47, 47)
     }
-    .disqus_Container {
+    .talk_Container {
       width: 90%;
       margin: 0 auto; /* Center-aligns the container */
   }
