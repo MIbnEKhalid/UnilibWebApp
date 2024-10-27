@@ -1,4 +1,5 @@
-[{
+[
+{
     "imageURL": "Assets/Images/BookCovers/UsingInformationTechnology.png",
     "name": "Using Information Technology",
     "category": ["CourseBooks"],
@@ -11,6 +12,13 @@
     "category": ["CourseBooks"],
     "description": "",
     "link": "https://drive.google.com/file/d/1Nk_etxxWtsTDIdfn87ld6flc_nUw5CIM/view?usp=sharing"
+},
+{
+    "imageURL": "Assets/Images/BookCovers/ThomasCalculus11thEdition.png",
+    "name": "Thomas Calculus 11th Edition (Solution)",
+    "category": ["CourseBooks"],
+    "description": "",
+    "link": "https://drive.google.com/file/d/14Yf7kDL25nn6oVMy-BFpXpB_YWaqrMvF/view?usp=sharing"
 },
 {
     "imageURL": "Assets/Images/BookCovers/FundamentalsofPhysics9thEdition.png",
