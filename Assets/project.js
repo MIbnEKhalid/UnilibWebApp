@@ -128,7 +128,7 @@ loadProducts();
 
 
 
-
+/*
 fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/edit/assigmentsNquiz.yaml')
         .then(response => response.text()) // Fetch the YAML as text
         .then(yamlText => {
@@ -158,3 +158,42 @@ fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.i
             });
         })
         .catch(error => console.error('Error fetching data:', error));
+*/
+
+
+
+fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/edit/assigmentsNquiz.yaml')
+    .then(response => response.text()) // Fetch the YAML as text
+    .then(yamlText => {
+        const data = jsyaml.load(yamlText); // Requires jsyaml library
+
+        const detailsContainer = document.getElementById('detailsContainer');
+        detailsContainer.innerHTML = '';  // Clear any existing content 
+
+        const currentDate = new Date(); // Get the current date
+
+        data.forEach(item => {
+            const dueDate = new Date(item.dueDate); // Parse the dueDate string into a Date object
+
+            // Check if the dueDate is in the future or today
+            if (dueDate >= currentDate) {
+                const detailsDiv = document.createElement('div');
+                detailsDiv.classList.add('details');
+                detailsDiv.style.minWidth = '100%';
+                detailsDiv.style.width = '100%';
+
+                detailsDiv.innerHTML = `
+                <div class="date-box">
+                    <span id="issueDate">${item.issueDate}</span>
+                    <span id="dueDate">${item.dueDate}</span>
+                </div>
+                <div class="assignment-info">
+                    <span><strong>Subject:</strong> ${item.subject}</span><br>
+                    <span><strong>${item.type}:</strong> ${item.description}</span>
+                </div>
+            `;
+                detailsContainer.appendChild(detailsDiv);
+            }
+        });
+    })
+    .catch(error => console.error('Error fetching data:', error));
