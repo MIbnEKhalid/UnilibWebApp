@@ -170,13 +170,16 @@ fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.i
         const detailsContainer = document.getElementById('detailsContainer');
         detailsContainer.innerHTML = '';  // Clear any existing content 
 
-        const currentDate = new Date(); // Get the current date
+        // Get the current date without the time component
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0); // Set the time to midnight for accurate date comparison
 
         data.forEach(item => {
-            const dueDate = new Date(item.dueDate); // Parse the dueDate string into a Date object
+            const dueDate = new Date(item.dueDate);
+            dueDate.setHours(0, 0, 0, 0); // Strip time for comparison
 
-            // Check if the dueDate is in the future or today
-            if (dueDate > currentDate) {
+            // Check if the dueDate is today or in the future
+            if (dueDate >= currentDate) {
                 const detailsDiv = document.createElement('div');
                 detailsDiv.classList.add('details');
                 detailsDiv.style.minWidth = '100%';
