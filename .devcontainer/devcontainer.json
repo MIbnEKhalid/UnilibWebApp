@@ -3,6 +3,7 @@
   "extensions": [
     "ritwickdey.LiveServer",
     "GitHub.copilot",
-    "GitHub.copilot-chat"
+    "GitHub.copilot-chat",
+    "WakaTime.vscode-wakatime"
   ]
 }
