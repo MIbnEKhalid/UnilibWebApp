@@ -137,32 +137,6 @@
             messageBox.style.backgroundColor = "beige";
             messageBox.style.color = "green";
         }
-        function handleCVFile() {
-            // Define the file URL
-            var fileUrl = 'Assets/MBK_CV.pdf'; // Replace this with the actual file URL
-
-            // Check if the user is on a mobile device
-            var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-            if (isMobile) {
-                // If user is on a mobile device, initiate download
-                var a = document.createElement('a');
-                a.href = fileUrl;
-                a.download = 'MBK_CV.pdf'; // Set the desired filename here
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            } else {
-                // If user is on a desktop, open in a new tab/window
-                window.open(fileUrl, '_blank');
-            }
-        }
-        function HireMeLink() {
-            window.open('https://www.linkedin.com/in/muhammad-bin-khalid-89711b25b', '_blank'); // Replace with your target URL
-        }
-        function openProjectPage(id) {
-            window.open('https://mbktechstudio.com/Project/#' + id, '_blank'); // Replace with your target URL
-        }
         async function getTermsVersionFromPrivacyPolicy() {
             try {
                 const response = await fetch('https://privacy.mbktechstudio.com/');
@@ -246,20 +220,7 @@
         }
         function hideCookieNotice() {
             document.getElementById('cookieNotice').style.display = 'none';
-        }  // JavaScript to handle collapse/expand functionality
-        const detailsContainer = document.getElementById('detailsContainer');
-        const toggleButton = document.getElementById('toggleButton');
-        toggleButton.addEventListener('click', function () {
-            // Toggle the expanded class
-            detailsContainer.classList.toggle('expanded');
-
-            // Update the button text based on the state
-            if (detailsContainer.classList.contains('expanded')) {
-                toggleButton.textContent = 'Show Less';
-            } else {
-                toggleButton.textContent = 'Show More';
-            }
-        });
+        }  
     </script>     
     <script> 
         fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/edit/assigmentsNquiz.yaml')
