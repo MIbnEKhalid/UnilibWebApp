@@ -176,7 +176,7 @@ fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.i
             const dueDate = new Date(item.dueDate); // Parse the dueDate string into a Date object
 
             // Check if the dueDate is in the future or today
-            if (dueDate >= currentDate) {
+            if (dueDate > currentDate) {
                 const detailsDiv = document.createElement('div');
                 detailsDiv.classList.add('details');
                 detailsDiv.style.minWidth = '100%';
