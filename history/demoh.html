@@ -24,8 +24,7 @@
 <body>
     <section>
         <div class="Container">
-            <br><br>
-            <div class="not"></div> 
+            <br><br> 
             <h1 style="text-align: center; color: #2b5266;" id="assignments">Assigments & Quizes History</h1>
             <br> <br> 
             <div id="detailsContainer" class=" ">
@@ -34,6 +33,8 @@
         </div>
     </section> 
     <script> 
+
+    // Shows All Assignments and Quizes even if due date has passed
         fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/edit/assigmentsNquiz.yaml')
         //fetch('Assets/assigmentsNquiz.yaml')
             .then(response => response.text()) // Fetch the YAML as text

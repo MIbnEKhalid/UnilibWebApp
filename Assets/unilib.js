@@ -53,7 +53,7 @@ loadProducts();
 
  
 
-
+//only thoes quiz and assigments will be shown which are not due yet
 
 fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/edit/assigmentsNquiz.yaml')
 //fetch('Assets/assigmentsNquiz.yaml')
