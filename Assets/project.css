@@ -312,4 +312,7 @@ footer {
   margin-left: -150px;
 }
 
-
+.talk_Container {
+  max-width: 95%;
+  margin: 0 auto; 
+}
