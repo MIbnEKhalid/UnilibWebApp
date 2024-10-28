@@ -6,10 +6,30 @@ Website Source Code
 
 https://github.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/  
 
-Detailed Documentation of this website will be available soon on: [docs.mbktechstudio.com/mbktechstudio.com](https://docs.mbktechstudio.com/mbktechstudio.com)
+Detailed Documentation of this website will be available soon on: [docs.mbktechstudio.com/mbktechstudio.com](https://docs.mbktechstudio.com/mbktechstudio.com/?Project=Unilib)
 
 ### NOTE:
 Only The Source Code Of This Website Is Covered Under The [WTFP LICENSE](https://choosealicense.com/licenses/wtfpl/). The Project Documentation, Some Images, Blog Posts, And Other Content Are NOT Covered Under This License And Remain The Intellectual Property Of The Author.
+
+
+
+# How To Use Unillib
+- **Clone or Fork the Repository:** Clone or fork the repository to your github. 
+    - Or If you don't want to copy website shit just download following files:
+    - `demo.html`,`history/demoh.html`, `Assets/unilib.css`, `Assets/unilib.js`,`Assets/assigmentsNquiz.yaml` and `Assets/books.yaml`
+- **Update File Locations:** 
+   - Both YAML files are placed in a separate branch to allow `collaborators`/`classmates` to edit them safely, so they don't fuck up with main website files. When new books or assignments need to be added, changes are made directly to the `edit/` branch YAML files, ensuring the main branch remains stable.
+Additionally, the YAML files also exist in the `Assets/` folder, so if you prefer not to use a separate branch, please follow the instructions below.
+  - Open `Assets/project.js` and `history/index.html` and find where `fetch` is used to get the `YAML` files.
+  - **Update the URLs:** 
+    - Replace `fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/main/assigmentsNquiz.yaml') ` with `fetch('Assets/assigmentsNquiz.yaml')`   
+    - Replace `fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/main/books.yaml') ` with `fetch('Assets/books.yaml')`
+  
+- Don't worry about `.devcontainer/devcontainer.json` file its help to preinstall extension when codespace is created on github so this don't have anything to do with main project
+
+
+
+
 
 ### List Of Main Domains 
 
