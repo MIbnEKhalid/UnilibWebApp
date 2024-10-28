@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
-    <title>Uni Books etc</title>
+    <title>Uni Books Home Page</title>
     <link rel="stylesheet" href="https://unilib.mbktechstudio.com/Assets/project.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
     <link rel="icon" type="image/x-icon" href="https://mbktechstudio.com/Assets/Images/dgicon.svg">
@@ -99,7 +99,8 @@
         <hyvor-talk-comments id="hyvor-comments" website-id="12088"></hyvor-talk-comments>
         <script>
             document.addEventListener("DOMContentLoaded", function() {
-                document.querySelector("#hyvor-comments").setAttribute("page-id", window.location.pathname);
+                document.querySelector("#hyvor-comments").setAttribute("page-id", document.title);
+                console.log(document.title);
             });
         </script>
     </div>
