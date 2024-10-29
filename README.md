@@ -2,6 +2,7 @@
 
 https://unilib.mbktechstudio.com/ 
 
+**Demo:** https://demo.unilib.mbktechstudio.com/
 Website Source Code 
 
 https://github.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/  
@@ -14,7 +15,7 @@ Only The Source Code Of This Website Is Covered Under The [WTFP LICENSE](https:/
 
 
 # How To Use Unillib
-- **Clone or Fork the Repository:** Clone or fork the repository to your github. 
+- **Clone or Fork the Repository:** Clone or fork the repository (`Unilib.MIbnEKhalid.github.io/Demo`)[https://github.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/tree/Demo] to your github. 
     - Or If you don't want to copy website shit just download following files:
     - `demo.html`,`history/demoh.html`, `Assets/unilib.css`, `Assets/unilib.js`,`Assets/assigmentsNquiz.yaml` and `Assets/books.yaml`
 - **Update File Locations:** 
