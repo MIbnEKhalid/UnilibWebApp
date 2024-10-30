@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+
 <head>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
@@ -10,12 +11,12 @@
     <link rel="icon" type="image/x-icon" href="https://mbktechstudio.com/Assets/Images/dgicon.svg">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-</head> 
+</head>
 <!-- Ask For Cookie Consent-->
 <div id="cookie"></div>
 <style>
-    .details { 
-        margin-bottom: 15px; 
+    .details {
+        margin-bottom: 15px;
     }
 </style>
 <header>
@@ -50,6 +51,7 @@
         </div>
     </nav>
 </header>
+
 <body>
     <div class="scroll-button">
         <a href="#about"><i class="fas fa-arrow-up"></i></a>
@@ -57,12 +59,12 @@
     <section class="about" id="about">
         <div class="content">
             <br><br>
-            <div class="not"></div> 
+            <div class="not"></div>
             <h1 style="text-align: center; color: #2b5266;" id="assignments">Assigments & Quizes History</h1>
-            <br> <br> 
+            <br> <br>
             <div id="detailsContainer" class=" ">
                 <!-- Assigments And Quiz will be dynamically inserted here -->
-             </div>
+            </div>
         </div>
     </section>
     <div style="max-width: 95%; margin: 0 5%;">
@@ -88,43 +90,44 @@
         let scrollBtn = document.querySelector(".scroll-button a");
         console.log(scrollBtn);
         let val;
-        window.onscroll = function () {
-            if (document.documentElement.scrollTop > 20) {
-                nav.classList.add("sticky");
-                scrollBtn.style.display = "block";
-            } else {
-                nav.classList.remove("sticky");
-                scrollBtn.style.display = "none";
+        window.onscroll = function() {
+                if (document.documentElement.scrollTop > 20) {
+                    nav.classList.add("sticky");
+                    scrollBtn.style.display = "block";
+                } else {
+                    nav.classList.remove("sticky");
+                    scrollBtn.style.display = "none";
+                }
             }
-        }
-        // Side NavIgation Menu JS Code
+            // Side NavIgation Menu JS Code
         let body = document.querySelector("body");
         let navBar = document.querySelector(".navbar");
         let menuBtn = document.querySelector(".menu-btn");
         let cancelBtn = document.querySelector(".cancel-btn");
-        menuBtn.onclick = function () {
+        menuBtn.onclick = function() {
             navBar.classList.add("active");
             menuBtn.style.opacity = "0";
             menuBtn.style.pointerEvents = "none";
             // body.style.overflow = "hidden";
             scrollBtn.style.pointerEvents = "none";
         }
-        cancelBtn.onclick = function () {
-            navBar.classList.remove("active");
-            menuBtn.style.opacity = "1";
-            menuBtn.style.pointerEvents = "auto";
-            body.style.overflow = "auto";
-            scrollBtn.style.pointerEvents = "auto";
-        }
-        // Side Navigation Bar Close While We Click On Navigation Links
+        cancelBtn.onclick = function() {
+                navBar.classList.remove("active");
+                menuBtn.style.opacity = "1";
+                menuBtn.style.pointerEvents = "auto";
+                body.style.overflow = "auto";
+                scrollBtn.style.pointerEvents = "auto";
+            }
+            // Side Navigation Bar Close While We Click On Navigation Links
         let navLinks = document.querySelectorAll(".menu li a");
         for (var i = 0; i < navLinks.length; i++) {
-            navLinks[i].addEventListener("click", function () {
+            navLinks[i].addEventListener("click", function() {
                 navBar.classList.remove("active");
                 menuBtn.style.opacity = "1";
                 menuBtn.style.pointerEvents = "auto";
             });
         }
+
         function resetMessageBoxColor() {
             var messageBox = document.getElementById("message");
             messageBox.style.backgroundColor = "beige";
@@ -165,23 +168,24 @@
                 const termsVersion = await getTermsVersionFromPrivacyPolicy();
                 setCookie('agreed', termsVersion, 365);
                 hideOverlay();
-            }
-            catch (err) {
+            } catch (err) {
                 console.error('Error in SaveCookie:', err);
             }
         }
+
         function checkCookie(currentVersion) {
             const agreedVersion = getCookie('agreed');
             if (agreedVersion === currentVersion) {
                 hideOverlay();
-            }
-            else {
+            } else {
                 document.getElementById('cookieNotice').style.display = 'block';
             }
         }
+
         function hideOverlay() {
             document.getElementById('cookieNotice').style.display = 'none';
         }
+
         function setCookie(name, value, days) {
             var expires = "";
             if (days) {
@@ -197,6 +201,7 @@
             document.cookie = name + "=" + (value || "") + expires + "; path=/" + domainS1;
             document.cookie = name + "=" + (value || "") + expires + "; path=/" + domainS2;
         }
+
         function getCookie(name) {
             var nameEQ = name + "=";
             var cookies = document.cookie.split(';');
@@ -211,26 +216,27 @@
             }
             return null;
         }
+
         function hideCookieNotice() {
             document.getElementById('cookieNotice').style.display = 'none';
-        }  
-    </script>     
-    <script> 
+        }
+    </script>
+    <script>
         fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/edit/assigmentsNquiz.yaml')
             .then(response => response.text()) // Fetch the YAML as text
             .then(yamlText => {
                 // Parse the YAML text into a JavaScript object
                 const data = jsyaml.load(yamlText); // Requires jsyaml library
-    
+
                 const detailsContainer = document.getElementById('detailsContainer');
-                detailsContainer.innerHTML = '';  // Clear any existing content 
-    
+                detailsContainer.innerHTML = ''; // Clear any existing content 
+
                 data.forEach(item => {
                     const detailsDiv = document.createElement('div');
                     detailsDiv.classList.add('details');
                     detailsDiv.style.minWidth = '100%';
                     detailsDiv.style.width = '100%';
-    
+
                     detailsDiv.innerHTML = `
                     <div class="date-box">
                         <span id="issueDate">${item.issueDate}</span>
@@ -245,7 +251,7 @@
                 });
             })
             .catch(error => console.error('Error fetching data:', error));
-    </script>  
+    </script>
 </body>
 
 </html>

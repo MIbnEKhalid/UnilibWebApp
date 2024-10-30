@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+
 <head>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
@@ -10,8 +11,8 @@
     <link rel="icon" type="image/x-icon" href="https://mbktechstudio.com/Assets/Images/dgicon.svg">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-</head> 
- <header>
+</head>
+<header>
     <nav>
         <div class="navbar">
             <div class="logo">
@@ -42,25 +43,35 @@
             </div>
         </div>
     </nav>
-</header> 
+</header>
+<style>
+    .section-separator {
+        margin-top: 50px;
+        padding-top: 50px;
+        border-top: 2px solid #ccc;
+    }
+    
+    .section-title {
+        text-align: center;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+</style>
+
 <!-- Ask For Cookie Consent-->
 <div id="cookie"></div>
+
 <body>
     <div class="scroll-button">
         <a href="#about"><i class="fas fa-arrow-up"></i></a>
     </div>
+
+
     <section class="about" id="about">
         <div class="content">
             <br><br>
             <div class="not"></div>
-            <div class="title"><span>Uni Course Materials</span></div>
-            <!--      
-            <div class="select-dropdown">
-               <select id="categoryFilter" name="topics">
-                  <option value="Semester1">Semester1</option>
-                  <option value="Semester1">Semester2</option> 
-               </select>
-            </div>  -->
+            <div class="title section-title"><span>Uni Course Materials</span></div>
             <div class="select-dropdown">
                 <select id="categoryFilter" name="topics">
                     <option value="all">All</option>
@@ -81,13 +92,20 @@
             <div class="button field is-grouped" style="display: flex; justify-content: center;">
                 <div class="control"><button class="button is-primary" onclick="openSupport()" id="submit-button">Request To Add Book</button></div>
             </div>
-            <br>   
-            <h1 style="text-align: center;" id="assignments">Assignments & Quiz</h1>
+        </div>
+    </section>
+
+    <!-- Separator for visual distinction -->
+    <div class="section-separator"></div>
+
+    <section class="about" id="assignments">
+        <div class="content">
+            <h1 class="section-title">Assignments & Quiz</h1>
             <div id="detailsContainer" class="details-container">
                 <!-- Assigments And Quiz will be dynamically inserted here -->
             </div>
             <div id="noAss">
-                 <div class="details" style="min-width: 100%; width: 100%;">
+                <div class="details" style="min-width: 100%; width: 100%;">
                     <div class="assignment-info">
                         <span><strong style="text-align: center; display: block;">No Current Active Assigments or Quiz</strong></span>
                     </div>
@@ -99,8 +117,12 @@
                     <button class="button is-primary" id="toggleButton">Show More</button>
                 </div>
             </div>
-        </div> 
-    </section>      
+        </div>
+    </section>
+
+
+
+
     <div style="max-width: 95%; margin: 0 5%;">
         <script async src="https://talk.hyvor.com/embed/embed.js" type="module"></script>
         <hyvor-talk-comments id="hyvor-comments" website-id="12088"></hyvor-talk-comments>
@@ -110,7 +132,7 @@
                 console.log(document.title);
             });
         </script>
-    </div> 
+    </div>
     <footer>
         <div class="text">
             <span>Developed By <a href="https://github.com/MIbnEKhalid">Muhammad Bin Khalid</a> | &#169; 2024 All Rights    Reserved | <a href="https://privacy.mbktechstudio.com/" target="_blank">Terms & Conditions</a> | <a href="mailto:support@mbktechstudio.com">support@mbktechstudio.com</a></span>
@@ -120,7 +142,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/intlTelInput-jquery.min.js"></script>
     <script src="Assets/unilib.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             AskForCookieConsent();
             const categoryFilter = document.getElementById('categoryFilter');
             // Always trigger filtering based on the current dropdown value
@@ -128,7 +150,7 @@
             const searchInput = document.getElementById('searchProduct');
             const clearBtn = document.getElementById('clearSearch');
             // Show clear button when there is input
-            searchInput.addEventListener('input', function () {
+            searchInput.addEventListener('input', function() {
                 if (this.value.length > 0) {
                     clearBtn.style.display = 'block';
                 } else {
@@ -136,12 +158,13 @@
                 }
             });
             // Clear input when clear button is clicked
-            clearBtn.addEventListener('click', function () {
+            clearBtn.addEventListener('click', function() {
                 searchInput.value = '';
                 clearBtn.style.display = 'none';
                 filterProducts(); // Optionally trigger the filter function to show all products again
             });
         });
+
         function openSupport() {
             window.open('https://www.mbktechstudio.com/Support/#requestbook', '_blank');
         }
@@ -152,43 +175,44 @@
         let scrollBtn = document.querySelector(".scroll-button a");
         console.log(scrollBtn);
         let val;
-        window.onscroll = function () {
-            if (document.documentElement.scrollTop > 20) {
-                nav.classList.add("sticky");
-                scrollBtn.style.display = "block";
-            } else {
-                nav.classList.remove("sticky");
-                scrollBtn.style.display = "none";
+        window.onscroll = function() {
+                if (document.documentElement.scrollTop > 20) {
+                    nav.classList.add("sticky");
+                    scrollBtn.style.display = "block";
+                } else {
+                    nav.classList.remove("sticky");
+                    scrollBtn.style.display = "none";
+                }
             }
-        }
-        // Side NavIgation Menu JS Code
+            // Side NavIgation Menu JS Code
         let body = document.querySelector("body");
         let navBar = document.querySelector(".navbar");
         let menuBtn = document.querySelector(".menu-btn");
         let cancelBtn = document.querySelector(".cancel-btn");
-        menuBtn.onclick = function () {
+        menuBtn.onclick = function() {
             navBar.classList.add("active");
             menuBtn.style.opacity = "0";
             menuBtn.style.pointerEvents = "none";
             // body.style.overflow = "hidden";
             scrollBtn.style.pointerEvents = "none";
         }
-        cancelBtn.onclick = function () {
-            navBar.classList.remove("active");
-            menuBtn.style.opacity = "1";
-            menuBtn.style.pointerEvents = "auto";
-            body.style.overflow = "auto";
-            scrollBtn.style.pointerEvents = "auto";
-        }
-        // Side Navigation Bar Close While We Click On Navigation Links
+        cancelBtn.onclick = function() {
+                navBar.classList.remove("active");
+                menuBtn.style.opacity = "1";
+                menuBtn.style.pointerEvents = "auto";
+                body.style.overflow = "auto";
+                scrollBtn.style.pointerEvents = "auto";
+            }
+            // Side Navigation Bar Close While We Click On Navigation Links
         let navLinks = document.querySelectorAll(".menu li a");
         for (var i = 0; i < navLinks.length; i++) {
-            navLinks[i].addEventListener("click", function () {
+            navLinks[i].addEventListener("click", function() {
                 navBar.classList.remove("active");
                 menuBtn.style.opacity = "1";
                 menuBtn.style.pointerEvents = "auto";
             });
         }
+
         function resetMessageBoxColor() {
             var messageBox = document.getElementById("message");
             messageBox.style.backgroundColor = "beige";
@@ -229,23 +253,24 @@
                 const termsVersion = await getTermsVersionFromPrivacyPolicy();
                 setCookie('agreed', termsVersion, 365);
                 hideOverlay();
-            }
-            catch (err) {
+            } catch (err) {
                 console.error('Error in SaveCookie:', err);
             }
         }
+
         function checkCookie(currentVersion) {
             const agreedVersion = getCookie('agreed');
             if (agreedVersion === currentVersion) {
                 hideOverlay();
-            }
-            else {
+            } else {
                 document.getElementById('cookieNotice').style.display = 'block';
             }
         }
+
         function hideOverlay() {
             document.getElementById('cookieNotice').style.display = 'none';
         }
+
         function setCookie(name, value, days) {
             var expires = "";
             if (days) {
@@ -259,6 +284,7 @@
             document.cookie = name + "=" + (value || "") + expires + "; path=/" + domainP;
             document.cookie = name + "=" + (value || "") + expires + "; path=/" + domainS;
         }
+
         function getCookie(name) {
             var nameEQ = name + "=";
             var cookies = document.cookie.split(';');
@@ -273,14 +299,15 @@
             }
             return null;
         }
+
         function hideCookieNotice() {
             document.getElementById('cookieNotice').style.display = 'none';
-        }  
-        
+        }
+
         // JavaScript to handle collapse/expand functionality
         const detailsContainer = document.getElementById('detailsContainer');
         const toggleButton = document.getElementById('toggleButton');
-        toggleButton.addEventListener('click', function () {
+        toggleButton.addEventListener('click', function() {
             // Toggle the expanded class
             detailsContainer.classList.toggle('expanded');
 
@@ -291,6 +318,7 @@
                 toggleButton.textContent = 'Show More';
             }
         });
-    </script>  
+    </script>
 </body>
+
 </html>
