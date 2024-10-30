@@ -47,7 +47,6 @@
 <style>
     .section-separator {
         margin-top: 50px;
-        padding-top: 50px;
         border-top: 2px solid #ccc;
     }
     
@@ -119,9 +118,6 @@
             </div>
         </div>
     </section>
-
-
-
 
     <div style="max-width: 95%; margin: 0 5%;">
         <script async src="https://talk.hyvor.com/embed/embed.js" type="module"></script>
@@ -317,6 +313,25 @@
             } else {
                 toggleButton.textContent = 'Show More';
             }
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const headerHeight = document.querySelector('header').offsetHeight;
+
+            document.querySelectorAll('nav .menu li a').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+
+                    if (targetElement) {
+                        const targetPosition = targetElement.offsetTop - headerHeight - 70; // Adjust 10px as needed
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
         });
     </script>
 </body>
