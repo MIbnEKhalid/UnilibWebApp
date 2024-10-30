@@ -260,9 +260,4 @@ select {
 .ConTainer {
     max-width: 98%;
     margin: 0 auto;
-}
-  .no-ass{
-    display: block;
-    text-align: center;
-    font-weight: bold;
-}
+} 

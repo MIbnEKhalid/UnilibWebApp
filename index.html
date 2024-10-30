@@ -86,6 +86,13 @@
             <div id="detailsContainer" class="details-container">
                 <!-- Assigments And Quiz will be dynamically inserted here -->
             </div>
+            <div id="noAss">
+                 <div class="details" style="min-width: 100%; width: 100%;">
+                    <div class="assignment-info">
+                        <span><strong style="text-align: center; display: block;">No Current Active Assigments or Quiz</strong></span>
+                    </div>
+                </div>
+            </div>
             <div class="button field is-grouped" style="display: flex; flex-direction: column; align-items: center;">
                 <a class="links" style="font-weight: bold;" href="history/" target="_blank">See Assignments & Quizes History</a>
                 <div class="control">
@@ -268,7 +275,9 @@
         }
         function hideCookieNotice() {
             document.getElementById('cookieNotice').style.display = 'none';
-        }  // JavaScript to handle collapse/expand functionality
+        }  
+        
+        // JavaScript to handle collapse/expand functionality
         const detailsContainer = document.getElementById('detailsContainer');
         const toggleButton = document.getElementById('toggleButton');
         toggleButton.addEventListener('click', function () {
