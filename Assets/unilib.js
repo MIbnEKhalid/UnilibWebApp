@@ -55,7 +55,7 @@ loadProducts();
 
 //only thoes quiz and assigments will be shown which are not due yet
 
-fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/edit/assigmentsNquiz.yaml')
+fetch('Assets/assigmentsNquiz.yaml')
 //fetch('Assets/assigmentsNquiz.yaml')
     .then(response => response.text()) // Fetch the YAML as text
     .then(yamlText => {
@@ -68,12 +68,15 @@ fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.i
         const currentDate = new Date();
         currentDate.setHours(0, 0, 0, 0); // Set the time to midnight for accurate date comparison
 
+        let activeItems = 0;
+
         data.forEach(item => {
             const dueDate = new Date(item.dueDate);
             dueDate.setHours(0, 0, 0, 0); // Strip time for comparison
 
             // Check if the dueDate is today or in the future
             if (dueDate >= currentDate) {
+                activeItems++;
                 const detailsDiv = document.createElement('div');
                 detailsDiv.classList.add('details');
                 detailsDiv.style.minWidth = '100%';
@@ -92,5 +95,19 @@ fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.i
                 detailsContainer.appendChild(detailsDiv);
             }
         });
+
+        if (activeItems === 0) {
+            const noActiveItemsDiv = document.createElement('div');
+            noActiveItemsDiv.classList.add('details');
+            noActiveItemsDiv.style.minWidth = '100%';
+            noActiveItemsDiv.style.width = '100%';
+
+            noActiveItemsDiv.innerHTML = `
+            <div class="assignment-info">
+                <span class="no-ass">No Assignment Or Quiz Currently Given/Active.</span>
+            </div>
+            `;
+            detailsContainer.appendChild(noActiveItemsDiv);
+        }
     })
     .catch(error => console.error('Error fetching data:', error));
