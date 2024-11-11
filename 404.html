@@ -12,6 +12,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
     <link rel="icon" type="image/x-icon" href="https://mbktechstudio.com/Assets/Images/Icon/dgicon.svg">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <script src="https://mbktechstudio.com/Assets/config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {  
+            const input = document.querySelector('input[name="access_key"]');
+            if (input) {
+                input.value =  web3forms_API_KEY;
+            }
+        });
+    </script>
+  
   </head>
 
   <style>
@@ -155,7 +166,7 @@
               <input class="input" type="hidden" name="Timestamp"/>
               <input class="input" type="hidden" name="Subject" value="404-Error"/>
               <input class="input" type="hidden" name="PageUrl"/>
-              <input type="hidden" name="access_key" value="d2837145-a5b5-49af-b269-cb79e9b57456">
+              <input type="hidden" name="access_key" value="">
               <div class="field">
                 <label class="label">Name</label><div class="control"><div class="input" ><input type="text" placeholder="Enter Your Name" name="UserName" required /></div></div>
               </div>
