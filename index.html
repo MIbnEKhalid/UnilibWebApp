@@ -30,11 +30,13 @@
                 </div>
             </ul>
             <div class="media-icons">
-                <a href="https://www.facebook.com/people/MBK-Tech-Studio/61559079077988/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.facebook.com/people/MBK-Tech-Studio/61559079077988/" target="_blank"><i
+                        class="fab fa-facebook-f"></i></a>
                 <a href="https://x.com/ibnekhalid28" target="_blank"><i class="fab fa-twitter"></i></a>
                 <a href="https://instagram.com/mbktech.studios" target="_blank"><i class="fab fa-instagram"></i></a>
                 <a href="https://github.com/MIbnEKhalid" target="_blank"><i class="fab fa-github"></i></a>
-                <a href="https://www.linkedin.com/in/muhammad-bin-khalid-89711b25b" target="_blank"><i class="fab fa-linkedin"></i></a>
+                <a href="https://www.linkedin.com/in/muhammad-bin-khalid-89711b25b" target="_blank"><i
+                        class="fab fa-linkedin"></i></a>
                 <a href="https://youtube.com/@mibnekhalid" target="_blank"><i class="fab fa-youtube"></i></a>
                 <a href="https://discord.gg/MUAyAeckrM" target="_blank"><i class="fab fa-discord"></i></a>
             </div>
@@ -49,11 +51,19 @@
         margin-top: 50px;
         border-top: 2px solid #ccc;
     }
-    
+
     .section-title {
         text-align: center;
         font-size: 24px;
         margin-bottom: 20px;
+    }
+
+    .linked,
+    .linked:hover,
+    .linked:visited,
+    .linked h3 {
+        text-decoration: none;
+        color: #377a77;
     }
 </style>
 
@@ -89,7 +99,8 @@
                 <!-- Products will be dynamically inserted here -->
             </div>
             <div class="button field is-grouped" style="display: flex; justify-content: center;">
-                <div class="control"><button class="button is-primary" onclick="openSupport()" id="submit-button">Request To Add Book</button></div>
+                <div class="control"><button class="button is-primary" onclick="openSupport()"
+                        id="submit-button">Request To Add Book</button></div>
             </div>
         </div>
     </section>
@@ -106,43 +117,49 @@
             <div id="noAss">
                 <div class="details" style="min-width: 100%; width: 100%;">
                     <div class="assignment-info">
-                        <span><strong style="text-align: center; display: block;">No Current Active Assigments or Quiz</strong></span>
+                        <span><strong style="text-align: center; display: block;">No Current Active Assigments or
+                                Quiz</strong></span>
                     </div>
                 </div>
             </div>
             <div class="button field is-grouped" style="display: flex; flex-direction: column; align-items: center;">
-                <a class="links" style="font-weight: bold;" href="history/" target="_blank">See Assignments & Quizes History</a>
+                <a class="links" style="font-weight: bold;" href="history/" target="_blank">See Assignments & Quizes
+                    History</a>
                 <div class="control">
                     <button class="button is-primary" id="toggleButton">Show More</button>
                 </div>
             </div>
         </div>
     </section>
-
+<!--
     <div style="max-width: 95%; margin: 0 5%;">
         <script async src="https://talk.hyvor.com/embed/embed.js" type="module"></script>
         <hyvor-talk-comments id="hyvor-comments" website-id="12088"></hyvor-talk-comments>
         <script>
-            document.addEventListener("DOMContentLoaded", function() {
+            document.addEventListener("DOMContentLoaded", function () {
                 document.querySelector("#hyvor-comments").setAttribute("page-id", document.title);
                 console.log(document.title);
             });
         </script>
     </div>
+-->
     <footer>
 
         <div class="text">
-    
-            <span> © 2024  <a href="https://mbktechstudio.com/" target="_blank">MBK Tech Studio</a>. All Rights Reserved | <a href="https://privacy.mbktechstudio.com/" target="_blank">Terms &amp; Conditions</a> | <a href="https://mbktechstudio.com/FAQs" target="_blank">FAQs</a> | <a href="https://mbktechstudio.com/Support/" target="_blank">Support &amp; Contact</a></span>    
+
+            <span> © 2024 <a href="https://mbktechstudio.com/" target="_blank">MBK Tech Studio</a>. All Rights Reserved
+                | <a href="https://privacy.mbktechstudio.com/" target="_blank">Terms &amp; Conditions</a> | <a
+                    href="https://mbktechstudio.com/FAQs" target="_blank">FAQs</a> | <a
+                    href="https://mbktechstudio.com/Support/" target="_blank">Support &amp; Contact</a></span>
 
         </div>
-    
+
     </footer>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/intlTelInput-jquery.min.js"></script>
     <script src="Assets/unilib.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             AskForCookieConsent();
             const categoryFilter = document.getElementById('categoryFilter');
             // Always trigger filtering based on the current dropdown value
@@ -150,7 +167,7 @@
             const searchInput = document.getElementById('searchProduct');
             const clearBtn = document.getElementById('clearSearch');
             // Show clear button when there is input
-            searchInput.addEventListener('input', function() {
+            searchInput.addEventListener('input', function () {
                 if (this.value.length > 0) {
                     clearBtn.style.display = 'block';
                 } else {
@@ -158,7 +175,7 @@
                 }
             });
             // Clear input when clear button is clicked
-            clearBtn.addEventListener('click', function() {
+            clearBtn.addEventListener('click', function () {
                 searchInput.value = '';
                 clearBtn.style.display = 'none';
                 filterProducts(); // Optionally trigger the filter function to show all products again
@@ -175,38 +192,38 @@
         let scrollBtn = document.querySelector(".scroll-button a");
         console.log(scrollBtn);
         let val;
-        window.onscroll = function() {
-                if (document.documentElement.scrollTop > 20) {
-                    nav.classList.add("sticky");
-                    scrollBtn.style.display = "block";
-                } else {
-                    nav.classList.remove("sticky");
-                    scrollBtn.style.display = "none";
-                }
+        window.onscroll = function () {
+            if (document.documentElement.scrollTop > 20) {
+                nav.classList.add("sticky");
+                scrollBtn.style.display = "block";
+            } else {
+                nav.classList.remove("sticky");
+                scrollBtn.style.display = "none";
             }
-            // Side NavIgation Menu JS Code
+        }
+        // Side NavIgation Menu JS Code
         let body = document.querySelector("body");
         let navBar = document.querySelector(".navbar");
         let menuBtn = document.querySelector(".menu-btn");
         let cancelBtn = document.querySelector(".cancel-btn");
-        menuBtn.onclick = function() {
+        menuBtn.onclick = function () {
             navBar.classList.add("active");
             menuBtn.style.opacity = "0";
             menuBtn.style.pointerEvents = "none";
             // body.style.overflow = "hidden";
             scrollBtn.style.pointerEvents = "none";
         }
-        cancelBtn.onclick = function() {
-                navBar.classList.remove("active");
-                menuBtn.style.opacity = "1";
-                menuBtn.style.pointerEvents = "auto";
-                body.style.overflow = "auto";
-                scrollBtn.style.pointerEvents = "auto";
-            }
-            // Side Navigation Bar Close While We Click On Navigation Links
+        cancelBtn.onclick = function () {
+            navBar.classList.remove("active");
+            menuBtn.style.opacity = "1";
+            menuBtn.style.pointerEvents = "auto";
+            body.style.overflow = "auto";
+            scrollBtn.style.pointerEvents = "auto";
+        }
+        // Side Navigation Bar Close While We Click On Navigation Links
         let navLinks = document.querySelectorAll(".menu li a");
         for (var i = 0; i < navLinks.length; i++) {
-            navLinks[i].addEventListener("click", function() {
+            navLinks[i].addEventListener("click", function () {
                 navBar.classList.remove("active");
                 menuBtn.style.opacity = "1";
                 menuBtn.style.pointerEvents = "auto";
@@ -307,7 +324,7 @@
         // JavaScript to handle collapse/expand functionality
         const detailsContainer = document.getElementById('detailsContainer');
         const toggleButton = document.getElementById('toggleButton');
-        toggleButton.addEventListener('click', function() {
+        toggleButton.addEventListener('click', function () {
             // Toggle the expanded class
             detailsContainer.classList.toggle('expanded');
 
@@ -318,11 +335,11 @@
                 toggleButton.textContent = 'Show More';
             }
         });
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const headerHeight = document.querySelector('header').offsetHeight;
 
             document.querySelectorAll('nav .menu li a').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
+                anchor.addEventListener('click', function (e) {
                     e.preventDefault();
                     const targetId = this.getAttribute('href').substring(1);
                     const targetElement = document.getElementById(targetId);

@@ -4,8 +4,8 @@ const searchInput = document.getElementById('searchProduct');
 const categoryFilter = document.getElementById('categoryFilter');
 async function loadProducts() {
     try {
-        const response = await fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/edit/books.yaml');
-        // const response = await fetch('Assets/projects.yaml');
+        //const response = await fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/edit/books.yaml');
+         const response = await fetch('Assets/books.yaml');
         const text = await response.text();
         products = jsyaml.load(text);
         filterProducts();
@@ -21,16 +21,16 @@ function displayProducts(productsArray) {
         return;
     }
     productsArray.forEach(product => {
-        const productElement = document.createElement('div');
+        const productElement = document.createElement('a');
         productElement.classList.add('product');
+        productElement.classList.add('linked');
+        productElement.id = product.id;
+        productElement.href = product.link;
         productElement.innerHTML = `
            <img src="${product.imageURL}" alt="${product.name}">
            <h3>${product.name}</h3>
            <p>${product.description}</p>
-       `;
-        productElement.addEventListener('click', () => {
-            window.open(product.link, '_blank');
-        });
+       `; 
         productsContainer.appendChild(productElement);
     });
 }

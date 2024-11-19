@@ -155,7 +155,10 @@ select {
     margin-top: 30px;
     margin-bottom: 30px;
 }
-
+.linked,.linked:hover,.linked:visited,.linked h3 {
+    text-decoration: none;
+color: #377a77;
+}
 .product {
     border: 2px solid #377a77;
     padding: 15px;
@@ -170,6 +173,7 @@ select {
     max-width: 230px;
     height: 120px;
     margin-bottom: 10px;
+    pointer-events : none;
     border-radius: 6px;
 }
 
