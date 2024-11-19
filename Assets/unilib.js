@@ -4,8 +4,8 @@ const searchInput = document.getElementById('searchProduct');
 const categoryFilter = document.getElementById('categoryFilter');
 async function loadProducts() {
     try {
-        //const response = await fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/edit/books.yaml');
-         const response = await fetch('Assets/books.yaml');
+        const response = await fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/edit/books.yaml');
+        //const response = await fetch('Assets/books.yaml');
         const text = await response.text();
         products = jsyaml.load(text);
         filterProducts();
