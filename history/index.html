@@ -5,10 +5,12 @@
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
     <title>Assigments & Quizes History Page</title>
-    <link rel="stylesheet" href="../Assets/project.css">
+    <link rel="stylesheet" href="https://docs.mbktechstudio.com/Assets/project.css">
     <link rel="stylesheet" href="../Assets/unilib.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
     <link rel="icon" type="image/x-icon" href="https://mbktechstudio.com/Assets/Images/Icon/dgicon.svg">
+    <script src="https://kit.fontawesome.com/0934e8e9d3.js" crossorigin="anonymous"></script>
+    <script src="https://mbktechstudio.com/Assets/config.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
@@ -19,38 +21,47 @@
         margin-bottom: 15px;
     }
 </style>
+
+
 <header>
+
     <nav>
-        <div class="navbar">
-            <div class="logo">
-                <div class="image">
-                    <img src="https://mbktechstudio.com/Assets/Images/Icon/dg.svg" alt="" />
-                </div>
-                <div class="text">
-                    <a href="../">MBK Tech Studio</a>
-                </div>
-            </div>
-            <ul style="display: none;" class="menu">
-                <li><a href="#assignments">Assignments</a></li>
-                <div class="cancel-btn">
-                    <i class="fas fa-times"></i>
-                </div>
-            </ul>
-            <div class="media-icons">
-                <a href="https://www.facebook.com/people/MBK-Tech-Studio/61559079077988/" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                <a href="https://x.com/ibnekhalid28" target="_blank"><i class="fab fa-twitter"></i></a>
-                <a href="https://instagram.com/mbktech.studios" target="_blank"><i class="fab fa-instagram"></i></a>
-                <a href="https://github.com/MIbnEKhalid" target="_blank"><i class="fab fa-github"></i></a>
-                <a href="https://www.linkedin.com/in/muhammad-bin-khalid-89711b25b" target="_blank"><i class="fab fa-linkedin"></i></a>
-                <a href="https://youtube.com/@mibnekhalid" target="_blank"><i class="fab fa-youtube"></i></a>
-                <a href="https://discord.gg/MUAyAeckrM" target="_blank"><i class="fab fa-discord"></i></a>
-            </div>
-            <div style="display: none;" class="menu-btn">
-                <i class="fas fa-bars"></i>
-            </div>
+  
+      <div class="navbar">
+  
+        <div class="logo">
+  
+          <div class="image">
+            <img src="https://mbktechstudio.com/Assets/Images/Icon/dg.svg" alt="" />
+          </div>
+  
+          <div class="text">
+            <a href="#">MBK Tech Studio</a>
+          </div>
+  
         </div>
+  
+        <ul class="menu">
+  
+          <div class="media-icons-m" id="media-icons-m"></div>
+  
+          <div class="cancel-btn">
+            <i class="fas fa-times"></i>
+          </div>
+  
+        </ul>
+  
+        <div class="media-icons" id="media-icons"></div>
+  
+      </div>
+  
+      <div class="menu-btn">
+        <i class="fas fa-bars"></i>
+      </div>
+  
     </nav>
-</header>
+  
+  </header>
 
 <body>
     <div class="scroll-button">
@@ -67,25 +78,30 @@
             </div>
         </div>
     </section>
+    <!--
     <div style="max-width: 95%; margin: 0 5%;">
         <script async src="https://talk.hyvor.com/embed/embed.js" type="module"></script>
         <hyvor-talk-comments id="hyvor-comments" website-id="12088"></hyvor-talk-comments>
         <script>
-            document.addEventListener("DOMContentLoaded", function() {
+            document.addEventListener("DOMContentLoaded", function () {
                 document.querySelector("#hyvor-comments").setAttribute("page-id", document.title);
                 console.log(document.title);
             });
         </script>
     </div>
+    -->
     <footer>
 
         <div class="text">
-    
-            <span> © 2024  <a href="https://mbktechstudio.com/" target="_blank">MBK Tech Studio</a>. All Rights Reserved | <a href="https://privacy.mbktechstudio.com/" target="_blank">Terms &amp; Conditions</a> | <a href="https://mbktechstudio.com/FAQs" target="_blank">FAQs</a> | <a href="https://mbktechstudio.com/Support/" target="_blank">Support &amp; Contact</a></span>    
 
-    
+            <span> © 2024 <a href="https://mbktechstudio.com/" target="_blank">MBK Tech Studio</a>. All Rights Reserved
+                | <a href="https://privacy.mbktechstudio.com/" target="_blank">Terms &amp; Conditions</a> | <a
+                    href="https://mbktechstudio.com/FAQs" target="_blank">FAQs</a> | <a
+                    href="https://mbktechstudio.com/Support/" target="_blank">Support &amp; Contact</a></span>
+
+
         </div>
-    
+
     </footer>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/intlTelInput-jquery.min.js"></script>
@@ -95,38 +111,38 @@
         let scrollBtn = document.querySelector(".scroll-button a");
         console.log(scrollBtn);
         let val;
-        window.onscroll = function() {
-                if (document.documentElement.scrollTop > 20) {
-                    nav.classList.add("sticky");
-                    scrollBtn.style.display = "block";
-                } else {
-                    nav.classList.remove("sticky");
-                    scrollBtn.style.display = "none";
-                }
+        window.onscroll = function () {
+            if (document.documentElement.scrollTop > 20) {
+                nav.classList.add("sticky");
+                scrollBtn.style.display = "block";
+            } else {
+                nav.classList.remove("sticky");
+                scrollBtn.style.display = "none";
             }
-            // Side NavIgation Menu JS Code
+        }
+        // Side NavIgation Menu JS Code
         let body = document.querySelector("body");
         let navBar = document.querySelector(".navbar");
         let menuBtn = document.querySelector(".menu-btn");
         let cancelBtn = document.querySelector(".cancel-btn");
-        menuBtn.onclick = function() {
+        menuBtn.onclick = function () {
             navBar.classList.add("active");
             menuBtn.style.opacity = "0";
             menuBtn.style.pointerEvents = "none";
             // body.style.overflow = "hidden";
             scrollBtn.style.pointerEvents = "none";
         }
-        cancelBtn.onclick = function() {
-                navBar.classList.remove("active");
-                menuBtn.style.opacity = "1";
-                menuBtn.style.pointerEvents = "auto";
-                body.style.overflow = "auto";
-                scrollBtn.style.pointerEvents = "auto";
-            }
-            // Side Navigation Bar Close While We Click On Navigation Links
+        cancelBtn.onclick = function () {
+            navBar.classList.remove("active");
+            menuBtn.style.opacity = "1";
+            menuBtn.style.pointerEvents = "auto";
+            body.style.overflow = "auto";
+            scrollBtn.style.pointerEvents = "auto";
+        }
+        // Side Navigation Bar Close While We Click On Navigation Links
         let navLinks = document.querySelectorAll(".menu li a");
         for (var i = 0; i < navLinks.length; i++) {
-            navLinks[i].addEventListener("click", function() {
+            navLinks[i].addEventListener("click", function () {
                 navBar.classList.remove("active");
                 menuBtn.style.opacity = "1";
                 menuBtn.style.pointerEvents = "auto";
