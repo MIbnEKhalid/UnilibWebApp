@@ -11,81 +11,16 @@
   <link rel="icon" type="image/x-icon" href="https://mbktechstudio.com/Assets/Images/Icon/dgicon.svg">
   <script src="https://kit.fontawesome.com/0934e8e9d3.js" crossorigin="anonymous"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://mbktechstudio.com/Assets/config.js"></script>
+  <script src="https://mbktechstudio.com/Assets/Scripts/config.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const input = document.querySelector('input[name="access_key"]');
       if (input) {
-        input.value = web3forms_API_KEY;
+        input.value =  apiKey_access_key;
       }
     });
   </script>
 </head>
-
-<style>
-  .box {
-    border: 2px solid #377a77;
-    border-radius: 4px;
-    margin-bottom: 50px;
-    position: absolute;
-    max-width: 700px;
-  }
-
-  .contact-box {
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0;
-    visibility: hidden;
-    border: 3px solid #377a77;
-    background-color: rgb(240, 248, 255, 1);
-    position: fixed;
-    width: 85%;
-    max-width: 1000px;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 6px 6px rgb(0 0 0 / 25%);
-    font-family: 'Poppins', sans-serif;
-    z-index: 999997;
-    transition: opacity 0.4s ease, visibility 0.4s ease;
-  }
-
-  .contact-box.show {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  .close-btn {
-    width: 23px;
-    height: 23px;
-    border-radius: 8px;
-    z-index: 999999;
-    position: absolute;
-    top: 7px;
-    right: 3px;
-    background: url(https://mbktechstudio.com/Assets/Images/close-icon.svg) 0 0 / 23px 23px no-repeat;
-    transition: all 0.4s ease;
-  }
-
-  .close-btn:hover {
-    opacity: 0.2;
-    transition: all 0.4s ease;
-  }
-
-  input[readonly] {
-    background-color: #f0f0f0;
-    /* Change this to the desired background color */
-    color: #333;
-    /* Optionally, change the text color */
-    border: 1px solid #ccc;
-    /* Optionally, change the border color */
-    cursor: not-allowed;
-    /* Optionally, change the cursor to indicate it's readonly */
-  }
-</style>
-
-<header>
-
   <nav>
 
     <div class="navbar">
@@ -211,142 +146,8 @@
 
 </footer>
 
-<script>
-
-  // Sticky Navigation Menu JS Code
-  let nav = document.querySelector("nav");
-  let val;
-  window.onscroll = function () {
-    if (document.documentElement.scrollTop > 20) {
-      nav.classList.add("sticky");
-    } else {
-      nav.classList.remove("sticky");
-    }
-  }
-
-  // Side NavIgation Menu JS Code
-  let body = document.querySelector("body");
-  let navBar = document.querySelector(".navbar");
-  let menuBtn = document.querySelector(".menu-btn");
-  let cancelBtn = document.querySelector(".cancel-btn");
-  menuBtn.onclick = function () {
-    navBar.classList.add("active");
-    menuBtn.style.opacity = "0";
-    menuBtn.style.pointerEvents = "none";
-    body.style.overflow = "hidden";
-  }
-  cancelBtn.onclick = function () {
-    navBar.classList.remove("active");
-    menuBtn.style.opacity = "1";
-    menuBtn.style.pointerEvents = "auto";
-    body.style.overflow = "auto";
-  }
-
-  // Side Navigation Bar Close While We Click On Navigation Links
-  let navLinks = document.querySelectorAll(".menu li a");
-  for (var i = 0; i < navLinks.length; i++) {
-    navLinks[i].addEventListener("click", function () {
-      navBar.classList.remove("active");
-      menuBtn.style.opacity = "1";
-      menuBtn.style.pointerEvents = "auto";
-    });
-  }
-
-  function showbox() {
-    document.getElementById('c-form').classList.add('show');
-  }
-
-  function hidebox() {
-    document.getElementById('c-form').classList.remove('show');
-  }
-  function reloadPage() {
-    location.reload();
-  }
-
-  function loadPage(url) {
-    location.href = url;
-  }
-
-  var path = window.location.pathname;
-  var segments = path.split('/').filter(segment => segment); // Remove empty segments
-  var filename = segments.pop() || 'index.html'; // Default to 'index.html' if no filename is present
-  var parentFolder = segments.pop() || ''; // Get the parent folder
-  var displayPath = parentFolder ? `${parentFolder}/${filename}` : filename;
-  document.getElementById('display-path').textContent = displayPath;
-
-  function getPageUrl() {
-    return window.location.href;
-  }
-
-  // Set the value of the input field with the page URL
-  document.getElementById('pageUrlInput').value = getPageUrl();
-  function resetMessageBoxColor() {
-    var messageBox = document.getElementById("message");
-    messageBox.style.backgroundColor = "beige";
-    messageBox.style.color = "green";
-  }
-  document.getElementById("form").addEventListener("submit", function (e) {
-    e.preventDefault();
-    resetMessageBoxColor();
-    var messageBox = document.getElementById("message");
-    messageBox.textContent = "Submitting..";
-    messageBox.style.display = "block";
-    document.getElementById("submit-button").disabled = true;
-
-    var currentDate = new Date();
-    var day = String(currentDate.getDate()).padStart(2, "0");
-    var month = String(currentDate.getMonth() + 1).padStart(2, "0");
-    var year = currentDate.getFullYear();
-    var hours = String(currentDate.getHours()).padStart(2, "0");
-    var minutes = String(currentDate.getMinutes()).padStart(2, "0");
-    var seconds = String(currentDate.getSeconds()).padStart(2, "0");
-
-    // 12-hour format conversion
-    var hours12 = hours % 12 || 12; // Converts to 12-hour format
-    var period = currentDate.getHours() >= 12 ? "PM" : "AM";
-
-    // Retrieve the time zone
-    var region = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-    var timestamp = `${day}/${month}/${year} ${hours}:${minutes}:${seconds} or ${hours12}:${minutes}:${seconds} ${period} ${region}`;
-
-
-    document.querySelector('input[name="Timestamp"]').value = timestamp;
-    document.querySelector('input[name="PageUrl"]').value = getPageUrl();
-
-    var formData = new FormData(this);
-
-    fetch("https://api.web3forms.com/submit", {
-      method: "POST",
-      body: formData
-    }).then(function (response) {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error("Failed to submit the form.");
-      }
-    }).then(function (data) {
-      messageBox.textContent = "Message Submitted Successfully!";
-      messageBox.style.backgroundColor = "green";
-      messageBox.style.color = "beige";
-      document.getElementById("submit-button").disabled = false;
-      document.getElementById("form").reset();
-
-      setTimeout(function () {
-        messageBox.textContent = "";
-        messageBox.style.display = "none";
-        // Hide additional fields if necessary
-        var numberField = document.querySelector(".phoneField");
-        if (numberField) numberField.style.display = "none";
-        var supportField = document.querySelector(".supportfield");
-        if (supportField) supportField.style.display = "none";
-      }, 2000);
-    }).catch(function (error) {
-      console.error(error);
-      messageBox.textContent = "An error occurred while submitting the form.";
-    });
-  });
-</script>
+<script src="https://mbktechstudio.com/Assets/Scripts/header.js"></script>
+<script src="https://mbktechstudio.com/Assets/Scripts/form.404.js"></script>
 
 </html>
  
