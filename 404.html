@@ -6,21 +6,24 @@
   <meta charset="UTF-8" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
   <title>404 - Page Not Found</title>
-  <link rel="stylesheet" href="https://docs.mbktechstudio.com/Assets/style.css">
+  <link rel="stylesheet" href="Assets/Style/404.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
   <link rel="icon" type="image/x-icon" href="https://mbktechstudio.com/Assets/Images/Icon/dgicon.svg">
   <script src="https://kit.fontawesome.com/0934e8e9d3.js" crossorigin="anonymous"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://mbktechstudio.com/Assets/Scripts/config.js"></script>
+  <script src="Assets/Scripts/config.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const input = document.querySelector('input[name="access_key"]');
       if (input) {
-        input.value =  apiKey_access_key;
-      }
+        input.value = apiKey_access_key; 
+       }
     });
   </script>
-</head>
+</head> 
+
+<header>
+
   <nav>
 
     <div class="navbar">
@@ -28,7 +31,7 @@
       <div class="logo">
 
         <div class="image">
-          <img src="https://mbktechstudio.com/Assets/Images/Icon/dg.svg" alt="" />
+          <img src="../Assets/Images/Icon/dg.svg" alt="" />
         </div>
 
         <div class="text">
@@ -60,7 +63,9 @@
 </header>
 
 <body>
-
+  <div class="scroll-button">
+    <a href="#about"><i class="fas fa-arrow-up"></i></a>
+</div>
   <section class="about" id="about">
 
     <div class="content">
@@ -145,9 +150,8 @@
   </div>
 
 </footer>
-
 <script src="https://mbktechstudio.com/Assets/Scripts/header.js"></script>
 <script src="https://mbktechstudio.com/Assets/Scripts/form.404.js"></script>
+ 
 
 </html>
- 
