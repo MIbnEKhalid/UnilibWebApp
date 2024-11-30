@@ -66,7 +66,7 @@
     <div class="scroll-button">
         <a href="#about"><i class="fas fa-arrow-up"></i></a>
     </div>
-<!--
+    <!--
     <section class="hero">
         <div class="content">
             <div class="title">Welcome to Uni Books</div>
@@ -203,7 +203,7 @@
                 toggleButton.textContent = 'Show More';
             }
         });
-        
+
         document.addEventListener('DOMContentLoaded', function () {
             const headerHeight = document.querySelector('header').offsetHeight;
 
@@ -226,16 +226,17 @@
         DisplayNotification();
         async function DisplayNotification() {
             try {
-                const response = await fetch('https://unilib.mbktechstudio.com/Assets/notification.html');
+                const response = await fetch('https://unilib.mbktechstudio.com/Assets/Notific/notification.html');
                 const html = await response.text();
                 document.getElementById('notif').innerHTML = html;
                 console.log("s1");
-    
+
             } catch (err) {
                 console.error('Error in DisplayNotification:', err);
             }
         }
     </script>
+    <script src="https://unilib.mbktechstudio.com/Assets/Notific/notification.js"></script>
 
 </body>
 
