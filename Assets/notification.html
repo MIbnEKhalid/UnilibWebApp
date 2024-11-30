@@ -33,17 +33,7 @@
     function opengitrepo() {
         window.open("https://github.com/mibnekhalid/UnilibUnity", "_blank");
     }
-    async function AskForCookieConsent() {
-        try {
-            const response = await fetch('https://unilib.mbktechstudio.com/Assets/notification.html');
-            const html = await response.text();
-            document.getElementById('notif').innerHTML = html;
-            console.log("s1");
 
-        } catch (err) {
-            console.error('Error in AskForCookieConsent:', err);
-        }
-    }
 </script>
 
 </html>
