@@ -81,18 +81,18 @@ loadProducts();
                 activeItems++;
                 const detailsDiv = document.createElement('div');
                 detailsDiv.classList.add('details');
+                detailsDiv.id = `${item.id}`;
                 detailsDiv.style.minWidth = '100%';
                 detailsDiv.style.width = '100%';
 
                 detailsDiv.innerHTML = `
-               <div class="date-box">
-                   <span id="issueDate">${item.issueDate}</span>
-                   <span id="dueDate">${item.dueDate}</span>
-               </div>
-               <div class="assignment-info">
-                   <span><strong>Subject:</strong> ${item.subject}</span><br>
-                   <span><strong>${item.type}:</strong> ${item.description}</span>
-               </div>
+                <div class="date-box">
+                    <span id="issueDate">${item.issueDate}</span>
+                    <span id="dueDate">${item.dueDate}</span>
+                </div>
+                <div class="assignment-info">
+                    <span> <strong> ${item.subject}: </strong> ${item.description} </span>
+                </div>
             `;
                 detailsContainer.appendChild(detailsDiv);
                 NoAss.style.display = 'none';
