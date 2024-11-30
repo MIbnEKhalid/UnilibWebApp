@@ -6,6 +6,7 @@ function opengitrepo() {
  * Hide the notification and set a cookie to remember the state.
  */
 function hideNotice() {
+    document.getElementById("Notication").style.display = "none"; // Show notification
     const expireTime = Date.now() + 18 * 3600000; // 18 hours in milliseconds
     document.cookie = `hideNotice=true;expires=${new Date(expireTime).toUTCString()};path=/`;
     document.cookie = `hideNoticeExpires=${expireTime};expires=${new Date(expireTime).toUTCString()};path=/`;
