@@ -5,8 +5,8 @@ const categoryFilter = document.getElementById('categoryFilter');
 
 async function loadProducts() {
     try {
-        const response = await fetch('Assets/books.json');
-        //const response = await fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/main/books.json'); // Ensure the JSON file URL is correct
+        // const response = await fetch('Assets/books.json');
+        const response = await fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/edit/books.json');
         products = await response.json(); // Parse the JSON response directly
         filterProducts();
     } catch (error) {
@@ -57,8 +57,8 @@ loadProducts();
 
 
 //only thoes quiz and assigments will be shown which are not due yet
- fetch('Assets/assigmentsNquiz.json')
-// fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/edit/assigmentsNquiz.yaml')
+// fetch('Assets/assigmentsNquiz.json')
+   fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/edit/assigmentsNquiz.json')
     .then(response => response.json()) // Fetch the JSON data
     .then(data => {
         const detailsContainer = document.getElementById('detailsContainer');
