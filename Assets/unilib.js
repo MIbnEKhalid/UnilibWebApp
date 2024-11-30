@@ -2,12 +2,12 @@ let products = [];
 const productsContainer = document.querySelector('.products');
 const searchInput = document.getElementById('searchProduct');
 const categoryFilter = document.getElementById('categoryFilter');
+
 async function loadProducts() {
     try {
-        const response = await fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/edit/books.yaml');
-        //const response = await fetch('Assets/books.yaml');
-        const text = await response.text();
-        products = jsyaml.load(text);
+        const response = await fetch('Assets/books.json');
+        //const response = await fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/main/books.json'); // Ensure the JSON file URL is correct
+        products = await response.json(); // Parse the JSON response directly
         filterProducts();
     } catch (error) {
         console.error('Error loading products:', error);
@@ -22,15 +22,14 @@ function displayProducts(productsArray) {
     }
     productsArray.forEach(product => {
         const productElement = document.createElement('a');
-        productElement.classList.add('product');
-        productElement.classList.add('linked');
+        productElement.classList.add('product', 'linked');
         productElement.id = product.id;
         productElement.href = product.link;
         productElement.innerHTML = `
            <img src="${product.imageURL}" alt="${product.name}">
            <h3>${product.name}</h3>
            <p>${product.description}</p>
-       `; 
+        `;
         productsContainer.appendChild(productElement);
     });
 }
@@ -49,19 +48,19 @@ function searchProducts(productsArray) {
     const searchText = searchInput.value.toLowerCase();
     return productsArray.filter(product => product.name.toLowerCase().includes(searchText));
 }
+
 categoryFilter.addEventListener('change', filterProducts);
 searchInput.addEventListener('input', filterProducts);
+
 loadProducts();
 
 
 
 //only thoes quiz and assigments will be shown which are not due yet
-// fetch('Assets/assigmentsNquiz.yaml')
-fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/edit/assigmentsNquiz.yaml')
-    .then(response => response.text()) // Fetch the YAML as text
-    .then(yamlText => {
-        const data = jsyaml.load(yamlText); // Requires jsyaml library
-
+ fetch('Assets/assigmentsNquiz.json')
+// fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/edit/assigmentsNquiz.yaml')
+    .then(response => response.json()) // Fetch the JSON data
+    .then(data => {
         const detailsContainer = document.getElementById('detailsContainer');
         const NoAss = document.getElementById('noAss');
 
@@ -94,7 +93,7 @@ fetch('https://raw.githubusercontent.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.i
                    <span><strong>Subject:</strong> ${item.subject}</span><br>
                    <span><strong>${item.type}:</strong> ${item.description}</span>
                </div>
-           `;
+            `;
                 detailsContainer.appendChild(detailsDiv);
                 NoAss.style.display = 'none';
             }

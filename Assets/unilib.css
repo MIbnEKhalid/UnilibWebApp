@@ -155,10 +155,15 @@ select {
     margin-top: 30px;
     margin-bottom: 30px;
 }
-.linked,.linked:hover,.linked:visited,.linked h3 {
+
+.linked,
+.linked:hover,
+.linked:visited,
+.linked h3 {
     text-decoration: none;
-color: #377a77;
+    color: #377a77;
 }
+
 .product {
     border: 2px solid #377a77;
     padding: 15px;
@@ -167,13 +172,14 @@ color: #377a77;
     text-align: center;
     max-width: 250px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    transition: all 0.5s ease;
 }
 
 .product img {
     max-width: 230px;
     height: 120px;
     margin-bottom: 10px;
-    pointer-events : none;
+    pointer-events: none;
     border-radius: 6px;
 }
 
@@ -182,7 +188,20 @@ color: #377a77;
 }
 
 .products:hover> :not(:hover) {
-    opacity: 0.6;
+    opacity: 1;
+}
+
+.product:hover {
+    transform: scale(1.05);
+    border: 2px solid #007bff;
+    color: #007bff;
+    transition: all 0.5s ease;
+}
+
+.product:hover h3,
+.product:hover p {
+    color: #007bff;    transition: all 0.5s ease;
+
 }
 
 .details-container {
