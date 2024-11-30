@@ -9,7 +9,7 @@
 <body>
     <div id="Notication" class="light display-right" style="display: block;">
 
-        <div id="closeIcon" onclick="hideCookieNotice();"></div>
+        <div id="closeIcon" onclick="hideNotice();"></div>
 
         <div class="title-wrap">
             <h4>Important Update</h4>
@@ -32,6 +32,10 @@
 
     function opengitrepo() {
         window.open("https://github.com/mibnekhalid/UnilibUnity", "_blank");
+    }
+
+    function hideNotice() {
+        document.getElementById("Notication").style.display = "none";
     }
 
 </script>
