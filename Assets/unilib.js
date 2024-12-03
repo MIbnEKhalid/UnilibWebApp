@@ -24,9 +24,9 @@ function displayProducts(productsArray) {
         const productElement = document.createElement('a');
         productElement.classList.add('product', 'linked');
         productElement.id = product.id;
-        productElement.href = `Assets/Images/BookCovers/` + product.link;
+        productElement.href = product.link;
         productElement.innerHTML = `
-           <img src="${product.imageURL}" alt="${product.name}">
+           <img src=`Assets/Images/BookCovers/` +"${product.imageURL}" alt="${product.name}">
            <h3>${product.name}</h3>
            <p>${product.description}</p>
         `;
