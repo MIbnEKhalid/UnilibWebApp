@@ -26,7 +26,7 @@ function displayProducts(productsArray) {
         productElement.id = product.id;
         productElement.href = product.link;
         productElement.innerHTML = `
-           <img src=`Assets/Images/BookCovers/` +"${product.imageURL}" alt="${product.name}">
+           <img src="Assets/Images/BookCovers/${product.imageURL}" alt="${product.name}">
            <h3>${product.name}</h3>
            <p>${product.description}</p>
         `;
