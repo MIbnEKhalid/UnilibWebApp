@@ -9,7 +9,7 @@ https://github.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/
 
 Detailed Documentation of this website will be available soon on: [docs.mbktechstudio.com/mbktechstudio.com](https://docs.mbktechstudio.com/mbktechstudio.com/?Project=Unilib)
 
-![Deployment Status](https://readme.deploystatus.mbktechstudio.com/?platform=github&user=mibnekhalid&repo=Unilib.MIbnEKhalid.github.io&background=333333&hide_border=false&border=ff0&width=200&height=50)
+![Deployment Status](https://readme.deploystatus.mbktechstudio.com/?platform=netlify&siteid=c1668cca-550d-4769-b523-4b7aa6911a33&background=333333&hide_border=false&border=ff0&width=200&height=50)
 
 
 ### NOTE:
