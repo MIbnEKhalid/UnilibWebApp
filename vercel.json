@@ -2,43 +2,18 @@
   "version": 2,
   "builds": [
     {
-      "src": "server.js",
+      "src": "index.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/Assets/(.*)",
-      "dest": "/Assets/$1"
-    },
-    {
-      "src": "/read-file",
-      "dest": "/server.js"
-    },
-    {
-      "src": "/add",
-      "dest": "/server.js"
-    },
-    {
-      "src": "/Add",
-      "dest": "/server.js"
-    },
-    {
-      "src": "/",
-      "dest": "/server.js"
+      "src": "/(.*)",
+      "dest": "/index.js"
     },
     {
       "src": "/history",
-      "dest": "/server.js"
-    },
-    {
-      "src": "/History",
-      "dest": "/server.js"
-    },
-    {
-      "src": "/append-file",
-      "methods": ["POST"],
-      "dest": "/server.js"
+      "dest": "/history/index.html"
     }
   ]
 }
