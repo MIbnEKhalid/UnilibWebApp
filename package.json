@@ -9,10 +9,19 @@
     "build": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["ticket", "management", "system"],
+  "keywords": [
+    "ticket",
+    "management",
+    "system"
+  ],
   "author": "Muhammad Bin Khalid",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.21.2"
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "fs.promises": "^0.1.2",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "path": "^0.12.7"
   }
-} 
+}

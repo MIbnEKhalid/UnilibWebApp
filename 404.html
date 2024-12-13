@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
+  <title>404 - Page Not Found</title>
+  <link rel="stylesheet" href="https://mbktechstudio.com/Assets/Style/404.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
+  <link rel="icon" type="image/x-icon" href="https://mbktechstudio.com/Assets/Images/Icon/dgicon.svg">
+  <script src="https://kit.fontawesome.com/0934e8e9d3.js" crossorigin="anonymous"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://mbktechstudio.com/Assets/Scripts/config.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const input = document.querySelector('input[name="access_key"]');
+      if (input) {
+        input.value = apiKey_access_key; 
+       }
+    });
+  </script>
+</head> 
+
+<header>
+
+  <nav>
+
+    <div class="navbar">
+
+      <div class="logo">
+
+        <div class="image">
+          <img src="https://mbktechstudio.com/Assets/Images/Icon/dg.svg" alt="" />
+        </div>
+
+        <div class="text">
+          <a href="https://unilib.mbktechstudio.com/">MBK Tech Studio</a>
+        </div>
+
+      </div>
+
+      <ul class="menu">
+
+        <div class="media-icons-m" id="media-icons-m"></div>
+
+        <div class="cancel-btn">
+          <i class="fas fa-times"></i>
+        </div>
+
+      </ul>
+
+      <div class="media-icons" id="media-icons"></div>
+
+    </div>
+
+    <div class="menu-btn">
+      <i class="fas fa-bars"></i>
+    </div>
+
+  </nav>
+
+</header>
+
+<body>
+  <div class="scroll-button">
+    <a href="#about"><i class="fas fa-arrow-up"></i></a>
+</div>
+  <section class="about" id="about">
+
+    <div class="content">
+
+
+      <img style="left: 50%; transform: translate(-50%, 0%); position: relative;" height="120px" width="140px"
+        src="https://mbktechstudio.com/Assets/Images/cat.png">
+      <div class="title"><span>Error 404 - Page Not Found </span></div>
+
+      <p style="text-align: center;">
+        The Page You Are Looking For Might Have Been Removed Or Temporarily UnAvailable.
+      </p>
+      <p>Requested Page: <span id="display-path">Not Found</span></p>
+
+
+      <div class="button">
+        <button style="font-size: medium;" onclick="loadPage('https://mbktechstudio.com/')">Go Home</button>
+        <button style="font-size: medium;" onclick="showbox()">Contact Form</button>
+        <button style="font-size: medium;" onclick="reloadPage()">Reload</button>
+      </div>
+
+      <div id="c-form" class="contact-box">
+        <div onclick="hidebox()" class="close-btn"></div>
+        <div class="title"><span>Contact Us Form</span></div>
+        <form action="https://api.web3forms.com/submit" method="POST" class="m-4 pl-4" id="form">
+          <input class="input" type="hidden" name="Timestamp" />
+          <input class="input" type="hidden" name="Subject" value="404-Error" />
+          <input class="input" type="hidden" name="PageUrl" />
+          <input type="hidden" name="access_key" value="">
+          <div class="field">
+            <label class="label">Name</label>
+            <div class="control">
+              <div class="input"><input type="text" placeholder="Enter Your Name" name="UserName" required /></div>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Email</label>
+            <div class="control">
+              <div class="input"><input type="email" placeholder="Enter Your Email" name="Email" required /></div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Page URL:</label>
+            <div class="control">
+              <div class="input"><input type="text" placeholder="Reload the page if the URL is not displayed."
+                  id="pageUrlInput" name="PageUrl" readonly /></div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Message</label>
+            <div class="control"><textarea class="input" placeholder="Enter Your Message..." name="Message" rows="4"
+                required></textarea></div>
+          </div>
+          <p>For quicker assistance, contact us on Social Media. Email responses may take 1-2 business days.</p>
+          <div class="button field is-grouped" style="display: flex; justify-content: center;">
+            <div class="control"><button class="button is-primary" type="submit" id="submit-button">Submit</button>
+            </div>
+          </div>
+          <div id="message"
+            style="display: none; font-weight: bold; color: green; padding: 8px; background-color: beige; border-radius: 4px; margin-top: 10px; border-color: aquamarine;">
+          </div>
+        </form>
+      </div>
+
+    </div>
+
+  </section>
+
+</body>
+
+<footer>
+
+  <div class="text">
+
+    <span> © 2024 <a href="https://mbktechstudio.com/" target="_blank">MBK Tech Studio</a>. All Rights Reserved | <a
+        href="https://privacy.mbktechstudio.com/" target="_blank">Terms &amp; Conditions</a> | <a
+        href="https://mbktechstudio.com/FAQs" target="_blank">FAQs</a> | <a href="https://mbktechstudio.com/Support/"
+        target="_blank">Support &amp; Contact</a></span>
+
+  </div>
+
+</footer>
+<script src="https://mbktechstudio.com/Assets/Scripts/header.js"></script>
+<script src="https://mbktechstudio.com/Assets/Scripts/form.404.js"></script>
+ 
+
+</html>
