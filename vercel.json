@@ -25,7 +25,7 @@
     },
     {
       "src": "/add",
-      "dest": "/index.js"
+      "dest": "/ui.html"
     },
     {
       "src": "/history",
