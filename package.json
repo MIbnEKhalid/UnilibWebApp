@@ -1,0 +1,18 @@
+{
+  "name": "unilib.mibnekhalid.github.io",
+  "version": "1.0.0",
+  "description": "https://unilib.mbktechstudio.com/",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "build": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["ticket", "management", "system"],
+  "author": "Muhammad Bin Khalid",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+} 
