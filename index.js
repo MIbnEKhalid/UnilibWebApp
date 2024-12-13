@@ -17,15 +17,12 @@ const config = {
     { token: "4552528", status: "active" },
     { token: "4552525", status: "active" },
   ],
-  port: 3030,
+  port: 3033,
 };
 
 const app = express();
 app.use(express.json()); // To parse JSON request bodies
-app.use((req, res, next) => {
-  res.setHeader("Content-Security-Policy", "default-src 'none'; script-src 'self' https://vercel.live; style-src 'self';");
-  next();
-});
+
 
 // Utility function for hashing tokens
 const hashToken = (token) => {
