@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Append File</title>
+    <link rel="stylesheet" href="https://docs.mbktechstudio.com/Assets/project.css">
     <style>
         body {
             background-color: #121212;
@@ -14,8 +15,6 @@
             padding: 20px;
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
         }
 
         h1 {
@@ -30,9 +29,10 @@
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-            max-width: 400px;
+            max-width: 580px;
             width: 100%;
             transition: box-shadow 0.3s ease;
+            margin: 0 auto;
         }
 
         form:hover {
@@ -47,7 +47,8 @@
         }
 
         input[type="text"],
-        input[type="date"] {
+        input[type="date"],
+        select {
             width: 100%;
             padding: 12px;
             margin-bottom: 20px;
@@ -59,11 +60,11 @@
             box-sizing: border-box;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
             position: relative;
-            /* Add relative positioning to input field */
         }
 
         input[type="text"]:focus,
-        input[type="date"]:focus {
+        input[type="date"]:focus,
+        select:focus {
             outline: none;
             border-color: #58a6ff;
             box-shadow: 0 0 8px rgba(88, 166, 255, 0.6);
@@ -101,7 +102,6 @@
             box-shadow: 0 0 8px rgba(50, 193, 78, 0.8);
         }
 
-        /* Info icon and tooltip styles */
         .info-icon {
             position: absolute;
             right: 10px;
@@ -130,14 +130,13 @@
             position: absolute;
             z-index: 1;
             top: -35px;
-            /* Adjusted to position above the info icon */
             left: 50%;
             transform: translateX(-50%);
             opacity: 0;
             transition: opacity 0.3s;
         }
 
-        .info-icon:hover + .tooltip {
+        .info-icon:hover+.tooltip {
             visibility: visible;
             opacity: 1;
         }
@@ -151,38 +150,120 @@
                 font-size: 1.5rem;
             }
         }
+
+        .anchor {
+            max-width: 580px;
+            color: #58a6ff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            margin: 10px auto;
+            margin-bottom: 20px;
+            display: block;
+            text-align: center;
+            background-color: #1f1f1f;
+            padding: 5px 15px;
+            border: solid 2px #58a6ff;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .anchor:hover {
+            background-color: #58a6ff;
+            color: #1f1f1f;
+            border-color: #1f1f1f;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+        }
     </style>
 </head>
 
 <body>
-    <form id="appendForm">
-        <h1>Add Quiz & Assignment</h1>
-        <label for="issueDate">Issue Date:</label>
-        <input type="date" id="issueDate" name="issueDate" required>
+    <section class="about">
+        <div class="content">
+            <div id="Book" style="display: none;">
+                <a class="anchor" href="?QuizAss">Add Quiz & Assignment</a>
+                <form id="book">
+                    <h1>Add Book</h1>
+                    <label for="issueDate">Book Cover Url:</label>
+                    <input type="text" id="imageURL" name="imageURL" value="BookCover_Template.png" required>
 
-        <label for="dueDate">Due Date:</label>
-        <input type="date" id="dueDate" name="dueDate" required>
+                    <label for="dueDate">Book Name:</label>
+                    <input type="text" id="name" placeholder="ICT"  name="name" required>
 
-        <label for="subject">Subject:</label>
-        <input type="text" id="subject" name="subject" placeholder="Islamic Studies / Ethics" required>
+                    <label for="subject">Category:</label>
+                    <select id="category" name="category" required>
+                        <option value="CourseBook">Course Book</option>
+                    </select>
 
-        <label for="description">Description:</label>
-        <input type="text" id="description" name="description" placeholder="Quiz / Assignment 1, description" required>
+                    <label for="description">Description (Optional):</label>
+                    <input type="text" id="descriptionbook" name="descriptionbook"
+                        placeholder="Aurthor ABC" required>
 
-        <label for="token">Token:</label>
-        <div class="info-container" style="position: relative;">
-            <input type="text" id="token" name="token" placeholder="Enter your token" required>
-            <span class="info-icon">i</span>
-            <div class="tooltip">A token is a unique identifier used for authentication purposes. It is required to
-                submit the form securely.</div>
+                    <label for="description">Drive Link:</label>
+                    <input type="text" id="link" name="description" placeholder="https://drive.google.com/file/d/"
+                        required>
+
+                    <label for="token">Token:</label>
+                    <div class="info-container" style="position: relative;">
+                        <input type="text" id="token" name="token" placeholder="Enter your token" required>
+                        <span class="info-icon">i</span>
+                        <div class="tooltip">A token is a unique identifier used for authentication purposes. It is
+                            required to
+                            submit the form securely.</div>
+                    </div>
+
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+
+            <div id="QuizAss" style="display: none;">
+                <a class="anchor" href="?Book">Add Book</a>
+                <form id="quizass">
+                    <h1>Add Quiz & Assignment</h1>
+                    <label for="issueDate">Issue Date:</label>
+                    <input type="date" id="issueDate" name="issueDate" required>
+
+                    <label for="dueDate">Due Date:</label>
+                    <input type="date" id="dueDate" name="dueDate" required>
+
+                    <label for="subject">Subject:</label>
+                    <input type="text" id="subject" name="subject" placeholder="Islamic Studies / Ethics" required>
+
+                    <label for="description">Description:</label>
+                    <input type="text" id="description" name="description"
+                        placeholder="Quiz / Assignment 1, description" required>
+
+                    <label for="token">Token:</label>
+                    <div class="info-container" style="position: relative;">
+                        <input type="text" id="token" name="token" placeholder="Enter your token" required>
+                        <span class="info-icon">i</span>
+                        <div class="tooltip">A token is a unique identifier used for authentication purposes. It is
+                            required to
+                            submit the form securely.</div>
+                    </div>
+
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
         </div>
+    </section>
 
-        <button type="submit">Append</button>
-    </form>
 
     <script>
-        // Set default issue date to today's date
+        // Check URL for parameters and display the appropriate form
         document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+
+            if (urlParams.has('Book')) {
+                document.getElementById('Book').style.display = 'block';
+            } else if (urlParams.has('QuizAss')) {
+                document.getElementById('QuizAss').style.display = 'block';
+            } else {
+                alert('No form type specified in the URL.');
+            }
+
+            // Set default issue date to today's date
             const issueDateInput = document.getElementById('issueDate');
             const today = new Date();
             const dd = String(today.getDate()).padStart(2, '0');
@@ -193,7 +274,8 @@
             issueDateInput.value = todayString;
         });
 
-        document.getElementById('appendForm').addEventListener('submit', async (event) => {
+        // Handle form submission
+        document.getElementById('quizass')?.addEventListener('submit', async (event) => {
             event.preventDefault();
 
             const issueDateInput = document.getElementById('issueDate').value;
@@ -225,7 +307,6 @@
             const issueDate = formatDate(issueDateInput, false); // Without the day of the week
             const dueDate = formatDate(dueDateInput, true); // With the day of the week
 
-
             const subject = document.getElementById('subject').value;
             const description = document.getElementById('description').value;
             const content = { issueDate, dueDate, subject, description };
@@ -252,7 +333,6 @@
                 console.error('Error occurred during fetch:', error);
                 alert('Failed to append content. Please try again.');
             }
-
         });
     </script>
 </body>
