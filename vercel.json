@@ -12,8 +12,12 @@
   ],
   "routes": [
     {
-      "src": "/(.*).html",
-      "dest": "/$1.html"
+      "src": "/index.html",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/history/index.html",
+      "dest": "/history/index.html"
     },
     {
       "src": "/Assets/(.*)",
