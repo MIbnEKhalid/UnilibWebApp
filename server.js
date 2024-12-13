@@ -1,22 +1,61 @@
 import express from "express";
-import fs from "fs";
+import fs from "fs/promises"; // Use the promisified version of fs
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import crypto from "crypto";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// Configuration file
+const config = {
+  customKey: "45525", // Replace with your own secret key
+  filePath: path.join(dirname(fileURLToPath(import.meta.url)), "Assets/assigmentsNquiz.json"),
+  validTokens: [
+    { token: "4552255", status: "active" },
+    { token: "4552528", status: "active" },
+    { token: "4552525", status: "active" },
+  ],
+  port: 3030,
+};
 
 const app = express();
 app.use(express.json()); // To parse JSON request bodies
-// Define a secret key for hashing
-const customKey = "45525"; // Replace with your own secret key
 
-const filePath = path.join(__dirname, "Assets/assigmentsNquiz.json"); // File to read/write
+// Utility function for hashing tokens
+const hashToken = (token) => {
+  return crypto.createHmac("sha256", config.customKey).update(token).digest("hex");
+};
+
+// Hash the tokens in the validTokens array
+config.validTokens.forEach((tokenObj) => {
+  tokenObj.token = hashToken(tokenObj.token);
+});
+
+// Token authentication middleware
+const authenticateToken = (req, res, next) => {
+  const token = req.headers["authorization"]?.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({ error: "No token provided." });
+  }
+
+  const hashedToken = hashToken(token);
+  const validToken = config.validTokens.find((t) => t.token === hashedToken);
+
+  if (!validToken) {
+    return res.status(403).json({ error: "Invalid token." });
+  }
+
+  if (validToken.status === "inactive") {
+    return res.status(403).json({ error: "Your Token is inactive. Please Contact Admin" });
+  }
+
+  next();
+};
+
+// Serve static files
 app.use(
   "/Assets",
-  express.static(path.join(__dirname, "Assets"), {
+  express.static(path.join(dirname(fileURLToPath(import.meta.url)), "Assets"), {
     setHeaders: (res, path) => {
       if (path.endsWith(".css")) {
         res.setHeader("Content-Type", "text/css");
@@ -24,73 +63,38 @@ app.use(
     },
   })
 );
+
 // Route to read file content
-app.get("/read-file", (req, res) => {
-  fs.readFile(filePath, "utf-8", (err, data) => {
-    if (err) {
-      return res.status(500).json({ error: "Failed to read the file." });
-    }
+app.get("/read-file", async (req, res) => {
+  try {
+    const data = await fs.readFile(config.filePath, "utf-8");
     res.status(200).json({ data: JSON.parse(data) });
-  });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to read the file." });
+  }
 });
 
+// Route to serve the append file page
 app.get("/append-file", (req, res) => {
-  res.sendFile(path.join(__dirname, "ui.html"));
+  res.sendFile(path.join(dirname(fileURLToPath(import.meta.url)), "ui.html"));
 });
 
+// Route to serve the main index page
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+  res.sendFile(path.join(dirname(fileURLToPath(import.meta.url)), "index.html"));
 });
+
+// Route to serve the history page
 app.get("/history", (req, res) => {
-  res.sendFile(path.join(__dirname, "history/index.html"));
+  res.sendFile(path.join(dirname(fileURLToPath(import.meta.url)), "history/index.html"));
 });
+
 app.get("/History", (req, res) => {
-  res.sendFile(path.join(__dirname, "history/index.html"));
+  res.sendFile(path.join(dirname(fileURLToPath(import.meta.url)), "history/index.html"));
 });
-
-const validTokens = [
-  { token: "4552255", status: "active" },
-  { token: "4552528", status: "inactive" },
-  { token: "4552525", status: "active" },
-];
-
-const hashToken = (token) => {
-  return crypto.createHmac("sha256", customKey).update(token).digest("hex");
-};
-
-// Hash the tokens in the validTokens array
-validTokens.forEach((tokenObj) => {
-  tokenObj.token = hashToken(tokenObj.token);
-});
-
-// Modify the authenticateToken middleware to hash the incoming token
-const authenticateToken = (req, res, next) => {
-  const token = req.headers["authorization"]?.split(" ")[1];
-  // console.log('Received token:', token);
-
-  if (!token) {
-    return res.status(401).json({ error: "No token provided." });
-  }
-
-  const hashedToken = hashToken(token);
-
-  // Check if the hashed token exists and if it's active
-  const validToken = validTokens.find((t) => t.token === hashedToken);
-  if (!validToken) {
-    return res.status(403).json({ error: "Invalid token." });
-  }
-
-  if (validToken.status === "inactive") {
-    return res
-      .status(403)
-      .json({ error: "Your Token is inactive. Please Contact Admin" });
-  }
-
-  next();
-};
 
 // Route to append content to the file
-app.post("/append-file", authenticateToken, (req, res) => {
+app.post("/append-file", authenticateToken, async (req, res) => {
   const { content } = req.body;
 
   // Validate the content
@@ -107,35 +111,23 @@ app.post("/append-file", authenticateToken, (req, res) => {
     });
   }
 
-  // Read the existing file
-  fs.readFile(filePath, "utf-8", (err, data) => {
-    if (err) {
-      return res.status(500).json({ error: "Failed to read the file." });
-    }
-
-    let jsonData;
-
-    try {
-      jsonData = JSON.parse(data); // Parse the existing data
-    } catch (parseErr) {
-      return res.status(500).json({ error: "File content is not valid JSON." });
-    }
+  try {
+    // Read existing data
+    const data = await fs.readFile(config.filePath, "utf-8");
+    let jsonData = JSON.parse(data); // Parse the existing data
 
     // Append the new content
     jsonData.push(content);
 
     // Write back to the file
-    fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), (err) => {
-      if (err) {
-        return res.status(500).json({ error: "Failed to append to the file." });
-      }
-      res.json({ message: "Content appended successfully." });
-    });
-  });
+    await fs.writeFile(config.filePath, JSON.stringify(jsonData, null, 2));
+    res.json({ message: "Content appended successfully." });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to append to the file." });
+  }
 });
 
 // Start the server
-const PORT = 3030;
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.listen(config.port, () => {
+  console.log(`Server running on http://localhost:${config.port}`);
 });
