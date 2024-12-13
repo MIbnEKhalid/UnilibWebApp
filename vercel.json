@@ -4,14 +4,13 @@
     {
       "src": "server.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "public/**/*",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
-    {
-      "src": "/read-file",
-      "methods": ["GET"],
-      "dest": "/server.js"
-    },
     {
       "src": "/add",
       "methods": ["GET"],
@@ -23,23 +22,18 @@
       "dest": "/server.js"
     },
     {
-      "src": "/",
-      "methods": ["GET"],
-      "dest": "/server.js"
-    },
-    {
-      "src": "/history",
-      "methods": ["GET"],
-      "dest": "/server.js"
-    },
-    {
-      "src": "/History",
+      "src": "/read-file",
       "methods": ["GET"],
       "dest": "/server.js"
     },
     {
       "src": "/append-file",
       "methods": ["POST"],
+      "dest": "/server.js"
+    },
+    {
+      "src": "/history",
+      "methods": ["GET"],
       "dest": "/server.js"
     }
   ]
