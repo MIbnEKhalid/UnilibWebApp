@@ -8,7 +8,10 @@ import crypto from "crypto";
 // Configuration file
 const config = {
   customKey: "45525", // Replace with your own secret key
-  filePath: path.join(dirname(fileURLToPath(import.meta.url)), "Assets/assigmentsNquiz.json"),
+  filePath: path.join(
+    dirname(fileURLToPath(import.meta.url)),
+    "Assets/assigmentsNquiz.json"
+  ),
   validTokens: [
     { token: "4552255", status: "active" },
     { token: "4552528", status: "active" },
@@ -22,7 +25,10 @@ app.use(express.json()); // To parse JSON request bodies
 
 // Utility function for hashing tokens
 const hashToken = (token) => {
-  return crypto.createHmac("sha256", config.customKey).update(token).digest("hex");
+  return crypto
+    .createHmac("sha256", config.customKey)
+    .update(token)
+    .digest("hex");
 };
 
 // Hash the tokens in the validTokens array
@@ -46,7 +52,9 @@ const authenticateToken = (req, res, next) => {
   }
 
   if (validToken.status === "inactive") {
-    return res.status(403).json({ error: "Your Token is inactive. Please Contact Admin" });
+    return res
+      .status(403)
+      .json({ error: "Your Token is inactive. Please Contact Admin" });
   }
 
   next();
@@ -75,22 +83,32 @@ app.get("/read-file", async (req, res) => {
 });
 
 // Route to serve the append file page
-app.get("/append-file", (req, res) => {
+app.get("/add", (req, res) => {
+  res.sendFile(path.join(dirname(fileURLToPath(import.meta.url)), "ui.html"));
+});
+// Route to serve the append file page
+app.get("/Add", (req, res) => {
   res.sendFile(path.join(dirname(fileURLToPath(import.meta.url)), "ui.html"));
 });
 
 // Route to serve the main index page
 app.get("/", (req, res) => {
-  res.sendFile(path.join(dirname(fileURLToPath(import.meta.url)), "index.html"));
+  res.sendFile(
+    path.join(dirname(fileURLToPath(import.meta.url)), "index.html")
+  );
 });
 
 // Route to serve the history page
 app.get("/history", (req, res) => {
-  res.sendFile(path.join(dirname(fileURLToPath(import.meta.url)), "history/index.html"));
+  res.sendFile(
+    path.join(dirname(fileURLToPath(import.meta.url)), "history/index.html")
+  );
 });
 
 app.get("/History", (req, res) => {
-  res.sendFile(path.join(dirname(fileURLToPath(import.meta.url)), "history/index.html"));
+  res.sendFile(
+    path.join(dirname(fileURLToPath(import.meta.url)), "history/index.html")
+  );
 });
 
 // Route to append content to the file
