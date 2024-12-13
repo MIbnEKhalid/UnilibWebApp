@@ -8,8 +8,39 @@
   ],
   "routes": [
     {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "src": "/read-file",
+      "methods": ["GET"],
+      "dest": "/server.js"
+    },
+    {
+      "src": "/add",
+      "methods": ["GET"],
+      "dest": "/server.js"
+    },
+    {
+      "src": "/Add",
+      "methods": ["GET"],
+      "dest": "/server.js"
+    },
+    {
+      "src": "/",
+      "methods": ["GET"],
+      "dest": "/server.js"
+    },
+    {
+      "src": "/history",
+      "methods": ["GET"],
+      "dest": "/server.js"
+    },
+    {
+      "src": "/History",
+      "methods": ["GET"],
+      "dest": "/server.js"
+    },
+    {
+      "src": "/append-file",
+      "methods": ["POST"],
+      "dest": "/server.js"
     }
   ]
 }
