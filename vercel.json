@@ -4,40 +4,16 @@
     {
       "src": "index.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "/**",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/index.html",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/history/index.html",
-      "dest": "/history/index.html"
-    },
-    {
-      "src": "/Assets/(.*)",
-      "dest": "/Assets/$1"
-    },
-    {
-      "src": "/read-file",
+      "src": "/(.*)",
       "dest": "/index.js"
-    },
-    {
-      "src": "/add",
-      "dest": "/ui.html"
     },
     {
       "src": "/history",
       "dest": "/history/index.html"
-    },
-    {
-      "src": "/.*",
-      "dest": "/404.html"
-    }
+    } 
   ]
 }
