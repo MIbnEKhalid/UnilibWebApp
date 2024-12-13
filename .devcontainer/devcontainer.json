@@ -1,9 +1,0 @@
-{
-  "name": "UnilibProject",
-  "extensions": [
-    "ritwickdey.LiveServer",
-    "GitHub.copilot",
-    "GitHub.copilot-chat",
-    "WakaTime.vscode-wakatime"
-  ]
-}

@@ -81,7 +81,7 @@ fetch("Assets/assigmentsNquiz.json")
 
         const detailsDiv = document.createElement("div");
         detailsDiv.classList.add("details");
-        detailsDiv.id = `details-${activeItems}`;
+        detailsDiv.id = `${item.id}`;
         detailsDiv.style.minWidth = "100%";
         detailsDiv.style.width = "100%";
 
