@@ -5,6 +5,16 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import crypto from "crypto";
 import cors from "cors";
+import admin from "firebase-admin";
+
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: process.env.dburl // Replace with your database URL
+});
+
+const db = admin.database(); // For Realtime Database
 
 const app = express();
 app.use(cors());
@@ -23,6 +33,22 @@ const filePath = path.join(
   "public/Assets/assigmentsNquiz.json"
 );
 
+function ffuck(){
+  const ref = db.ref("users");
+  ref.child("user1").set({
+    name: "John Doe",
+    email: "john.doe@example.com",
+    age: 25
+  }).then(() => {
+    console.log("Data written successfully!");
+  }).catch(error => {
+    console.error("Error writing data:", error);
+  });
+  console.log("lets fucking go");
+}
+
+
+
 // Prevent HTTP cache
 app.use((_, res, next) => {
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -37,6 +63,7 @@ const __dirname = path.dirname(__filename);
 app.use("/history", express.static(path.join(__dirname, "public/history")));
 app.use("/add", express.static(path.join(__dirname, "public/add/")));
 app.use("/", express.static(path.join(__dirname, "public/")));
+ 
 
 // Route to read file content
 app.get("/read-file", async (_, res) => {
@@ -85,7 +112,29 @@ const authenticateToken = (req, res, next) => {
   next();
 };
 
-// Route to append content to the file
+app.get("/tasks", async (req, res) => {
+  try {
+    // Reference to the database node where the tasks are stored
+    const ref = db.ref("tasks");
+
+    // Fetch all tasks from the database
+    ref.once("value", (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val(); // Get the tasks as an object
+        console.log("Tasks retrieved successfully:", data);
+        res.json(data); // Return the tasks as JSON
+      } else {
+        console.log("No tasks found.");
+        res.json([]); // Return an empty array if no tasks exist
+      }
+    });
+  } catch (err) {
+    console.error("Failed to retrieve tasks from Firebase:", err);
+    res.status(500).json({ error: "Failed to retrieve tasks from Firebase." });
+  }
+});
+
+
 app.post("/append-file", authenticateToken, async (req, res) => {
   const { content } = req.body;
 
@@ -105,23 +154,20 @@ app.post("/append-file", authenticateToken, async (req, res) => {
   }
 
   try {
-    // Read existing data
-    const data = await fs.readFile(filePath, "utf-8");
-    let jsonData = JSON.parse(data); // Parse the existing data
+    // Reference to the database node where you want to append data
+    const ref = db.ref("tasks"); // Replace "tasks" with your desired database path
 
-    // Append the new content
-    jsonData.push(content);
+    // Push the new content to Firebase
+    const newContentRef = ref.push();
+    await newContentRef.set(content);
 
-    // Write back to the file
-    await fs.writeFile(filePath, JSON.stringify(jsonData, null, 2));
-    console.log("Content appended successfully:", content);
-    res.json({ message: "Content appended successfully." });
+    console.log("Content appended to Firebase successfully:", content);
+    res.json({ message: "Content appended to Firebase successfully." });
   } catch (err) {
-    console.error("Failed to append to the file:", err);
-    res.status(500).json({ error: "Failed to append to the file." });
+    console.error("Failed to append to Firebase:", err);
+    res.status(500).json({ error: "Failed to append to Firebase." });
   }
 });
-
 const PORT = 3033;
 
 // Start the server 

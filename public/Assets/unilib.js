@@ -57,7 +57,7 @@ searchInput.addEventListener("input", filterProducts);
 
 loadProducts();
 
-fetch("Assets/assigmentsNquiz.json")
+fetch("/tasks")
   .then((response) => response.json()) // Fetch the JSON data
   .then((data) => {
     const detailsContainer = document.getElementById("detailsContainer");
@@ -71,7 +71,9 @@ fetch("Assets/assigmentsNquiz.json")
 
     let activeItems = 0;
 
-    data.forEach((item) => {
+    // Iterate over the new data structure
+    Object.keys(data).forEach((key) => {
+      const item = data[key];
       const dueDate = new Date(item.dueDate);
       dueDate.setHours(0, 0, 0, 0); // Strip time for comparison
 
