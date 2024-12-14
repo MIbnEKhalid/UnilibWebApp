@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Append File</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h1 {
+            color: #58a6ff;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        form {
+            background-color: #1f1f1f;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 100%;
+            transition: box-shadow 0.3s ease;
+        }
+
+        form:hover {
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #58a6ff;
+            font-size: 0.9rem;
+        }
+
+        input[type="text"],
+        input[type="date"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            background-color: #2c2c2c;
+            color: #e0e0e0;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            /* Add relative positioning to input field */
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus {
+            outline: none;
+            border-color: #58a6ff;
+            box-shadow: 0 0 8px rgba(88, 166, 255, 0.6);
+        }
+
+        input::placeholder {
+            color: #aaa;
+        }
+
+        button {
+            background-color: #39d353;
+            color: #000;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #32c14e;
+            box-shadow: 0 4px 12px rgba(50, 193, 78, 0.5);
+        }
+
+        button:active {
+            background-color: #28b843;
+        }
+
+        button:focus {
+            outline: none;
+            box-shadow: 0 0 8px rgba(50, 193, 78, 0.8);
+        }
+
+        /* Info icon and tooltip styles */
+        .info-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background-color: #58a6ff;
+            color: #fff;
+            border-radius: 50%;
+            font-size: 12px;
+            text-align: center;
+            line-height: 18px;
+            cursor: pointer;
+        }
+
+        .tooltip {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px 10px;
+            position: absolute;
+            z-index: 1;
+            top: -35px;
+            /* Adjusted to position above the info icon */
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .info-icon:hover + .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        @media (max-width: 480px) {
+            form {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <form id="appendForm">
+        <h1>Add Quiz & Assignment</h1>
+        <label for="issueDate">Issue Date:</label>
+        <input type="date" id="issueDate" name="issueDate" required>
+
+        <label for="dueDate">Due Date:</label>
+        <input type="date" id="dueDate" name="dueDate" required>
+
+        <label for="subject">Subject:</label>
+        <input type="text" id="subject" name="subject" placeholder="Islamic Studies / Ethics" required>
+
+        <label for="description">Description:</label>
+        <input type="text" id="description" name="description" placeholder="Quiz / Assignment 1, description" required>
+
+        <label for="token">Token:</label>
+        <div class="info-container" style="position: relative;">
+            <input type="text" id="token" name="token" placeholder="Enter your token" required>
+            <span class="info-icon">i</span>
+            <div class="tooltip">A token is a unique identifier used for authentication purposes. It is required to
+                submit the form securely.</div>
+        </div>
+
+        <button type="submit">Append</button>
+    </form>
+
+    <script>
+        // Set default issue date to today's date
+        document.addEventListener('DOMContentLoaded', () => {
+            const issueDateInput = document.getElementById('issueDate');
+            const today = new Date();
+            const dd = String(today.getDate()).padStart(2, '0');
+            const mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+            const yyyy = today.getFullYear();
+
+            const todayString = `${yyyy}-${mm}-${dd}`;
+            issueDateInput.value = todayString;
+        });
+
+        document.getElementById('appendForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const issueDateInput = document.getElementById('issueDate').value;
+            const dueDateInput = document.getElementById('dueDate').value;
+            const Token = document.getElementById('token').value;
+
+            // Function to format date as dd/mm/yyyy and optionally include the day of the week
+            function formatDate(dateString, includeDayOfWeek = false) {
+                const date = new Date(dateString);
+
+                // List of days of the week
+                const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+                // Format the date as dd/mm/yyyy
+                const day = date.getDate().toString().padStart(2, '0'); // Add leading zero if needed
+                const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Add leading zero if needed
+                const year = date.getFullYear();
+
+                // Get the day of the week
+                const dayOfWeek = daysOfWeek[date.getDay()];
+
+                // Return formatted date with or without the day of the week
+                return includeDayOfWeek
+                    ? `${day}/${month}/${year} (${dayOfWeek.substring(0, 3)})`
+                    : `${day}/${month}/${year}`;
+            }
+
+            // Example usage
+            const issueDate = formatDate(issueDateInput, false); // Without the day of the week
+            const dueDate = formatDate(dueDateInput, true); // With the day of the week
+
+
+            const subject = document.getElementById('subject').value;
+            const description = document.getElementById('description').value;
+            const content = { issueDate, dueDate, subject, description };
+
+            try {
+                const response = await fetch('/append-file', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${Token}`  // Ensure this includes 'Bearer ' and the correct token
+                    },
+                    body: JSON.stringify({ content }),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    alert(`Error: ${errorData.error || 'Something went wrong.'}`);
+                    return;
+                }
+
+                const result = await response.json();
+                alert(result.message || 'Content appended successfully.');
+            } catch (error) {
+                console.error('Error occurred during fetch:', error);
+                alert('Failed to append content. Please try again.');
+            }
+
+        });
+    </script>
+</body>
+
+</html>
