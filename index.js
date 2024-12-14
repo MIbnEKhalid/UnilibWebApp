@@ -7,8 +7,19 @@ import crypto from "crypto";
 import cors from "cors";
 import admin from "firebase-admin";
 
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-
+const serviceAccount = {
+  "type": "service_account",
+  "project_id": process.env.project_id,
+  "private_key_id": process.env.private_key_id,
+  "private_key": process.env.private_key,
+  "client_email": process.env.dburl,
+  "client_id": process.env.dburl,
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": process.env.client_x509_cert_url,
+  "universe_domain": "googleapis.com"
+};
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: process.env.dburl // Replace with your database URL
