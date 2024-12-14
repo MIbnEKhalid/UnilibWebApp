@@ -11,22 +11,10 @@
       }
     ],
     "routes": [
-      {
-        "src": "/Assets/(.*)",
-        "dest": "/Assets/$1"
-      },
-      {
-        "src": "/history/(.*)",
-        "dest": "/history/index.html"
-      },
-      {
-        "src": "/add",
-        "dest": "/ui.html"
-      },
-      {
-        "src": "/",
-        "dest": "/index.html"
-      }
+      { "src": "/read-file", "dest": "/api/server" },
+      { "src": "/add", "dest": "/api/server" },
+      { "src": "/history", "dest": "/api/server" },
+      { "src": "/.*", "dest": "/" }
     ]
   }
   

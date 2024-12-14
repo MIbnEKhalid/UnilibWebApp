@@ -10,7 +10,7 @@ const config = {
   customKey: "45525", // Replace with your own secret key
   filePath: path.join(
     dirname(fileURLToPath(import.meta.url)),
-    "Assets/assigmentsNquiz.json"
+    "../Assets/assigmentsNquiz.json"
   ),
   validTokens: [
     { token: "4552255", status: "active" },
@@ -64,7 +64,7 @@ const authenticateToken = (req, res, next) => {
 // Serve static files
 app.use(
   "/Assets",
-  express.static(path.join(dirname(fileURLToPath(import.meta.url)), "Assets"), {
+  express.static(path.join(dirname(fileURLToPath(import.meta.url)), "../Assets"), {
     setHeaders: (res, path) => {
       if (path.endsWith(".css")) {
         res.setHeader("Content-Type", "text/css");
@@ -85,30 +85,30 @@ app.get("/read-file", async (req, res) => {
 
 // Route to serve the append file page
 app.get("/add", (req, res) => {
-  res.sendFile(path.join(dirname(fileURLToPath(import.meta.url)), "ui.html"));
+  res.sendFile(path.join(dirname(fileURLToPath(import.meta.url)), "../ui.html"));
 });
 // Route to serve the append file page
 app.get("/Add", (req, res) => {
-  res.sendFile(path.join(dirname(fileURLToPath(import.meta.url)), "ui.html"));
+  res.sendFile(path.join(dirname(fileURLToPath(import.meta.url)), "../ui.html"));
 });
 
 // Route to serve the main index page
 app.get("/", (req, res) => {
   res.sendFile(
-    path.join(dirname(fileURLToPath(import.meta.url)), "index.html")
+    path.join(dirname(fileURLToPath(import.meta.url)), "../index.html")
   );
 });
 
 // Route to serve the history page
 app.get("/history", (req, res) => {
   res.sendFile(
-    path.join(dirname(fileURLToPath(import.meta.url)), "history/index.html")
+    path.join(dirname(fileURLToPath(import.meta.url)), "../history/index.html")
   );
 });
 
 app.get("/History", (req, res) => {
   res.sendFile(
-    path.join(dirname(fileURLToPath(import.meta.url)), "history/index.html")
+    path.join(dirname(fileURLToPath(import.meta.url)), "../history/index.html")
   );
 });
 

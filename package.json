@@ -2,11 +2,11 @@
   "name": "unilib.mibnekhalid.github.io",
   "version": "1.0.0",
   "description": "https://unilib.mbktechstudio.com/",
-  "main": "server.js",
+  "main": "api/server.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "build": "node server.js",
+    "start": "node api/server.js",
+    "build": "node api/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
