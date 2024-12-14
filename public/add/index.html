@@ -213,7 +213,7 @@
 
                     <label for="token">Token:</label>
                     <div class="info-container" style="position: relative;">
-                        <input type="text" id="token" name="token" placeholder="Enter your token" required>
+                        <input type="text" id="tokenB" name="tokenB" placeholder="Enter your token" required>
                         <span class="info-icon">i</span>
                         <div class="tooltip">A token is a unique identifier used for authentication purposes. It is
                             required to
@@ -317,10 +317,12 @@
             const subject = document.getElementById('subject').value;
             const description = document.getElementById('description').value;
             const content = { issueDate, dueDate, subject, description };
+            console.log(Token);
 
             try {
-                const response = await fetch('https://unilib-m-ibn-e-khalid-github-io.vercel.app/append-file', {
+                const response = await fetch('/append-file', {
                     method: 'POST',
+                    // mode: 'no-cors',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${Token}`  // Ensure this includes 'Bearer ' and the correct token

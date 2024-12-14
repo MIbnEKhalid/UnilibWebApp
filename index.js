@@ -5,16 +5,13 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import crypto from "crypto";
 import cors from "cors";
+
 const app = express();
-app.use(cors({
-  origin: ['https://unilib.mbktechstudio.com', 'http://localhost:3033']
-}));
-
-
-
+app.use(cors());
+app.use(express.json()); // Add this line to parse JSON bodies
 
 const config = {
-  customKey: "45525",  
+  customKey: "45525",
   validTokens: [
     { token: "4552255", status: "active" },
     { token: "4552528", status: "active" },
@@ -51,10 +48,6 @@ app.get("/read-file", async (_, res) => {
   }
 });
 
-
-
-
-
 // Utility function for hashing tokens
 const hashToken = (token) => {
   return crypto
@@ -71,7 +64,7 @@ config.validTokens.forEach((tokenObj) => {
 // Token authentication middleware
 const authenticateToken = (req, res, next) => {
   const token = req.headers["authorization"]?.split(" ")[1];
-
+  console.log(token);
   if (!token) {
     return res.status(401).json({ error: "No token provided." });
   }
@@ -92,10 +85,8 @@ const authenticateToken = (req, res, next) => {
   next();
 };
 
-
-
 // Route to append content to the file
-app.post("/append-file", async (req, res) => {
+app.post("/append-file", authenticateToken, async (req, res) => {
   const { content } = req.body;
 
   // Validate the content
@@ -106,6 +97,7 @@ app.post("/append-file", async (req, res) => {
     typeof content.subject !== "string" ||
     typeof content.description !== "string"
   ) {
+    console.log("Invalid content received:", content);
     return res.status(400).json({
       error:
         "Invalid content. Please provide an object with the required fields: issueDate, dueDate, subject, and description.",
@@ -114,20 +106,21 @@ app.post("/append-file", async (req, res) => {
 
   try {
     // Read existing data
-    const data = await fs.readFile(config.filePath, "utf-8");
+    const data = await fs.readFile(filePath, "utf-8");
     let jsonData = JSON.parse(data); // Parse the existing data
 
     // Append the new content
     jsonData.push(content);
 
     // Write back to the file
-    await fs.writeFile(config.filePath, JSON.stringify(jsonData, null, 2));
+    await fs.writeFile(filePath, JSON.stringify(jsonData, null, 2));
+    console.log("Content appended successfully:", content);
     res.json({ message: "Content appended successfully." });
   } catch (err) {
+    console.error("Failed to append to the file:", err);
     res.status(500).json({ error: "Failed to append to the file." });
   }
 });
-
 
 const PORT = 3033;
 
