@@ -20,6 +20,7 @@ const serviceAccount = {
   "client_x509_cert_url": process.env.client_x509_cert_url,
   "universe_domain": "googleapis.com"
 };
+console.log(serviceAccount);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: process.env.dburl // Replace with your database URL
