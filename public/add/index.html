@@ -285,63 +285,34 @@
         document.getElementById('quizass')?.addEventListener('submit', async (event) => {
             event.preventDefault();
 
-            const issueDateInput = document.getElementById('issueDate').value;
-            const dueDateInput = document.getElementById('dueDate').value;
-            const Token = document.getElementById('token').value;
-
-            // Function to format date as dd/mm/yyyy and optionally include the day of the week
-            function formatDate(dateString, includeDayOfWeek = false) {
-                const date = new Date(dateString);
-
-                // List of days of the week
-                const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-                // Format the date as dd/mm/yyyy
-                const day = date.getDate().toString().padStart(2, '0'); // Add leading zero if needed
-                const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Add leading zero if needed
-                const year = date.getFullYear();
-
-                // Get the day of the week
-                const dayOfWeek = daysOfWeek[date.getDay()];
-
-                // Return formatted date with or without the day of the week
-                return includeDayOfWeek
-                    ? `${day}/${month}/${year} (${dayOfWeek.substring(0, 3)})`
-                    : `${day}/${month}/${year}`;
-            }
-
-            // Example usage
-            const issueDate = formatDate(issueDateInput, false); // Without the day of the week
-            const dueDate = formatDate(dueDateInput, true); // With the day of the week
-
-            const subject = document.getElementById('subject').value;
-            const description = document.getElementById('description').value;
-            const content = { issueDate, dueDate, subject, description };
-            console.log(Token);
-
-            try {
-                const response = await fetch('/append-file', {
-                    method: 'POST',
-                    // mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${Token}`  // Ensure this includes 'Bearer ' and the correct token
-                    },
-                    body: JSON.stringify({ content }),
+            fetch('/append-file', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer 4552528',  // Replace with your actual token
+                },
+                body: JSON.stringify({
+                    content: {
+                        issueDate: '2023-10-01',
+                        dueDate: '2023-10-15',
+                        subject: 'Your Subject Here',
+                        description: 'Your Description Here'
+                    }
+                })
+            })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Response data:', data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
                 });
 
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    alert(`Error: ${errorData.error || 'Something went wrong.'}`);
-                    return;
-                }
 
-                const result = await response.json();
-                alert(result.message || 'Content appended successfully.');
-            } catch (error) {
-                console.error('Error occurred during fetch:', error);
-                alert('Failed to append content. Please try again.');
-            }
+
         });
     </script>
 </body>
