@@ -7,11 +7,11 @@ import crypto from "crypto";
 import cors from "cors";
 import admin from "firebase-admin";
 
-const serviceAccount =  {
+const serviceAccount = {
   "type": "service_account",
   "project_id": "unilib-98598",
   "private_key_id": "0b76eacb46de4895ac315896d395d6813e1dd643",
-  "private_key": process.env.private_key,
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCgJbZgWjyl8zFS\nLWYI0nhTim9Maf6gRYnxquCQjc5UlrkZziU51aAmGcGQAb939DhQSetCRptQ/uGF\n20GGrROhKuMnYdfTLiewI3VCFOMLSR2+3NcCxwK6iUMor54BwtlW0zjp8V6T50bU\nES0tgYWZ/vjpBmaZRL9afyalMnksr+7L3iqRHr8EtMAP+PSUoMPeRqBvmmN+fEFq\nihTQSMLnXQDBqkJTCz6H17IV7ldsiiPUT71jSeAwXalp3jXdRMkJddA5ddHhhVER\nlErKjBmTJt/RLvsGnjfmGRK10UrN8XkNZ+JfDA7l4SvKVK1iUSALW2SXstX1l2hZ\npedIV7lZAgMBAAECggEAFym9OixzDzGglZk5Y9dFThf8xxmhmX7VV932QxIvoK54\nMVJOshHC6x/YjkKidfAd4Qb//wMFXe6vodO3o4oPB8WTO1P8im/nj6NhR2CMAkre\nAYghlSZBr8dArnbQLMMI+nTsi3G80zmlVfDyDt3n/AET8WhamJqH7sfrSAOH4T2K\nUfphyPWEidQerRTrOEc/71ko5bbZJ2ieQ0EAlCQMkQQYc/A/KiTYObAhpcWKtWzV\nrpRUP4Yn5vfunfs8s0mpiufF2RXLWCMme2gt9yXmC76//EpQJGfXhKVIHXwKSM2N\ns+Ei0xxdS5hLweKflqCPwtgHNq+X01h41OybEvJ+sQKBgQDbhDp6jZov7jJoE3b2\n6+FnMwdEpROqu1D5IMY+AHAlS2vot0g5W1kqZ1mcAtvQ/NnRNRP2GC4EGzXglmRi\n0q7n1dSJhLtlz46fUL5LFENHHANZuvbrqDTyHkB+waP9z+EwOtnGMmoGc3o7WQ55\nqYWgdg9BmvHRfzVUmr2jaERe7QKBgQC6w4B6C15ib5ZzSPnJO64nGQdW2iuTkRO9\nt+SFrcX2MMlvU5SJFBtXmmt4I8jdKCjMYrzE1vevi2yAbCaY4YZh2RgBhIe+y29R\ndUCV8Yqo/f2WDACTafh+PUBKoszrND6BxMkuuLanyii7gPR+LG9kzui/xWULZ6f+\nX1gutr1KnQKBgCj3wY4ztS3yz3d7An3MwfFnpZibElOPx+nmwvi5TjS3obj508HY\nmYh/Z0rlga68Mc6IkGQiWRwtE94JU0zaMwhTcOoFWpACr4RuJkWOz4uK39k0Onb6\nmn8BRFoju35X+Jfus8v4hq8TiCFhWoE8MRMkVW6SA0Vs70AN7Qx9Hh11AoGBALa+\n27UP8MADDkUqL/g/JG5vaCYM/ry7JYTrLnm7iswV+tSrBNmIyiRTHjuFUGNOi3VK\nXAmDiwLDO10B9lZ7vqF56qp5gtYne3pKb/MIUTSAqySqA9o6xALKbmFZoYe4LD2Q\nT4cfCONvxaGLUjEvy6PpbgdP4EpjmBcoNkInX1tlAoGBAL53EgiypbXNf4HiPFAp\nniqq3jpQAAomNJpBi7qAvNkSO2IDZP/hhJv2mHBByRJiSEoFnUyB37JAC5qfctIh\n7Lmozd6Pamda/duWBLuAmcD9DPF51TTu593iOYUR/z72nyf4LdfCflI2cQeeW+yJ\n2vPXU9RAA2vyngU7JI3uvBi5\n-----END PRIVATE KEY-----\n",
   "client_email": "firebase-adminsdk-zu9tu@unilib-98598.iam.gserviceaccount.com",
   "client_id": "116911042752294791781",
   "auth_uri": "https://accounts.google.com/o/oauth2/auth",
@@ -20,13 +20,13 @@ const serviceAccount =  {
   "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-zu9tu%40unilib-98598.iam.gserviceaccount.com",
   "universe_domain": "googleapis.com"
 };
-console.log(serviceAccount);
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: process.env.dburl // Replace with your database URL
+  databaseURL: "https://unilib-98598-default-rtdb.asia-southeast1.firebasedatabase.app/" // Replace with your database URL
 });
 
-const db = admin.database(); // For Realtime Database
+const db = admin.database(); // For  Realtime Database
 
 const app = express();
 app.use(cors());
