@@ -4,17 +4,13 @@
       {
         "src": "api/server.js",
         "use": "@vercel/node"
-      },
-      {
-        "src": "Assets/**/*",
-        "use": "@vercel/static"
       }
     ],
     "routes": [
-      { "src": "/read-file", "dest": "/api/server" },
-      { "src": "/add", "dest": "/api/server" },
-      { "src": "/history", "dest": "/api/server" },
-      { "src": "/.*", "dest": "/" }
+      {
+        "src": "/(.*)",
+        "dest": "api/server.js"
+      }
     ]
   }
   
