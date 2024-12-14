@@ -6,7 +6,9 @@ import { dirname } from "path";
 import crypto from "crypto";
 import cors from "cors";
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: ['https://unilib.mbktechstudio.com', 'http://localhost:3033']
+}));
 
 
 
