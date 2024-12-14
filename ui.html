@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="html" lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -7,14 +7,22 @@
     <title>Append File</title>
     <link rel="stylesheet" href="https://docs.mbktechstudio.com/Assets/project.css">
     <style>
-        body {
+        .body {
             background-color: #121212;
+            background: #121212;
             color: #e0e0e0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             display: flex;
             justify-content: center;
+            height: 100vh;
+        }
+
+        .html {
+            background-color: #121212;
+            background: #121212;
+            color: #e0e0e0;
         }
 
         h1 {
@@ -178,7 +186,7 @@
     </style>
 </head>
 
-<body>
+<body class="body">
     <section class="about">
         <div class="content">
             <div id="Book" style="display: none;">
@@ -189,7 +197,7 @@
                     <input type="text" id="imageURL" name="imageURL" value="BookCover_Template.png" required>
 
                     <label for="dueDate">Book Name:</label>
-                    <input type="text" id="name" placeholder="ICT"  name="name" required>
+                    <input type="text" id="name" placeholder="ICT" name="name" required>
 
                     <label for="subject">Category:</label>
                     <select id="category" name="category" required>
@@ -197,8 +205,7 @@
                     </select>
 
                     <label for="description">Description (Optional):</label>
-                    <input type="text" id="descriptionbook" name="descriptionbook"
-                        placeholder="Aurthor ABC" required>
+                    <input type="text" id="descriptionbook" name="descriptionbook" placeholder="Aurthor ABC" required>
 
                     <label for="description">Drive Link:</label>
                     <input type="text" id="link" name="description" placeholder="https://drive.google.com/file/d/"

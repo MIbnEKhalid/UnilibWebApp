@@ -128,7 +128,7 @@
             </div>
             <div class="button field is-grouped" style="display: flex; justify-content: center;">
                 <div class="control">
-                    <button class="button is-primary" onclick="openSupport('requestbook')" id="submit-button">Request To
+                    <button class="button is-primary" onclick="openSupport('Book')" id="submit-button">Request To
                         Add Book</button>
                 </div>
             </div>
@@ -162,7 +162,7 @@
                     History</a>
                 <div class="button field is-grouped" style="display: flex; justify-content: center;">
                     <div class="control">
-                        <button class="button is-primary" onclick="openSupport('requestquizass')"
+                        <button class="button is-primary" onclick="openSupport('QuizAss')"
                             id="submit-button">Request To Add Assigments or Quiz
                         </button>
                     </div>
@@ -247,7 +247,7 @@
             });
         });
         function openSupport(id) {
-            window.open(`/add`, '_blank');
+            window.open(`/add?`+id, '_blank');
         }
     </script>
     <script>
