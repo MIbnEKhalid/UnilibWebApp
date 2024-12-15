@@ -126,12 +126,7 @@
             <div class="products">
                 <!-- Products will be dynamically inserted here -->
             </div>
-            <div class="button field is-grouped" style="display: flex; justify-content: center;">
-                <div class="control">
-                    <button class="button is-primary" onclick="openSupport('requestbook')" id="submit-button">Request To
-                        Add Book</button>
-                </div>
-            </div>
+
         </div>
     </section>
 
@@ -160,37 +155,39 @@
                 </div>
                 <a class="links" style="font-weight: bold;" href="history/" target="_blank">See Assignments & Quizes
                     History</a>
-                <div class="button field is-grouped" style="display: flex; justify-content: center;">
-                    <div class="control">
-                        <button class="button is-primary" onclick="openSupport('requestquizass')"
-                            id="submit-button">Request To Add Assigments or Quiz
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
 
     <div class="section-separator1"></div>
-
-    <div id="info">
-        <div class="content">
-            <div class="notification is-info">
-                <p>
-                    The <strong>Unilib Project</strong> is open-source, and we welcome contributions! You can explore
-                    and contribute on our <a class="links"
-                        href="https://github.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/" target="_blank">Project</a>.
-                </p>
-            </div>
-            <div class="notification is-info">
-                <p>
-                    We are also developing an Android version. Contributions are welcome, and we'll announce its
-                    completion here. Visit the <a class="links" href="https://github.com/MIbnEKhalid/UnilibUnity"
-                        target="_blank">GitHub repository</a> to explore and contribute.
-                </p>
-            </div>
+    <style>
+        #info {
+            padding-top: 0px;
+        }
+    </style>
+    <section id="info">
+        <div class="button field is-grouped" style="margin: 5px 5px; display: flex; justify-content: center;">
+            <button style="margin: 5px;" class="button" onclick="openSupport('requestbook')">Request To
+                Add Book</button>
+            <button style="margin: 5px;" class="button" onclick="openAdminPanel('Book')">Admin Panel</button>
+            <button style="margin: 5px;" class="button" onclick="openSupport('requestquizass')">Request To Add
+                Assigments or Quiz</button>
         </div>
-    </div>
+        <div class="notification is-info">
+            <p>
+                The <strong>Unilib Project</strong> is open-source, and we welcome contributions! You can explore
+                and contribute on our <a class="links"
+                    href="https://github.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/" target="_blank">Project</a>.
+            </p>
+        </div>
+        <div class="notification is-info">
+            <p>
+                We are also developing an Android version. Contributions are welcome, and we'll announce its
+                completion here. Visit the <a class="links" href="https://github.com/MIbnEKhalid/UnilibUnity"
+                    target="_blank">GitHub repository</a> to explore and contribute.
+            </p>
+        </div>
+    </section>
 
     <!--
     <div style="max-width: 95%; margin: 0 5%;">
@@ -248,6 +245,9 @@
         });
         function openSupport(id) {
             window.open(`https://www.mbktechstudio.com/Support/#${id}`, '_blank');
+        }
+        function openAdminPanel(id) {
+            window.open(`AdminPanel/?${id}`, '_blank');
         }
     </script>
     <script>
