@@ -41,7 +41,7 @@
 
 <style>
     .section-separator {
-        margin-top: 50px;
+        margin-top: 40px;
         border-top: 2px solid #ccc;
     }
 
@@ -166,12 +166,10 @@
         }
     </style>
     <section id="info">
-        <div class="button field is-grouped" style="margin: 5px 5px; display: flex; justify-content: center;">
-            <button style="margin: 5px;" class="button" onclick="openSupport('requestbook')">Request To
-                Add Book</button>
-            <button style="margin: 5px;" class="button" onclick="openAdminPanel('Book')">Admin Panel</button>
-            <button style="margin: 5px;" class="button" onclick="openSupport('requestquizass')">Request To Add
-                Assigments or Quiz</button>
+        <div class="button field is-grouped" style="display: flex; justify-content: center; flex-wrap: wrap;">
+            <button style="margin: 5px;" class="button is-primary" onclick="openSupport('requestbook')">Request To Add Book</button>
+            <button class="button is-link" onclick="openAdminPanel('Book')">Admin Panel</button>
+            <button style="margin: 5px;" class="button is-info" onclick="openSupport('requestquizass')">Request To Add Assignments or Quiz</button>
         </div>
         <div class="notification is-info">
             <p>
@@ -293,4 +291,4 @@
 
 </body>
 
-</html>
+</html> 

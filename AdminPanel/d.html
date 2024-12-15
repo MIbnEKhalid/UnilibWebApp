@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch GitHub Issues</title>
+</head>
+<body>
+    <h1>GitHub Issues</h1>
+    <div id="issues-list"></div>
+
+    <script>
+        const owner = 'MIbnEKhalid';  // Replace with the GitHub username or organization
+        const repo = 'Unilib.MIbnEKhalid.github.io';  // Replace with the repository name
+
+        // The GitHub API URL to get issues
+        const url = `https://api.github.com/repos/${owner}/${repo}/issues`;
+
+        // Function to parse the issue body into a JSON format
+        const parseIssueBody = (body) => {
+            const parsedData = {};
+            
+            // Use regex to extract the fields from the body
+            const issueDateMatch = body.match(/issuedate:\s*([\d\-\/]+)\s*/i);
+            const dueDateMatch = body.match(/duedate:\s*([\d\-\/\(\)]+)\s*/i);
+            const subjectMatch = body.match(/subject:\s*([\w\s]+)\s*/i);
+            const descriptionMatch = body.match(/description:\s*(.*)\s*/i);
+
+            // Clean up the matched values and remove unwanted characters like \r and \n
+            if (issueDateMatch) parsedData.issue_date = issueDateMatch[1].trim();
+            if (dueDateMatch) parsedData.due_date = dueDateMatch[1].trim();
+            if (subjectMatch) parsedData.subject = subjectMatch[1].replace(/[\r\n]+/g, ' ').trim();
+            if (descriptionMatch) parsedData.description = descriptionMatch[1].replace(/[\r\n]+/g, ' ').trim();
+
+            return parsedData;
+        };
+
+        // Fetch issues from the GitHub repository
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch issues');
+                }
+                return response.json();  // Parse JSON response
+            })
+            .then(issues => {
+                const issuesList = document.getElementById('issues-list');
+                
+                // If there are no issues, show a message
+                if (issues.length === 0) {
+                    issuesList.innerHTML = 'No issues found.';
+                    return;
+                }
+
+                // Create a list of issues (excluding pull requests)
+                const ul = document.createElement('ul');
+                issues.forEach(issue => {
+                    // Exclude pull requests by checking for the `pull_request` property
+                    if (!issue.pull_request) {
+                        const li = document.createElement('li');
+                        
+                        // Parse the body of the issue to extract structured data
+                        const formattedIssue = {
+                             issue_details: parseIssueBody(issue.body)  // Parsing the body
+                        };
+
+                        li.innerHTML = `  
+                            <strong>Issue Details:</strong><br>
+                            <pre>${JSON.stringify(formattedIssue, null, 2)}</pre><br>
+                            <a href="${issue.html_url}" target="_blank">View Issue</a>
+                        `;
+                        ul.appendChild(li);
+                    }
+                });
+                issuesList.appendChild(ul);
+            })
+            .catch(error => {
+                console.error('Error fetching issues:', error);
+                document.getElementById('issues-list').innerText = 'Error fetching issues.';
+            });
+    </script>
+</body>
+</html>
