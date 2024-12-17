@@ -168,7 +168,7 @@
     <section id="info">
         <div class="button field is-grouped" style="display: flex; justify-content: center; flex-wrap: wrap;">
             <button style="margin: 5px;" class="button is-primary" onclick="openSupport('requestbook')">Request To Add Book</button>
-            <button class="button is-link" onclick="openAdminPanel('Book')">Admin Panel</button>
+            <button class="button is-link" onclick="openAdminPanel()">Admin Panel</button>
             <button style="margin: 5px;" class="button is-info" onclick="openSupport('requestquizass')">Request To Add Assignments or Quiz</button>
         </div>
         <div class="notification is-info">
@@ -244,8 +244,8 @@
         function openSupport(id) {
             window.open(`https://www.mbktechstudio.com/Support/#${id}`, '_blank');
         }
-        function openAdminPanel(id) {
-            window.open(`AdminPanel/?${id}`, '_blank');
+        function openAdminPanel() {
+            window.open(`AdminPanel/`, '_blank');
         }
     </script>
     <script>

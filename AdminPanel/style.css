@@ -395,7 +395,7 @@ body.blur-active {
 
 .anchor {
     max-width: 580px;
-    color: #58a6ff;
+    color: #007bff;
     text-decoration: none;
     font-size: 1.1rem;
     margin: 10px auto;
@@ -404,7 +404,7 @@ body.blur-active {
     text-align: center;
     background-color: #1f1f1f;
     padding: 5px 15px;
-    border: solid 2px #58a6ff;
+    border: solid 2px #007bff;
     border-radius: 8px;
     font-weight: bold;
     transition: all 0.3s ease;
@@ -412,8 +412,12 @@ body.blur-active {
 }
 
 .anchor:hover {
-    background-color: #58a6ff;
+    background-color: #007bff;
     color: #1f1f1f;
     border-color: #1f1f1f;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+}
+
+.anchor:visited{
+    color: none;
 }

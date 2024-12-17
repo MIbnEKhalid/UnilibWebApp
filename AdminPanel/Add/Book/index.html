@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html class="html" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Builder</title>
+    <link rel="stylesheet" href="../../style.css">
+    <script src="https://kit.fontawesome.com/0934e8e9d3.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://docs.mbktechstudio.com/Assets/project.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="https://mbktechstudio.com/Assets/Images/Icon/MBKSupportIcon.svg">
+</head>
+<!-- navgaition menu -->
+<header>
+
+    <nav>
+
+        <div class="navbar">
+
+            <div class="logo">
+
+                <div class="image">
+                    <img src="https://mbktechstudio.com/Assets/Images/Icon/dg.svg" alt="" />
+                </div>
+
+                <div class="text">
+                    <a href="../">MBK Tech Studio</a>
+                </div>
+
+            </div>
+
+            <ul class="menu">
+
+                <div class="media-icons-m" id="media-icons-m"></div>
+
+                <div class="cancel-btn">
+                    <i class="fas fa-times"></i>
+                </div>
+
+            </ul>
+
+            <div class="media-icons" id="media-icons"></div>
+
+        </div>
+
+        <div class="menu-btn">
+            <i class="fas fa-bars"></i>
+        </div>
+
+    </nav>
+
+</header>
+
+<style>
+    .scroll-button a {
+        outline: none;
+        background-color: transparent;
+        border: 6px solid #377a77;
+    }
+
+    .readonly {
+        opacity: 0.6;
+    }
+</style>
+
+<body class="body">
+
+    <!-- Move to up button -->
+    <div class="scroll-button">
+        <a href="#"><i class="fas fa-arrow-up"></i></a>
+    </div>
+
+    <br><br>
+    <br><br>
+
+    <div class="alll">
+
+        <h1 class="h1">Admin Panel To Manage Books, Assigments & Quizes</h1>
+
+        <!-- Under Development Box -->
+        <div class="RedboxInfo">
+            <p>
+                Currently, the Admin Panel is under development. In order to add books, submit a support form by
+                clicking this link: <a class="links"
+                    href="https://mbktechstudio.com/Support/#requestbook">mbktechstudio.com/Support/#requestbook</a>.
+            </p>
+        </div>
+
+        <div class="container-builder">
+
+            <a class="anchor" href="../../">Admin Panel</a>
+            <a class="anchor" href="../QuizAss">Add Quiz & Assignment</a>
+
+            <form class="form-group" id="book">
+                <h1 class="h1">Add Book</h1>
+                <label class="label" for="imageURL">Book Cover Url:</label>
+                <input class="readonly" type="text" id="imageURL" name="imageURL" value="BookCover_Template.png"
+                    readonly required>
+
+                <label for="bookname">Book Name:</label>
+                <input type="text" id="bookname" placeholder="ICT" name="bookname" required>
+
+                <label for="bookcategory">Category:</label>
+                <select id="bookcategory" name="bookcategory" required>
+                    <option value="CourseBook">Course Book</option>
+                </select>
+
+                <label for="descriptionbook">Description (Optional):</label>
+                <input type="text" id="descriptionbook" name="descriptionbook" placeholder="Aurthor ABC" required>
+
+                <label for="drivelink">Drive Link:</label>
+                <input type="text" id="drivelink" name="drivelink" placeholder="https://drive.google.com/file/d/"
+                    required>
+
+                <label for="token">Token:</label>
+                <div class="info-container" style="position: relative;">
+                    <input type="text" id="tokenB" name="tokenB" placeholder="Enter your token" required>
+                    <span class="info-icon">i</span>
+                    <div class="tooltip">A token is a unique identifier used for authentication purposes. It is
+                        required to
+                        submit the form securely.</div>
+                </div>
+
+                <button class="buttons" type="submit">Submit</button>
+
+            </form>
+
+            <button class="buttons" onclick="underdevelopment()">Submit</button>
+
+        </div>
+        
+    </div>
+
+    <div class="blurWindow">
+        <div class="messageWindow">
+            <button class="close-btn" onclick="hideMessage()">×</button>
+            <h1></h1>
+            <p></p>
+            <button class="buttons" style="margin-top: 10px;" onclick="hideMessage()">Okay</button>
+        </div>
+    </div>
+
+    <!-- Footer Section Start -->
+    <footer>
+
+        <div class="text">
+
+            <span>Developed By <a href="https://github.com/MIbnEKhalid">Muhammad Bin Khalid</a> | © 2024 All Rights
+                Reserved
+                | <a href="https://privacy.mbktechstudio.com/" target="_blank">Terms &amp; Conditions</a> | <a
+                    href="https://mbktechstudio.com/FAQs" target="_blank">FAQs</a> | <a
+                    href="https://mbktechstudio.com/Support/?Project=github-readme-deploystatus" target="_blank">Support
+                    &amp; Contact</a> </span>
+
+        </div>
+
+    </footer>
+
+    <script>
+
+        function underdevelopment() {
+            showMessage("Currently, the Admin Panel is under development. In order to add books, submit a support form by clicking this link: <a class='links' href='https://mbktechstudio.com/Support/#requestbook'>mbktechstudio.com/Support/#requestbook</a>.", "Under Development");
+        }
+
+        document.getElementById('book')?.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const imageURL_ = document.getElementById('imageURL').value;
+            const bookname_ = document.getElementById('bookname').value;
+            const bookcategory_ = document.getElementById('bookcategory').value;
+            const descriptionbook_ = document.getElementById('descriptionbook').value;
+            const drivelink_ = document.getElementById('drivelink').value;
+
+            const newContent = `{ "imageURL": "${imageURL_}", "name": "${bookname_}", "category": "${bookcategory_}", "description": "${descriptionbook_}", "link": "${drivelink_}" }`;
+
+            const token = process.env.GITHUB_TOKEN;
+
+            const response = await fetch('https://api.github.com/repos/MIbnEKhalid/fff/contents/books.json', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `token ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                alert('Error fetching file data.');
+                return;
+            }
+
+            const fileData = await response.json();
+            const currentContent = JSON.parse(atob(fileData.content));
+            const sha = fileData.sha;
+
+            // Append new content to the current content
+            currentContent.push(JSON.parse(newContent));
+            const updatedContent = JSON.stringify(currentContent, null, 2);
+            const base64UpdatedContent = btoa(unescape(encodeURIComponent(updatedContent)));
+
+            const updateResponse = await fetch('https://api.github.com/repos/MIbnEKhalid/fff/contents/books.json', {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: 'Append data to assigmentsNquiz.json',
+                    content: base64UpdatedContent,
+                    sha: sha
+                })
+            });
+
+            if (updateResponse.ok) {
+                alert('File updated successfully!');
+            } else {
+                alert('Error updating file.');
+            }
+
+        });
+
+
+
+    </script>
+
+    <script src="https://mbktechstudio.com/Assets/Scripts/header.js"></script>
+    <script src="../../script.js"></script>
+
+</body>
+
+</html>
