@@ -25,7 +25,7 @@
                 </div>
 
                 <div class="text">
-                    <a href="../">MBK Tech Studio</a>
+                    <a href="../../">MBK Tech Studio</a>
                 </div>
 
             </div>
@@ -79,8 +79,7 @@
             <p>
                 Currently, the Admin Panel is under development. In order to add assignments and quizzes, submit a
                 support form by
-                clicking this link: <a class="links"
-                    href="https://mbktechstudio.com/Support/#requestquizass">mbktechstudio.com/Support/#requestquizass</a>.
+                clicking <a class="links" href="https://mbktechstudio.com/Support/#requestquizass">here</a>.
             </p>
         </div>
 
@@ -167,7 +166,7 @@
 
             const todayString = `${yyyy}-${mm}-${dd}`;
             issueDateInput.value = todayString;
-            dueDateInput.value = todayString; 
+            dueDateInput.value = todayString;
             subjectInput.value = 'Islamic Studies / Ethics';
             descriptionInput.value = 'Quiz / Assignment 1, description';
             tokenInput.value = '4552255';
@@ -211,8 +210,6 @@
             const authToken = document.getElementById('token')?.value;
 
             if (authToken) {
-                // Define the token variable
-                let gitToken;
 
                 // Fetch the token from the API
                 fetch('/api/token', {
@@ -234,8 +231,7 @@
                     .then(async (data) => {
                         // Ensure the token exists in the response
                         if (data && data.token) {
-                            gitToken = data.token;
-                            await UpdateFile('assigmentsNquiz', newContent, gitToken);
+                            await UpdateFile('assigmentsNquiz', newContent, data.token);
                         } else {
                             throw new Error('Token not found in response');
                         }
@@ -246,16 +242,16 @@
             } else {
                 console.error('Authorization token is missing');
             }
- 
+
         });
 
-   
-  
-  </script>
 
-<script src="../../script.js"></script>
-<script src="../script.js"></script>
-<script src="https://mbktechstudio.com/Assets/Scripts/header.js"></script>
+
+    </script>
+
+    <script src="../../script.js"></script>
+    <script src="../script.js"></script>
+    <script src="https://mbktechstudio.com/Assets/Scripts/header.js"></script>
 
 </body>
 
