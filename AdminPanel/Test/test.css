@@ -189,20 +189,7 @@ select {
 
 .products:hover> :not(:hover) {
     opacity: 1;
-}
-
-.product:hover {
-    transform: scale(1.05);
-    border: 2px solid #007bff;
-    color: #007bff;
-    transition: all 0.5s ease;
-}
-
-.product:hover h3,
-.product:hover p {
-    color: #007bff;
-    transition: all 0.5s ease;
-}
+}  
 
 .details-container {
     display: flex;
@@ -366,14 +353,54 @@ select {
     background-color: #ff0000;
     color: white;
     border: none;
+    font-weight: bold;
     border-radius: 5px;
     cursor: pointer;
-    padding: 10px 20px;
-    font-size: 16px;
+    padding: 6px 14px;
+    font-size: 12px;
     transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .DeleteButton:hover {
-    background-color: #cc0000;
-    transform: scale(1.05);
+    background-color: #cc0000; 
 }
+
+.EditButton {
+    background-color: #e6e606;
+    color: white;
+    border: none;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 6px 14px;
+    font-size: 12px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.EditButton:hover {
+    background-color: #dddd0d; 
+}
+ 
+
+.blurWindow .button  {
+    margin-top: 15px;
+    width: auto;
+    outline: none;
+    padding: 8px 25px;
+    border-radius: 6px; 
+    font-size: 18px;
+    font-weight: bold;
+    background: #39d353;
+    color: #fff;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.4s ease;
+    display: inline-block;
+}
+
+.blurWindow .button:hover {
+    border-color: #39d353;
+    background-color: transparent;
+    color: #39d353;
+    transition: all 0.3s ease; 
+} 
