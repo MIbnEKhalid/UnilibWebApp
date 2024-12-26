@@ -104,8 +104,12 @@ fetch("../../Assets/assigmentsNquiz.json")
             ? `<span class="see-more">...</span><button class="toggle-more-inline">+ See More</button>`
             : ""
           }
-                            </span>
+                            </span>    
+                            <br>               
+                            <button class="DeleteButton" onclick="deleteAssQuiz('','')">Delete</button>
+                            <button class="EditButton" onclick="editAssQuiz('')">Edit</button> 
                     </div>
+           
                 `;
 
         detailsContainer.appendChild(detailsDiv);
@@ -155,5 +159,16 @@ function db(id) {
   alert("Are you sure you want to delete " + id + " book?");
 }
 function editBook(id) {
+  alert("Are you sure you want to delete " + id + " book?");
+}
+
+
+function deleteAssQuiz(id, name) {
+  document.getElementById("messageWindowYes").onclick = function () {
+    db(id);
+  };
+  showMessage("Are Sure You Want To Delete '" + name + "' ?", "Warning!");
+} 
+function editAssQuiz(id) {
   alert("Are you sure you want to delete " + id + " book?");
 }

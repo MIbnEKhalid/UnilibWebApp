@@ -28,5 +28,11 @@
     "dueDate": "Nov 7, 2024 (Thur)",
     "subject": "Applied Physics",
     "description": "Assignment 2"
+  },
+  {
+    "issueDate": "Nov 30, 2024",
+    "dueDate": "Nov 7, 2025",
+    "subject": "Applied Physics",
+    "description": "Assignment 2"
   }
 ]

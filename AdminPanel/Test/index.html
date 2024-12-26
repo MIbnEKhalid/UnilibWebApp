@@ -146,12 +146,12 @@
         </div>
     </div>
     <!-- Separator for visual distinction -->
-    <div class="section-separator"></div>
-
     <section class="about" id="assignments">
         <div class="content">
             <h1 class="section-title">Assignments & Quiz</h1>
-
+            <div id="detailsContainer" class="details-container">
+                <!-- Assigments And Quiz will be dynamically inserted here -->
+            </div>
             <div id="noAss">
                 <div class="details" style="min-width: 100%; width: 100%;">
                     <div class="assignment-info">
@@ -172,49 +172,6 @@
         </div>
     </section>
 
-    <div class="section-separator1"></div>
-    <style>
-        #info {
-            padding-top: 0px;
-        }
-    </style>
-    <section id="info">
-        <div class="button field is-grouped" style="display: flex; justify-content: center; flex-wrap: wrap;">
-            <button style="margin: 5px;" class="button is-primary" onclick="openSupport('requestbook')">Request To Add
-                Book</button>
-            <button class="button is-link" onclick="openAdminPanel()">Admin Panel</button>
-            <button style="margin: 5px;" class="button is-info" onclick="openSupport('requestquizass')">Request To Add
-                Assignments or Quiz</button>
-        </div>
-        <div class="notification is-info">
-            <p>
-                The <strong>Unilib Project</strong> is open-source, and we welcome contributions! You can explore
-                and contribute on our <a class="links"
-                    href="https://github.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io/" target="_blank">Project</a>.
-            </p>
-        </div>
-        <div class="notification is-info">
-            <p>
-                We are also developing an Android version. Contributions are welcome, and we'll announce its
-                completion here. Visit the <a class="links" href="https://github.com/MIbnEKhalid/UnilibUnity"
-                    target="_blank">GitHub repository</a> to explore and contribute.
-            </p>
-        </div>
-    </section>
-
-    <!--
-    <div style="max-width: 95%; margin: 0 5%;">
-        <script async src="https://talk.hyvor.com/embed/embed.js" type="module"></script>
-        <hyvor-talk-comments id="hyvor-comments" website-id="12088"></hyvor-talk-comments>
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                document.querySelector("#hyvor-comments").setAttribute("page-id", document.title);
-                console.log(document.title);
-            });
-        </script>
-    </div>
--->
-
     <footer>
 
         <div class="text">
@@ -233,8 +190,8 @@
     <script src="https://mbktechstudio.com/Assets/Scripts/header.js"></script>
     <script src="https://mbktechstudio.com/Assets/Scripts/cookie.js"></script>
     <script src="https://unilib.mbktechstudio.com/Assets/Notific/notification.js"></script>
-    <script src="test.js"></script>
-    <script src="../script.js"></script>
+    <script src="test.js"></script> 
+    <script src="../script.js"></script> 
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
