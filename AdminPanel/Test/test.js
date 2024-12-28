@@ -28,8 +28,8 @@ function displayProducts(productsArray) {
           <img src="../../Assets/Images/BookCovers/${product.imageURL}" alt="${product.name}">
           <h3>${product.name}</h3>
           <p>${product.description}</p>
-          <button class="DeleteButton" onclick="deleteBook('${product.id}','${product.name}')">Delete</button>
-          <button class="EditButton" onclick="editBook('${product.id}')">Edit</button> 
+          <button class="DeleteButton" onclick="WarndeleteBook('${product.id}','${product.name}')">Delete</button>
+          <button class="EditButton" onclick="WarneditBook('${product.id}','${product.name}')">Edit</button> 
         `;
     productsContainer.appendChild(productElement);
   });
@@ -106,8 +106,8 @@ fetch("../../Assets/assigmentsNquiz.json")
           }
                             </span>    
                             <br>               
-                            <button class="DeleteButton" onclick="deleteAssQuiz('','')">Delete</button>
-                            <button class="EditButton" onclick="editAssQuiz('')">Edit</button> 
+                            <button class="DeleteButton" onclick="WarndeleteAssQuiz('${item.id}','${item.subject} that was issue on ${item.issueDate} and that is due on ${item.dueDate}')">Delete</button>
+                            <button class="EditButton" onclick="WarneditAssQuiz('${item.id}','${item.subject} that was issue on ${item.issueDate} and that is due on ${item.dueDate}')">Edit</button> 
                     </div>
            
                 `;
@@ -149,26 +149,39 @@ fetch("../../Assets/assigmentsNquiz.json")
 
 
 
-function deleteBook(id, name) {
+function WarndeleteBook(id, name) {
   document.getElementById("messageWindowYes").onclick = function () {
     db(id);
+    // function to actually delete the book
   };
   showMessage("Are Sure You Want To Delete '" + name + "' ?", "Warning!");
 }
+
 function db(id) {
   alert("Are you sure you want to delete " + id + " book?");
 }
-function editBook(id) {
-  alert("Are you sure you want to delete " + id + " book?");
+
+function WarneditBook(id,name) { 
+
+  document.getElementById("messageWindowYes").onclick = function () {
+    db(id);
+    // function to actually Edit the book
+  };
+  showMessage("Are Sure You Want To Edit '" + name + "' ?", "Warning!");
 }
 
-
-function deleteAssQuiz(id, name) {
+function WarndeleteAssQuiz(id, name) {
   document.getElementById("messageWindowYes").onclick = function () {
     db(id);
   };
+  console.log(name);
   showMessage("Are Sure You Want To Delete '" + name + "' ?", "Warning!");
 } 
-function editAssQuiz(id) {
-  alert("Are you sure you want to delete " + id + " book?");
+
+function WarneditAssQuiz(id,name) { 
+  document.getElementById("messageWindowYes").onclick = function () {
+    db(id);
+    // function to actually Edit the book
+  };
+  showMessage("Are Sure You Want To Edit '" + name + "' ?", "Warning!");
 }
