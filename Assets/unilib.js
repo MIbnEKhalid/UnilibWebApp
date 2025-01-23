@@ -5,7 +5,7 @@ const categoryFilter = document.getElementById("categoryFilter");
 
 async function loadProducts() {
   try {
-    const response = await fetch('Assets/books.json');
+    const response = await fetch('https://api.mbktechstudio.com/api/Unilib/Book');
     products = await response.json(); // Parse the JSON response directly
     filterProducts();
   } catch (error) {
@@ -57,7 +57,7 @@ searchInput.addEventListener("input", filterProducts);
 
 loadProducts();
 
-fetch("Assets/assigmentsNquiz.json")
+fetch("https://api.mbktechstudio.com/api/Unilib/QuizAss")
   .then((response) => response.json()) // Fetch the JSON data
   .then((data) => {
     const detailsContainer = document.getElementById("detailsContainer");

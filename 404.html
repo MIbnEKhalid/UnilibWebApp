@@ -16,11 +16,11 @@
     document.addEventListener('DOMContentLoaded', () => {
       const input = document.querySelector('input[name="access_key"]');
       if (input) {
-        input.value = apiKey_access_key; 
-       }
+        input.value = apiKey_access_key;
+      }
     });
   </script>
-</head> 
+</head>
 
 <header>
 
@@ -65,7 +65,7 @@
 <body>
   <div class="scroll-button">
     <a href="#about"><i class="fas fa-arrow-up"></i></a>
-</div>
+  </div>
   <section class="about" id="about">
 
     <div class="content">
@@ -139,19 +139,20 @@
 </body>
 
 <footer>
-
   <div class="text">
-
-    <span> © 2025 <a href="https://mbktechstudio.com/" target="_blank">MBK Tech Studio</a>. All Rights Reserved | <a
-        href="https://privacy.mbktechstudio.com/" target="_blank">Terms &amp; Conditions</a> | <a
-        href="https://mbktechstudio.com/FAQs" target="_blank">FAQs</a> | <a href="https://mbktechstudio.com/Support/"
-        target="_blank">Support &amp; Contact</a></span>
-
+    <span> © <span id="year"></span> <a href="https://github.com/MIbnEKhalid" target="_blank">Muhammad Bin
+        Khalid</a>.
+      All
+      Rights Reserved | <a href="https://privacy.mbktechstudio.com/" target="_blank">Terms &amp;
+        Conditions</a> | <a href="https://mbktechstudio.com/FAQs" target="_blank">FAQs</a> | <a
+        href="https://mbktechstudio.com/Support/" target="_blank">Support &amp; Contact</a></span>
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
   </div>
-
 </footer>
 <script src="https://mbktechstudio.com/Assets/Scripts/header.js"></script>
 <script src="https://mbktechstudio.com/Assets/Scripts/form.404.js"></script>
- 
 
-</html> 
+
+</html>

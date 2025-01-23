@@ -167,9 +167,11 @@
     </style>
     <section id="info">
         <div class="button field is-grouped" style="display: flex; justify-content: center; flex-wrap: wrap;">
-            <button style="margin: 5px;" class="button is-primary" onclick="openSupport('requestbook')">Request To Add Book</button>
+            <button style="margin: 5px;" class="button is-primary" onclick="openSupport('requestbook')">Request To Add
+                Book</button>
             <button class="button is-link" onclick="openAdminPanel()">Admin Panel</button>
-            <button style="margin: 5px;" class="button is-info" onclick="openSupport('requestquizass')">Request To Add Assignments or Quiz</button>
+            <button style="margin: 5px;" class="button is-info" onclick="openSupport('requestquizass')">Request To Add
+                Assignments or Quiz</button>
         </div>
         <div class="notification is-info">
             <p>
@@ -201,17 +203,17 @@
 -->
 
     <footer>
-
         <div class="text">
-
-            <span> © 2025 <a href="https://mbktechstudio.com/" target="_blank">MBK Tech Studio</a>. All Rights Reserved
-                | <a href="https://privacy.mbktechstudio.com/" target="_blank">Terms &amp; Conditions</a> | <a
-                    href="https://mbktechstudio.com/FAQs" target="_blank">FAQs</a> | <a
-                    href="https://mbktechstudio.com/Support/?Project=UnilibMIbnEKhalid" target="_blank">Support &amp;
-                    Contact</a></span>
-
+            <span> © <span id="year"></span> <a href="https://github.com/MIbnEKhalid" target="_blank">Muhammad Bin
+                    Khalid</a>.
+                All
+                Rights Reserved | <a href="https://privacy.mbktechstudio.com/" target="_blank">Terms &amp;
+                    Conditions</a> | <a href="https://mbktechstudio.com/FAQs" target="_blank">FAQs</a> | <a
+                    href="https://mbktechstudio.com/Support/" target="_blank">Support &amp; Contact</a></span>
+            <script>
+                document.getElementById('year').textContent = new Date().getFullYear();
+            </script>
         </div>
-
     </footer>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/intlTelInput-jquery.min.js"></script>
@@ -245,7 +247,7 @@
             window.open(`https://www.mbktechstudio.com/Support/#${id}`, '_blank');
         }
         function openAdminPanel() {
-            window.open(`AdminPanel/`, '_blank');
+            window.open(`https://portal.mbktechstudio.com/dashboard/`, '_blank');
         }
     </script>
     <script>
@@ -291,4 +293,4 @@
 
 </body>
 
-</html> 
+</html>

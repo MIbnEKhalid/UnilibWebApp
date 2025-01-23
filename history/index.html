@@ -88,25 +88,25 @@
         </script>
     </div>
     -->
-  <footer>
-
-    <div class="text">
-
-      <span> © 2025 <a href="https://mbktechstudio.com/" target="_blank">MBK Tech Studio</a>. All Rights Reserved
-        | <a href="https://privacy.mbktechstudio.com/" target="_blank">Terms &amp; Conditions</a> | <a
-          href="https://mbktechstudio.com/FAQs" target="_blank">FAQs</a> | <a href="https://mbktechstudio.com/Support/?Project=UnilibMIbnEKhalid"
-          target="_blank">Support &amp; Contact</a></span>
-
-
-    </div>
-
+    <footer>
+      <div class="text">
+          <span> © <span id="year"></span> <a href="https://github.com/MIbnEKhalid" target="_blank">Muhammad Bin
+                  Khalid</a>.
+              All
+              Rights Reserved | <a href="https://privacy.mbktechstudio.com/" target="_blank">Terms &amp;
+                  Conditions</a> | <a href="https://mbktechstudio.com/FAQs" target="_blank">FAQs</a> | <a
+                  href="https://mbktechstudio.com/Support/" target="_blank">Support &amp; Contact</a></span>
+          <script>
+              document.getElementById('year').textContent = new Date().getFullYear();
+          </script>
+      </div>
   </footer>
   <script src="https://mbktechstudio.com/Assets/Scripts/header.js"></script>
   <script src="https://mbktechstudio.com/Assets/Scripts/cookie.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/intlTelInput-jquery.min.js"></script>
   <script>
-     fetch('../Assets/assigmentsNquiz.json')
+     fetch('https://api.mbktechstudio.com/api/Unilib/QuizAss')
       .then(response => response.json()) // Fetch the JSON data
       .then(data => {
         const detailsContainer = document.getElementById('detailsContainer');
