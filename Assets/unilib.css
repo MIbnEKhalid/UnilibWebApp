@@ -1,124 +1,3 @@
-.search-bar {
-    display: flex;
-    align-items: center;
-    position: relative;
-    /* Needed to position the clear button */
-    margin: 0 auto;
-    border-radius: 9px;
-    background-color: #fff;
-    width: auto;
-    max-width: 400px;
-    height: 40px;
-    border: 2px solid #377a77;
-    overflow: hidden;
-}
-
-.search-bar input[type="text"] {
-    border: none;
-    outline: none;
-    padding: 10px;
-    flex: 1;
-}
-
-.search-bar .submit button {
-    background-color: #377a77;
-    border: none;
-    color: rgb(255, 255, 255);
-    padding: 19px;
-    cursor: pointer;
-    transition: all 0.5s ease;
-}
-
-.search-bar .submit button:hover {
-    background-color: rgb(233, 233, 233);
-    color: #377a77;
-    transition: all 0.4s ease;
-}
-
-
-/* Styles for the clear (cross) button */
-
-.clear-btn {
-    position: absolute;
-    right: 60px;
-    /* Adjust based on the size of your other button */
-    background: transparent;
-    border: none;
-    font-size: 16px;
-    color: #377a77;
-    cursor: pointer;
-    display: none;
-    /* Initially hidden */
-}
-
-.clear-btn:hover {
-    color: rgb(233, 233, 233);
-}
-
-
-/* Dropdown Container */
-
-.select-dropdown {
-    margin-bottom: 20px;
-    /* Adjust spacing */
-}
-
-
-/* Label Styling */
-
-.select-dropdown label {
-    font-size: 18px;
-    font-weight: bold;
-    color: #377a77;
-    display: block;
-    margin-bottom: 8px;
-    text-align: center;
-}
-
-
-/* Select Styling */
-
-.select-dropdown select {
-    appearance: none;
-    /* Remove default appearance */
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    width: 100%;
-    font-weight: 700;
-    max-width: 400px;
-    padding: 10px;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    margin: 0 auto;
-    border-radius: 9px;
-    border: 2px solid #377a77;
-    background-color: #fff;
-    color: #377a77;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.select-dropdown select:hover,
-.select-dropdown select:focus {
-    background-color: #377a77;
-    color: #fff;
-    border-color: #377a77;
-}
-
-
-/* Option Styling */
-
-.select-dropdown option {
-    background-color: #fff;
-    color: #377a77;
-    text-align: center;
-    text-align-last: center;
-}
-
-.select-dropdown option:hover {
-    background-color: #f1f1f1;
-}
 
 .filters {
     display: flex;
@@ -168,7 +47,7 @@ select {
     border: 2px solid #377a77;
     padding: 15px;
     border-radius: 10px;
-    background-color: #fff;
+    background-color: #333;
     text-align: center;
     max-width: 250px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
@@ -186,10 +65,7 @@ select {
 .products p {
     font-size: 12px;
 }
-
-.products:hover> :not(:hover) {
-    opacity: 1;
-}
+ 
 
 .product:hover {
     transform: scale(1.05);
@@ -252,7 +128,7 @@ select {
 
 .details {
     font-size: 18px;
-    background-color: #d1ecf1;
+    background-color: #333;
     padding: 10px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);

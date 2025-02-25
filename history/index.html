@@ -5,7 +5,8 @@
   <meta charset="UTF-8" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
   <title>Assigments & Quizes History Page</title>
-  <link rel="stylesheet" href="https://docs.mbktechstudio.com/Assets/project.css">
+  <link rel="stylesheet" href="https://mbktechstudio.com/Assets/Style/style.css">
+  <link rel="stylesheet" href="https://mbktechstudio.com/Assets/Style/doc.css">
   <link rel="stylesheet" href="../Assets/unilib.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
   <link rel="icon" type="image/x-icon" href="https://mbktechstudio.com/Assets/Images/Icon/dgicon.svg">
@@ -67,10 +68,8 @@
   </div>
   <section class="about" id="about">
     <div class="content">
-      <br><br>
       <div class="not"></div>
-      <h1 style="text-align: center; color: #2b5266;" id="assignments">Assigments & Quizes History</h1>
-      <br> <br>
+      <div class="title section-title"><span>Assigments & Quizes History</span></div>
       <div id="detailsContainer" class=" ">
         <!-- Assigments And Quiz will be dynamically inserted here -->
       </div>
@@ -88,18 +87,17 @@
         </script>
     </div>
     -->
-    <footer>
-      <div class="text">
-          <span> © <span id="year"></span> <a href="https://github.com/MIbnEKhalid" target="_blank">Muhammad Bin
-                  Khalid</a>.
-              All
-              Rights Reserved | <a href="https://privacy.mbktechstudio.com/" target="_blank">Terms &amp;
-                  Conditions</a> | <a href="https://mbktechstudio.com/FAQs" target="_blank">FAQs</a> | <a
-                  href="https://mbktechstudio.com/Support/" target="_blank">Support &amp; Contact</a></span>
-          <script>
-              document.getElementById('year').textContent = new Date().getFullYear();
-          </script>
-      </div>
+  <footer>
+    <div class="text">
+      <span> © <span id="year"></span> <a href="https://github.com/MIbnEKhalid" target="_blank">Muhammad Bin
+          Khalid</a>.
+        All
+        Rights Reserved | <a href="https://privacy.mbktechstudio.com/" target="_blank">Terms &amp;
+          Conditions</a> | <a href="https://mbktechstudio.com/FAQs" target="_blank">FAQs</a> | <a href="https://mbktechstudio.com/Support/" target="_blank">Support &amp; Contact</a></span>
+      <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+      </script>
+    </div>
   </footer>
   <script src="https://mbktechstudio.com/Assets/Scripts/header.js"></script>
   <script src="https://mbktechstudio.com/Assets/Scripts/cookie.js"></script>
@@ -107,7 +105,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/intlTelInput-jquery.min.js"></script>
   <script src="https://mbktechstudio.com/Assets/Scripts/social.js"></script>
   <script>
-     fetch('https://api.mbktechstudio.com/api/Unilib/QuizAss')
+    fetch('https://api.mbktechstudio.com/api/Unilib/QuizAss') // Fetch the JSON file
       .then(response => response.json()) // Fetch the JSON data
       .then(data => {
         const detailsContainer = document.getElementById('detailsContainer');
