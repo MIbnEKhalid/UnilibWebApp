@@ -6,7 +6,7 @@ const state = {
   totalPages: 1,
   totalItems: 0,
   currentFilters: {
-    semester: '',
+    semester: 'Semester2', // Default semester
     category: 'all',
     search: ''
   },
@@ -30,20 +30,32 @@ const elements = {
 
 // Initialize the application
 document.addEventListener("DOMContentLoaded", () => {
+  checkAndSetDefaultParams();
   parseUrlParameters();
   setupEventListeners();
   loadProducts();
 });
 
+// Check if URL has no parameters and set default semester
+function checkAndSetDefaultParams() {
+  const urlParams = new URLSearchParams(window.location.search);
+
+  // If no parameters at all, redirect with default semester
+  if (urlParams.toString() === '') {
+    urlParams.set('semester', 'Semester2');
+    window.history.replaceState({}, '', `${window.location.pathname}?${urlParams.toString()}`);
+  }
+}
+
 // Parse URL parameters and set initial state
 function parseUrlParameters() {
   const urlParams = new URLSearchParams(window.location.search);
-  
+
   state.currentPage = parseInt(urlParams.get('page')) || 1;
-  state.currentFilters.semester = urlParams.get('semester') || '';
+  state.currentFilters.semester = urlParams.get('semester') || 'Semester2'; // Default to Semester2
   state.currentFilters.category = urlParams.get('category') || 'all';
   state.currentFilters.search = urlParams.get('search') || '';
-  
+
   // Update UI to reflect URL parameters
   if (state.currentFilters.semester) {
     elements.semesterFilter.value = state.currentFilters.semester;
@@ -60,12 +72,12 @@ function parseUrlParameters() {
 // Update URL without reloading the page
 function updateUrl() {
   const urlParams = new URLSearchParams();
-  
+
   if (state.currentPage > 1) urlParams.set('page', state.currentPage);
   if (state.currentFilters.semester) urlParams.set('semester', state.currentFilters.semester);
   if (state.currentFilters.category !== 'all') urlParams.set('category', state.currentFilters.category);
   if (state.currentFilters.search) urlParams.set('search', state.currentFilters.search);
-  
+
   const newUrl = window.location.pathname + (urlParams.toString() ? `?${urlParams.toString()}` : '');
   window.history.pushState({}, '', newUrl);
 }
@@ -119,12 +131,12 @@ function setupLazyLoadingObserver() {
 // Enhanced loadProducts with caching and abort control
 async function loadProducts() {
   if (state.isLoading) return;
-  
+
   // Abort any pending request
   if (state.abortController) {
     state.abortController.abort();
   }
-  
+
   // Create cache key
   const cacheKey = JSON.stringify({
     page: state.currentPage,
@@ -132,7 +144,7 @@ async function loadProducts() {
     category: state.currentFilters.category,
     search: state.currentFilters.search
   });
-  
+
   // Check cache first
   if (state.cache.has(cacheKey)) {
     const cachedData = state.cache.get(cacheKey);
@@ -143,19 +155,19 @@ async function loadProducts() {
     renderPagination();
     return;
   }
-  
+
   // Rate limiting - don't make requests too frequently
   const now = Date.now();
   if (now - state.lastRequestTime < 300) { // 300ms debounce
     return;
   }
   state.lastRequestTime = now;
-  
+
   try {
     state.isLoading = true;
     elements.spinner.style.display = 'block';
     elements.productsContainer.innerHTML = '';
-    
+
     const params = new URLSearchParams({
       page: state.currentPage,
       limit: state.itemsPerPage,
@@ -163,46 +175,46 @@ async function loadProducts() {
       ...(state.currentFilters.category !== 'all' && { category: state.currentFilters.category }),
       ...(state.currentFilters.search && { search: state.currentFilters.search })
     });
-    
+
     // Set up abort controller for fetch
     state.abortController = new AbortController();
     const timeoutId = setTimeout(() => state.abortController.abort(), 8000);
-    
+
     const response = await fetch(`/api/Unilib/Book?${params.toString()}`, {
       signal: state.abortController.signal
     });
-    
+
     clearTimeout(timeoutId);
-    
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
+
     const data = await response.json();
-    
+
     // Update cache
     state.cache.set(cacheKey, data);
-    
+
     // Keep cache size manageable
     if (state.cache.size > 20) {
       const firstKey = state.cache.keys().next().value;
       state.cache.delete(firstKey);
     }
-    
+
     state.products = data.data || [];
     state.totalItems = data.pagination?.total || 0;
     state.totalPages = data.pagination?.pages || 1;
-    
+
     renderProducts();
     renderPagination();
-    
+
     // Prefetch next page if likely to be needed
     if (state.currentPage < state.totalPages) {
       const nextPageKey = JSON.stringify({
         page: state.currentPage + 1,
         ...state.currentFilters
       });
-      
+
       if (!state.cache.has(nextPageKey)) {
         setTimeout(() => prefetchPage(state.currentPage + 1), 1000);
       }
@@ -227,9 +239,9 @@ async function prefetchPage(page) {
     category: state.currentFilters.category,
     search: state.currentFilters.search
   });
-  
+
   if (state.cache.has(cacheKey)) return;
-  
+
   try {
     const params = new URLSearchParams({
       page,
@@ -238,7 +250,7 @@ async function prefetchPage(page) {
       ...(state.currentFilters.category !== 'all' && { category: state.currentFilters.category }),
       ...(state.currentFilters.search && { search: state.currentFilters.search })
     });
-    
+
     const response = await fetch(`/api/Unilib/Book?${params.toString()}`);
     const data = await response.json();
     state.cache.set(cacheKey, data);
@@ -255,10 +267,10 @@ function filterProducts() {
     category: elements.categoryFilter.value,
     search: elements.searchInput.value.toLowerCase()
   };
-  
+
   // Show/hide clear button
   elements.clearBtn.style.display = state.currentFilters.search.length > 0 ? 'block' : 'none';
-  
+
   updateUrl();
   loadProducts();
 }
@@ -279,7 +291,7 @@ function renderProducts() {
       </div>
     `;
     return;
-  } else{
+  } else {
     elements.productsContainer.style.display = 'grid';
   }
 
@@ -306,7 +318,7 @@ function renderProducts() {
   });
 
   elements.productsContainer.appendChild(fragment);
-  
+
   // Observe all lazy-loaded images
   document.querySelectorAll('img[data-src]').forEach(img => {
     observer.observe(img);
@@ -350,12 +362,12 @@ function createProductCard(product) {
 // Render pagination controls
 function renderPagination() {
   elements.pagination.innerHTML = '';
-  
+
   if (state.totalPages <= 1) {
     elements.paginationInfo.textContent = `Showing ${state.totalItems} item${state.totalItems !== 1 ? 's' : ''}`;
     return;
   }
-  
+
   // Previous button
   const prevButton = document.createElement('button');
   prevButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
@@ -370,16 +382,16 @@ function renderPagination() {
     }
   });
   elements.pagination.appendChild(prevButton);
-  
+
   // Page buttons
   const maxVisiblePages = 5;
   let startPage = Math.max(1, state.currentPage - Math.floor(maxVisiblePages / 2));
   let endPage = Math.min(state.totalPages, startPage + maxVisiblePages - 1);
-  
+
   if (endPage - startPage + 1 < maxVisiblePages) {
     startPage = Math.max(1, endPage - maxVisiblePages + 1);
   }
-  
+
   if (startPage > 1) {
     const firstButton = document.createElement('button');
     firstButton.textContent = '1';
@@ -391,7 +403,7 @@ function renderPagination() {
       scrollToResults();
     });
     elements.pagination.appendChild(firstButton);
-    
+
     if (startPage > 2) {
       const ellipsis = document.createElement('span');
       ellipsis.textContent = '...';
@@ -400,7 +412,7 @@ function renderPagination() {
       elements.pagination.appendChild(ellipsis);
     }
   }
-  
+
   for (let i = startPage; i <= endPage; i++) {
     const pageButton = document.createElement('button');
     pageButton.textContent = i;
@@ -417,7 +429,7 @@ function renderPagination() {
     });
     elements.pagination.appendChild(pageButton);
   }
-  
+
   if (endPage < state.totalPages) {
     if (endPage < state.totalPages - 1) {
       const ellipsis = document.createElement('span');
@@ -426,7 +438,7 @@ function renderPagination() {
       ellipsis.style.color = 'var(--text-secondary)';
       elements.pagination.appendChild(ellipsis);
     }
-    
+
     const lastButton = document.createElement('button');
     lastButton.textContent = state.totalPages;
     lastButton.title = 'Last page';
@@ -438,7 +450,7 @@ function renderPagination() {
     });
     elements.pagination.appendChild(lastButton);
   }
-  
+
   // Next button
   const nextButton = document.createElement('button');
   nextButton.innerHTML = '<i class="fas fa-chevron-right"></i>';
@@ -453,7 +465,7 @@ function renderPagination() {
     }
   });
   elements.pagination.appendChild(nextButton);
-  
+
   // Pagination info
   const startItem = ((state.currentPage - 1) * state.itemsPerPage) + 1;
   const endItem = Math.min(state.currentPage * state.itemsPerPage, state.totalItems);
@@ -490,7 +502,7 @@ function downloadResource(driveLink) {
 }
 
 // Reset all filters
-window.resetFilters = function() {
+window.resetFilters = function () {
   elements.semesterFilter.value = 'Semester2';
   elements.categoryFilter.value = 'all';
   elements.searchInput.value = '';
@@ -520,7 +532,7 @@ function showError(message) {
 // Debounce function for search input
 function debounce(func, wait) {
   let timeout;
-  return function() {
+  return function () {
     const context = this, args = arguments;
     clearTimeout(timeout);
     timeout = setTimeout(() => func.apply(context, args), wait);
