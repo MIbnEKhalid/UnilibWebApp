@@ -1,0 +1,125 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://portal.mbktechstudio.com/Assets/Style/Page.css" />
+    <script src="https://kit.fontawesome.com/0934e8e9d3.js" crossorigin="anonymous"></script>
+    <link rel="icon" type="image/x-icon" href="https://portal.mbktechstudio.com/Assets/Images/dgicon.svg" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://portal.mbktechstudio.com/Assets/Style/style.css" />
+    <script src="https://portal.mbktechstudio.com/Assets/Scripts/logout.js"></script>
+    <link rel="stylesheet" href="https://portal.mbktechstudio.com/Assets/Style/unilib.css">
+    <script src="https://portal.mbktechstudio.com/Assets/Scripts/main.js"></script>
+</head>
+<header>
+    <nav>
+        <div class="navbar">
+            <div class="logo">
+                <div class="image">
+                    <img src="https://portal.mbktechstudio.com/Assets/Images/dg.svg" alt="" />
+                </div>
+                <div class="text">
+                    <a href="/dashboard/">Unilib Portal</a>
+                </div>
+            </div>
+            <div class="logout-btn">
+                <div class="profile-menu">
+                    <i class="fa fa-user-circle" onclick="toggleProfileMenu()"></i>
+                    <div class="dropdown-content" id="profileDropdown">
+                        <a class="a1" style="text-align:center;">
+                            <div id="headerProfileUserName"></div>
+                        </a>
+                        <a class="a" href="https://portal.mbktechstudio.com/user/settings">Settings</a>
+                        <a class="a" onclick="logout()">Logout</a>
+                    </div>
+                </div>
+            </div>
+    </nav>
+</header>
+<script>
+    const headerElement = document.getElementById('headerProfileUserName');
+    headerElement.textContent = getCookieValue('username') || 'Not Logged In';
+    function toggleProfileMenu() {
+        const dropdown = document.getElementById('profileDropdown');
+        dropdown.style.display = dropdown.style.display === 'block'
+            ? 'none'
+            : 'block';
+    }
+    window.onclick = function (event) {
+        if (!event.target.matches('.fa')) {
+            const dropdowns = document.getElementsByClassName("dropdown-content");
+            for (let i = 0; i < dropdowns.length; i++) {
+                const openDropdown = dropdowns[i];
+                if (openDropdown.style.display === 'block') {
+                    openDropdown.style.display = 'none';
+                }
+            }
+        }
+    }
+
+</script>
+
+<body>
+
+    <section class="about" id="books">
+        <div class="content">
+            <div class="not"></div>
+            <a class="buttons" href="/dashboard/Book/Add">Add New Book</a>
+            <div class="title section-title"><span>Uni Course Materials</span></div>
+            <div class="filter">
+                <div class="select-dropdown">
+                    <select id="semesterFilter" name="topics">
+                        <option value="Semester1">Semester 1</option>
+                        <option value="Semester2" selected>Semester 2</option>
+                    </select>
+                </div>
+                <div class="select-dropdown">
+                    <select id="categoryFilter" name="topics">
+                        <option value="all">All</option>
+                        <option value="CourseBooks">Course Books</option>
+                        <option value="LabManuals">Lab Manuals</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="searchProduct" placeholder="Search Book Name...">
+                <div class="submit"><button type="submit"><i class="fas fa-search"></i></button></div>
+                <button type="button" id="clearSearch" class="clear-btn"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="spinner" class="spinner" style="display: block;"></div>
+
+            <div class="cards-container products">
+            </div>
+
+            <div class="pagination" id="pagination"></div>
+            <div class="pagination-info" id="paginationInfo"></div>
+        </div>
+    </section>
+
+    <script src="/Assets/Scripts/unilib.js"></script>
+</body>
+<footer>
+    <div class="text">
+        <span>
+            ©
+            <span id="year"></span>
+            <a href="https://mbktechstudio.com" target="_blank">MBK Tech Studio</a>.
+            All
+            Rights Reserved |
+            <a href="/info/Terms&Conditions" target="_blank">Terms &amp; Conditions</a>
+            |
+            <a href="/info/FAQs" target="_blank">FAQs</a>
+            | <a href="/info/Credits" target="_blank">Credits</a>
+            |
+            <a href="https://mbktechstudio.com/Support/" target="_blank">Support &amp; Contact</a>
+        </span>
+        <script>
+            document.getElementById('year').textContent = new Date().getFullYear();
+        </script>
+    </div>
+</footer>
+<script src="https://portal.mbktechstudio.com/Assets/Scripts/header.js"></script>
+
+</html>

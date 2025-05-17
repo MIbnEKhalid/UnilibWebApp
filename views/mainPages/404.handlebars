@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+{{> header }}
+
+<head>
+  <meta charset="UTF-8" />
+  <title>404 - Page Not Found</title>
+  <meta name="description" content="Oops! The page you're looking for doesn't exist. Return to MBK Tech Studio's home page or contact support for
+        assistance." />
+  <meta name="keywords" content="404, Page Not Found, MBK Tech Studio, Error Page" />
+  <meta property="og:title" content="404 - Page Not Found | MBK Tech Studio" />
+  <meta property="og:description" content="Oops! The page you're looking for doesn't exist. Return to MBK Tech Studio's home page or contact support for
+        assistance." />
+  <meta property="og:image" content="https://www.mbktechstudio.com/Assets/Images/Icon/404-error.png" />
+  <meta property="og:url" content="https://www.mbktechstudio.com/404.html" />
+  <meta property="og:type" content="website" />
+  <link rel="stylesheet" href="https://mbktechstudio.com/Assets/Style/404.css">
+  <link rel="stylesheet" href="https://mbktechstudio.com/Assets/Style/style.css">
+  <script src="https://mbktechstudio.com/Assets/Scripts/config.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const input = document.querySelector('input[name="access_key"]');
+      if (input) {
+        input.value = apiKey_access_key;
+      }
+    });
+  </script>
+</head>
+
+<body>
+  <div class="scroll-button">
+    <a href="#about">
+      <i class="fas fa-arrow-up"></i>
+    </a>
+  </div>
+  <section class="about" id="about">
+    <div class="content">
+      <img style="left: 50%; transform: translate(-50%, 0%); position: relative;" height="120px" width="140px"
+        src="https://mbktechstudio.com/Assets/Images/cat.png">
+      <div class="title">
+        <span>Error 404 - Page Not Found
+        </span>
+      </div>
+      <p style="text-align: center;">
+        The Page You Are Looking For Might Have Been Removed Or Temporarily UnAvailable.
+      </p>
+      <p>Requested Page:
+        <span id="display-path">Not Found</span>
+      </p>
+      <div class="button">
+        <a class="buttons" style="font-size: medium;" onclick="loadPage('home')">Go Home</a>
+        <a class="buttons" style="margin: 5px;" onclick="loadPage('Support')">Contact Form</a>
+      </div>
+    </div>
+  </section>
+</body>
+{{> footer }}
+<script>
+  function loadPage(url) {
+    if (url === "home") {
+      location.href = "/";
+    } else if (url === "Support") {
+      location.href =
+        "/Support?template=404&path=" +
+        window.location.pathname.replace(/\//g, "%2F");
+    }
+  }
+</script>
+
+</html>

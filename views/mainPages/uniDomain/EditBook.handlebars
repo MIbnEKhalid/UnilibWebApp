@@ -1,0 +1,285 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://portal.mbktechstudio.com/Assets/Style/Page.css" />
+    <script src="https://kit.fontawesome.com/0934e8e9d3.js" crossorigin="anonymous"></script>
+    <link rel="icon" type="image/x-icon" href="https://portal.mbktechstudio.com/Assets/Images/dgicon.svg" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://portal.mbktechstudio.com/Assets/Style/style.css" />
+    <script src="https://portal.mbktechstudio.com/Assets/Scripts/logout.js"></script>
+    <link rel="stylesheet" href="https://portal.mbktechstudio.com/Assets/Style/unilib.css">
+    <script src="https://portal.mbktechstudio.com/Assets/Scripts/main.js"></script>
+</head>
+<header>
+    <nav>
+        <div class="navbar">
+            <div class="logo">
+                <div class="image">
+                    <img src="https://portal.mbktechstudio.com/Assets/Images/dg.svg" alt="" />
+                </div>
+                <div class="text">
+                    <a href="/dashboard/">Unilib Portal</a>
+                </div>
+            </div>
+            <div class="logout-btn">
+                <div class="profile-menu">
+                    <i class="fa fa-user-circle" onclick="toggleProfileMenu()"></i>
+                    <div class="dropdown-content" id="profileDropdown">
+                        <a class="a1" style="text-align:center;">
+                            <div id="headerProfileUserName"></div>
+                        </a>
+                        <a class="a" href="https://portal.mbktechstudio.com/user/settings">Settings</a>
+                        <a class="a" onclick="logout()">Logout</a>
+                    </div>
+                </div>
+            </div>
+    </nav>
+</header>
+<script>
+    const headerElement = document.getElementById('headerProfileUserName');
+    headerElement.textContent = getCookieValue('username') || 'Not Logged In';
+    function toggleProfileMenu() {
+        const dropdown = document.getElementById('profileDropdown');
+        dropdown.style.display = dropdown.style.display === 'block'
+            ? 'none'
+            : 'block';
+    }
+    window.onclick = function (event) {
+        if (!event.target.matches('.fa')) {
+            const dropdowns = document.getElementsByClassName("dropdown-content");
+            for (let i = 0; i < dropdowns.length; i++) {
+                const openDropdown = dropdowns[i];
+                if (openDropdown.style.display === 'block') {
+                    openDropdown.style.display = 'none';
+                }
+            }
+        }
+    }
+
+</script>
+
+<body>
+
+    <br> 
+
+    <style>
+        .cards-container {
+            display: flex;
+        }
+
+        .book-card .actions {
+            justify-content: center;
+        }
+        .book-card{
+            max-width: 300px;
+        }
+    </style>
+
+    <section>
+        <div class="content">
+            <div class="cards-container products">
+                <article class="book-card linked" id="7">
+                    <a id="bookurl" href="{{book.link}}" target="_blank" aria-label="All">
+                        <img id="bookcover" src="{{book.imageURL}}" alt="Cover of All" loading="lazy">
+                    </a>
+                    <div class="Bdetails">
+                        <h3 id="bookname" data-org="{{book.name}}">{{book.name}}</h3>
+                        <p id="bookdesciption" data-org="{{book.name}}">{{book.description}}</p>
+                    </div>
+                    <div class="actions">
+                        <a id="bookurl1" href="{{book.link}}" target="_blank" class="btn btn-save" aria-label="View All">
+                            <i class="fas fa-eye" aria-hidden="true"></i> View
+                        </a>
+                    </div>
+                </article>
+            </div>
+            <div class="profile-container">
+                <div class="profile-header">
+                    <h2>Edit Book</h2>
+                </div>
+                <div class="profile-details">
+                    <form class="profile-form" id="addBookForm">
+
+                        <div class="form-group">
+                            <label for="name">
+                                <strong>Book Name:</strong>
+                            </label>
+                            <input type="text" value="{{book.name}}" data-org="{{book.name}}" id="name" name="name"
+                                required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="category">
+                                <strong>Category:</strong>
+                            </label>
+                            <select id="category" name="category" data-org="{{book.category}}" required>
+                                <option value="All" {{#if (eq book.category "All" )}}selected{{/if}}>All</option>
+                                <option value="CourseBooks" {{#if (eq book.category "CourseBooks" )}}selected{{/if}}>
+                                    CourseBooks</option>
+                                <option value="LabManuals" {{#if (eq book.category "LabManuals" )}}selected{{/if}}>
+                                    LabManuals</option>
+                                <option value="Other" {{#if (eq book.category "Other" )}}selected{{/if}}>Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">
+                                <strong>Description:</strong>
+                            </label>
+                            <input id="description" value="{{book.description}}" data-org="{{book.description}}"
+                                name="description" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="imageURL">
+                                <strong>Image URL:</strong>
+                            </label>
+                            <input id="imageURL" value="{{book.imageURL}}" data-org="{{book.imageURL}}" name="imageURL"
+                                required {{#unless (eq role "SuperAdmin" )}}readonly
+                                title="You Don't Have Permission To Change Img URL" {{/unless}} />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="link">
+                                <strong>Book Url:</strong>
+                            </label>
+                            <input type="url" value="{{book.link}}" data-org="{{book.link}}" id="link" name="link"
+                                required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="semester">
+                                <strong>Semester:</strong>
+                            </label>
+                            <select id="semester" name="semester" data-org="{{book.semester}}" required>
+                                <option value="Semester1" {{#if (eq book.semester "Semester1" )}}selected{{/if}}>
+                                    Semester1
+                                </option>
+                                <option value="Semester2" {{#if (eq book.semester "Semester2" )}}selected{{/if}}>
+                                    Semester2
+                                </option>
+                                <option value="Semester3" {{#if (eq book.semester "Semester3" )}}selected{{/if}}>
+                                    Semester3
+                                </option>
+                                <option value="Semester4" {{#if (eq book.semester "Semester4" )}}selected{{/if}}>
+                                    Semester4
+                                </option>
+                                <option value="Semester5" {{#if (eq book.semester "Semester5" )}}selected{{/if}}>
+                                    Semester5
+                                </option>
+                                <option value="Semester6" {{#if (eq book.semester "Semester6" )}}selected{{/if}}>
+                                    Semester6
+                                </option>
+                                <option value="Semester7" {{#if (eq book.semester "Semester7" )}}selected{{/if}}>
+                                    Semester7
+                                </option>
+                                <option value="Semester8" {{#if (eq book.semester "Semester8" )}}selected{{/if}}>
+                                    Semester8
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="main"><strong>Main:</strong></label>
+                            <select id="main" name="main" data-org="{{book.main}}" required>
+                                <option value="true" {{#if (eq book.main "true" )}}selected{{/if}}>True</option>
+                                <option value="false" {{#if (eq book.main "false" )}}selected{{/if}}>False</option>
+                            </select>
+                        </div>
+
+                        <button class="buttons full">Edit Book</button>
+                    </form>
+                </div>
+            </div>
+                  <script>
+        function updateBookCard() {
+          document.getElementById("bookname").textContent = document.getElementById("name").value;
+          document.getElementById("bookdesciption").textContent = document.getElementById("description").value;
+          document.getElementById("bookcover").src = document.getElementById("imageURL").value;
+          const url = document.getElementById("link").value;
+          document.getElementById("bookurl").href = url;
+          document.getElementById("bookurl1").href = url;
+
+          // Show/hide Main badge based on "main" value
+          const mainValue = document.getElementById("main").value;
+          const badge = document.querySelector(".book-card .badge");
+         
+        }
+
+        const fields = ["name", "description", "imageURL", "link", "main"];
+        fields.forEach(id => {
+          document.getElementById(id).addEventListener("input", updateBookCard);
+          document.getElementById(id).addEventListener("change", updateBookCard);
+        });
+
+        // Initialize card with default values
+        updateBookCard();
+      </script>
+            <script>
+                document.getElementById("addBookForm").addEventListener("submit", async (e) => {
+                    e.preventDefault();
+
+                    const formData = {
+                        name: document.getElementById("name").value,
+                        category: document.getElementById("category").value,
+                        description: document.getElementById("description").value,
+                        imageURL: document.getElementById("imageURL").value,
+                        link: document.getElementById("link").value,
+                        semester: document.getElementById("semester").value,
+                        main: document.getElementById("main").value,
+                    };
+
+                    try {
+                        const response = await fetch("/api/admin/Unilib/Book/Edit/{{id}}", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(formData),
+                        });
+
+                        const result = await response.json();
+                        if (response.ok) {
+                            alert(result.message);
+                            window.location.reload();
+                        } else {
+                            alert(result.error);
+                        }
+                    } catch (error) {
+                        console.error("Error adding book:", error);
+                        alert("Failed to add book");
+                    }
+                });
+            </script>
+        </div>
+    </section>
+
+</body>
+<br>
+<footer>
+    <div class="text">
+        <span>
+            ©
+            <span id="year"></span>
+            <a href="https://mbktechstudio.com" target="_blank">MBK Tech Studio</a>.
+            All
+            Rights Reserved |
+            <a href="/info/Terms&Conditions" target="_blank">Terms &amp; Conditions</a>
+            |
+            <a href="/info/FAQs" target="_blank">FAQs</a>
+            | <a href="/info/Credits" target="_blank">Credits</a>
+            |
+            <a href="https://mbktechstudio.com/Support/" target="_blank">Support &amp; Contact</a>
+        </span>
+        <script>
+            document.getElementById('year').textContent = new Date().getFullYear();
+        </script>
+    </div>
+</footer>
+
+<script src="https://portal.mbktechstudio.com/Assets/Scripts/header.js"></script>
+
+</html>
