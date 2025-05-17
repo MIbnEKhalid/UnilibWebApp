@@ -46,6 +46,10 @@ app.get("/", (req, res) => {
   return res.render("mainPages/uniDomain/index.handlebars");
 });
 
+app.get("/login", (req, res) => {
+  return res.render("mainPages/login.handlebars");
+});
+
 app.use("/", unilibRoutes);
 
 app.use((req, res) => {

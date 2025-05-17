@@ -2,36 +2,44 @@
   <div class="showmessageWindow">
     <h1></h1>
     <p></p>
-    <button class="showMessagebutton" style="font-size: 20px;margin-top: 10px;" onclick="hideMessage()">Okay</button>
+    <a href="" target="_blank" class="error-code"></a>
+    <button class="btn btn-save full" style="font-size: 20px; margin-top: 10px;" onclick="hideMessage()">Okay</button>
   </div>
 </div>
-
+<script>
+  //showMessage("Failed to load the page. Please try again later.", "Error", "404");
+  function showMessage(message, heading, errorCode) {
+    document.querySelector(".showmessageWindow h1").innerText = heading;
+    document.querySelector(".showmessageWindow p").innerHTML = message;
+    if (errorCode) {
+      document.querySelector(".showmessageWindow .error-code").style.display = "block";
+      document.querySelector(".showmessageWindow .error-code").innerText = `Error Code: ${errorCode}`;
+    } else {
+      document.querySelector(".showmessageWindow .error-code").style.display = "none";
+    }
+    document.querySelector(".showmessageWindow .error-code").href = `https://mbktechstudio.com/ErrorCode/#${errorCode}`;
+    document
+      .querySelector(".showMessageblurWindow")
+      .classList
+      .add("active");
+    document
+      .body
+      .classList
+      .add("blur-active");
+  }
+  function hideMessage() {
+    const blurWindow = document.querySelector(".showMessageblurWindow");
+    blurWindow.classList.add("fade-out");
+    setTimeout(() => {
+      blurWindow.classList.remove("active", "fade-out");
+      document
+        .body
+        .classList
+        .remove("blur-active");
+    }, 500);
+  }
+</script>
 <style>
-  .showMessagebutton {
-    outline: none;
-    padding: 4px 12px;
-    border-radius: 4px;
-    font-weight: 600;
-    background: #377a77;
-    color: #fff;
-    border: 2px solid transparent;
-    cursor: pointer;
-    transition: all 0.4s ease;
-    text-align: center;
-    width: 99%;
-  }
-
-  .showMessagebutton:visited {
-    color: white;
-  }
-
-  .showMessagebutton:hover {
-    border-color: #377a77;
-    background-color: transparent;
-    color: #377a77;
-    transition: all 0.3s ease;
-  }
-
   .showMessageblurWindow {
     position: fixed;
     top: 0;
@@ -43,7 +51,7 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(10px);
   }
 
   .showMessageblurWindow.active {
@@ -59,11 +67,14 @@
   }
 
   .showmessageWindow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     font-family: 'Roboto', sans-serif;
-    background: linear-gradient(135deg, #000, #111);
+    background: rgba(0, 0, 0, 0.6);
     padding: 20px 30px;
     border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     max-width: 90%;
     width: 600px;
     position: relative;
@@ -89,30 +100,20 @@
     color: #ddd;
   }
 
-  .messageInputField {
-    width: 100%;
-    padding: 7px 10px;
-    border: 2px solid #377a77;
-    border-radius: 5px;
-    font-size: 18px;
-    font-weight: bold;
-    background-color: #111;
-    color: #fff;
-    text-align: center;
+  .showmessageWindow .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 30px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    color: #bbb;
+    transition: color 0.3s;
   }
 
-  .messageInputField:hover {
-    border-color: #57c6c6;
-    background-color: #222;
-  }
-
-  .copyInstructions {
-    font-size: 14px;
-    color: #ddd;
-    margin-top: 5px;
-    display: block;
+  .showmessageWindow .close-btn:hover {
+    color: #fff;
   }
 
   @keyframes fadeIn {
@@ -127,6 +128,33 @@
     }
   }
 
+  .showmessageWindow .error-code {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    text-align: center;
+    color: #ff4d4d;
+    font-weight: 700;
+    margin: 10px auto;
+    padding: 5px 10px;
+    background: rgba(255, 77, 77, 0.1);
+    border: 1px solid #ff4d4d;
+    border-radius: 5px;
+    display: inline-block;
+    transition: all 0.3s ease-in;
+  }
+
+  .showmessageWindow .error-code:hover {
+    background: rgba(255, 77, 77, 0.2);
+    color: #007bff;
+    text-decoration: none;
+    transition: all 0.3s ease-out;
+  }
+
+
+  .showmessageWindow .btn-save {
+    width: 100%;
+  }
+
   @keyframes fadeOut {
     from {
       opacity: 1;
@@ -138,82 +166,4 @@
       transform: scale(0.9);
     }
   }
-
-  .ticketRow {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1px;
-    margin: 10px;
-  }
-
-  /* Optional: Adjust input field width in the ticket row */
-  .ticketRow .messageInputField {
-    width: auto;
-    min-width: 150px;
-  }
-
-  .ticketLabel {
-    padding: 7px 10px;
-    border-radius: 5px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #fff;
-    text-align: center;
-  }
 </style>
-
-<script>
-  function showMessage(message, heading) {
-    document.querySelector(".showmessageWindow h1").innerText = heading;
-    document.querySelector(".showmessageWindow p").innerHTML = message;
-    document
-      .querySelector(".showMessageblurWindow")
-      .classList
-      .add("active");
-    document.body.classList.add("blur-active");
-  }
-
-  function hideMessage() {
-    const blurWindow = document.querySelector(".showMessageblurWindow");
-    blurWindow.classList.add("fade-out");
-    setTimeout(() => {
-      blurWindow.classList.remove("active", "fade-out");
-      document.body.classList.remove("blur-active");
-    }, 500);
-  }
-
-  function copyValue(inputElement) {
-    inputElement.select(); // Select the value in the input field
-    navigator.clipboard.writeText(inputElement.value) // Copy the value to the clipboard
-      .then(() => {
-        showCopyNotification(`Copied to clipboard`);
-      })
-      .catch(err => {
-        console.error("Failed to copy text: ", err);
-      });
-  }
-
-  function showCopyNotification(message) {
-    const notification = document.createElement("div");
-    notification.innerText = message;
-    notification.style.position = "fixed";
-    notification.style.bottom = "5px";
-    notification.style.left = "50%";
-    notification.style.transform = "translateX(-50%)";
-    notification.style.background = "#377a77";
-    notification.style.color = "#fff";
-    notification.style.padding = "10px 20px";
-    notification.style.borderRadius = "5px";
-    notification.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";
-    notification.style.zIndex = "9999";
-    notification.style.fontSize = "14px";
-    notification.style.animation = "fadeOut 3s ease forwards";
-
-    document.body.appendChild(notification);
-
-    setTimeout(() => {
-      notification.remove();
-    }, 3000);
-  }
-</script>

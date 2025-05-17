@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
+  <title>500 - Internal Server Error</title>
+  <link rel="stylesheet" href="https://mbktechstudio.com/Assets/Style/404.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
+  <link rel="icon" type="image/x-icon" href="https://mbktechstudio.com/Assets/Images/Icon/dgicon.svg">
+  <script src="https://kit.fontawesome.com/0934e8e9d3.js" crossorigin="anonymous"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://mbktechstudio.com/Assets/Scripts/config.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const input = document.querySelector('input[name="access_key"]');
+      if (input) {
+        input.value = apiKey_access_key;
+      }
+    });
+  </script>
+</head>
+{{> header }}
+
+<body>
+  <div class="scroll-button">
+    <a href="#about">
+      <i class="fa fa-arrow-up"></i>
+    </a>
+  </div>
+  <section class="about" id="about">
+    <div class="content">
+      <img src="https://portal.mbktechstudio.com/Assets/cat-shooting.gif"
+        style="left: 50%; transform: translate(-50%, 0%); position: relative; height: 200px; width:400px;">
+      <div class="title">
+        <span>Internal Server Error</span>
+      </div>
+      <p style="text-align: center; color: #fff;">
+        {{error}}
+      </p>
+      <p style="color: #fff;">Requested Page:
+        <span id="display-path">Not Found</span>
+      </p>
+      <div class="button" style="gap: 5px; margin-top: 10px;">
+        <a class="buttons" style="font-size: 22px;" href="/home">Home</a>
+        <a class="buttons" style="font-size: 22px;" onclick="reloadPage()">Reload</a>
+      </div>
+    </div>
+  </section>
+</body>
+{{> footer }}
+<script src="https://mbktechstudio.com/Assets/Scripts/form.404.js"></script>
+
+</html>

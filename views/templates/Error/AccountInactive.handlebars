@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <title>Account Diabled</title>
+</head>
+{{> header }}
+
+<body>
+    <style>
+        section .title {
+            margin-bottom: 40px;
+            margin-top: 20px;
+        }
+
+        section .title span {
+            font-size: 30px;
+        }
+
+        .errorImg {
+            left: 50%;
+            transform: translate(-50%, 0%);
+            position: relative;
+            max-width: 100%;
+            height: auto;
+            box-shadow: rgba(255, 255, 255, 0.05) 0 6px 24px 0, rgba(255, 255, 255, 0.08) 0 0 0 1px;
+        }
+
+        .error-message {
+            display: block;
+            margin-top: 20px;
+            font-size: 18px;
+            color: #e74c3c;
+            text-align: center;
+        }
+
+        .role-info {
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #3498db;
+            text-align: center;
+        }
+    </style>
+    <section class="about" id="about">
+        <div class="content">
+            <img class="errorImg" src="https://portal.mbktechstudio.com/Assets/Images/Error/403.jpg">
+            <div class="title">
+                <span>You Account Has Been Diabled</span>
+            </div>
+            <div class="button">
+                <a class="buttons" style="font-size: 18px;" href="/login?redirect={{encodeURIComponent currentUrl}}">Go
+                    to Login Page</a>
+            </div>
+        </div>
+    </section>
+</body>
+{{> footer }}
+
+</html>

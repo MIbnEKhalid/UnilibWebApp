@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <title>Login</title>
+    <script src="https://portal.mbktechstudio.com/Assets/Scripts/logout.js"></script>
+    <meta name="description"
+        content="Log in to portal.mbktechstudio.com to access your resources and manage projects securely.">
+    <meta name="keywords" content="MBK Tech Studio, Web-Portal, Web, Portal, Admin-Panel, Admin, login">
+    <meta property="og:title" content="Portal Login | MBK Tech STudio" />
+    <meta property="og:image" content="https://www.mbktechstudio.com/Assets/Images/Icon/logo.png" />
+    <meta property="og:url" content="https://portal.mbktechstudio.com/login">
+    <script type="application/ld+json">
+            { "@context": "https://schema.org", "@type": "Organization", "name": "MBK Tech Studio", "url":
+            "https://portal.mbktechstudio.com/login", "logo": "https://www.mbktechstudio.com/Assets/Images/Icon/logo.png", "description":
+            "MBK Tech Studio: Log in to portal.mbktechstudio.com to access your resources and manage projects securely." }
+        </script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <style>
+        .info {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 14px;
+            color: #0c5460;
+            background-color: #d1ecf1;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 5px 15px;
+            margin-top: 5px;
+            font-weight: 500;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            line-height: 1.2;
+        }
+
+        .info span {
+            color: #007bff;
+            /* Highlight for the info icon */
+            margin-right: 8px;
+        }
+
+        section .button {
+            margin: 0 0 2px !important;
+        }
+
+        section .button button {
+            margin: 0 !important;
+        }
+
+        .back {
+            top: 0;
+            color: #fff;
+            position: absolute;
+            margin-top: 10px;
+            font-size: 20px;
+            transition: color 0.3s ease;
+        }
+
+        .back:hover {
+            color: rgb(185, 185, 185);
+            transition: color 0.3s ease;
+        }
+
+        @media(max-width: 1200px) {
+            .user-box label {
+                left: 2% !important;
+            }
+        }
+
+        @media(max-width: 1200px) {
+            .user-box label {
+                left: 2% !important;
+            }
+        }
+
+        .recaptcha-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 7px;
+        }
+    </style>
+
+
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="https://portal.mbktechstudio.com/Assets/Style/Page.css">
+    <script src="https://kit.fontawesome.com/0934e8e9d3.js" crossorigin="anonymous"></script>
+    <link rel="icon" type="image/x-icon" href="https://portal.mbktechstudio.com/Assets/Images/dgicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://portal.mbktechstudio.com/Assets/Style/main.css">
+    <link rel="stylesheet" href="https://portal.mbktechstudio.com/Assets/Style/style.css">
+    <script src="https://portal.mbktechstudio.com/Assets/Scripts/main.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<style>
+    nav {
+        z-index: 970 !important;
+        padding: 15px 0;
+    }
+
+    nav .navbar {
+        width: 94%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: auto;
+    }
+
+    nav .menu-btn {
+        top: 25px;
+    }
+
+    @media(max-width: 400px) {
+        nav .navbar .logo a {
+            font-size: 33px;
+        }
+
+        .logo img {
+            width: 11.3%;
+            height: 100%;
+        }
+
+        nav .menu-btn {
+            top: 22px;
+        }
+    }
+
+    @media(max-width: 350px) {
+        nav .navbar .logo a {
+            font-size: 27px;
+        }
+
+        .logo img {
+            width: 11%;
+            height: 100%;
+        }
+
+        nav .menu-btn {
+            top: 20px;
+        }
+    }
+
+    nav.sticky {
+        background: rgba(0, 0, 0, 0.3) !important;
+        backdrop-filter: blur(8px) !important;
+    }
+</style>
+<header>
+    <nav>
+        <div class="navbar">
+            <div class="logo">
+                <div class="image">
+                    <img src="https://portal.mbktechstudio.com/Assets/Images/dg.svg" alt="" />
+                </div>
+                <div class="text">
+                    <a href="{{#if path}}{{path}}{{else}}../{{/if}}">Portal</a>
+                </div>
+            </div>
+            <ul class="menu">
+                <div class="media-icons-m" id="media-icons-m">
+                    <a href="https://instagram.com/mbktech.studios" target="_blank">
+                        <i class="fab fa-instagram" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://www.facebook.com/people/MBK-Tech-Studio/61559079077988/" target="_blank">
+                        <i class="fab fa-facebook-f" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/muhammad-bin-khalid-89711b25b" target="_blank">
+                        <i class="fab fa-linkedin" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://x.com/ibnekhalid28" target="_blank">
+                        <i class="fab fa-twitter" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://github.com/MIbnEKhalid" target="_blank">
+                        <i class="fab fa-github" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://youtube.com/@mibnekhalid" target="_blank">
+                        <i class="fab fa-youtube" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://discord.gg/" target="_blank">
+                        <i class="fab fa-discord" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://signal.me/#eu/0Bxn3qmtp8gtYNuy6eJ_F3WaHWHrQW3uefaC2y01VCWtduFQCwJHvIFL6N4VOtsv"
+                        target="_blank">
+                        <i class="fa-brands fa-signal-messenger" aria-hidden="true"></i>
+                    </a>
+                </div>
+                <div class="cancel-btn">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </div>
+            </ul>
+            <div class="media-icons" id="media-icons">
+                <a href="https://instagram.com/mbktech.studios" target="_blank">
+                    <i class="fab fa-instagram" aria-hidden="true"></i>
+                </a>
+                <a href="https://www.facebook.com/people/MBK-Tech-Studio/61559079077988/" target="_blank">
+                    <i class="fab fa-facebook-f" aria-hidden="true"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/muhammad-bin-khalid-89711b25b" target="_blank">
+                    <i class="fab fa-linkedin" aria-hidden="true"></i>
+                </a>
+                <a href="https://x.com/ibnekhalid28" target="_blank">
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+                <a href="https://github.com/MIbnEKhalid" target="_blank">
+                    <i class="fab fa-github" aria-hidden="true"></i>
+                </a>
+                <a href="https://youtube.com/@mibnekhalid" target="_blank">
+                    <i class="fab fa-youtube" aria-hidden="true"></i>
+                </a>
+                <a href="https://discord.gg/" target="_blank">
+                    <i class="fab fa-discord" aria-hidden="true"></i>
+                </a>
+                <a href="https://signal.me/#eu/0Bxn3qmtp8gtYNuy6eJ_F3WaHWHrQW3uefaC2y01VCWtduFQCwJHvIFL6N4VOtsv"
+                    target="_blank">
+                    <i class="fa-brands fa-signal-messenger" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+        <div class="menu-btn">
+            <i class="fa fa-bars" aria-hidden="true"></i>
+        </div>
+    </nav>
+</header>
+
+<body>
+    <section class="about" id="about">
+        <div class="content">
+            <div class="portalbox">
+                <div class="title">
+                    <span style="font-size:30px;">Login Portal</span>
+                </div>
+                <form id="loginForm" action="/login" method="POST">
+                    <div class="back" onclick="loadpage('/')">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </div>
+                    <div class="user-box">
+                        <input id="loginUsername" type="text" name="username" required pattern="^[a-z0-9.]+$"
+                            title="Username must contain lowercase letters, numbers, and periods only, no spaces, no special characters."
+                            oninput="this.value = this.value.toLowerCase().replace(/[^a-z0-9.]/g, '')" />
+                        <label>User Name</label>
+                        <span class="info-icon" onclick="usernameinfo()">
+                            <i class="fa fa-info-circle"></i>
+                        </span>
+                    </div>
+                    <div class="user-box">
+                        <input id="loginPassword" type="password" name="Password" required="" />
+                        <label>Password</label>
+                        <span class="password-toggle-icon">
+                            <i class="fa fa-eye"></i>
+                        </span>
+                    </div>
+                    <div class="user-box" id="tokenCon" style="display: none;">
+                        <input id="token" type="text" class="no-spinner" name="token" pattern="\d{6}"
+                            title="Token must be exactly 6 digits" maxlength="6" minlength="6" />
+                        <label>Token</label>
+                        <span class="info-icon" onclick="tokeninfo()">
+                            <i class="fa fa-info-circle"></i>
+                        </span>
+                    </div>
+                    <div class="wrap">
+                        <div class="button">
+                            <button style="font-size: 17px;" type="submit">Login</button>
+                        </div>
+                    </div>
+                </form>
+                {{#if userLoggedIn }}
+                {{> notice/alreadyloggedin UserName=UserName }}
+                {{/if }}
+                <p class="info maincssp">
+                    <span class="">
+                        <i class="fa fa-info-circle"></i>
+                    </span>By Logging In, You Are Automatically Agreeing To Our
+                    <a class="links" href="/info/Terms&Conditions">Use Of Terms & Conditions
+                    </a>
+                </p>
+                <div class="recaptcha-container">
+                    <div class="g-recaptcha" data-theme="dark" data-sitekey="6LfhaPgqAAAAAPgOw7r3rNOHKKfh5d7K3MMJeUHo">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+<footer>
+    <style>
+        footer {
+            padding: 10px 2px;
+        }
+    </style>
+    <div class="text">
+        <span>
+            ©
+            <span id="year"></span>
+            <a href="https://mbktechstudio.com" target="_blank">MBK Tech Studio</a>.
+            All
+            Rights Reserved |
+            <a href="/info/Terms&Conditions" target="_blank">Terms &amp; Conditions</a>
+            |
+            <a href="/info/FAQs" target="_blank">FAQs</a>
+            | <a href="/info/Credits" target="_blank">Credits</a>
+            |
+            <a href="https://mbktechstudio.com/Support/" target="_blank">Support &amp; Contact</a>
+        </span>
+        <script>
+            document.getElementById('year').textContent = new Date().getFullYear();
+        </script>
+    </div>
+</footer>
+
+<script src="https://portal.mbktechstudio.com/Assets/Scripts/header.js"></script>
+<script>
+    function usernameinfo() {
+        showMessage(
+            '<div style="">If you are a member of the Mbk Tech Studio team, your username is the first part of your email address (e.' +
+            'g., for abc.xyz@mbktechstudio.com, your username is abc.xyz). If you are a guest or have forgotten your username and pas' +
+            'sword, please fill contact form at <a class="links" href="https://www.mbktechstudio.com/Support">mbktechstudio.com/Suppo' +
+            'rt</a> or contact me directly.<div>',
+            "What Is My Username?"
+        );
+    }
+    function tokeninfo() {
+        showMessage(
+            '<div style="">The 2FA token or Auth token is required for SuperAdmin and NormalAdmin to log in. Each user has been given' +
+            ' an Auth Code, which they can use to generate an Auth token using any Auth App.<div>',
+            "What Is Token?"
+        );
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const username = document.getElementById('loginUsername').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+        const token = document.getElementById('token').value.trim(); // 2FA token
+        let recaptchaResponse;
+
+        recaptchaResponse = grecaptcha.getResponse();
+
+        if (!username || !password) {
+            showMessage("Username and password cannot be empty", "Error");
+            return;
+        }
+        const loginButton = document.querySelector('button[type="submit"]');
+        loginButton.disabled = true;
+        loginButton.innerText = "Logging in.....";
+        fetch('/mbkauthe/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password, token, recaptcha: recaptchaResponse || null })
+        })
+            .then(response => {
+                loginButton.disabled = false;
+                loginButton.innerText = "Login";
+                return response.json().then(data => {
+                    if (response.ok) {
+                        return data;
+                    } else {
+                        throw new Error(data.message || "An error occurred");
+                    }
+                });
+            })
+            .then(data => {
+                if (data.success) {
+                    sessionStorage.setItem('sessionId', data.sessionId);
+                    clearAllCookies();
+                    const redirectUrl = new URLSearchParams(window.location.search).get('redirect');
+                    loginButton.innerText = "Redirecting.....";
+                    window.location.href = redirectUrl ? decodeURIComponent(redirectUrl) : '/home';
+                } else {
+                    grecaptcha.reset();
+                    showMessage(data.message, "Error");
+                    document.getElementById('loginMessage').innerText = data.message;
+                    if (data.code === 401 && data.message === "Invalid 2FA code") {
+                        console.log("data.message");
+                    }
+                }
+            })
+            .catch(error => {
+                grecaptcha.reset();
+                if (error.message === "Please Enter 2FA code") {
+                    showMessage("Please enter the 2FA code", "Error");
+                    const tokenCon = document.getElementById('tokenCon');
+                    const tokenInput = document.getElementById('token');
+                    tokenCon.style.display = "block";
+                    tokenInput.setAttribute('required', '');
+                } else {
+                    console.error('Error:', error);
+                    showMessage(error.message, "Error");
+                    loginButton.disabled = false;
+                    loginButton.innerText = "Login";
+                }
+            });
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+        const loginButton = document.querySelector('button[type="submit"]');
+        loginButton.innerText = "Login";
+    });
+    // Event listener for toggling password visibility
+    document.addEventListener('DOMContentLoaded', function () { // Set the value of the input field with the page URL
+        const passwordInput = document.getElementById('loginPassword');
+        const toggleIcon = document.querySelector('.password-toggle-icon');
+        toggleIcon.addEventListener('click', function () { // Toggle the type of the input field
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text'; // Show password
+                toggleIcon.innerHTML = '<i class="fa fa-eye-slash"></i>'; // Change icon to closed eye
+            } else {
+                passwordInput.type = 'password'; // Hide password
+                toggleIcon.innerHTML = '<i class="fa fa-eye"></i>'; // Change icon to open eye
+            }
+        });
+    });
+    const urlParams = new URLSearchParams(window.location.search);
+    const usernameFromUrl = urlParams.get('username');
+    const passwordFromUrl = urlParams.get('password');
+    if (usernameFromUrl && !document.getElementById('loginUsername').value) {
+        document.getElementById('loginUsername').value = usernameFromUrl;
+    }
+    if (passwordFromUrl && !document.getElementById('loginPassword').value) {
+        document.getElementById('loginPassword').value = passwordFromUrl;
+    }
+</script>
+
+</html>
