@@ -1,14 +1,12 @@
 import express from "express";
 import dotenv from "dotenv";
-import { dblogin } from "mbkauthe";
 import { validateSession, checkRolePermission, validateSessionAndRole } from "mbkauthe";
-let pool = dblogin;
-let pool1 = dblogin;
+import { pool } from "./pool.js";
 
 dotenv.config();
 const router = express.Router();
 
-router.get(["/dashboard/Unilib","/dashboard"], validateSessionAndRole("Any"), async (req, res) => {
+router.get(["/dashboard/Unilib", "/dashboard"], validateSessionAndRole("Any"), async (req, res) => {
   res.render("mainPages/uniDomain/Book.handlebars");
 });
 
@@ -18,7 +16,7 @@ router.get("/dashboard/Book/Edit/:id", validateSessionAndRole("Any"), async (req
       SELECT id, name, category, description, "imageURL", link, semester, main FROM "unilibbook"
       WHERE id = $1`;
   try {
-    const result = await dblogin.query(query, [bookId]);
+    const result = await pool.query(query, [bookId]);
     const book = result.rows[0];
     res.render("mainPages/uniDomain/EditBook.handlebars", { id: bookId, book, role: req.session.user.role });
   } catch (error) {
@@ -66,26 +64,19 @@ router.post("/api/admin/Unilib/Book/Add", validateSessionAndRole("Any"), async (
   const { name, category, description, imageURL, link, semester, main } = req.body;
 
   try {
-    // Fetch the last id from the table
-    const lastIdQuery = `SELECT MAX(id) AS lastId FROM "unilibbook"`;
-    const lastIdResult = await dblogin.query(lastIdQuery);
-    const lastId = lastIdResult.rows[0].lastid || 0; // Default to 0 if no rows exist
-    const newId = lastId + 1;
-
-    // Insert the new book with the incremented id
     const query = `
-      INSERT INTO "unilibbook" (id, name, category, description, "imageURL", link, semester, main)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      INSERT INTO "unilibbook" (name, category, description, "imageURL", link, semester, main)
+      VALUES ($1, $2, $3, $4, $5, $6, $7);
     `;
-    const values = [newId, name, category, description, imageURL, link, semester, main];
+    const values = [name, category, description, imageURL, link, semester, main];
 
     console.log("Executing query:", query);
     console.log("With values:", values);
 
-    await dblogin.query(query, values);
+    await pool.query(query, values);
     console.log("Book added successfully to the database.");
 
-    res.status(201).json({ message: "Book added successfully!", id: newId });
+    res.status(201).json({ message: "Book added successfully!" });
   } catch (error) {
     console.error("Error adding book:", error);
     res.status(500).json({ error: "Failed to add book" });
@@ -93,47 +84,47 @@ router.post("/api/admin/Unilib/Book/Add", validateSessionAndRole("Any"), async (
 });
 
 router.get("/api/Unilib/Book", async (req, res) => {
-    console.log("UnilibBook Api Request processed successfully");
+  console.log("UnilibBook Api Request processed successfully");
   try {
     const { page = 1, limit = 10, semester, category, search } = req.query;
     const offset = (page - 1) * limit;
-    
+
     let query = 'SELECT * FROM unilibbook';
     let conditions = [];
     let params = [];
-    
+
     if (semester) {
       conditions.push(`semester = $${params.length + 1}`);
       params.push(semester);
     }
-    
+
     if (category && category !== 'all') {
       conditions.push(`category = $${params.length + 1}`);
       params.push(category);
     }
-    
+
     if (search) {
       conditions.push(`name ILIKE $${params.length + 1}`);
       params.push(`%${search}%`);
     }
-    
+
     if (conditions.length) {
       query += ' WHERE ' + conditions.join(' AND ');
     }
-    
+
     // Add sorting (main books first, then by name)
     query += ' ORDER BY main DESC, name ASC';
-    
+
     // Add pagination
     const countQuery = `SELECT COUNT(*) FROM (${query}) as total`;
     query += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
     params.push(limit, offset);
-    
-    const result = await pool1.query(query, params);
-    const countResult = await pool1.query(countQuery, params.slice(0, -2));
+
+    const result = await pool.query(query, params);
+    const countResult = await pool.query(countQuery, params.slice(0, -2));
     const total = parseInt(countResult.rows[0].count);
     const pages = Math.ceil(total / limit);
-    
+
     res.json({
       data: result.rows,
       pagination: {

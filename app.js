@@ -15,8 +15,17 @@ const __dirname = path.dirname(__filename);
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(compression());
+
+app.use(
+  "/Assets/Images",
+  express.static(path.join(__dirname, "public/Assets/Images"), {
+    maxAge: "7d" // Cache for 7 days
+  })
+);
+
+// Serve all other static files (no cache or default)
 app.use("/", express.static(path.join(__dirname, "public/")));
-app.use('/static', express.static(path.join(__dirname, 'node_modules')));
 
 Handlebars.registerHelper('eq', function (a, b) {
   return a === b;
@@ -24,10 +33,7 @@ Handlebars.registerHelper('eq', function (a, b) {
 Handlebars.registerHelper('encodeURIComponent', function (str) {
   return encodeURIComponent(str);
 });
-Handlebars.registerHelper('conditionalEnv', function (trueResult, falseResult) {
-  console.log(`Checking conditionalEnv: ${process.env.localenv}`);
-  return process.env.localenv ? trueResult : falseResult;
-});
+
 // Configure Handlebars
 app.engine("handlebars", engine({
   defaultLayout: false,
