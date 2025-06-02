@@ -6,8 +6,83 @@ import { pool } from "./pool.js";
 dotenv.config();
 const router = express.Router();
 
-router.get(["/dashboard/Unilib", "/dashboard"], validateSessionAndRole("Any"), async (req, res) => {
-  res.render("mainPages/uniDomain/Book.handlebars");
+router.get(["/", "/dashboard/Unilib", "/dashboard"], async (req, res) => {
+  const path = req.path;
+  try {
+    const { page = 1, limit = 12, semester = 'Semester2', category = 'all', search = '' } = req.query;
+    const offset = (page - 1) * limit;
+
+    let query = 'SELECT * FROM unilibbook';
+    let conditions = [];
+    let params = [];
+
+    if (semester) {
+      conditions.push(`semester = $${params.length + 1}`);
+      params.push(semester);
+    }
+
+    if (category && category !== 'all') {
+      conditions.push(`category = $${params.length + 1}`);
+      params.push(category);
+    }
+
+    if (search) {
+      conditions.push(`name ILIKE $${params.length + 1}`);
+      params.push(`%${search}%`);
+    }
+
+    if (conditions.length) {
+      query += ' WHERE ' + conditions.join(' AND ');
+    }
+
+    query += ' ORDER BY main DESC, name ASC';
+
+    const countQuery = `SELECT COUNT(*) FROM (${query}) as total`;
+    query += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+    params.push(limit, offset);
+
+    const result = await pool.query(query, params);
+    const countResult = await pool.query(countQuery, params.slice(0, -2));
+    const total = parseInt(countResult.rows[0].count);
+    const pages = Math.ceil(total / limit);
+
+    if (path === "/") {
+      res.render("mainPages/uniDomain/index.handlebars", {
+        books: result.rows,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages
+        },
+        filters: {
+          semester,
+          category,
+          search
+        },
+      });
+    } else if (path === "/dashboard/Unilib" || path === "/dashboard") {
+      res.render("mainPages/uniDomain/Book.handlebars", {
+        books: result.rows,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages
+        },
+        filters: {
+          semester,
+          category,
+          search
+        },
+      });
+    }
+
+
+  } catch (err) {
+    console.error("Error fetching books:", err);
+    res.status(500).send("Internal Server Error: " + err);
+  }
 });
 
 router.get("/dashboard/Book/Edit/:id", validateSessionAndRole("Any"), async (req, res) => {
@@ -80,63 +155,6 @@ router.post("/api/admin/Unilib/Book/Add", validateSessionAndRole("Any"), async (
   } catch (error) {
     console.error("Error adding book:", error);
     res.status(500).json({ error: "Failed to add book" });
-  }
-});
-
-router.get("/api/Unilib/Book", async (req, res) => {
-  console.log("UnilibBook Api Request processed successfully");
-  try {
-    const { page = 1, limit = 10, semester, category, search } = req.query;
-    const offset = (page - 1) * limit;
-
-    let query = 'SELECT * FROM unilibbook';
-    let conditions = [];
-    let params = [];
-
-    if (semester) {
-      conditions.push(`semester = $${params.length + 1}`);
-      params.push(semester);
-    }
-
-    if (category && category !== 'all') {
-      conditions.push(`category = $${params.length + 1}`);
-      params.push(category);
-    }
-
-    if (search) {
-      conditions.push(`name ILIKE $${params.length + 1}`);
-      params.push(`%${search}%`);
-    }
-
-    if (conditions.length) {
-      query += ' WHERE ' + conditions.join(' AND ');
-    }
-
-    // Add sorting (main books first, then by name)
-    query += ' ORDER BY main DESC, name ASC';
-
-    // Add pagination
-    const countQuery = `SELECT COUNT(*) FROM (${query}) as total`;
-    query += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
-    params.push(limit, offset);
-
-    const result = await pool.query(query, params);
-    const countResult = await pool.query(countQuery, params.slice(0, -2));
-    const total = parseInt(countResult.rows[0].count);
-    const pages = Math.ceil(total / limit);
-
-    res.json({
-      data: result.rows,
-      pagination: {
-        page: parseInt(page),
-        limit: parseInt(limit),
-        total,
-        pages
-      }
-    });
-  } catch (err) {
-    console.error("Error fetching books:", err);
-    res.status(500).send("Internal Server Error: " + err);
   }
 });
 

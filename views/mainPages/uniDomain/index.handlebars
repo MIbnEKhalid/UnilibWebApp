@@ -8,6 +8,7 @@
   <title>Uni Books Home Page</title>
 </head>
 
+
 <style>
   :root {
     --primary-accent: #377a77;
@@ -263,26 +264,8 @@
   }
 </style>
 
-<div id="cookie"></div>
 
 <body>
-
-  <div class="scroll-button">
-    <a href="#books"><i class="fas fa-arrow-up"></i></a>
-  </div>
-
-  <aside class="sidebar sidebar-collapsed" id="sidebar">
-    <div class="sidebar-toggle" id="sidebar-toggle">
-      <i class="fas fa-chevron-left"></i>
-    </div>
-    <div class="sidebar-content">
-      <h2>Quick Links</h2>
-      <ul>
-        <li><a href="#books">Books</a></li>
-        <li><a href="/dashboard/">Admin Panel</a></li>
-      </ul>
-    </div>
-  </aside>
 
   <section class="about" id="books">
     <div class="content">
@@ -290,36 +273,106 @@
       <div class="title section-title"><span>Uni Course Materials</span></div>
       <div class="filter">
         <div class="select-dropdown">
-          <select id="semesterFilter" name="topics">
-            <option value="Semester1">Semester 1</option>
-            <option value="Semester2" selected>Semester 2</option>
+          <select id="semesterFilter" name="topics" onchange="filterProducts()">
+            <option value="Semester1" {{#if (eq filters.semester 'Semester1' )}}selected{{/if}}>Semester 1</option>
+            <option value="Semester2" {{#if (eq filters.semester 'Semester2' )}}selected{{/if}}>Semester 2</option>
           </select>
         </div>
         <div class="select-dropdown">
-          <select id="categoryFilter" name="topics">
-            <option value="all">All</option>
-            <option value="CourseBooks">Course Books</option>
-            <option value="LabManuals">Lab Manuals</option>
-            <option value="other">Other</option>
+          <select id="categoryFilter" name="topics" onchange="filterProducts()">
+            <option value="all" {{#if (eq filters.category 'all' )}}selected{{/if}}>All</option>
+            <option value="CourseBooks" {{#if (eq filters.category 'CourseBooks' )}}selected{{/if}}>Course Books
+            </option>
+            <option value="LabManuals" {{#if (eq filters.category 'LabManuals' )}}selected{{/if}}>Lab Manuals</option>
+            <option value="other" {{#if (eq filters.category 'other' )}}selected{{/if}}>Other</option>
           </select>
         </div>
       </div>
       <div class="search-bar">
-        <input type="text" id="searchProduct" placeholder="Search Book Name...">
-        <div class="submit"><button type="submit"><i class="fas fa-search"></i></button></div>
-        <button type="button" id="clearSearch" class="clear-btn"><i class="fas fa-times"></i></button>
+        <input type="text" id="searchProduct" placeholder="Search Book Name..." value="{{filters.search}}"
+          oninput="debounce(filterProducts, 500)()">
+        <div class="submit"><button type="submit" onclick="filterProducts()"><i class="fas fa-search"></i></button>
+        </div>
+        <button type="button" id="clearSearch" class="clear-btn"
+          style="display: {{#if filters.search}}block{{else}}none{{/if}};" onclick="clearSearch()"><i
+            class="fas fa-times"></i></button>
       </div>
-      <div id="spinner" class="spinner" style="display: block;"></div>
+      <div id="spinner" class="spinner" style="display: none;"></div>
 
-      <div class="cards-container products">
+      <div class="cards-container products" style="{{#if books}}display: grid;{{else}}display: flex;{{/if}}">
+        {{#if books}}
+        {{#each books}}
+        <article class="book-card linked" id="{{this.id}}">
+          {{#if this.main}}
+          <div class="badge" aria-label="Main resource">Main</div>
+          {{/if}}
+          <a href="{{this.link}}" aria-label="{{this.name}}" target="_blank" rel="noopener noreferrer">
+            <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" loading="lazy" class="lazy-load">
+          </a>
+          <div class="Bdetails">
+            <h3>{{this.name}}</h3>
+            <p>{{this.description}}</p>
+          </div>
+          <div class="actions">
+            <a href="{{this.link}}" class="btn btn-save" aria-label="View {{this.name}}" target="_blank"
+              rel="noopener noreferrer">
+              <i class="fas fa-eye" aria-hidden="true"></i> View
+            </a>
+            <button onclick="downloadResource('{{this.link}}')" class="btn btn-save"
+              aria-label="Download {{this.name}}">
+              <i class="fas fa-download" aria-hidden="true"></i> Download
+            </button>
+          </div>
+        </article>
+        {{/each}}
+        {{else}}
+        <div class="no-results">
+          <i class="fas fa-book-open" style="font-size: 3rem; margin-bottom: 1rem; color: var(--text-secondary);"></i>
+          <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">No materials found matching your criteria</p>
+          <button class="btn btn-save" onclick="resetFilters()" style="margin: 0 auto;">
+            <i class="fas fa-filter"></i> Reset Filters
+          </button>
+        </div>
+        {{/if}}
       </div>
 
-      <div class="pagination" id="pagination"></div>
-      <div class="pagination-info" id="paginationInfo"></div>
+      <div class="pagination" id="pagination">
+        {{#if (gt pagination.pages 1)}}
+        <button {{#if (eq pagination.page 1)}}disabled{{/if}} onclick="goToPage({{subtract pagination.page 1}})"
+          title="Previous page">
+          <i class="fas fa-chevron-left"></i>
+        </button>
 
+        {{#if (gt pagination.page 2)}}
+        <button onclick="goToPage(1)" title="First page">1</button>
+        {{#if (gt pagination.page 3)}}
+        <span style="padding: 0 10px; color: var(--text-secondary);">...</span>
+        {{/if}}
+        {{/if}}
+
+        {{#each (range (max 1 (subtract pagination.page 2)) (min pagination.pages (add pagination.page 2)))}}
+        <button {{#if (eq this ../pagination.page)}}class="active" disabled{{/if}} onclick="goToPage({{this}})"
+          title="Page {{this}}">{{this}}</button>
+        {{/each}}
+
+        {{#if (lt pagination.page (subtract pagination.pages 1))}}
+        <span style="padding: 0 10px; color: var(--text-secondary);">...</span>
+        <button onclick="goToPage({{pagination.pages}})" title="Last page">{{pagination.pages}}</button>
+        {{/if}}
+
+        <button {{#if (eq pagination.page pagination.pages)}}disabled{{/if}}
+          onclick="goToPage({{add pagination.page 1}})" title="Next page">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        {{/if}}
+      </div>
+      <div class="pagination-info" id="paginationInfo">
+        Showing {{add (multiply (subtract pagination.page 1) pagination.limit) 1}}-{{min (multiply pagination.page
+        pagination.limit) pagination.total}} of {{pagination.total}} item{{#if (gt pagination.total 1)}}s{{/if}}
+      </div>
     </div>
   </section>
-
+  
   <div class="section-separator1"></div>
 
   <section id="info">
@@ -335,11 +388,12 @@
       </p>
     </div>
   </section>
-
-  {{> footer }}
-
-  <script src="/Assets/unilib.js"></script>
+  <script src="/Assets/Scripts/unilib.js"></script>
+  <script src="https://portal.mbktechstudio.com/Assets/Scripts/header.js"></script>
 
 </body>
+
+
+{{> footer }}
 
 </html>
