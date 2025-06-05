@@ -6,83 +6,68 @@ import { pool } from "./pool.js";
 dotenv.config();
 const router = express.Router();
 
-router.get(["/", "/dashboard/Unilib", "/dashboard"], async (req, res) => {
-  const path = req.path;
+router.get("/dashboard", async (req, res) => {
+  res.redirect("/dashboard/Unilib");
+});
+
+// define a reusable handler function
+async function renderUnilibBooks(req, res, view) {
+  const { page = 1, limit = 12, semester = 'Semester2', category = 'all', search = '' } = req.query;
+  const offset = (page - 1) * limit;
+  let query = 'SELECT * FROM unilibbook';
+  const conditions = [];
+  const params = [];
+
+  if (semester) {
+    conditions.push(`semester = $${params.length + 1}`);
+    params.push(semester);
+  }
+  if (category !== 'all') {
+    conditions.push(`category = $${params.length + 1}`);
+    params.push(category);
+  }
+  if (search) {
+    conditions.push(`name ILIKE $${params.length + 1}`);
+    params.push(`%${search}%`);
+  }
+  if (conditions.length) {
+    query += ' WHERE ' + conditions.join(' AND ');
+  }
+  query += ' ORDER BY main DESC, name ASC';
+
+  const countQuery = `SELECT COUNT(*) FROM (${query}) AS total`;
+  query += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+  params.push(limit, offset);
+
   try {
-    const { page = 1, limit = 12, semester = 'Semester2', category = 'all', search = '' } = req.query;
-    const offset = (page - 1) * limit;
-
-    let query = 'SELECT * FROM unilibbook';
-    let conditions = [];
-    let params = [];
-
-    if (semester) {
-      conditions.push(`semester = $${params.length + 1}`);
-      params.push(semester);
-    }
-
-    if (category && category !== 'all') {
-      conditions.push(`category = $${params.length + 1}`);
-      params.push(category);
-    }
-
-    if (search) {
-      conditions.push(`name ILIKE $${params.length + 1}`);
-      params.push(`%${search}%`);
-    }
-
-    if (conditions.length) {
-      query += ' WHERE ' + conditions.join(' AND ');
-    }
-
-    query += ' ORDER BY main DESC, name ASC';
-
-    const countQuery = `SELECT COUNT(*) FROM (${query}) as total`;
-    query += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
-    params.push(limit, offset);
-
     const result = await pool.query(query, params);
     const countResult = await pool.query(countQuery, params.slice(0, -2));
-    const total = parseInt(countResult.rows[0].count);
+    const total = parseInt(countResult.rows[0].count, 10);
     const pages = Math.ceil(total / limit);
 
-    if (path === "/") {
-      res.render("mainPages/uniDomain/index.handlebars", {
-        books: result.rows,
-        pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
-          total,
-          pages
-        },
-        filters: {
-          semester,
-          category,
-          search
-        },
-      });
-    } else if (path === "/dashboard/Unilib" || path === "/dashboard") {
-      res.render("mainPages/uniDomain/Book.handlebars", {
-        books: result.rows,
-        pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
-          total,
-          pages
-        },
-        filters: {
-          semester,
-          category,
-          search
-        },
-      });
-    }
-
-
+    return res.render(view, {
+      books: result.rows,
+      pagination: {
+        page: parseInt(page, 10),
+        limit: parseInt(limit, 10),
+        total,
+        pages
+      },
+      filters: { semester, category, search }
+    });
   } catch (err) {
     console.error("Error fetching books:", err);
-    res.status(500).send("Internal Server Error: " + err);
+    return res.status(500).send("Internal Server Error");
   }
+}
+
+// separate routes that reuse the handler
+router.get("/", async (req, res) => {
+  await renderUnilibBooks(req, res, "mainPages/uniDomain/index.handlebars");
+});
+
+router.get("/dashboard/Unilib", validateSessionAndRole("any"), async (req, res) => {
+  await renderUnilibBooks(req, res, "mainPages/uniDomain/Book.handlebars");
 });
 
 router.get("/dashboard/Book/Edit/:id", validateSessionAndRole("Any"), async (req, res) => {
