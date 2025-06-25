@@ -34,7 +34,8 @@ app.engine("handlebars", engine({
   partialsDir: [
     path.join(__dirname, "views/templates"),
     path.join(__dirname, "views/notice"),
-    path.join(__dirname, "views")
+    path.join(__dirname, "views"),
+    path.join(__dirname, "node_modules/mbkauthe/views"),
   ], cache: false,
   helpers: {
     eq: function (a, b) {
@@ -65,7 +66,10 @@ app.engine("handlebars", engine({
   }
 }));
 app.set("view engine", "handlebars");
-app.set("views", path.join(__dirname, "views"));
+app.set("views", [
+  path.join(__dirname, "views"),
+  path.join(__dirname, "node_modules/mbkauthe/views")
+]);
 app.use(mbkautheRouter);
 
 
