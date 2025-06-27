@@ -161,6 +161,54 @@ window.downloadResource = function (driveLink) {
     }
 };
 
+// Share book handler
+window.shareBook = function (bookId, bookName) {
+    const bookUrl = `${window.location.origin}/book/${bookId}`;
+    
+    if (navigator.share) {
+        // Use native Web Share API if available
+        navigator.share({
+            title: bookName,
+            text: `Check out this book: ${bookName}`,
+            url: bookUrl
+        }).catch(error => {
+            console.log('Error sharing:', error);
+            fallbackShare(bookUrl, bookName);
+        });
+    } else {
+        fallbackShare(bookUrl, bookName);
+    }
+};
+
+// Fallback share function
+function fallbackShare(url, title) {
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => {
+            showSuccessMessage(`Link copied to clipboard: ${title}`);
+        }).catch(() => {
+            promptCopy(url);
+        });
+    } else {
+        promptCopy(url);
+    }
+}
+
+// Prompt user to copy manually
+function promptCopy(url) {
+    const textArea = document.createElement('textarea');
+    textArea.value = url;
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        showSuccessMessage('Link copied to clipboard!');
+    } catch (err) {
+        console.error('Failed to copy: ', err);
+        showError('Failed to copy link. Please copy manually: ' + url);
+    }
+    document.body.removeChild(textArea);
+}
+
 // Show error message
 function showError(message) {
     const errorElement = document.createElement("div");
@@ -171,6 +219,37 @@ function showError(message) {
   `;
     document.querySelector(".not").appendChild(errorElement);
     setTimeout(() => errorElement.remove(), 5000);
+}
+
+// Show success message
+function showSuccessMessage(message) {
+    const successElement = document.createElement("div");
+    successElement.classList.add("notification", "is-success");
+    successElement.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--success);
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        z-index: 10000;
+        animation: slideInRight 0.3s ease;
+    `;
+    successElement.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-check-circle"></i>
+            <span>${message}</span>
+            <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; margin-left: 1rem;">&times;</button>
+        </div>
+    `;
+    document.body.appendChild(successElement);
+    setTimeout(() => {
+        if (successElement.parentNode) {
+            successElement.remove();
+        }
+    }, 5000);
 }
 
 // Debounce function

@@ -61,8 +61,19 @@ async function renderUnilibBooks(req, res, view) {
   }
 }
 
-// separate routes that reuse the handler
+// Route for '/' with caching
 router.get("/", async (req, res) => {
+  // Normalize query parameters for consistent cache keys
+  const { page = '1', limit = '12', semester = 'Semester2', category = 'all', search = '' } = req.query;
+  const queryString = new URLSearchParams({ page, limit, semester, category, search }).toString();
+
+  // Set Cache-Control and Vary headers for 2-minute edge caching
+  res.set({
+    'Cache-Control': 'public, max-age=120, s-maxage=120, stale-while-revalidate=60',
+    'Vary': 'Accept-Encoding, X-Query-Params',
+    'X-Query-Params': queryString
+  });
+
   await renderUnilibBooks(req, res, "mainPages/uniDomain/index.handlebars");
 });
 
@@ -143,4 +154,41 @@ router.post("/api/admin/Unilib/Book/Add", validateSessionAndRole("Any"), async (
   }
 });
 
-export default router; 
+// Route for single book view '/book/:id'
+router.get("/book/:id", async (req, res) => {
+  const bookId = req.params.id;
+  
+  // Set Cache-Control headers
+  res.set({
+    'Cache-Control': 'public, max-age=300, s-maxage=300, stale-while-revalidate=120',
+    'Vary': 'Accept-Encoding'
+  });
+
+  try {
+    const query = 'SELECT * FROM unilibbook WHERE id = $1';
+    const result = await pool.query(query, [bookId]);
+    
+    if (result.rows.length === 0) {
+      return res.status(404).render("mainPages/404.handlebars");
+    }
+
+    const book = result.rows[0];
+    return res.render("mainPages/uniDomain/index.handlebars", {
+      books: [book], // Single book as array for consistency
+      singleBookView: true,
+      bookId: bookId,
+      pagination: {
+        page: 1,
+        limit: 1,
+        total: 1,
+        pages: 1
+      },
+      filters: { semester: book.semester, category: book.category, search: '' }
+    });
+  } catch (err) {
+    console.error("Error fetching book:", err);
+    return res.status(500).send("Internal Server Error");
+  }
+});
+
+export default router;

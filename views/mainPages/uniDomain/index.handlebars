@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Get all your course materials and quiz / assignments here.">
+  <meta name="description" content="{{#if singleBookView}}{{#each books}}{{this.name}} - {{this.description}}{{/each}}{{else}}Get all your course materials and quiz / assignments here.{{/if}}">
   <meta name="keywords" content="Unilib MBK Tech Studio, Open-Source, Course Materials, Assignments, Quiz">
   <meta property="og:title" content="MBK Tech Studio | Open-Source and Innovation" />
   <meta property="og:description"
@@ -23,7 +23,7 @@
   </script>
   <link rel="icon" type="image/x-icon" href="https://mbktechstudio.com/Assets/Images/Icon/dgicon.svg">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <title>Uni Books Home Page</title>
+  <title>{{#if singleBookView}}{{#each books}}{{this.name}} - {{/each}}{{/if}}Uni Books Home Page</title>
   <style>
     /* Base Styles */
     :root {
@@ -43,6 +43,12 @@
       --border-radius: 8px;
       --box-shadow: 0 4px 20px rgba(33, 150, 243, 0.15);
       --transition: all 0.3s cubic-bezier(.4, 0, .2, 1);
+      --primary-accent: #377a77;
+      --secondary-accent: #ff5722;
+      --text-primary: #fff;
+      --text-secondary: #bbb;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --main-border-color: rgba(255, 255, 255, 0.1);
     }
 
     * {
@@ -224,6 +230,7 @@
 
     .mobile-menu.active {
       transform: translateY(0);
+      top: 80px;
     }
 
     .mobile-menu ul {
@@ -244,354 +251,6 @@
 
     .mobile-menu a:hover {
       color: var(--accent);
-    }
-
-    /* Hero Section */
-    .hero {
-      background: linear-gradient(135deg, var(--darker), var(--primary-dark));
-      color: white;
-      padding: 8rem 2rem 6rem;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') center/cover no-repeat;
-      opacity: 0.1;
-      z-index: 0;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 1;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    .hero h1 {
-      font-size: 3.5rem;
-      margin-bottom: 1.5rem;
-      font-weight: 700;
-    }
-
-    .hero p {
-      font-size: 1.25rem;
-      margin-bottom: 2rem;
-      line-height: 1.6;
-    }
-
-    .cta-buttons {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    /* About Section */
-    .about-section {
-      padding: 5rem 2rem;
-      background-color: var(--dark);
-      color: var(--text);
-    }
-
-    .about-content {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 3rem;
-      align-items: center;
-    }
-
-    .about-text {
-      flex: 1;
-      min-width: 300px;
-    }
-
-    .about-text h3 {
-      font-size: 1.5rem;
-      color: var(--light);
-      margin-bottom: 1rem;
-    }
-
-    .about-text p {
-      color: var(--text-light);
-      line-height: 1.8;
-      margin-bottom: 1.5rem;
-    }
-
-    .about-image {
-      flex: 1;
-      min-width: 300px;
-      border-radius: var(--border-radius);
-      overflow: hidden;
-      box-shadow: var(--box-shadow);
-    }
-
-    .about-image img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    /* Technologies Section */
-    .tech-section {
-      padding: 5rem 2rem;
-      background-color: var(--darker);
-    }
-
-    .tech-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 2rem;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    .tech-card {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: var(--border-radius);
-      padding: 1.5rem;
-      text-align: center;
-      box-shadow: var(--box-shadow);
-      transition: var(--transition);
-      backdrop-filter: blur(5px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .tech-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .tech-card img {
-      width: 60px;
-      height: 60px;
-      margin-bottom: 1rem;
-    }
-
-    .tech-card h3 {
-      font-size: 1rem;
-      color: var(--light);
-    }
-
-    /* Services Section */
-    .services-section {
-      padding: 5rem 2rem;
-      background-color: var(--dark);
-    }
-
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 2rem;
-    }
-
-    .service-card {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: var(--border-radius);
-      overflow: hidden;
-      box-shadow: var(--box-shadow);
-      transition: var(--transition);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(5px);
-
-    }
-
-    .service-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .service-icon {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
-      padding: 1rem;
-      text-align: center;
-      font-size: 2.5rem;
-    }
-
-    .service-content {
-      padding: 1.5rem;
-    }
-
-    .service-content h3 {
-      color: var(--light);
-      margin-bottom: 0.75rem;
-      font-size: 1.25rem;
-    }
-
-    .service-content p {
-      color: var(--text-light);
-      line-height: 1.6;
-      margin-bottom: 1.5rem;
-    }
-
-    .service-link {
-      display: inline-flex;
-      align-items: center;
-      color: var(--accent);
-      font-weight: 600;
-      text-decoration: none;
-      transition: var(--transition);
-    }
-
-    .service-link i {
-      margin-left: 0.5rem;
-      transition: var(--transition);
-    }
-
-    .service-link:hover {
-      color: var(--secondary);
-    }
-
-    .service-link:hover i {
-      transform: translateX(3px);
-    }
-
-    /* Collaborators Section */
-    .collab-section {
-      padding: 5rem 2rem;
-      background-color: var(--darker);
-    }
-
-    .collab-card {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: var(--border-radius);
-      padding: 2rem;
-      display: flex;
-      align-items: center;
-      gap: 2rem;
-      box-shadow: var(--box-shadow);
-      max-width: 800px;
-      margin: 0 auto;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(5px);
-    }
-
-    .collab-logo {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-
-    .collab-logo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .collab-info h3 {
-      color: var(--light);
-      margin-bottom: 0.5rem;
-      font-size: 1.5rem;
-    }
-
-    .collab-info p {
-      color: var(--text-light);
-      line-height: 1.6;
-    }
-
-    /* Contact Section */
-    .contact-section {
-      padding: 5rem 2rem;
-      background: linear-gradient(135deg, var(--darker), var(--primary-dark));
-      color: white;
-    }
-
-    .contact-container {
-      max-width: 800px;
-      margin: 0 auto;
-      text-align: center;
-    }
-
-    .contact-container h2 {
-      color: white;
-    }
-
-    .contact-container h2::after {
-      background-color: var(--accent);
-    }
-
-    .contact-methods {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2rem;
-      margin-top: 3rem;
-    }
-
-    .contact-method {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border-radius: var(--border-radius);
-      padding: 2rem;
-      transition: var(--transition);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .contact-method:hover {
-      transform: translateY(-5px);
-      background: rgba(255, 255, 255, 0.15);
-    }
-
-    .contact-method i {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      color: var(--accent);
-    }
-
-    .contact-method h3 {
-      margin-bottom: 1rem;
-    }
-
-    .contact-method a {
-      color: white;
-      text-decoration: none;
-      transition: var(--transition);
-      display: inline-block;
-      margin-top: 1rem;
-      font-weight: 600;
-    }
-
-    .contact-method a:hover {
-      color: var(--accent);
-    }
-
-    .social-links {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      margin-top: 3rem;
-      flex-wrap: wrap;
-    }
-
-    .social-link {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 1.25rem;
-      transition: var(--transition);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .social-link:hover {
-      background: var(--accent);
-      transform: translateY(-3px);
-      color: var(--dark);
     }
 
     /* Footer Styles */
@@ -742,113 +401,204 @@
       animation: fadeIn 0.8s ease forwards;
     }
 
-    /* Responsive Adjustments */
-    @media (max-width: 992px) {
-      nav ul {
-        gap: 1.5rem;
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
 
-    @media (max-width: 768px) {
-      .header-container {
-        padding: 1rem;
-      }
-
-      nav {
-        display: none;
-      }
-
-      .mobile-menu-btn {
-        display: block;
-      }
-
-      .hero {
-        padding: 6rem 1rem 4rem;
-      }
-
-      .hero h1 {
-        font-size: 2.25rem;
-      }
-
-      .about-content {
-        flex-direction: column;
-      }
-
-      .collab-card {
-        flex-direction: column;
-        text-align: center;
-      }
-
-      .footer-container {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
-</head>
-
-<body>
-  <!-- Header -->
-  <header>
-    <div class="header-container">
-      <a href="/" class="logo">
-        <img src="https://mbktechstudio.com/Assets/Images/Icon/dg.svg" alt="MBK Tech Studio Logo">
-        <span class="logo-text">MBK <span>Tech Studio</span></span>
-      </a>
-
-      <nav>
-        <ul>
-          <li><a href="https://mbktechstudio.com/">Main Website</a></li>
-          <li><a href="/mbkauthe/login">Login</a></li>
-        </ul>
-      </nav>
-
-      <button class="mobile-menu-btn" id="mobileMenuBtn">
-        <i class="fas fa-bars"></i>
-      </button>
-    </div>
-
-    <div class="mobile-menu" id="mobileMenu">
-      <ul>
-        <li><a href="https://mbktechstudio.com/">Main Website</a></li>
-      </ul>
-    </div>
-  </header>
-
-
-
-
-  <style>
-    :root {
-      --primary-accent: #377a77;
-      --secondary-accent: #ff5722;
-      --text-primary: #fff;
-      --text-secondary: #bbb;
-      --card-bg: rgba(255, 255, 255, 0.05);
-      --card-hover-border: var(--primary-accent);
+    .scroll-animate {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
+    .scroll-animate.animate {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Animation for success notification */
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Success notification styles */
+    .notification.is-success {
+      background: var(--success);
+      border: 1px solid var(--success);
+      color: white;
+    }
+
+    /* Single Book View Styles */
+    .single-book-view {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 60vh;
+    }
+
+    .single-book-card {
+      max-width: 800px;
+      width: 100%;
+      background: var(--card-bg);
+      border: .125rem solid var(--main-border-color);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(55, 122, 119, 0.3);
+      backdrop-filter: blur(15px);
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 2rem;
+      transition: all 0.4s ease;
+    }
+
+    .single-book-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 25px 80px rgba(55, 122, 119, 0.4);
+    }
+
+    .single-book-image {
+      position: relative;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .single-book-image img {
+      width: 100%;
+      height: auto;
+      max-height: 400px;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .single-book-content {
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .single-book-details h1 {
+      font-size: 2rem;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+
+    .single-book-details p {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .single-book-meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .meta-tag {
+      background: var(--primary-accent);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .single-book-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .single-book-actions .btn {
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      flex: 1;
+      min-width: 150px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .back-button {
+      background: transparent;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+
+    .back-button:hover {
+      background: var(--primary-accent);
+      transform: translateX(-5px);
+    }
+
+    /* Hide regular grid when in single book view */
+    .single-book-mode .cards-container {
+      display: none !important;
+    }
+
+    .single-book-mode .filter,
+    .single-book-mode .search-bar,
+    .single-book-mode .pagination {
+      display: none !important;
+    }
+
+    /* Book title link styles */
+    .book-title-link {
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .book-title-link:hover {
+      color: var(--primary-accent);
+      text-decoration: underline;
+    }
+
+    .book-link {
+      display: block;
+      transition: all 0.3s ease;
+    }
+
+    .book-link:hover {
+      transform: scale(1.02);
+    }
+
+    /* Section Separators */
     .section-separator {
       margin-top: 0px;
       border-top: .125rem solid var(--main-border-color);
-    }
-
-    .section-title {
-      text-align: center;
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-
-    .linked,
-    .linked:hover,
-    .linked:visited,
-    .linked h3 {
-      text-decoration: none;
-      color: #fff;
-    }
-
-    #info {
-      width: 90%;
-      margin: 0 auto;
     }
 
     .section-separator1 {
@@ -857,6 +607,14 @@
       border-top: .125rem solid var(--main-border-color);
     }
 
+    /* Info Section */
+    #info {
+      width: 90%;
+      margin: 0 auto;
+      padding-top: 0px;
+    }
+
+    /* Notification Styles */
     .notification.is-info {
       border-radius: 6px;
       padding: 5px;
@@ -867,6 +625,7 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
+    /* Spinner */
     .spinner {
       border: 16px solid #f3f3f3;
       border-top: 16px solid #377a77;
@@ -888,6 +647,7 @@
       }
     }
 
+    /* Filter Styles */
     .filter {
       margin: 0 auto;
       display: flex;
@@ -901,8 +661,8 @@
       max-width: 150px !important;
       width: 150px !important;
     }
-  </style>
-  <style>
+
+    /* Cards Container */
     .cards-container {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -919,9 +679,16 @@
       border: .125rem solid var(--main-border-color);
       border-radius: 15px;
       overflow: hidden;
-      transition: all 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       height: 100%;
       backdrop-filter: blur(10px);
+      opacity: 0;
+      transform: translateY(50px) scale(0.95);
+    }
+
+    .book-card.animate {
+      opacity: 1;
+      transform: translateY(0) scale(1);
     }
 
     .book-card:hover {
@@ -974,18 +741,6 @@
       transition: all 0.2s ease;
     }
 
-    .book-card .view-btn {
-      background: linear-gradient(135deg, var(--secondary-accent), #e64a19);
-      color: #fff;
-      border: none;
-    }
-
-    .book-card .view-btn:hover {
-      background: transparent;
-      border: solid .1rem var(--secondary-accent);
-      color: var(--secondary-accent);
-    }
-
     /* Badge for featured books */
     .badge {
       position: absolute;
@@ -1000,16 +755,7 @@
       z-index: 1;
     }
 
-    .filter {
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-    }
-
+    /* Filter dropdown styles */
     .filter .select-dropdown {
       position: relative;
     }
@@ -1041,10 +787,7 @@
       padding: 8px;
     }
 
-    #info {
-      padding-top: 0px;
-    }
-
+    /* Pagination */
     .pagination {
       display: flex;
       justify-content: center;
@@ -1092,13 +835,7 @@
       align-items: center;
     }
 
-    .scroll-button a {
-      z-index: 999;
-    }
-  </style>
-
-  <style>
-    /* Missing Classes - About Section & Content */
+    /* About Section */
     .about {
       padding: 5rem 2rem;
       background-color: var(--dark);
@@ -1240,77 +977,214 @@
       color: var(--secondary-accent);
       text-decoration: underline;
     }
-  </style>
 
-  <section class="about" id="books">
+    /* Responsive Adjustments */
+    @media (max-width: 992px) {
+      nav ul {
+        gap: 1.5rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header-container {
+        padding: 1rem;
+      }
+
+      nav {
+        display: none;
+      }
+
+      .mobile-menu-btn {
+        display: block;
+      }
+
+      /* Single Book View Mobile Styles */
+      .single-book-card {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+      }
+
+      .single-book-image {
+        padding: 1rem;
+      }
+
+      .single-book-image img {
+        max-height: 300px;
+      }
+
+      .single-book-content {
+        padding: 1.5rem;
+      }
+
+      .single-book-details h1 {
+        font-size: 1.5rem;
+      }
+
+      .single-book-actions .btn {
+        min-width: 100%;
+        margin-bottom: 0.5rem;
+      }
+
+      .single-book-actions {
+        flex-direction: column;
+      }
+
+      .filter {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .filter .select-dropdown select {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <a href="/" class="logo">
+        <img src="https://mbktechstudio.com/Assets/Images/Icon/dg.svg" alt="MBK Tech Studio Logo">
+        <span class="logo-text">MBK <span>Tech Studio</span></span>
+      </a>
+
+      <nav>
+        <ul>
+          <li><a href="https://mbktechstudio.com/">Main Website</a></li>
+          <li><a href="/mbkauthe/login">Login</a></li>
+        </ul>
+      </nav>
+
+      <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+
+    <div class="mobile-menu" id="mobileMenu">
+      <ul>
+        <li><a href="https://mbktechstudio.com/">Main Website</a></li>
+        <li><a href="/mbkauthe/login">Login</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <section class="about {{#if singleBookView}}single-book-mode{{/if}}" id="books">
     <div class="content">
       <div class="not"></div>
-      <div class="title section-title"><span>Uni Course Materials</span></div>
-      <div class="filter">
-        <div class="select-dropdown">
-          <select id="semesterFilter" name="topics" onchange="filterProducts()">
-            <option value="Semester1" {{#if (eq filters.semester 'Semester1' )}}selected{{/if}}>Semester 1</option>
-            <option value="Semester2" {{#if (eq filters.semester 'Semester2' )}}selected{{/if}}>Semester 2</option>
-          </select>
-        </div>
-        <div class="select-dropdown">
-          <select id="categoryFilter" name="topics" onchange="filterProducts()">
-            <option value="all" {{#if (eq filters.category 'all' )}}selected{{/if}}>All</option>
-            <option value="CourseBooks" {{#if (eq filters.category 'CourseBooks' )}}selected{{/if}}>Course Books
-            </option>
-            <option value="LabManuals" {{#if (eq filters.category 'LabManuals' )}}selected{{/if}}>Lab Manuals</option>
-            <option value="other" {{#if (eq filters.category 'other' )}}selected{{/if}}>Other</option>
-          </select>
-        </div>
-      </div>
-      <div class="search-bar">
-        <input type="text" id="searchProduct" placeholder="Search Book Name..." value="{{filters.search}}"
-          oninput="debounce(filterProducts, 500)()">
-        <div class="submit"><button type="submit" onclick="filterProducts()"><i class="fas fa-search"></i></button>
-        </div>
-        <button type="button" id="clearSearch" class="clear-btn"
-          style="display: {{#if filters.search}}block{{else}}none{{/if}};" onclick="clearSearch()"><i
-            class="fas fa-times"></i></button>
-      </div>
-      <div id="spinner" class="spinner" style="display: none;"></div>
-
-      <div class="cards-container products" style="{{#if books}}display: grid;{{else}}display: flex;{{/if}}">
-        {{#if books}}
-        {{#each books}}
-        <article class="book-card linked" id="{{this.id}}">
-          {{#if this.main}}
-          <div class="badge" aria-label="Main resource">Main</div>
-          {{/if}}
-          <a href="{{this.link}}" aria-label="{{this.name}}" target="_blank" rel="noopener noreferrer">
-            <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" loading="lazy" class="lazy-load">
-          </a>
-          <div class="Bdetails">
-            <h3>{{this.name}}</h3>
-            <p>{{this.description}}</p>
+      {{#if singleBookView}}
+        <!-- Single Book View -->
+        <a href="/" class="back-button">
+          <i class="fas fa-arrow-left"></i> Back to All Books
+        </a>
+        <div class="single-book-view">
+          {{#each books}}
+          <div class="single-book-card scroll-animate">
+            <div class="single-book-image">
+              {{#if this.main}}
+              <div class="badge" aria-label="Main resource" style="position: absolute; top: 15px; left: 15px;">Main</div>
+              {{/if}}
+              <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" loading="lazy">
+            </div>
+            <div class="single-book-content">
+              <div class="single-book-details">
+                <h1>{{this.name}}</h1>
+                <p>{{this.description}}</p>
+                <div class="single-book-meta">
+                  <span class="meta-tag">{{this.semester}}</span>
+                  <span class="meta-tag">{{this.category}}</span>
+                </div>
+              </div>
+              <div class="single-book-actions">
+                <a href="{{this.link}}" class="btn btn-save" aria-label="View {{this.name}}" target="_blank"
+                  rel="noopener noreferrer">
+                  <i class="fas fa-eye" aria-hidden="true"></i> View Resource
+                </a>
+                <button onclick="downloadResource('{{this.link}}')" class="btn btn-save"
+                  aria-label="Download {{this.name}}">
+                  <i class="fas fa-download" aria-hidden="true"></i> Download
+                </button>
+                <button onclick="shareBook('{{this.id}}', '{{this.name}}')" class="btn btn-save"
+                  aria-label="Share {{this.name}}">
+                  <i class="fas fa-share-alt" aria-hidden="true"></i> Share
+                </button>
+              </div>
+            </div>
           </div>
-          <div class="actions">
-            <a href="{{this.link}}" class="btn btn-save" aria-label="View {{this.name}}" target="_blank"
-              rel="noopener noreferrer">
-              <i class="fas fa-eye" aria-hidden="true"></i> View
+          {{/each}}
+        </div>
+      {{else}}
+        <!-- Regular Grid View -->
+        <div class="title section-title"><span>Uni Course Materials</span></div>
+        <div class="filter">
+          <div class="select-dropdown">
+            <select id="semesterFilter" name="topics" onchange="filterProducts()">
+              <option value="Semester1" {{#if (eq filters.semester 'Semester1' )}}selected{{/if}}>Semester 1</option>
+              <option value="Semester2" {{#if (eq filters.semester 'Semester2' )}}selected{{/if}}>Semester 2</option>
+            </select>
+          </div>
+          <div class="select-dropdown">
+            <select id="categoryFilter" name="topics" onchange="filterProducts()">
+              <option value="all" {{#if (eq filters.category 'all' )}}selected{{/if}}>All</option>
+              <option value="CourseBooks" {{#if (eq filters.category 'CourseBooks' )}}selected{{/if}}>Course Books
+              </option>
+              <option value="LabManuals" {{#if (eq filters.category 'LabManuals' )}}selected{{/if}}>Lab Manuals</option>
+              <option value="other" {{#if (eq filters.category 'other' )}}selected{{/if}}>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="search-bar">
+          <input type="text" id="searchProduct" placeholder="Search Book Name..." value="{{filters.search}}"
+            oninput="debounce(filterProducts, 500)()">
+          <div class="submit"><button type="submit" onclick="filterProducts()"><i class="fas fa-search"></i></button>
+          </div>
+          <button type="button" id="clearSearch" class="clear-btn"
+            style="display: {{#if filters.search}}block{{else}}none{{/if}};" onclick="clearSearch()"><i
+              class="fas fa-times"></i></button>
+        </div>
+        <div id="spinner" class="spinner" style="display: none;"></div>
+
+        <div class="cards-container products scroll-animate" style="{{#if books}}display: grid;{{else}}display: flex;{{/if}}">
+          {{#if books}}
+          {{#each books}}
+          <article class="book-card linked scroll-animate" id="{{this.id}}" style="transition-delay: {{multiply @index 0.1}}s;">
+            {{#if this.main}}
+            <div class="badge" aria-label="Main resource">Main</div>
+            {{/if}}
+            <a href="/book/{{this.id}}" aria-label="View {{this.name}} details" class="book-link">
+              <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" loading="lazy" class="lazy-load">
             </a>
-            <button onclick="downloadResource('{{this.link}}')" class="btn btn-save"
-              aria-label="Download {{this.name}}">
-              <i class="fas fa-download" aria-hidden="true"></i> Download
+            <div class="Bdetails">
+              <h3><a href="/book/{{this.id}}" class="book-title-link">{{this.name}}</a></h3>
+              <p>{{this.description}}</p>
+            </div>
+            <div class="actions">
+              <a href="{{this.link}}" class="btn btn-save" aria-label="View {{this.name}}" target="_blank"
+                rel="noopener noreferrer">
+                <i class="fas fa-eye" aria-hidden="true"></i> View
+              </a>
+              <button onclick="downloadResource('{{this.link}}')" class="btn btn-save"
+                aria-label="Download {{this.name}}">
+                <i class="fas fa-download" aria-hidden="true"></i> Download
+              </button>
+            </div>
+          </article>
+          {{/each}}
+          {{else}}
+          <div class="no-results">
+            <i class="fas fa-book-open" style="font-size: 3rem; margin-bottom: 1rem; color: var(--text-secondary);"></i>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">No materials found matching your criteria</p>
+            <button class="btn btn-save" onclick="resetFilters()" style="margin: 0 auto;">
+              <i class="fas fa-filter"></i> Reset Filters
             </button>
           </div>
-        </article>
-        {{/each}}
-        {{else}}
-        <div class="no-results">
-          <i class="fas fa-book-open" style="font-size: 3rem; margin-bottom: 1rem; color: var(--text-secondary);"></i>
-          <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">No materials found matching your criteria</p>
-          <button class="btn btn-save" onclick="resetFilters()" style="margin: 0 auto;">
-            <i class="fas fa-filter"></i> Reset Filters
-          </button>
+          {{/if}}
         </div>
-        {{/if}}
-      </div>
+      {{/if}}
 
+      {{#unless singleBookView}}
       <div class="pagination" id="pagination">
         {{#if (gt pagination.pages 1)}}
         <button {{#if (eq pagination.page 1)}}disabled{{/if}} onclick="goToPage({{subtract pagination.page 1}})"
@@ -1345,6 +1219,7 @@
         Showing {{add (multiply (subtract pagination.page 1) pagination.limit) 1}}-{{min (multiply pagination.page
         pagination.limit) pagination.total}} of {{pagination.total}} item{{#if (gt pagination.total 1)}}s{{/if}}
       </div>
+      {{/unless}}
     </div>
   </section>
 
@@ -1364,8 +1239,6 @@
     </div>
   </section>
   <script src="/Assets/Scripts/unilib.js"></script>
-
-
 
   <!-- Footer -->
   <footer>
@@ -1478,40 +1351,51 @@
 
     // Animation on scroll
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
+      entries.forEach((entry, index) => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('fade-in');
+          // Add staggered animation delay for cards
+          setTimeout(() => {
+            entry.target.classList.add('animate');
+          }, index * 50); // Reduced delay for faster animation
         }
       });
     }, {
-      threshold: 0.1
+      threshold: 0.1, // Trigger when 10% of element is visible
+      rootMargin: '100px 0px 100px 0px' // Start animation 100px before element enters viewport
     });
 
-    document.querySelectorAll('.tech-card, .service-card, .collab-card, .contact-method').forEach((el, index) => {
-      el.style.opacity = '0';
+    // Observe all scroll-animate elements
+    document.querySelectorAll('.scroll-animate').forEach((el) => {
       observer.observe(el);
     });
+
+    // Re-observe cards when they are dynamically loaded
+    function observeNewCards() {
+      document.querySelectorAll('.book-card:not(.animate)').forEach((el, index) => {
+        el.style.transitionDelay = `${index * 0.05}s`; // Faster stagger
+        observer.observe(el);
+      });
+    }
+
+    // Call this function after dynamic content loads
+    window.observeNewCards = observeNewCards;
   </script>
 
   <script>
-    // Simple animation trigger on scroll
+    // Initialize scroll animations when page loads
     document.addEventListener('DOMContentLoaded', function () {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('fade-in');
-          }
-        });
-      }, {
-        threshold: 0.1
-      });
-
-      document.querySelectorAll('.tech-card, .service-card, .collab-card, .contact-method').forEach((el, index) => {
-        el.style.opacity = '0';
-        observer.observe(el);
+      // Trigger initial animation for visible elements with improved detection
+      const visibleElements = document.querySelectorAll('.scroll-animate');
+      visibleElements.forEach((el, index) => {
+        const rect = el.getBoundingClientRect();
+        // More generous detection - animate if element is within viewport + 200px buffer
+        if (rect.top < window.innerHeight + 200 && rect.bottom > -200) {
+          setTimeout(() => {
+            el.classList.add('animate');
+          }, index * 50); // Faster initial animation
+        }
       });
     });
   </script>
 </body>
-
 </html>
