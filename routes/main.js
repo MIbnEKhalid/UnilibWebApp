@@ -6,10 +6,6 @@ import { pool } from "./pool.js";
 dotenv.config();
 const router = express.Router();
 
-router.get("/dashboard", async (req, res) => {
-  res.redirect("/dashboard/Unilib");
-});
-
 // define a reusable handler function
 async function renderUnilibBooks(req, res, view) {
   const { page = 1, limit = 12, semester = 'Semester2', category = 'all', search = '' } = req.query;
@@ -77,7 +73,7 @@ router.get("/", async (req, res) => {
   await renderUnilibBooks(req, res, "mainPages/uniDomain/index.handlebars");
 });
 
-router.get("/dashboard/Unilib", validateSessionAndRole("any"), async (req, res) => {
+router.get(["/dashboard/Unilib", "/dashboard"], validateSessionAndRole("any"), async (req, res) => {
   await renderUnilibBooks(req, res, "mainPages/uniDomain/Book.handlebars");
 });
 
@@ -157,7 +153,7 @@ router.post("/api/admin/Unilib/Book/Add", validateSessionAndRole("Any"), async (
 // Route for single book view '/book/:id'
 router.get("/book/:id", async (req, res) => {
   const bookId = req.params.id;
-  
+
   // Set Cache-Control headers
   res.set({
     'Cache-Control': 'public, max-age=300, s-maxage=300, stale-while-revalidate=120',
@@ -167,7 +163,7 @@ router.get("/book/:id", async (req, res) => {
   try {
     const query = 'SELECT * FROM unilibbook WHERE id = $1';
     const result = await pool.query(query, [bookId]);
-    
+
     if (result.rows.length === 0) {
       return res.status(404).render("mainPages/404.handlebars");
     }

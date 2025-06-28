@@ -72,9 +72,10 @@ app.set("views", [
 ]);
 app.use(mbkautheRouter);
 
-
-app.get("/login", (req, res) => {
-  return res.render("mainPages/login.handlebars");
+app.get(["/login","/signin"], (req, res) => {
+  const queryParams = new URLSearchParams(req.query).toString();
+  const redirectUrl = `/mbkauthe/login${queryParams ? `?${queryParams}` : ''}`;
+  return res.redirect(redirectUrl);
 });
 
 app.use("/", unilibRoutes);
