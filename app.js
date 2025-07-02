@@ -8,6 +8,7 @@ import Handlebars from "handlebars";
 import unilibRoutes from "./routes/main.js";
 import mbkautheRouter from "mbkauthe";
 import { pool } from "./routes/pool.js";
+import rateLimit from "express-rate-limit";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -25,10 +26,8 @@ app.use(
   })
 );
 
-// Serve all other static files (no cache or default)
 app.use("/", express.static(path.join(__dirname, "public/")));
 
-// Configure Handlebars
 app.engine("handlebars", engine({
   defaultLayout: false,
   partialsDir: [
@@ -65,12 +64,23 @@ app.engine("handlebars", engine({
     }
   }
 }));
+
 app.set("view engine", "handlebars");
+
 app.set("views", [
   path.join(__dirname, "views"),
   path.join(__dirname, "node_modules/mbkauthe/views")
 ]);
+
 app.use(mbkautheRouter);
+
+const limiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
+  max: 15,
+  message: 'Too many requests from this IP, please try again later.'
+});
+
+app.use(limiter);
 
 app.get(["/login","/signin"], (req, res) => {
   const queryParams = new URLSearchParams(req.query).toString();

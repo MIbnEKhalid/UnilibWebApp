@@ -4,7 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="{{#if singleBookView}}{{#each books}}{{this.name}} - {{this.description}}{{/each}}{{else}}Get all your course materials and quiz / assignments here.{{/if}}">
+  <meta name="description"
+    content="{{#if singleBookView}}{{#each books}}{{this.name}} - {{this.description}}{{/each}}{{else}}Get all your course materials and quiz / assignments here.{{/if}}">
   <meta name="keywords" content="Unilib MBK Tech Studio, Open-Source, Course Materials, Assignments, Quiz">
   <meta property="og:title" content="MBK Tech Studio | Open-Source and Innovation" />
   <meta property="og:description"
@@ -102,7 +103,7 @@
 
     .section-title {
       text-align: center;
-      margin-bottom: 3rem;
+      margin-bottom: 2rem;
     }
 
     .section-title h2 {
@@ -406,6 +407,7 @@
         opacity: 0;
         transform: translateY(30px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
@@ -429,6 +431,7 @@
         transform: translateX(100%);
         opacity: 0;
       }
+
       to {
         transform: translateX(0);
         opacity: 1;
@@ -1054,6 +1057,7 @@
       <nav>
         <ul>
           <li><a href="https://mbktechstudio.com/">Main Website</a></li>
+          <li><a href="/dashboard/">Admin Panel</a></li>
           <li><a href="/mbkauthe/login">Login</a></li>
         </ul>
       </nav>
@@ -1066,6 +1070,7 @@
     <div class="mobile-menu" id="mobileMenu">
       <ul>
         <li><a href="https://mbktechstudio.com/">Main Website</a></li>
+        <li><a href="/dashboard/">Admin Panel</a></li>
         <li><a href="/mbkauthe/login">Login</a></li>
       </ul>
     </div>
@@ -1075,113 +1080,117 @@
     <div class="content">
       <div class="not"></div>
       {{#if singleBookView}}
-        <!-- Single Book View -->
-        <a href="/" class="back-button">
-          <i class="fas fa-arrow-left"></i> Back to All Books
-        </a>
-        <div class="single-book-view">
-          {{#each books}}
-          <div class="single-book-card scroll-animate">
-            <div class="single-book-image">
-              {{#if this.main}}
-              <div class="badge" aria-label="Main resource" style="position: absolute; top: 15px; left: 15px;">Main</div>
-              {{/if}}
-              <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" loading="lazy">
-            </div>
-            <div class="single-book-content">
-              <div class="single-book-details">
-                <h1>{{this.name}}</h1>
-                <p>{{this.description}}</p>
-                <div class="single-book-meta">
-                  <span class="meta-tag">{{this.semester}}</span>
-                  <span class="meta-tag">{{this.category}}</span>
-                </div>
-              </div>
-              <div class="single-book-actions">
-                <a href="{{this.link}}" class="btn btn-save" aria-label="View {{this.name}}" target="_blank"
-                  rel="noopener noreferrer">
-                  <i class="fas fa-eye" aria-hidden="true"></i> View Resource
-                </a>
-                <button onclick="downloadResource('{{this.link}}')" class="btn btn-save"
-                  aria-label="Download {{this.name}}">
-                  <i class="fas fa-download" aria-hidden="true"></i> Download
-                </button>
-                <button onclick="shareBook('{{this.id}}', '{{this.name}}')" class="btn btn-save"
-                  aria-label="Share {{this.name}}">
-                  <i class="fas fa-share-alt" aria-hidden="true"></i> Share
-                </button>
-              </div>
-            </div>
-          </div>
-          {{/each}}
-        </div>
-      {{else}}
-        <!-- Regular Grid View -->
-        <div class="title section-title"><span>Uni Course Materials</span></div>
-        <div class="filter">
-          <div class="select-dropdown">
-            <select id="semesterFilter" name="topics" onchange="filterProducts()">
-              <option value="Semester1" {{#if (eq filters.semester 'Semester1' )}}selected{{/if}}>Semester 1</option>
-              <option value="Semester2" {{#if (eq filters.semester 'Semester2' )}}selected{{/if}}>Semester 2</option>
-            </select>
-          </div>
-          <div class="select-dropdown">
-            <select id="categoryFilter" name="topics" onchange="filterProducts()">
-              <option value="all" {{#if (eq filters.category 'all' )}}selected{{/if}}>All</option>
-              <option value="CourseBooks" {{#if (eq filters.category 'CourseBooks' )}}selected{{/if}}>Course Books
-              </option>
-              <option value="LabManuals" {{#if (eq filters.category 'LabManuals' )}}selected{{/if}}>Lab Manuals</option>
-              <option value="other" {{#if (eq filters.category 'other' )}}selected{{/if}}>Other</option>
-            </select>
-          </div>
-        </div>
-        <div class="search-bar">
-          <input type="text" id="searchProduct" placeholder="Search Book Name..." value="{{filters.search}}"
-            oninput="debounce(filterProducts, 500)()">
-          <div class="submit"><button type="submit" onclick="filterProducts()"><i class="fas fa-search"></i></button>
-          </div>
-          <button type="button" id="clearSearch" class="clear-btn"
-            style="display: {{#if filters.search}}block{{else}}none{{/if}};" onclick="clearSearch()"><i
-              class="fas fa-times"></i></button>
-        </div>
-        <div id="spinner" class="spinner" style="display: none;"></div>
-
-        <div class="cards-container products scroll-animate" style="{{#if books}}display: grid;{{else}}display: flex;{{/if}}">
-          {{#if books}}
-          {{#each books}}
-          <article class="book-card linked scroll-animate" id="{{this.id}}" style="transition-delay: {{multiply @index 0.1}}s;">
+      <!-- Single Book View -->
+      <a href="/" class="back-button">
+        <i class="fas fa-arrow-left"></i> Back to All Books
+      </a>
+      <div class="single-book-view">
+        {{#each books}}
+        <div class="single-book-card scroll-animate">
+          <div class="single-book-image">
             {{#if this.main}}
-            <div class="badge" aria-label="Main resource">Main</div>
+            <div class="badge" aria-label="Main resource" style="position: absolute; top: 15px; left: 15px;">Main</div>
             {{/if}}
-            <a href="/book/{{this.id}}" aria-label="View {{this.name}} details" class="book-link">
-              <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" loading="lazy" class="lazy-load">
-            </a>
-            <div class="Bdetails">
-              <h3><a href="/book/{{this.id}}" class="book-title-link">{{this.name}}</a></h3>
+            <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" loading="lazy">
+          </div>
+          <div class="single-book-content">
+            <div class="single-book-details">
+              <h1>{{this.name}}</h1>
               <p>{{this.description}}</p>
+              <div class="single-book-meta">
+                <span class="meta-tag">{{this.semester}}</span>
+                <span class="meta-tag">{{this.category}}</span>
+              </div>
             </div>
-            <div class="actions">
+            <div class="single-book-actions">
               <a href="{{this.link}}" class="btn btn-save" aria-label="View {{this.name}}" target="_blank"
                 rel="noopener noreferrer">
-                <i class="fas fa-eye" aria-hidden="true"></i> View
+                <i class="fas fa-eye" aria-hidden="true"></i> View Resource
               </a>
               <button onclick="downloadResource('{{this.link}}')" class="btn btn-save"
                 aria-label="Download {{this.name}}">
                 <i class="fas fa-download" aria-hidden="true"></i> Download
               </button>
+              <button onclick="shareBook('{{this.id}}', '{{this.name}}')" class="btn btn-save"
+                aria-label="Share {{this.name}}">
+                <i class="fas fa-share-alt" aria-hidden="true"></i> Share
+              </button>
             </div>
-          </article>
-          {{/each}}
-          {{else}}
-          <div class="no-results">
-            <i class="fas fa-book-open" style="font-size: 3rem; margin-bottom: 1rem; color: var(--text-secondary);"></i>
-            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">No materials found matching your criteria</p>
-            <button class="btn btn-save" onclick="resetFilters()" style="margin: 0 auto;">
-              <i class="fas fa-filter"></i> Reset Filters
+          </div>
+        </div>
+        {{/each}}
+      </div>
+      {{else}}
+      <!-- Regular Grid View -->
+      <div class="title section-title">
+        <h1>Uni Course Materials</h1>
+      </div>
+      <div class="filter">
+        <div class="select-dropdown">
+          <select id="semesterFilter" name="topics" onchange="filterProducts()">
+            <option value="Semester1" {{#if (eq filters.semester 'Semester1' )}}selected{{/if}}>Semester 1</option>
+            <option value="Semester2" {{#if (eq filters.semester 'Semester2' )}}selected{{/if}}>Semester 2</option>
+          </select>
+        </div>
+        <div class="select-dropdown">
+          <select id="categoryFilter" name="topics" onchange="filterProducts()">
+            <option value="all" {{#if (eq filters.category 'all' )}}selected{{/if}}>All</option>
+            <option value="CourseBooks" {{#if (eq filters.category 'CourseBooks' )}}selected{{/if}}>Course Books
+            </option>
+            <option value="LabManuals" {{#if (eq filters.category 'LabManuals' )}}selected{{/if}}>Lab Manuals</option>
+            <option value="other" {{#if (eq filters.category 'other' )}}selected{{/if}}>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="search-bar">
+        <input type="text" id="searchProduct" placeholder="Search Book Name..." value="{{filters.search}}"
+          oninput="debounce(filterProducts, 500)()">
+        <div class="submit"><button type="submit" onclick="filterProducts()"><i class="fas fa-search"></i></button>
+        </div>
+        <button type="button" id="clearSearch" class="clear-btn"
+          style="display: {{#if filters.search}}block{{else}}none{{/if}};" onclick="clearSearch()"><i
+            class="fas fa-times"></i></button>
+      </div>
+      <div id="spinner" class="spinner" style="display: none;"></div>
+
+      <div class="cards-container products scroll-animate"
+        style="{{#if books}}display: grid;{{else}}display: flex;{{/if}}">
+        {{#if books}}
+        {{#each books}}
+        <article class="book-card linked scroll-animate" id="{{this.id}}"
+          style="transition-delay: {{multiply @index 0.1}}s;">
+          {{#if this.main}}
+          <div class="badge" aria-label="Main resource">Main</div>
+          {{/if}}
+          <a href="/book/{{this.id}}" aria-label="View {{this.name}} details" class="book-link">
+            <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" loading="lazy" class="lazy-load">
+          </a>
+          <div class="Bdetails">
+            <h3><a href="/book/{{this.id}}" class="book-title-link">{{this.name}}</a></h3>
+            <p>{{this.description}}</p>
+          </div>
+          <div class="actions">
+            <a href="{{this.link}}" class="btn btn-save" aria-label="View {{this.name}}" target="_blank"
+              rel="noopener noreferrer">
+              <i class="fas fa-eye" aria-hidden="true"></i> View
+            </a>
+            <button onclick="downloadResource('{{this.link}}')" class="btn btn-save"
+              aria-label="Download {{this.name}}">
+              <i class="fas fa-download" aria-hidden="true"></i> Download
             </button>
           </div>
-          {{/if}}
+        </article>
+        {{/each}}
+        {{else}}
+        <div class="no-results">
+          <i class="fas fa-book-open" style="font-size: 3rem; margin-bottom: 1rem; color: var(--text-secondary);"></i>
+          <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">No materials found matching your criteria</p>
+          <button class="btn btn-save" onclick="resetFilters()" style="margin: 0 auto;">
+            <i class="fas fa-filter"></i> Reset Filters
+          </button>
         </div>
+        {{/if}}
+      </div>
       {{/if}}
 
       {{#unless singleBookView}}
@@ -1300,6 +1309,14 @@
     </div>
   </footer>
 
+  <!-- Scroll to Top Button -->
+  <div id="scrollToTop" style="position: fixed; bottom: 20px; right: 20px; display: none;">
+    <button
+      style="background-color: #377a77; color: white; border: none; border-radius: 50%; width: 50px; height: 50px; cursor: pointer;">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+  </div>
+
   <script>
     // Mobile Menu Toggle
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
@@ -1327,6 +1344,19 @@
       } else {
         header.style.boxShadow = 'var(--box-shadow)';
       }
+
+      // Scroll to Top button visibility
+      const scrollToTopButton = document.getElementById('scrollToTop');
+      if (window.scrollY > 200) {
+        scrollToTopButton.style.display = 'block';
+      } else {
+        scrollToTopButton.style.display = 'none';
+      }
+    });
+
+    // Scroll to Top button click event
+    document.getElementById('scrollToTop').addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
     // Smooth scrolling for anchor links
@@ -1356,11 +1386,11 @@
           // Add staggered animation delay for cards
           setTimeout(() => {
             entry.target.classList.add('animate');
-          }, index * 50); // Reduced delay for faster animation
+          }, index * 90); // Reduced delay for faster animation
         }
       });
     }, {
-      threshold: 0.1, // Trigger when 10% of element is visible
+      threshold: 0.02, // Trigger when 2% of element is visible
       rootMargin: '100px 0px 100px 0px' // Start animation 100px before element enters viewport
     });
 
@@ -1379,9 +1409,7 @@
 
     // Call this function after dynamic content loads
     window.observeNewCards = observeNewCards;
-  </script>
 
-  <script>
     // Initialize scroll animations when page loads
     document.addEventListener('DOMContentLoaded', function () {
       // Trigger initial animation for visible elements with improved detection
@@ -1398,4 +1426,5 @@
     });
   </script>
 </body>
+
 </html>

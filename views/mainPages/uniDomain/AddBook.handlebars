@@ -195,6 +195,10 @@
         document.getElementById("addBookForm").addEventListener("submit", async (e) => {
           e.preventDefault();
 
+          const submitButton = e.target.querySelector("button");
+          submitButton.disabled = true;
+          submitButton.textContent = "Adding...";
+
           const formData = {
             name: document.getElementById("name").value,
             category: document.getElementById("category").value,
@@ -223,6 +227,9 @@
           } catch (error) {
             console.error("Error adding book:", error);
             alert("Failed to add book");
+          } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = "Add Book";
           }
         });
       </script>
