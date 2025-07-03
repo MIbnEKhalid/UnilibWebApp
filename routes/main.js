@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import { media } from "./mediaimage.js";
 import { validateSession, checkRolePermission, validateSessionAndRole } from "mbkauthe";
 import { pool } from "./pool.js";
 
@@ -193,5 +194,6 @@ router.get("/book/:id", async (req, res) => {
     return res.status(500).send("Internal Server Error");
   }
 });
+router.use("/", media);
 
 export default router;

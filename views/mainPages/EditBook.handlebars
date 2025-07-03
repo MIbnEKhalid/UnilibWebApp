@@ -11,6 +11,161 @@
     <script src="https://portal.mbktechstudio.com/Assets/Scripts/logout.js"></script>
     <link rel="stylesheet" href="/Assets/Style/unilib.css">
     <script src="https://portal.mbktechstudio.com/Assets/Scripts/main.js"></script>
+    <style>
+        /* Popup modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        .upload-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            display: none;
+            margin: 0 auto;
+        }
+
+        .upload-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .upload-btn:hover {
+            background-color: #45a049;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-btn {
+            border: 1px solid #ccc;
+            display: inline-block;
+            padding: 8px 12px;
+            cursor: pointer;
+            background-color: #f8f8f8;
+            border-radius: 4px;
+        }
+
+        .file-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-footer button {
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .cancel-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+        }
+
+        .save-btn {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+        }
+
+        .url-select-container {
+            margin-top: 15px;
+        }
+
+        /* New styles for the image gallery */
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            transition: border-color 0.2s;
+        }
+
+        .gallery-image:hover {
+            border-color: #2196F3; /* Highlight on hover */
+        }
+
+        .cards-container {
+            display: flex;
+        }
+
+        .book-card .actions {
+            justify-content: center;
+        }
+
+        .book-card {
+            max-width: 300px;
+        }
+    </style>
 </head>
 <header>
     <nav>
@@ -57,26 +212,11 @@
             }
         }
     }
-
 </script>
 
 <body>
 
     <br>
-
-    <style>
-        .cards-container {
-            display: flex;
-        }
-
-        .book-card .actions {
-            justify-content: center;
-        }
-
-        .book-card {
-            max-width: 300px;
-        }
-    </style>
 
     <section>
         <div class="content">
@@ -138,9 +278,14 @@
                             <label for="imageURL">
                                 <strong>Image URL:</strong>
                             </label>
-                            <input id="imageURL" value="{{book.imageURL}}" data-org="{{book.imageURL}}" name="imageURL"
-                                required {{#unless (eq role "SuperAdmin" )}}readonly
-                                title="You Don't Have Permission To Change Img URL" {{/unless}} />
+                            <div style="display: flex; gap: 10px;">
+                                <input id="imageURL" value="{{book.imageURL}}" data-org="{{book.imageURL}}" name="imageURL"
+                                    required {{#unless (eq role "SuperAdmin" )}}readonly
+                                    title="You Don't Have Permission To Change Img URL" {{/unless}} />
+                                {{#if (eq role "SuperAdmin" )}}
+                                <button type="button" class="buttons" onclick="openImageUploadModal()">Upload Image</button>
+                                {{/if}}
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -184,7 +329,6 @@
                         </div>
 
                         <div class="form-group">
-
                             <label for="main"><strong>Main:</strong></label>
                             <select id="main" name="main" data-org="{{book.main}}" required>
                                 <option value="true" {{#if (eq book.main "true" )}}selected{{/if}}>True</option>
@@ -196,7 +340,143 @@
                     </form>
                 </div>
             </div>
+
+            <!-- Image Upload Modal -->
+            <div id="imageUploadModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeImageUploadModal()">×</span>
+                    <h2>Upload Book Image</h2>
+                    <div class="upload-container">
+                        <div class="file-input-wrapper">
+                            <button class="file-input-btn">Choose Image</button>
+                            <input type="file" id="imageInput" class="file-input" accept="image/*">
+                        </div>
+                        <img id="imagePreview" class="image-preview" src="#" alt="Preview">
+                        <button id="uploadBtn" class="upload-btn" disabled>Upload Image</button>
+
+                        <div class="url-select-container">
+                             <label>Or select from existing images:</label>
+                             <div id="image-gallery" class="image-gallery">
+                                 <!-- Images will be populated by JavaScript -->
+                             </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="cancel-btn" onclick="closeImageUploadModal()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
             <script>
+                // Image Upload Modal Functions
+                function openImageUploadModal() {
+                    const modal = document.getElementById('imageUploadModal');
+                    modal.style.display = 'block';
+                    loadSavedImages();
+                }
+
+                function closeImageUploadModal() {
+                    document.getElementById('imageUploadModal').style.display = 'none';
+                }
+
+                function loadSavedImages() {
+                    fetch('/api/media-images')
+                        .then(response => response.json())
+                        .then(images => {
+                            const gallery = document.getElementById('image-gallery');
+                            gallery.innerHTML = ''; // Clear previous images
+
+                            images.forEach(imageUrl => {
+                                const imgElement = document.createElement('img');
+                                imgElement.src = imageUrl;
+                                imgElement.alt = imageUrl.split('/').pop();
+                                imgElement.className = 'gallery-image';
+
+                                // Add click event to select image and close modal
+                                imgElement.addEventListener('click', () => {
+                                    document.getElementById('imageURL').value = imageUrl;
+                                    updateBookCard();
+                                    closeImageUploadModal();
+                                });
+
+                                gallery.appendChild(imgElement);
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error loading saved images:', error);
+                            const gallery = document.getElementById('image-gallery');
+                            gallery.innerHTML = '<p style="color: red;">Could not load images.</p>';
+                        });
+                }
+
+                // Image Preview and Upload Handling
+                document.getElementById('imageInput').addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            const preview = document.getElementById('imagePreview');
+                            preview.src = event.target.result;
+                            preview.style.display = 'block';
+                            document.getElementById('uploadBtn').disabled = false;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+
+                document.getElementById('uploadBtn').addEventListener('click', function() {
+                    const fileInput = document.getElementById('imageInput');
+                    const file = fileInput.files[0];
+
+                    if (!file) {
+                        alert('Please select an image first');
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const base64Image = event.target.result;
+                        const filename = file.name || 'book-image.jpg';
+
+                        uploadImage(base64Image, filename)
+                            .then(fileUrl => {
+                                document.getElementById('imageURL').value = fileUrl;
+                                updateBookCard();
+                                alert('Image uploaded successfully!');
+                                closeImageUploadModal();
+                            })
+                            .catch(error => {
+                                console.error('Upload error:', error);
+                                alert('Failed to upload image: ' + error.message);
+                            });
+                    };
+                    reader.readAsDataURL(file);
+                });
+
+                async function uploadImage(base64Image, filename) {
+                    try {
+                        const response = await fetch('/upload', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                image: base64Image,
+                                filename: filename
+                            })
+                        });
+
+                        const data = await response.json();
+                        if (!response.ok) {
+                            throw new Error(data.error || 'Upload failed');
+                        }
+                        return data.url;
+                    } catch (error) {
+                        console.error('Upload error:', error);
+                        throw error;
+                    }
+                }
+
                 function updateBookCard() {
                     document.getElementById("bookname").textContent = document.getElementById("name").value;
                     document.getElementById("bookdesciption").textContent = document.getElementById("description").value;
@@ -208,7 +488,6 @@
                     // Show/hide Main badge based on "main" value
                     const mainValue = document.getElementById("main").value;
                     const badge = document.querySelector(".book-card .badge");
-
                 }
 
                 const fields = ["name", "description", "imageURL", "link", "main"];
@@ -276,12 +555,12 @@
             <a href="https://mbktechstudio.com" target="_blank">MBK Tech Studio</a>.
             All
             Rights Reserved |
-            <a href="/info/Terms&Conditions" target="_blank">Terms &amp; Conditions</a>
+            <a href="/info/Terms&Conditions" target="_blank">Terms & Conditions</a>
             |
             <a href="/info/FAQs" target="_blank">FAQs</a>
             | <a href="/info/Credits" target="_blank">Credits</a>
             |
-            <a href="https://mbktechstudio.com/Support/" target="_blank">Support &amp; Contact</a>
+            <a href="https://mbktechstudio.com/Support/" target="_blank">Support & Contact</a>
         </span>
         <script>
             document.getElementById('year').textContent = new Date().getFullYear();
