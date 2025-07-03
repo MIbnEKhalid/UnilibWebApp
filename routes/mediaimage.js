@@ -3,7 +3,7 @@ const router = express.Router();
 import fetch from "node-fetch";
 import { validateSessionAndRole } from "mbkauthe";
 
-// POST route handler
+
 router.post('/upload', validateSessionAndRole("Any"), async (req, res) => {
   try {
     const { image, filename } = req.body;
@@ -12,17 +12,13 @@ router.post('/upload', validateSessionAndRole("Any"), async (req, res) => {
       return res.status(400).json({ error: 'No image provided' });
     }
 
-    // Validate base64 string (basic check)
     if (!/^data:image\/([a-zA-Z]*);base64,/.test(image)) {
       return res.status(400).json({ error: 'Invalid base64 image format' });
     }
 
-    // --- THIS IS THE FIX ---
-    // The external API expects pure Base64 data, not the full Data URL.
-    // We split the string by the comma and take the second part.
+
     const base64Data = image.split(',')[1];
 
-    // Pass the corrected, pure Base64 data to the upload function
     const fileUrl = await uploadImage(base64Data, filename, req);
 
     res.json({
@@ -40,8 +36,7 @@ router.post('/upload', validateSessionAndRole("Any"), async (req, res) => {
   }
 });
 
-// The uploadImage function remains the same, but I'm including it for context.
-// It will now receive the correct data in its 'base64Image' parameter.
+
 async function uploadImage(base64Image, filename = 'category-image.jpg', req) {
   const adminApiKey = process.env.PYTHON_ADMIN_API_KEY;
   const serverUrl = 'https://media.mbktechstudio.com/api/v1/admin/upload';
@@ -62,7 +57,7 @@ async function uploadImage(base64Image, filename = 'category-image.jpg', req) {
         target_username: username,
         filename,
         category: 'images',
-        base64_content: base64Image // This now contains pure Base64
+        base64_content: base64Image
       })
     });
 
@@ -81,9 +76,9 @@ async function uploadImage(base64Image, filename = 'category-image.jpg', req) {
 }
 router.get('/api/media-images',validateSessionAndRole("Any"),  async (req, res) => {
   const ADMIN_API_KEY = process.env.PYTHON_ADMIN_API_KEY;
-  const SERVER_BASE = "https://media.mbktechstudio.com"; // Base URL without trailing slash
-  const ENDPOINT = "/api/v1/admin/get"; // Flask endpoint
-  const TARGET_USER = "maaz.waheed"; // Align with curl command
+  const SERVER_BASE = "https://media.mbktechstudio.com";
+  const ENDPOINT = "/api/v1/admin/get";
+  const TARGET_USER = "maaz.waheed";
   const CATEGORY = "images";
 
   if (!ADMIN_API_KEY) {
@@ -91,12 +86,11 @@ router.get('/api/media-images',validateSessionAndRole("Any"),  async (req, res) 
     return res.status(500).json({ error: "Server configuration error" });
   }
 
-  // Construct URL
   const fetchUrl = new URL(ENDPOINT, SERVER_BASE);
   fetchUrl.searchParams.append('target_username', TARGET_USER);
   fetchUrl.searchParams.append('category', CATEGORY);
 
-  console.log('Final request URL:', fetchUrl.toString()); // Debug
+  console.log('Final request URL:', fetchUrl.toString());
 
   try {
     const apiResponse = await fetch(fetchUrl.toString(), {
@@ -104,7 +98,7 @@ router.get('/api/media-images',validateSessionAndRole("Any"),  async (req, res) 
       headers: {
         'X-API-Key': ADMIN_API_KEY,
         'Accept': 'application/json',
-        'Content-Type': 'application/json' // Add if Flask expects it
+        'Content-Type': 'application/json'
       }
     });
 
@@ -122,9 +116,8 @@ router.get('/api/media-images',validateSessionAndRole("Any"),  async (req, res) 
 
     const data = await apiResponse.json();
 
-    // Check if data is an array of strings
     if (Array.isArray(data)) {
-      return res.json(data); // Return the array of URLs directly
+      return res.json(data);
     }
 
     console.error('Unexpected response format:', data);
