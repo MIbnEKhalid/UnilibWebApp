@@ -10,6 +10,17 @@ CREATE TABLE unilibbook (
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TYPE semesters AS ENUM (
+  'Semester 1',
+  'Semester 2',
+  'Semester 3',
+  'Semester 4',
+  'Semester 5',
+  'Semester 6',
+  'Semester 7',
+  'Semester 8'
+);
+
 CREATE INDEX idx_unilibbook_category ON unilibbook(category);
 CREATE INDEX idx_unilibbook_semester ON unilibbook(semester);
 CREATE INDEX idx_unilibbook_main ON unilibbook(main);

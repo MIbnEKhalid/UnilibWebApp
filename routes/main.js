@@ -70,11 +70,11 @@ router.get("/", async (req, res) => {
     'X-Query-Params': queryString
   });
 
-  await renderUnilibBooks(req, res, "mainPages/uniDomain/index.handlebars");
+  await renderUnilibBooks(req, res, "mainPages/index.handlebars");
 });
 
 router.get(["/dashboard/Unilib", "/dashboard"], validateSessionAndRole("any"), async (req, res) => {
-  await renderUnilibBooks(req, res, "mainPages/uniDomain/Book.handlebars");
+  await renderUnilibBooks(req, res, "mainPages/Book.handlebars");
 });
 
 router.get("/dashboard/Book/Edit/:id", validateSessionAndRole("Any"), async (req, res) => {
@@ -85,7 +85,7 @@ router.get("/dashboard/Book/Edit/:id", validateSessionAndRole("Any"), async (req
   try {
     const result = await pool.query(query, [bookId]);
     const book = result.rows[0];
-    res.render("mainPages/uniDomain/EditBook.handlebars", { id: bookId, book, role: req.session.user.role });
+    res.render("mainPages/EditBook.handlebars", { id: bookId, book, role: req.session.user.role });
   } catch (error) {
     console.error("Error fetching book details:", error);
     res.status(500).json({ error: "Failed to fetch book details" });
@@ -124,7 +124,7 @@ router.post("/api/admin/Unilib/Book/Delete/:id", validateSessionAndRole("Any"), 
 });
 
 router.get("/dashboard/Book/Add", validateSessionAndRole("Any"), async (req, res) => {
-  res.render("mainPages/uniDomain/AddBook.handlebars", { role: req.session.user.role });
+  res.render("mainPages/AddBook.handlebars", { role: req.session.user.role });
 });
 
 router.post("/api/admin/Unilib/Book/Add", validateSessionAndRole("Any"), async (req, res) => {
@@ -165,11 +165,18 @@ router.get("/book/:id", async (req, res) => {
     const result = await pool.query(query, [bookId]);
 
     if (result.rows.length === 0) {
-      return res.status(404).render("mainPages/404.handlebars");
+      return res.status(404).render("Error/dError.handlebars", {
+        layout: false,
+        code: 404,
+        error: "Book Not Found",
+        message: "The Book you are looking for does not exist.",
+        pagename: "Home",
+        page: `/`,
+      });
     }
 
     const book = result.rows[0];
-    return res.render("mainPages/uniDomain/index.handlebars", {
+    return res.render("mainPages/index.handlebars", {
       books: [book], // Single book as array for consistency
       singleBookView: true,
       bookId: bookId,

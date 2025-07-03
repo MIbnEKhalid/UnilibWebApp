@@ -18,13 +18,9 @@ const __dirname = path.dirname(__filename);
 app.use(cors());
 app.use(express.json());
 app.use(compression());
+app.set("trust proxy", 1);
 
-app.use(
-  "/Assets/Images",
-  express.static(path.join(__dirname, "public/Assets/Images"), {
-    maxAge: "7d" // Cache for 7 days
-  })
-);
+app.use("/Assets/Images", express.static(path.join(__dirname, "public/Assets/Images"), { maxAge: "7d" }));
 
 app.use("/", express.static(path.join(__dirname, "public/")));
 
@@ -82,7 +78,7 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
-app.get(["/login","/signin"], (req, res) => {
+app.get(["/login", "/signin"], (req, res) => {
   const queryParams = new URLSearchParams(req.query).toString();
   const redirectUrl = `/mbkauthe/login${queryParams ? `?${queryParams}` : ''}`;
   return res.redirect(redirectUrl);
@@ -92,7 +88,14 @@ app.use("/", unilibRoutes);
 
 app.use((req, res) => {
   console.log(`Path not found: ${req.url}`);
-  res.render("mainPages/404.handlebars");
+  return res.status(404).render("Error/dError.handlebars", {
+    layout: false,
+    code: 404,
+    error: "Page Not Found",
+    message: "The page you are looking for does not exist.",
+    pagename: "Home",
+    page: `/`,
+  });
 });
 
 const PORT = process.env.PORT || 3333;
