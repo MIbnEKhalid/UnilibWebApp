@@ -1,7 +1,7 @@
 // Global state
 const state = {
     currentFilters: {
-        semester: 'Semester2',
+        semester: 'Semester3',
         category: 'all',
         search: ''
     },
@@ -28,7 +28,7 @@ function parseUrlParameters() {
     const urlParams = new URLSearchParams(window.location.search);
 
     state.currentPage = parseInt(urlParams.get('page')) || 1;
-    state.currentFilters.semester = urlParams.get('semester') || 'Semester2';
+    state.currentFilters.semester = urlParams.get('semester') || 'Semester3';
     state.currentFilters.category = urlParams.get('category') || 'all';
     state.currentFilters.search = urlParams.get('search') || '';
 
@@ -131,12 +131,12 @@ window.goToPage = function (page) {
 
 // Reset filters
 window.resetFilters = function () {
-    elements.semesterFilter.value = 'Semester2';
+    elements.semesterFilter.value = 'Semester3';
     elements.categoryFilter.value = 'all';
     elements.searchInput.value = '';
     elements.clearBtn.style.display = 'none';
     state.currentFilters = {
-        semester: 'Semester2',
+        semester: 'Semester3',
         category: 'all',
         search: ''
     };

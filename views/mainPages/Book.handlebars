@@ -1,76 +1,20 @@
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="https://portal.mbktechstudio.com/Assets/Style/Page.css" />
-  <link rel="icon" type="image/x-icon" href="https://portal.mbktechstudio.com/Assets/Images/dgicon.svg" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-  <link rel="stylesheet" href="https://portal.mbktechstudio.com/Assets/Style/style.css" />
-  <script src="https://portal.mbktechstudio.com/Assets/Scripts/logout.js"></script>
-  <link rel="stylesheet" href="/Assets/Style/unilib.css">
-  <script src="https://portal.mbktechstudio.com/Assets/Scripts/main.js"></script>
-</head>
-<header>
-  <nav>
-    <div class="navbar">
-      <div class="logo">
-        <div class="image">
-          <img src="https://portal.mbktechstudio.com/Assets/Images/dg.svg" alt="" />
-        </div>
-        <div class="text">
-          <a href="/dashboard/">Unilib Portal</a>
-        </div>
-      </div>
-      <div class="logout-btn">
-        <div class="profile-menu">
-          <i class="fa fa-user-circle" onclick="toggleProfileMenu()"></i>
-          <div class="dropdown-content" id="profileDropdown">
-            <a class="a1" style="text-align:center;">
-              <div id="headerProfileUserName"></div>
-            </a>
-            <a class="a" href="https://portal.mbktechstudio.com/user/settings">Settings</a>
-            <a class="a" onclick="logout()">Logout</a>
-          </div>
-        </div>
-      </div>
-  </nav>
-</header>
-<script>
-  const headerElement = document.getElementById('headerProfileUserName');
-  headerElement.textContent = getCookieValue('username') || 'Not Logged In';
-  function toggleProfileMenu() {
-    const dropdown = document.getElementById('profileDropdown');
-    dropdown.style.display = dropdown.style.display === 'block'
-      ? 'none'
-      : 'block';
-  }
-  window.onclick = function (event) {
-    if (!event.target.matches('.fa')) {
-      const dropdowns = document.getElementsByClassName("dropdown-content");
-      for (let i = 0; i < dropdowns.length; i++) {
-        const openDropdown = dropdowns[i];
-        if (openDropdown.style.display === 'block') {
-          openDropdown.style.display = 'none';
-        }
-      }
-    }
-  }
-
-</script>
-
-<body>
-
+{{! Using main layout }}
+{{! Set an optional page title }}
+{{!-- {{#section 'head'}} Add extra head tags here if needed {{/section}} --}}
   <section class="about" id="books">
     <div class="content">
       <div class="not"></div>
-      <a class="buttons" href="/dashboard/Book/Add">Add New Book</a>
+      <div style="display:flex; gap:.75rem; flex-wrap:wrap; margin-bottom: .5rem;">
+        <a class="buttons" href="/dashboard/Book/Add">Add New Book</a>
+        <button class="buttons" type="button" onclick="exportBooks()" title="Download books as JSON">Export JSON</button>
+      </div>
       <div class="title section-title"><span>Uni Course Materials</span></div>
       <div class="filter">
         <div class="select-dropdown">
           <select id="semesterFilter" name="topics" onchange="filterProducts()">
             <option value="Semester1" {{#if (eq filters.semester 'Semester1' )}}selected{{/if}}>Semester 1</option>
             <option value="Semester2" {{#if (eq filters.semester 'Semester2' )}}selected{{/if}}>Semester 2</option>
+            <option value="Semester3" {{#if (eq filters.semester 'Semester3' )}}selected{{/if}}>Semester 3</option>
           </select>
         </div>
         <div class="select-dropdown">
@@ -172,9 +116,21 @@
     </div>
   </section>
 
-  <script src="/Assets/Scripts/unilib.js"></script>
-
   <script>
+    function exportBooks() {
+      const url = '/api/admin/Unilib/Book/Export';
+      fetch(url, { credentials: 'include' })
+        .then(r => { if (!r.ok) throw new Error('Export failed'); return r.json(); })
+        .then(data => {
+          const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          const ts = new Date().toISOString().replace(/[:.]/g, '-');
+          a.download = `unilib-books-${ts}.json`;
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        })
+        .catch(err => { console.error(err); alert('Failed to export books.'); });
+    }
     async function deleteProduct(productId) {
       if (confirm('Are you sure you want to delete this product?')) {
         try {
@@ -197,27 +153,4 @@
       }
     }
   </script>
-</body>
-<footer>
-  <div class="text">
-    <span>
-      ©
-      <span id="year"></span>
-      <a href="https://mbktechstudio.com" target="_blank">MBK Tech Studio</a>.
-      All
-      Rights Reserved |
-      <a href="/info/Terms&Conditions" target="_blank">Terms &amp; Conditions</a>
-      |
-      <a href="/info/FAQs" target="_blank">FAQs</a>
-      | <a href="/info/Credits" target="_blank">Credits</a>
-      |
-      <a href="https://mbktechstudio.com/Support/" target="_blank">Support &amp; Contact</a>
-    </span>
-    <script>
-      document.getElementById('year').textContent = new Date().getFullYear();
-    </script>
-  </div>
-</footer>
-<script src="https://portal.mbktechstudio.com/Assets/Scripts/header.js"></script>
-
-</html>
+{{!-- {{#section 'scripts'}} Add extra page scripts here if needed {{/section}} --}}

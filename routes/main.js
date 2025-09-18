@@ -8,8 +8,8 @@ dotenv.config();
 const router = express.Router();
 
 // define a reusable handler function
-async function renderUnilibBooks(req, res, view) {
-  const { page = 1, limit = 12, semester = 'Semester2', category = 'all', search = '' } = req.query;
+async function renderUnilibBooks(req, res, view, data) {
+  const { page = 1, limit = 12, semester = 'Semester3', category = 'all', search = '' } = req.query;
   const offset = (page - 1) * limit;
   let query = 'SELECT * FROM unilibbook';
   const conditions = [];
@@ -43,6 +43,7 @@ async function renderUnilibBooks(req, res, view) {
     const pages = Math.ceil(total / limit);
 
     return res.render(view, {
+      ...data,
       books: result.rows,
       pagination: {
         page: parseInt(page, 10),
@@ -61,7 +62,7 @@ async function renderUnilibBooks(req, res, view) {
 // Route for '/' with caching
 router.get("/", async (req, res) => {
   // Normalize query parameters for consistent cache keys
-  const { page = '1', limit = '12', semester = 'Semester2', category = 'all', search = '' } = req.query;
+  const { page = '1', limit = '12', semester = 'Semester3', category = 'all', search = '' } = req.query;
   const queryString = new URLSearchParams({ page, limit, semester, category, search }).toString();
 
   // Set Cache-Control and Vary headers for 2-minute edge caching
@@ -71,7 +72,7 @@ router.get("/", async (req, res) => {
     'X-Query-Params': queryString
   });
 
-  await renderUnilibBooks(req, res, "mainPages/index.handlebars");
+  await renderUnilibBooks(req, res, "mainPages/index.handlebars", { layout: false });
 });
 
 router.get(["/dashboard/Unilib", "/dashboard"], validateSessionAndRole("any"), async (req, res) => {
@@ -133,10 +134,10 @@ router.post("/api/admin/Unilib/Book/Add", validateSessionAndRole("Any"), async (
 
   try {
     const query = `
-      INSERT INTO "unilibbook" (name, category, description, "imageURL", link, semester, main)
-      VALUES ($1, $2, $3, $4, $5, $6, $7);
+      INSERT INTO "unilibbook" (name, category, description, "imageURL", link, semester, main, "UserName")
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8);
     `;
-    const values = [name, category, description, imageURL, link, semester, main];
+    const values = [name, category, description, imageURL, link, semester, main, req.session.user.username];
 
     console.log("Executing query:", query);
     console.log("With values:", values);
@@ -148,6 +149,28 @@ router.post("/api/admin/Unilib/Book/Add", validateSessionAndRole("Any"), async (
   } catch (error) {
     console.error("Error adding book:", error);
     res.status(500).json({ error: "Failed to add book" });
+  }
+});
+
+// Export all (optionally filtered) books as JSON file
+router.get("/api/admin/Unilib/Book/Export", validateSessionAndRole("Any"), async (_req, res) => {
+  // Always export ALL books, ignoring any provided filters
+  const query = 'SELECT * FROM unilibbook ORDER BY main DESC, name ASC';
+  try {
+    const result = await pool.query(query);
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const filename = `unilib-books-${timestamp}.json`;
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    return res.status(200).json({
+      exportedAt: new Date().toISOString(),
+      count: result.rows.length,
+      filters: 'none',
+      books: result.rows
+    });
+  } catch (error) {
+    console.error('Error exporting books:', error);
+    return res.status(500).json({ error: 'Failed to export books' });
   }
 });
 
@@ -178,6 +201,7 @@ router.get("/book/:id", async (req, res) => {
 
     const book = result.rows[0];
     return res.render("mainPages/index.handlebars", {
+      layout: false,
       books: [book], // Single book as array for consistency
       singleBookView: true,
       bookId: bookId,

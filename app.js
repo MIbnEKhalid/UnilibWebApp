@@ -25,7 +25,8 @@ app.use("/Assets/Images", express.static(path.join(__dirname, "public/Assets/Ima
 app.use("/", express.static(path.join(__dirname, "public/")));
 
 app.engine("handlebars", engine({
-  defaultLayout: false,
+  defaultLayout: 'main',
+  layoutsDir: path.join(__dirname, 'views/layouts'),
   partialsDir: [
     path.join(__dirname, "views/templates"),
     path.join(__dirname, "views/notice"),
@@ -33,6 +34,11 @@ app.engine("handlebars", engine({
     path.join(__dirname, "node_modules/mbkauthe/views"),
   ], cache: false,
   helpers: {
+    section: function(name, options) {
+      if(!this._sections) this._sections = {};
+      this._sections[name] = options.fn(this);
+      return null;
+    },
     eq: function (a, b) {
       return a === b;
     }, gt: function (a, b) {

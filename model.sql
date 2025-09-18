@@ -1,5 +1,6 @@
 CREATE TABLE unilibbook (
   id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  UserName Text,
   name Text NOT NULL,
   category Text NOT NULL,
   description TEXT,

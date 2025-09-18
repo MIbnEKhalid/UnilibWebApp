@@ -1,70 +1,10 @@
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="https://portal.mbktechstudio.com/Assets/Style/Page.css" />
-  <script src="https://kit.fontawesome.com/0934e8e9d3.js" crossorigin="anonymous"></script>
-  <link rel="icon" type="image/x-icon" href="https://portal.mbktechstudio.com/Assets/Images/dgicon.svg" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-  <link rel="stylesheet" href="https://portal.mbktechstudio.com/Assets/Style/style.css" />
-  <script src="https://portal.mbktechstudio.com/Assets/Scripts/logout.js"></script>
-  <link rel="stylesheet" href="/Assets/Style/unilib.css">
-  <script src="https://portal.mbktechstudio.com/Assets/Scripts/main.js"></script>
-</head>
-<header>
-  <nav>
-    <div class="navbar">
-      <div class="logo">
-        <div class="image">
-          <img src="https://portal.mbktechstudio.com/Assets/Images/dg.svg" alt="" />
-        </div>
-        <div class="text">
-          <a href="/dashboard/">Unilib Portal</a>
-        </div>
-      </div>
-      <div class="logout-btn">
-        <div class="profile-menu">
-          <i class="fa fa-user-circle" onclick="toggleProfileMenu()"></i>
-          <div class="dropdown-content" id="profileDropdown">
-            <a class="a1" style="text-align:center;">
-              <div id="headerProfileUserName"></div>
-            </a>
-            <a class="a" href="https://portal.mbktechstudio.com/user/settings">Settings</a>
-            <a class="a" onclick="logout()">Logout</a>
-          </div>
-        </div>
-      </div>
-  </nav>
-</header>
-<script>
-  const headerElement = document.getElementById('headerProfileUserName');
-  headerElement.textContent = getCookieValue('username') || 'Not Logged In';
-  function toggleProfileMenu() {
-    const dropdown = document.getElementById('profileDropdown');
-    dropdown.style.display = dropdown.style.display === 'block'
-      ? 'none'
-      : 'block';
-  }
-  window.onclick = function (event) {
-    if (!event.target.matches('.fa')) {
-      const dropdowns = document.getElementsByClassName("dropdown-content");
-      for (let i = 0; i < dropdowns.length; i++) {
-        const openDropdown = dropdowns[i];
-        if (openDropdown.style.display === 'block') {
-          openDropdown.style.display = 'none';
-        }
-      }
-    }
-  }
-
-</script>
-
-<body>
+{{! Using layout }}
+{{!-- {{#section 'head'}} Additional head tags for Add Book {{/section}} --}}
 
   <style>
     .cards-container {
       display: flex;
+      justify-content: center;
     }
 
     .book-card .actions {
@@ -145,8 +85,8 @@
               </label>
               <select id="semester" name="semester" required>
                 <option value="Semester1">Semester1</option>
-                <option value="Semester2" selected>Semester2</option>
-                <option value="Semester3">Semester3</option>
+                <option value="Semester2">Semester2</option>
+                <option value="Semester3" selected>Semester3</option>
                 <option value="Semester4">Semester4</option>
                 <option value="Semester5">Semester5</option>
                 <option value="Semester6">Semester6</option>
@@ -236,28 +176,4 @@
     </div>
   </section>
 
-</body>
-<br>
-<footer>
-  <div class="text">
-    <span>
-      ©
-      <span id="year"></span>
-      <a href="https://mbktechstudio.com" target="_blank">MBK Tech Studio</a>.
-      All
-      Rights Reserved |
-      <a href="/info/Terms&Conditions" target="_blank">Terms &amp; Conditions</a>
-      |
-      <a href="/info/FAQs" target="_blank">FAQs</a>
-      | <a href="/info/Credits" target="_blank">Credits</a>
-      |
-      <a href="https://mbktechstudio.com/Support/" target="_blank">Support &amp; Contact</a>
-    </span>
-    <script>
-      document.getElementById('year').textContent = new Date().getFullYear();
-    </script>
-  </div>
-</footer>
-<script src="https://portal.mbktechstudio.com/Assets/Scripts/header.js"></script>
-
-</html>
+{{!-- {{#section 'scripts'}} AddBook page extra scripts if needed {{/section}} --}}
