@@ -25,3 +25,11 @@ CREATE TYPE semesters AS ENUM (
 CREATE INDEX idx_unilibbook_category ON unilibbook(category);
 CREATE INDEX idx_unilibbook_semester ON unilibbook(semester);
 CREATE INDEX idx_unilibbook_main ON unilibbook(main);
+
+CREATE INDEX IF NOT EXISTS idx_unilibbook_semester_category_main
+ON unilibbook(semester, category, main);
+
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
+CREATE INDEX IF NOT EXISTS idx_unilibbook_name_trgm
+ON unilibbook USING gin(name gin_trgm_ops);
