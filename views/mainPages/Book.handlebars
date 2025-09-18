@@ -1,81 +1,156 @@
 {{! Using main layout }}
-{{! Set an optional page title }}
-{{!-- {{#section 'head'}} Add extra head tags here if needed {{/section}} --}}
-  <section class="about" id="books">
-    <div class="content">
-      <div class="not"></div>
-      <div style="display:flex; gap:.75rem; flex-wrap:wrap; margin-bottom: .5rem;">
-        <a class="buttons" href="/dashboard/Book/Add">Add New Book</a>
-        <button class="buttons" type="button" onclick="exportBooks()" title="Download books as JSON">Export JSON</button>
-      </div>
-      <div class="title section-title"><span>Uni Course Materials</span></div>
-      <div class="filter">
-        <div class="select-dropdown">
-          <select id="semesterFilter" name="topics" onchange="filterProducts()">
-            <option value="Semester1" {{#if (eq filters.semester 'Semester1' )}}selected{{/if}}>Semester 1</option>
-            <option value="Semester2" {{#if (eq filters.semester 'Semester2' )}}selected{{/if}}>Semester 2</option>
-            <option value="Semester3" {{#if (eq filters.semester 'Semester3' )}}selected{{/if}}>Semester 3</option>
-          </select>
-        </div>
-        <div class="select-dropdown">
-          <select id="categoryFilter" name="topics" onchange="filterProducts()">
-            <option value="all" {{#if (eq filters.category 'all' )}}selected{{/if}}>All</option>
-            <option value="CourseBooks" {{#if (eq filters.category 'CourseBooks' )}}selected{{/if}}>Course Books
-            </option>
-            <option value="LabManuals" {{#if (eq filters.category 'LabManuals' )}}selected{{/if}}>Lab Manuals</option>
-            <option value="other" {{#if (eq filters.category 'other' )}}selected{{/if}}>Other</option>
-          </select>
-        </div>
-      </div>
-      <div class="search-bar">
-        <input type="text" id="searchProduct" placeholder="Search Book Name..." value="{{filters.search}}"
-          oninput="debounce(filterProducts, 500)()">
-        <div class="submit"><button type="submit" onclick="filterProducts()"><i class="fas fa-search"></i></button>
-        </div>
-        <button type="button" id="clearSearch" class="clear-btn"
-          style="display: {{#if filters.search}}block{{else}}none{{/if}};" onclick="clearSearch()"><i
-            class="fas fa-times"></i></button>
-      </div>
-      <div id="spinner" class="spinner" style="display: none;"></div>
+{{#section 'head'}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{{/section}}
 
-      <div class="cards-container products" style="{{#if books}}display: grid;{{else}}display: flex;{{/if}}">
+<div style="margin-top: 50px;"></div>
+
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <div class="dashboard-title">
+      <h1>Digital Library Dashboard</h1>
+      <p>Access your academic resources in one place</p>
+    </div>
+    <div class="dashboard-actions">
+      <a href="/dashboard/Book/Add" class="action-button add-button">
+        <i class="fas fa-plus"></i>
+        <span>Add New Book</span>
+      </a>
+      <button class="action-button export-button" onclick="exportBooks()">
+        <i class="fas fa-download"></i>
+        <span>Export Books</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="filter-section">
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" id="searchProduct" placeholder="Search books by name..." value="{{filters.search}}" oninput="debounce(filterProducts, 500)()">
+      <button type="button" id="clearSearch" class="clear-search" onclick="clearSearch()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="filter-controls">
+      <div class="filter-group">
+        <label for="semesterFilter">
+          <i class="fas fa-graduation-cap"></i>
+          <span>Semester</span>
+        </label>
+        <select id="semesterFilter" name="semester" onchange="filterProducts()">
+          <option value="Semester1" {{#if (eq filters.semester 'Semester1')}}selected{{/if}}>Semester 1</option>
+          <option value="Semester2" {{#if (eq filters.semester 'Semester2')}}selected{{/if}}>Semester 2</option>
+          <option value="Semester3" {{#if (eq filters.semester 'Semester3')}}selected{{/if}}>Semester 3</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="categoryFilter">
+          <i class="fas fa-book"></i>
+          <span>Category</span>
+        </label>
+        <select id="categoryFilter" name="category" onchange="filterProducts()">
+          <option value="all" {{#if (eq filters.category 'all')}}selected{{/if}}>All Categories</option>
+          <option value="CourseBooks" {{#if (eq filters.category 'CourseBooks')}}selected{{/if}}>Course Books</option>
+          <option value="LabManuals" {{#if (eq filters.category 'LabManuals')}}selected{{/if}}>Lab Manuals</option>
+          <option value="other" {{#if (eq filters.category 'other')}}selected{{/if}}>Other</option>
+        </select>
+      </div>
+    </div>
+  </div>
+      <div id="spinner" class="loading-spinner" style="display: none;">
+        <div class="spinner-content">
+          <div class="spinner-circle"></div>
+          <p>Loading books...</p>
+        </div>
+      </div>
+
+      <div class="books-grid">
         {{#if books}}
-        {{#each books}}
-        <article class="book-card linked" id="{{this.id}}">
-          {{#if this.main}}
-          <div class="badge" aria-label="Main resource">Main</div>
-          {{/if}}
-          <a href="{{this.link}}" aria-label="{{this.name}}" target="_blank" rel="noopener noreferrer">
-            <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" loading="lazy" class="lazy-load">
-          </a>
-          <div class="Bdetails">
-            <h3>{{this.name}}</h3>
-            <p>{{this.description}}</p>
-          </div>
-          <div class="actions">
-            <a href="{{this.link}}" class="btn btn-save" aria-label="View {{this.name}}" target="_blank"
-              rel="noopener noreferrer">
-              <i class="fas fa-eye" aria-hidden="true"></i> View
-            </a>
-            <a href="/dashboard/Book/Edit/{{this.id}}" class="btn btn-edit" aria-label="Edit {{this.name}}">
-              <i class="fas fa-edit" aria-hidden="true"></i> Edit
-            </a>
-            <button class="btn btn-danger delete-btn" onclick="deleteProduct({{this.id}})"
-              aria-label="Delete {{this.name}}" data-id="{{this.id}}">
-              <i class="fas fa-trash" aria-hidden="true"></i> Delete
-            </button>
+          {{#each books}}
+            <div class="book-card" id="{{this.id}}">
+              {{#if this.main}}
+                <div class="book-badge" aria-label="Main resource">Main</div>
+              {{/if}}
+              
+              <div class="book-cover">
+                <a href="{{this.link}}" target="_blank" rel="noopener noreferrer">
+                  <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" loading="lazy">
+                </a>
+                <div class="book-overlay">
+                  <div class="book-actions">
+                    <a href="{{this.link}}" class="book-action-btn view-btn" target="_blank" rel="noopener noreferrer">
+                      <i class="fas fa-eye"></i>
+                      <span>View</span>
+                    </a>
+                    {{#if (eq role "SuperAdmin")}}
+                      <a href="/dashboard/Book/Edit/{{this.id}}" class="book-action-btn edit-btn">
+                        <i class="fas fa-edit"></i>
+                        <span>Edit</span>
+                      </a>
+                      <button onclick="deleteProduct('{{this.id}}')" class="book-action-btn delete-btn">
+                        <i class="fas fa-trash-alt"></i>
+                        <span>Delete</span>
+                      </button>
+                    {{/if}}
+                  </div>
+                </div>
+              </div>
 
-          </div>
-        </article>
-        {{/each}}
+              <div class="book-info">
+                <div class="book-header">
+                  <h3 class="book-title">{{this.name}}</h3>
+                  <div class="book-actions-top">
+                      <button onclick="deleteProduct('{{this.id}}')" class="book-btn delete-btn" title="Delete book">
+                        <i class="fas fa-trash-alt"></i>
+                      </button>
+                      <a href="/dashboard/Book/Edit/{{this.id}}" class="book-btn edit-btn" title="Edit book">
+                        <i class="fas fa-edit"></i>
+                      </a>
+                  </div>
+                </div>
+                <p class="book-description">{{this.description}}</p>
+                <div class="book-metadata">
+                  <div class="metadata-row">
+                    <span class="book-category">
+                      <i class="fas fa-bookmark"></i>
+                      {{this.category}}
+                    </span>
+                    <span class="book-semester">
+                      <i class="fas fa-graduation-cap"></i>
+                      {{this.semester}}
+                    </span>
+                  </div>
+                  <div class="metadata-row">
+                    <span class="book-user">
+                      <i class="fas fa-user"></i>
+                      {{#if this.UserName}}
+                        {{this.UserName}}
+                      {{else}}
+                        Unknown User
+                      {{/if}}
+                    </span>
+                    <a href="{{this.link}}" class="book-btn view-btn" target="_blank" rel="noopener noreferrer" title="View book">
+                      <i class="fas fa-eye"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {{/each}}
         {{else}}
-        <div class="no-results">
-          <i class="fas fa-book-open" style="font-size: 3rem; margin-bottom: 1rem; color: var(--text-secondary);"></i>
-          <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">No materials found matching your criteria</p>
-          <button class="btn btn-save" onclick="resetFilters()" style="margin: 0 auto;">
-            <i class="fas fa-filter"></i> Reset Filters
-          </button>
-        </div>
+          <div class="no-results">
+            <div class="no-results-content">
+              <i class="fas fa-book-open"></i>
+              <h3>No Books Found</h3>
+              <p>No materials found matching your search criteria</p>
+              <button class="action-button add-button" onclick="resetFilters()">
+                <i class="fas fa-sync"></i>
+                <span>Reset Filters</span>
+              </button>
+            </div>
+          </div>
         {{/if}}
       </div>
 

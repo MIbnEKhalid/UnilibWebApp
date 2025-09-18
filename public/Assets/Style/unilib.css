@@ -3,24 +3,46 @@
     color: #fff;
 }
 :root {
-    --bg-dark: #121212;
-    --bg-darker: #1e1e1e;
-    --bg-light: #252525;
-    --bg-lighter: #333;
-    --primary-color: #00bcd4;
-    --secondary-color: #4caf50;
-    --text-primary: #fff;
-    --text-secondary: #aaa;
-    --border-color: #444;
-    --success-color: #4caf50;
-    --danger-color: #f44336;
+    /* Dark Theme Colors */
+    --bg-dark: #0d1117;
+    --bg-darker: #161b22;
+    --bg-light: #21262d;
+    --bg-lighter: #2b3139;
+    
+    /* Brand Colors */
+    --primary-color: #2ea043;
+    --primary-accent: #3fb950;
+    --secondary-color: #1f6feb;
+    --danger-color: #f85149;
+    
+    /* Text Colors */
+    --text-primary: #f0f6fc;
+    --text-secondary: #8b949e;
+    
+    /* Border & Shadow */
+    --border-color: #30363d;
+    --shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    
+    /* Success States */
+    --success-color: #2ea043;
+    --error-color: #f85149;
+    
+    /* Spacing */
+    --space-xs: 4px;
     --space-sm: 8px;
     --space-md: 16px;
     --space-lg: 24px;
     --space-xl: 32px;
+    
+    /* Border Radius */
     --radius-sm: 4px;
     --radius-md: 8px;
-    --shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    --radius-lg: 12px;
+    
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-base: 0.3s ease;
+    --transition-slow: 0.5s ease;
 }
 
 * {

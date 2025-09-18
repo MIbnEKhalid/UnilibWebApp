@@ -1,42 +1,167 @@
-input[readonly] {
-	background-color: var(--gray-light-color-ml);
-	color: var(--gray-color-ml);
-	border: 1px solid var(--gray-light-color-ml);
-	cursor: not-allowed;
-	opacity: 0.8;
+/* Dashboard Container */
+.dashboard-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: var(--bg-dark);
 }
 
-.main {
-	background: linear-gradient(135deg, white 0%, #fafbfc 100%);
-	border-radius: var(--border-radius-lg-ml);
-	box-shadow: var(--shadow-lg-ml);
-	padding: 2rem;
-	transition: var(--transition-base-ml);
-	width: 100%;
-	max-width: 450px;
-	text-align: center;
-	border: 1px solid var(--gray-light-color-ml);
+/* Dashboard Header */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
 }
 
-.button {
-	width: 100%;
+.dashboard-title h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
 }
 
-.button button {
-	outline: none;
-	border-radius: var(--border-radius-r-ml);
-	padding: 0.75rem 1.5rem;
-	font-size: 1rem;
-	font-weight: 600;
-	background: linear-gradient(135deg, var(--primary-color-ml) 0%, var(--primary-dark-color-ml) 100%);
-	color: white;
-	border: 2px solid transparent;
-	cursor: pointer;
-	transition: var(--transition-base-ml);
-	margin-top: 1rem;
-	cursor: pointer;
-	width: 100%;
-	font-family: var(--font-family);
+.dashboard-title p {
+  color: var(--text-secondary);
+  margin: 0.5rem 0 0;
+}
+
+.dashboard-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.action-button i {
+  font-size: 1rem;
+}
+
+.add-button {
+  background: var(--primary-color);
+  color: var(--text-primary);
+}
+
+.add-button:hover {
+  background: var(--primary-accent);
+  transform: translateY(-1px);
+}
+
+.export-button {
+  background: var(--bg-lighter);
+  color: var(--text-primary);
+}
+
+.export-button:hover {
+  background: var(--bg-light);
+  transform: translateY(-1px);
+}
+
+/* Filter Section */
+.filter-section {
+  background: var(--bg-darker);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.search-box {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 1rem 1rem 1rem 2.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.search-box input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.2);
+}
+
+.search-box i.fa-search {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+}
+
+.clear-search {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0;
+  display: none;
+}
+
+.clear-search:hover {
+  color: var(--text-primary);
+}
+
+.filter-controls {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.filter-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.filter-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-group select:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.2);
 }
 
 .button button:hover {
