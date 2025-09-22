@@ -78,7 +78,7 @@ app.use(mbkautheRouter);
 
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000,
-  max: 15,
+  max: 25,
   message: 'Too many requests from this IP, please try again later.'
 });
 

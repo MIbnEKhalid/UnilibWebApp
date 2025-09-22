@@ -711,15 +711,10 @@
     }
 
     .book-card:hover {
-      transform: translateY(-5px) scale(1.02);
-      border-color: var(--primary-accent);
+       border-color: var(--primary-accent);
       box-shadow: 0 15px 35px rgba(55, 122, 119, 0.3),
                   0 0 0 1px var(--primary-accent);
       background: rgba(255, 255, 255, 0.08);
-    }
-
-    .book-card:hover img {
-      transform: scale(1.05);
     }
 
     .book-card:hover .book-title-link {
@@ -1196,7 +1191,7 @@
               </a>
               <button onclick="downloadResource('{{this.link}}')" class="btn btn-save"
                 aria-label="Download {{this.name}}">
-                <i class="fas fa-download" aria-hidden="true"></i> Download
+                <i class="fas fa-download" aria-hidden="true"></i>
               </button>
               <button onclick="shareBook('{{this.id}}', '{{this.name}}')" class="btn btn-save"
                 aria-label="Share {{this.name}}">
@@ -1267,7 +1262,7 @@
             </a>
             <button onclick="downloadResource('{{this.link}}')" class="btn btn-save"
               aria-label="Download {{this.name}}">
-              <i class="fas fa-download" aria-hidden="true"></i> Download
+              <i class="fas fa-download" aria-hidden="true"></i>
             </button>
           </div>
         </article>
