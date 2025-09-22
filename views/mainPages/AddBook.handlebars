@@ -1,21 +1,26 @@
-{{! Using layout }}
-{{!-- {{#section 'head'}} Additional head tags for Add Book {{/section}} --}}
+{{! Using main layout }}
+{{#section 'head'}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{{/section}}
 
-  <style>
-    .cards-container {
-      display: flex;
-      justify-content: center;
-    }
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <div class="dashboard-title">
+      <h1>Add New Book</h1>
+      <p>Add a new book to the digital library</p>
+    </div>
+    <div class="dashboard-actions">
+      <a href="/dashboard" class="action-button back-button">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </a>
+    </div>
+  </div>
 
-    .book-card .actions {
-      justify-content: center;
-    }
-  </style>
-  <section>
-    <div class="content">
+  <div class="add-book-content">
+    <div class="book-preview-section">
       <div class="cards-container products">
         <article class="book-card linked">
-          <div style="display: none;" class="badge" aria-label="Main resource">Main</div>
+          <div style="display: none;" class="book-badge" aria-label="Main resource">Main</div>
           <a id="bookurl" target="_blank">
             <img id="bookcover" src="/Assets/Images/BookCovers/BookCover_Template.png" loading="lazy">
           </a>
@@ -30,9 +35,12 @@
           </div>
         </article>
       </div>
+    </div>
+
+    <div class="form-section">
       <div class="profile-container">
         <div class="profile-header">
-          <h2>Add Book</h2>
+          <h2>Book Details</h2>
         </div>
         <div class="profile-details">
           <form class="profile-form" id="addBookForm">
@@ -60,7 +68,7 @@
               <label for="description">
                 <strong>Description:</strong>
               </label>
-              <input id="description" name="description" value="aurthor name or other description" required />
+              <input id="description" name="description" value="author name or other description" required />
             </div>
 
             <div class="form-group">
@@ -95,51 +103,59 @@
               </select>
             </div>
 
-            <label for="main">Main:</label>
-            <select id="main" name="main" required>
-              <option value="true">True</option>
-              <option value="false" selected>False</option>
-            </select>
+            <div class="form-group">
+              <label for="main">
+                <strong>Main:</strong>
+              </label>
+              <select id="main" name="main" required>
+                <option value="true">True</option>
+                <option value="false" selected>False</option>
+              </select>
+            </div>
 
             <button class="buttons full">Add Book</button>
           </form>
         </div>
       </div>
-      <script>
-        function updateBookCard() {
-          document.getElementById("bookname").textContent = document.getElementById("name").value;
-          document.getElementById("bookdesciption").textContent = document.getElementById("description").value;
-          document.getElementById("bookcover").src = document.getElementById("imageURL").value;
-          const url = document.getElementById("link").value;
-          document.getElementById("bookurl").href = url;
-          document.getElementById("bookurl1").href = url;
+    </div>
+  </div>
+</div>
 
-          // Show/hide Main badge based on "main" value
-          const mainValue = document.getElementById("main").value;
-          const badge = document.querySelector(".book-card .badge");
-          if (badge) {
+<script>
+    function updateBookCard() {
+        document.getElementById("bookname").textContent = document.getElementById("name").value;
+        document.getElementById("bookdesciption").textContent = document.getElementById("description").value;
+        document.getElementById("bookcover").src = document.getElementById("imageURL").value;
+        const url = document.getElementById("link").value;
+        document.getElementById("bookurl").href = url;
+        document.getElementById("bookurl1").href = url;
+
+        // Show/hide Main badge based on "main" value
+        const mainValue = document.getElementById("main").value;
+        const badge = document.querySelector(".book-card .book-badge");
+        if (badge) {
             badge.style.display = mainValue === "true" ? "block" : "none";
-          }
         }
+    }
 
-        const fields = ["name", "description", "imageURL", "link", "main"];
-        fields.forEach(id => {
-          document.getElementById(id).addEventListener("input", updateBookCard);
-          document.getElementById(id).addEventListener("change", updateBookCard);
-        });
+    const fields = ["name", "description", "imageURL", "link", "main"];
+    fields.forEach(id => {
+        document.getElementById(id).addEventListener("input", updateBookCard);
+        document.getElementById(id).addEventListener("change", updateBookCard);
+    });
 
-        // Initialize card with default values
-        updateBookCard();
-      </script>
-      <script>
-        document.getElementById("addBookForm").addEventListener("submit", async (e) => {
-          e.preventDefault();
+    // Initialize card with default values
+    updateBookCard();
 
-          const submitButton = e.target.querySelector("button");
-          submitButton.disabled = true;
-          submitButton.textContent = "Adding...";
+    // Handle form submission
+    document.getElementById("addBookForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-          const formData = {
+        const submitButton = e.target.querySelector("button");
+        submitButton.disabled = true;
+        submitButton.textContent = "Adding...";
+
+        const formData = {
             name: document.getElementById("name").value,
             category: document.getElementById("category").value,
             description: document.getElementById("description").value,
@@ -147,33 +163,31 @@
             link: document.getElementById("link").value,
             semester: document.getElementById("semester").value,
             main: document.getElementById("main").value,
-          };
+        };
 
-          try {
+        try {
             const response = await fetch("/api/admin/Unilib/Book/Add", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(formData),
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
             });
 
             const result = await response.json();
             if (response.ok) {
-              alert(result.message);
+                alert(result.message);
+                window.location.href = "/dashboard"; // Redirect to dashboard after successful addition
             } else {
-              alert(result.error);
+                alert(result.error);
             }
-          } catch (error) {
+        } catch (error) {
             console.error("Error adding book:", error);
             alert("Failed to add book");
-          } finally {
+        } finally {
             submitButton.disabled = false;
             submitButton.textContent = "Add Book";
-          }
-        });
-      </script>
-    </div>
-  </section>
-
+        }
+    });
+</script>
 {{!-- {{#section 'scripts'}} AddBook page extra scripts if needed {{/section}} --}}

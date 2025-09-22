@@ -1,6 +1,18 @@
 # UnilibWebApp
 
-UnilibWebApp is an open-source web application for managing and sharing university course materials, assignments, and quizzes. Built with Node.js, Express, and Handlebars, it provides a user-friendly interface for students and administrators to access, add, edit, and manage educational resources.
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen)](https://nodejs.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)]()
+
+UnilibWebApp is an open-source web application for managing and sharing university course materials. Built with Node.js, Express, and Handlebars, it provides a user-friendly interface for students and administrators to access, add, edit, and manage educational resources.
+
+## Technologies
+
+- **Backend**: Node.js, Express.js
+- **Frontend**: Handlebars templating engine, HTML, CSS, JavaScript
+- **Database**: PostgreSQL
+- **Authentication**: mbkauthe (custom authentication library)
+- **Other**: Compression, CORS, Rate limiting
 
 ## Features
 
@@ -15,21 +27,58 @@ UnilibWebApp is an open-source web application for managing and sharing universi
 
 ```
 .
-├───public
-│   └───Assets
-│       ├───Images
-│       │   ├───BookCovers
-│       │   │   ├───Semester1
-│       │   │   └───Semester2
-│       │   └───Icon
-│       └───Scripts
-├───routes
-└───views
-    ├───mainPages
-    │   └───uniDomain
-    ├───script
-    └───templates
-        └───Error
+├── LICENSE
+├── README.md
+├── app.js
+├── env.md
+├── model.sql
+├── package.json
+├── public
+│   ├── Assets
+│   │   ├── Images
+│   │   │   ├── BookCovers
+│   │   │   │   ├── BookCover_Template.png
+│   │   │   │   ├── Semester1
+│   │   │   │   │   ├── FundamentalsofPhysics9thEdition.png
+│   │   │   │   │   ├── ThomasCalculus11thEdition.png
+│   │   │   │   │   └── UsingInformationTechnology.png
+│   │   │   │   ├── Semester2
+│   │   │   │   │   ├── BasicEngineeringCircuitAnalysis10th.png
+│   │   │   │   │   ├── CPL.png
+│   │   │   │   │   ├── ElementaryLinearAlgebraApplications.png
+│   │   │   │   │   ├── EngineeringCircuitAnalysis9thEd.png
+│   │   │   │   │   ├── HowToProgram.png
+│   │   │   │   │   ├── LinearAlgebra&ItsApplications.png
+│   │   │   │   │   └── circuitanalysisLab.png
+│   │   │   │   └── Semester3
+│   │   │   │       ├── AdvancedEngineeringMathematics.png
+│   │   │   │       ├── BrownChurchillComplexVariables&Application8ed.png
+│   │   │   │       └── ElectronicDevicesByFloyd9thEdition.png
+│   │   │   └── Icon
+│   │   │       ├── MBKSupportIcon.svg
+│   │   │       └── dg.svg
+│   │   ├── Scripts
+│   │   │   └── unilib.js
+│   │   └── Style
+│   │       ├── dashboard.css
+│   │       ├── style.css
+│   │       └── unilib.css
+│   └── robots.txt
+├── routes
+│   ├── main.js
+│   ├── mediaimage.js
+│   └── pool.js
+├── vercel.json
+└── views
+    ├── layouts
+    │   └── main.handlebars
+    └── mainPages
+        ├── AddBook.handlebars
+        ├── Book.handlebars
+        ├── EditBook.handlebars
+        └── index.handlebars
+
+15 directories, 36 files
 ```
 
 ## Getting Started
@@ -86,6 +135,6 @@ This project is licensed under the MIT License. See [`LICENSE`](LICENSE) for det
 
 ## Contact
 
-For questions or contributions, please contact Muhammad Bin Khalid at [mbktechstudio.com/Support](https://mbktechstudio.com/Support/?Project=MIbnEKhalidWeb), [support@mbktechstudio.com](mailto:support@mbktechstudio.com) or [chmuhammadbinkhalid28.com](mailto:chmuhammadbinkhalid28.com). 
+For questions or contributions, please contact Muhammad Bin Khalid at [mbktechstudio.com/Support](https://mbktechstudio.com/Support/?Project=MIbnEKhalidWeb), [support@mbktechstudio.com](mailto:support@mbktechstudio.com) or [chmuhammadbinkhalid28@gmail.com](mailto:chmuhammadbinkhalid28@gmail.com). 
 
 Developed by [Muhammad Bin Khalid](https://github.com/MIbnEKhalid) at [MBK Tech Studio](https://mbktechstudio.com/).

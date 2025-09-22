@@ -1,488 +1,331 @@
 {{! Using layout }}
-{{!-- {{#section 'head'}} Extra head tags for Edit Book {{/section}} --}}
-    <style>
-        /* Popup modal styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
+{{#section 'head'}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" href="/Assets/Style/modal.css">
+{{/section}}
 
-        .modal-content {
-            background-color: #fefefe;
-            margin: 10% auto;
-            padding: 20px;
-            border-radius: 8px;
-            width: 80%;
-            max-width: 600px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <div class="dashboard-title">
+      <h1>Edit Book</h1>
+      <p>Modify the details of the selected book</p>
+    </div>
+    <div class="dashboard-actions">
+      <a href="/dashboard" class="action-button back-button">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </a>
+    </div>
+  </div>
 
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+  <div class="add-book-content">
+    <div class="book-preview-section">
+      <div class="cards-container products">
+        <article class="book-card linked" id="7">
+          <a id="bookurl" href="{{book.link}}" target="_blank" aria-label="All">
+            <img id="bookcover" src="{{book.imageURL}}" alt="Cover of {{book.name}}" loading="lazy">
+          </a>
+          <div class="Bdetails">
+            <h3 id="bookname" data-org="{{book.name}}">{{book.name}}</h3>
+            <p id="bookdesciption" data-org="{{book.description}}">{{book.description}}</p>
+          </div>
+          <div class="actions">
+            <a id="bookurl1" href="{{book.link}}" target="_blank" class="btn btn-save" aria-label="View All">
+              <i class="fas fa-eye" aria-hidden="true"></i> View
+            </a>
+          </div>
+        </article>
+      </div>
+    </div>
 
-        .close:hover {
-            color: black;
-        }
-
-        .upload-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .image-preview {
-            max-width: 100%;
-            max-height: 200px;
-            display: none;
-            margin: 0 auto;
-        }
-
-        .upload-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .upload-btn:hover {
-            background-color: #45a049;
-        }
-
-        .file-input-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-        }
-
-        .file-input-btn {
-            border: 1px solid #ccc;
-            display: inline-block;
-            padding: 8px 12px;
-            cursor: pointer;
-            background-color: #f8f8f8;
-            border-radius: 4px;
-        }
-
-        .file-input {
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-        }
-
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .modal-footer button {
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .cancel-btn {
-            background-color: #f44336;
-            color: white;
-            border: none;
-        }
-
-        .save-btn {
-            background-color: #2196F3;
-            color: white;
-            border: none;
-        }
-
-        .url-select-container {
-            margin-top: 15px;
-        }
-
-        /* New styles for the image gallery */
-        .image-gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
-            max-height: 300px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 4px;
-        }
-
-        .gallery-image {
-            width: 100%;
-            height: auto;
-            object-fit: cover;
-            cursor: pointer;
-            border: 2px solid transparent;
-            border-radius: 4px;
-            transition: border-color 0.2s;
-        }
-
-        .gallery-image:hover {
-            border-color: #2196F3; /* Highlight on hover */
-        }
-
-        .cards-container {
-            display: flex;
-            justify-content: center;
-        }
-
-        .book-card .actions {
-            justify-content: center;
-        }
-
-        .book-card {
-            max-width: 300px;
-        }
-    </style>
-    <br>
-
-    <section>
-        <div class="content">
-            <div class="cards-container products">
-                <article class="book-card linked" id="7">
-                    <a id="bookurl" href="{{book.link}}" target="_blank" aria-label="All">
-                        <img id="bookcover" src="{{book.imageURL}}" alt="Cover of All" loading="lazy">
-                    </a>
-                    <div class="Bdetails">
-                        <h3 id="bookname" data-org="{{book.name}}">{{book.name}}</h3>
-                        <p id="bookdesciption" data-org="{{book.name}}">{{book.description}}</p>
-                    </div>
-                    <div class="actions">
-                        <a id="bookurl1" href="{{book.link}}" target="_blank" class="btn btn-save"
-                            aria-label="View All">
-                            <i class="fas fa-eye" aria-hidden="true"></i> View
-                        </a>
-                    </div>
-                </article>
-            </div>
-            <div class="profile-container">
-                <div class="profile-header">
-                    <h2>Edit Book</h2>
-                </div>
-                <div class="profile-details">
-                    <form class="profile-form" id="addBookForm">
-
-                        <div class="form-group">
-                            <label for="name">
-                                <strong>Book Name:</strong>
-                            </label>
-                            <input type="text" value="{{book.name}}" data-org="{{book.name}}" id="name" name="name"
-                                required />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="category">
-                                <strong>Category:</strong>
-                            </label>
-                            <select id="category" name="category" data-org="{{book.category}}" required>
-                                <option value="All" {{#if (eq book.category "All" )}}selected{{/if}}>All</option>
-                                <option value="CourseBooks" {{#if (eq book.category "CourseBooks" )}}selected{{/if}}>
-                                    CourseBooks</option>
-                                <option value="LabManuals" {{#if (eq book.category "LabManuals" )}}selected{{/if}}>
-                                    LabManuals</option>
-                                <option value="Other" {{#if (eq book.category "Other" )}}selected{{/if}}>Other</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="description">
-                                <strong>Description:</strong>
-                            </label>
-                            <input id="description" value="{{book.description}}" data-org="{{book.description}}"
-                                name="description" required />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="imageURL">
-                                <strong>Image URL:</strong>
-                            </label>
-                            <div style="display: flex; gap: 10px;">
-                                <input id="imageURL" value="{{book.imageURL}}" data-org="{{book.imageURL}}" name="imageURL"
-                                    required {{#unless (eq role "SuperAdmin" )}}readonly
-                                    title="You Don't Have Permission To Change Img URL" {{/unless}} />
-                                {{#if (eq role "SuperAdmin" )}}
-                                <button type="button" class="buttons" onclick="openImageUploadModal()">Upload Image</button>
-                                {{/if}}
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="link">
-                                <strong>Book Url:</strong>
-                            </label>
-                            <input type="url" value="{{book.link}}" data-org="{{book.link}}" id="link" name="link"
-                                required />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="semester">
-                                <strong>Semester:</strong>
-                            </label>
-                            <select id="semester" name="semester" data-org="{{book.semester}}" required>
-                                <option value="Semester1" {{#if (eq book.semester "Semester1" )}}selected{{/if}}>
-                                    Semester1
-                                </option>
-                                <option value="Semester2" {{#if (eq book.semester "Semester2" )}}selected{{/if}}>
-                                    Semester2
-                                </option>
-                                <option value="Semester3" {{#if (eq book.semester "Semester3" )}}selected{{/if}}>
-                                    Semester3
-                                </option>
-                                <option value="Semester4" {{#if (eq book.semester "Semester4" )}}selected{{/if}}>
-                                    Semester4
-                                </option>
-                                <option value="Semester5" {{#if (eq book.semester "Semester5" )}}selected{{/if}}>
-                                    Semester5
-                                </option>
-                                <option value="Semester6" {{#if (eq book.semester "Semester6" )}}selected{{/if}}>
-                                    Semester6
-                                </option>
-                                <option value="Semester7" {{#if (eq book.semester "Semester7" )}}selected{{/if}}>
-                                    Semester7
-                                </option>
-                                <option value="Semester8" {{#if (eq book.semester "Semester8" )}}selected{{/if}}>
-                                    Semester8
-                                </option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="main"><strong>Main:</strong></label>
-                            <select id="main" name="main" data-org="{{book.main}}" required>
-                                <option value="true" {{#if (eq book.main "true" )}}selected{{/if}}>True</option>
-                                <option value="false" {{#if (eq book.main "false" )}}selected{{/if}}>False</option>
-                            </select>
-                        </div>
-
-                        <button class="buttons full">Edit Book</button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Image Upload Modal -->
-            <div id="imageUploadModal" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closeImageUploadModal()">×</span>
-                    <h2>Upload Book Image</h2>
-                    <div class="upload-container">
-                        <div class="file-input-wrapper">
-                            <button class="file-input-btn">Choose Image</button>
-                            <input type="file" id="imageInput" class="file-input" accept="image/*">
-                        </div>
-                        <img id="imagePreview" class="image-preview" src="#" alt="Preview">
-                        <button id="uploadBtn" class="upload-btn" disabled>Upload Image</button>
-
-                        <div class="url-select-container">
-                             <label>Or select from existing images:</label>
-                             <div id="image-gallery" class="image-gallery">
-                                 <!-- Images will be populated by JavaScript -->
-                             </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="cancel-btn" onclick="closeImageUploadModal()">Cancel</button>
-                    </div>
-                </div>
-            </div>
-
-            <script>
-                // Image Upload Modal Functions
-                function openImageUploadModal() {
-                    const modal = document.getElementById('imageUploadModal');
-                    modal.style.display = 'block';
-                    loadSavedImages();
-                }
-
-                function closeImageUploadModal() {
-                    document.getElementById('imageUploadModal').style.display = 'none';
-                }
-
-                function loadSavedImages() {
-                    fetch('/api/media-images')
-                        .then(response => response.json())
-                        .then(images => {
-                            const gallery = document.getElementById('image-gallery');
-                            gallery.innerHTML = ''; // Clear previous images
-
-                            images.forEach(imageUrl => {
-                                const imgElement = document.createElement('img');
-                                imgElement.src = imageUrl;
-                                imgElement.alt = imageUrl.split('/').pop();
-                                imgElement.className = 'gallery-image';
-
-                                // Add click event to select image and close modal
-                                imgElement.addEventListener('click', () => {
-                                    document.getElementById('imageURL').value = imageUrl;
-                                    updateBookCard();
-                                    closeImageUploadModal();
-                                });
-
-                                gallery.appendChild(imgElement);
-                            });
-                        })
-                        .catch(error => {
-                            console.error('Error loading saved images:', error);
-                            const gallery = document.getElementById('image-gallery');
-                            gallery.innerHTML = '<p style="color: red;">Could not load images.</p>';
-                        });
-                }
-
-                // Image Preview and Upload Handling
-                document.getElementById('imageInput').addEventListener('change', function(e) {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(event) {
-                            const preview = document.getElementById('imagePreview');
-                            preview.src = event.target.result;
-                            preview.style.display = 'block';
-                            document.getElementById('uploadBtn').disabled = false;
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-
-                document.getElementById('uploadBtn').addEventListener('click', function() {
-                    const fileInput = document.getElementById('imageInput');
-                    const file = fileInput.files[0];
-
-                    if (!file) {
-                        alert('Please select an image first');
-                        return;
-                    }
-
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        const base64Image = event.target.result;
-                        const filename = file.name || 'book-image.jpg';
-
-                        uploadImage(base64Image, filename)
-                            .then(fileUrl => {
-                                document.getElementById('imageURL').value = fileUrl;
-                                updateBookCard();
-                                alert('Image uploaded successfully!');
-                                closeImageUploadModal();
-                            })
-                            .catch(error => {
-                                console.error('Upload error:', error);
-                                alert('Failed to upload image: ' + error.message);
-                            });
-                    };
-                    reader.readAsDataURL(file);
-                });
-
-                async function uploadImage(base64Image, filename) {
-                    try {
-                        const response = await fetch('/upload', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                image: base64Image,
-                                filename: filename
-                            })
-                        });
-
-                        const data = await response.json();
-                        if (!response.ok) {
-                            throw new Error(data.error || 'Upload failed');
-                        }
-                        return data.url;
-                    } catch (error) {
-                        console.error('Upload error:', error);
-                        throw error;
-                    }
-                }
-
-                function updateBookCard() {
-                    document.getElementById("bookname").textContent = document.getElementById("name").value;
-                    document.getElementById("bookdesciption").textContent = document.getElementById("description").value;
-                    document.getElementById("bookcover").src = document.getElementById("imageURL").value;
-                    const url = document.getElementById("link").value;
-                    document.getElementById("bookurl").href = url;
-                    document.getElementById("bookurl1").href = url;
-
-                    // Show/hide Main badge based on "main" value
-                    const mainValue = document.getElementById("main").value;
-                    const badge = document.querySelector(".book-card .badge");
-                }
-
-                const fields = ["name", "description", "imageURL", "link", "main"];
-                fields.forEach(id => {
-                    document.getElementById(id).addEventListener("input", updateBookCard);
-                    document.getElementById(id).addEventListener("change", updateBookCard);
-                });
-
-                // Initialize card with default values
-                updateBookCard();
-            </script>
-            <script>
-                document.getElementById("addBookForm").addEventListener("submit", async (e) => {
-                    e.preventDefault();
-
-                    const submitButton = e.target.querySelector("button");
-                    submitButton.disabled = true;
-                    submitButton.textContent = "Editing...";
-
-                    const formData = {
-                        name: document.getElementById("name").value,
-                        category: document.getElementById("category").value,
-                        description: document.getElementById("description").value,
-                        imageURL: document.getElementById("imageURL").value,
-                        link: document.getElementById("link").value,
-                        semester: document.getElementById("semester").value,
-                        main: document.getElementById("main").value,
-                    };
-
-                    try {
-                        const response = await fetch("/api/admin/Unilib/Book/Edit/{{id}}", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify(formData),
-                        });
-
-                        const result = await response.json();
-                        if (response.ok) {
-                            alert(result.message);
-                            window.location.reload();
-                        } else {
-                            alert(result.error);
-                        }
-                    } catch (error) {
-                        console.error("Error editing book:", error);
-                        alert("Failed to edit book");
-                    } finally {
-                        submitButton.disabled = false;
-                        submitButton.textContent = "Edit Book";
-                    }
-                });
-            </script>
+    <div class="form-section">
+      <div class="profile-container">
+        <div class="profile-header">
+          <h2>Book Details</h2>
         </div>
-    </section>
+        <div class="profile-details">
+          <form class="profile-form" id="addBookForm">
 
+            <div class="form-group">
+              <label for="name">
+                <strong>Book Name:</strong>
+              </label>
+              <input type="text" value="{{book.name}}" data-org="{{book.name}}" id="name" name="name" required />
+            </div>
+
+            <div class="form-group">
+              <label for="category">
+                <strong>Category:</strong>
+              </label>
+              <select id="category" name="category" data-org="{{book.category}}" required>
+                <option value="All" {{#if (eq book.category "All" )}}selected{{/if}}>All</option>
+                <option value="CourseBooks" {{#if (eq book.category "CourseBooks" )}}selected{{/if}}>CourseBooks</option>
+                <option value="LabManuals" {{#if (eq book.category "LabManuals" )}}selected{{/if}}>LabManuals</option>
+                <option value="Other" {{#if (eq book.category "Other" )}}selected{{/if}}>Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="description">
+                <strong>Description:</strong>
+              </label>
+              <input id="description" value="{{book.description}}" data-org="{{book.description}}" name="description" required />
+            </div>
+
+            <div class="form-group">
+              <label for="imageURL">
+                <strong>Image URL:</strong>
+              </label>
+              <div style="display: flex; gap: 10px;">
+                <input id="imageURL" value="{{book.imageURL}}" data-org="{{book.imageURL}}" name="imageURL" required {{#unless (eq role "SuperAdmin" )}}readonly title="You Don't Have Permission To Change Img URL" {{/unless}} />
+                {{#if (eq role "SuperAdmin" )}}
+                <button type="button" class="buttons" onclick="openImageUploadModal()">Upload Image</button>
+                {{/if}}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="link">
+                <strong>Book Url:</strong>
+              </label>
+              <input type="url" value="{{book.link}}" data-org="{{book.link}}" id="link" name="link" required />
+            </div>
+
+            <div class="form-group">
+              <label for="semester">
+                <strong>Semester:</strong>
+              </label>
+              <select id="semester" name="semester" data-org="{{book.semester}}" required>
+                <option value="Semester1" {{#if (eq book.semester "Semester1" )}}selected{{/if}}>Semester1</option>
+                <option value="Semester2" {{#if (eq book.semester "Semester2" )}}selected{{/if}}>Semester2</option>
+                <option value="Semester3" {{#if (eq book.semester "Semester3" )}}selected{{/if}}>Semester3</option>
+                <option value="Semester4" {{#if (eq book.semester "Semester4" )}}selected{{/if}}>Semester4</option>
+                <option value="Semester5" {{#if (eq book.semester "Semester5" )}}selected{{/if}}>Semester5</option>
+                <option value="Semester6" {{#if (eq book.semester "Semester6" )}}selected{{/if}}>Semester6</option>
+                <option value="Semester7" {{#if (eq book.semester "Semester7" )}}selected{{/if}}>Semester7</option>
+                <option value="Semester8" {{#if (eq book.semester "Semester8" )}}selected{{/if}}>Semester8</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="main">
+                <strong>Main:</strong>
+              </label>
+              <select id="main" name="main" data-org="{{book.main}}" required>
+                <option value="true" {{#if (eq book.main "true" )}}selected{{/if}}>True</option>
+                <option value="false" {{#if (eq book.main "false" )}}selected{{/if}}>False</option>
+              </select>
+            </div>
+
+            <button class="buttons full">Edit Book</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Image Upload Modal -->
+<div id="imageUploadModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeImageUploadModal()">×</span>
+        <h2>Upload Book Image</h2>
+        <div class="upload-container">
+            <div class="file-input-wrapper">
+                <button class="file-input-btn">Choose Image</button>
+                <input type="file" id="imageInput" class="file-input" accept="image/*">
+            </div>
+            <img id="imagePreview" class="image-preview" src="#" alt="Preview">
+            <button id="uploadBtn" class="upload-btn" disabled>Upload Image</button>
+
+            <div class="url-select-container">
+                 <label>Or select from existing images:</label>
+                 <div id="image-gallery" class="image-gallery">
+                     <!-- Images will be populated by JavaScript -->
+                 </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="cancel-btn" onclick="closeImageUploadModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Image Upload Modal Functions
+    function openImageUploadModal() {
+        const modal = document.getElementById('imageUploadModal');
+        modal.style.display = 'block';
+        loadSavedImages();
+    }
+
+    function closeImageUploadModal() {
+        document.getElementById('imageUploadModal').style.display = 'none';
+    }
+
+    function loadSavedImages() {
+        fetch('/api/media-images')
+            .then(response => response.json())
+            .then(images => {
+                const gallery = document.getElementById('image-gallery');
+                gallery.innerHTML = ''; // Clear previous images
+
+                images.forEach(imageUrl => {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = imageUrl;
+                    imgElement.alt = imageUrl.split('/').pop();
+                    imgElement.className = 'gallery-image';
+
+                    // Add click event to select image and close modal
+                    imgElement.addEventListener('click', () => {
+                        document.getElementById('imageURL').value = imageUrl;
+                        updateBookCard();
+                        closeImageUploadModal();
+                    });
+
+                    gallery.appendChild(imgElement);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading saved images:', error);
+                const gallery = document.getElementById('image-gallery');
+                gallery.innerHTML = '<p style="color: red;">Could not load images.</p>';
+            });
+    }
+
+    // Image Preview and Upload Handling
+    document.getElementById('imageInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const preview = document.getElementById('imagePreview');
+                preview.src = event.target.result;
+                preview.style.display = 'block';
+                document.getElementById('uploadBtn').disabled = false;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    document.getElementById('uploadBtn').addEventListener('click', function() {
+        const fileInput = document.getElementById('imageInput');
+        const file = fileInput.files[0];
+
+        if (!file) {
+            alert('Please select an image first');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const base64Image = event.target.result;
+            const filename = file.name || 'book-image.jpg';
+
+            uploadImage(base64Image, filename)
+                .then(fileUrl => {
+                    document.getElementById('imageURL').value = fileUrl;
+                    updateBookCard();
+                    alert('Image uploaded successfully!');
+                    closeImageUploadModal();
+                })
+                .catch(error => {
+                    console.error('Upload error:', error);
+                    alert('Failed to upload image: ' + error.message);
+                });
+        };
+        reader.readAsDataURL(file);
+    });
+
+    async function uploadImage(base64Image, filename) {
+        try {
+            const response = await fetch('/upload', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    image: base64Image,
+                    filename: filename
+                })
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error || 'Upload failed');
+            }
+            return data.url;
+        } catch (error) {
+            console.error('Upload error:', error);
+            throw error;
+        }
+    }
+
+    function updateBookCard() {
+        document.getElementById("bookname").textContent = document.getElementById("name").value;
+        document.getElementById("bookdesciption").textContent = document.getElementById("description").value;
+        document.getElementById("bookcover").src = document.getElementById("imageURL").value;
+        const url = document.getElementById("link").value;
+        document.getElementById("bookurl").href = url;
+        document.getElementById("bookurl1").href = url;
+
+        // Show/hide Main badge based on "main" value
+        const mainValue = document.getElementById("main").value;
+        const badge = document.querySelector(".book-card .book-badge");
+        if (badge) {
+            badge.style.display = mainValue === "true" ? "block" : "none";
+        }
+    }
+
+    const fields = ["name", "description", "imageURL", "link", "main"];
+    fields.forEach(id => {
+        document.getElementById(id).addEventListener("input", updateBookCard);
+        document.getElementById(id).addEventListener("change", updateBookCard);
+    });
+
+    // Initialize card with default values
+    updateBookCard();
+</script>
+<script>
+    document.getElementById("addBookForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const submitButton = e.target.querySelector("button");
+        submitButton.disabled = true;
+        submitButton.textContent = "Editing...";
+
+        const formData = {
+            name: document.getElementById("name").value,
+            category: document.getElementById("category").value,
+            description: document.getElementById("description").value,
+            imageURL: document.getElementById("imageURL").value,
+            link: document.getElementById("link").value,
+            semester: document.getElementById("semester").value,
+            main: document.getElementById("main").value,
+        };
+
+        try {
+            const response = await fetch("/api/admin/Unilib/Book/Edit/{{id}}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert(result.message);
+                window.location.reload();
+            } else {
+                alert(result.error);
+            }
+        } catch (error) {
+            console.error("Error editing book:", error);
+            alert("Failed to edit book");
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = "Edit Book";
+        }
+    });
+</script>
 {{!-- {{#section 'scripts'}} Extra page scripts for Edit Book if needed {{/section}} --}}

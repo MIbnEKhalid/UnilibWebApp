@@ -635,6 +635,8 @@
 nav {
     position: fixed;
     width: 100%;
+    background: #0a1414;
+    border-bottom: solid .1rem #e2e8f0;
     padding: 15px 0;
     z-index: 970 !important;
     transition: all 0.3s ease;
