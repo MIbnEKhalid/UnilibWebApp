@@ -23,6 +23,10 @@ UnilibWebApp is an open-source web application for managing and sharing universi
 - Responsive design with modern UI
 - Open-source and easy to contribute
 
+## Tasks / Todo
+- [ ] Add Upload button to upload images to github repo /BookCovers/Semester[#]/[name].png
+- [ ] Test uploading books to s3 bucket.
+
 ## Project Structure
 
 ```
