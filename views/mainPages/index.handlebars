@@ -22,6 +22,8 @@
       "description": "MBK Tech Studio: Empowering Technology Through Innovation. Explore our projects, services, and passion for cutting-edge solutions."
     }
   </script>
+  <script src="https://portal.mbktechstudio.com/Assets/Scripts/logout.js" defer></script>
+  <script src="https://portal.mbktechstudio.com/Assets/Scripts/main.js" defer></script>
   <link rel="icon" type="image/x-icon" href="https://mbktechstudio.com/Assets/Images/Icon/dgicon.svg">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <title>{{#if singleBookView}}{{#each books}}{{this.name}} - {{/each}}{{/if}}Uni Books Home Page</title>
@@ -1140,7 +1142,11 @@
         <ul>
           <li><a href="https://mbktechstudio.com/">Main Website</a></li>
           <li><a href="/dashboard/">Admin Panel</a></li>
+          {{#if isLoggedIn}}
+          <li><a onclick="logout()">Logout</a></li>
+          {{else}}
           <li><a href="/mbkauthe/login">Login</a></li>
+          {{/if}}
         </ul>
       </nav>
 
@@ -1252,8 +1258,8 @@
             <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" loading="lazy" class="lazy-load">
           </a>
           <div class="Bdetails">
-            <h3><a href="/book/{{this.id}}" class="book-title-link">{{this.name}}</a></h3>
-            <p>{{this.description}}</p>
+            <h3><a href="/book/{{this.id}}" class="book-title-link" title="{{this.name}}">{{this.name}}</a></h3>
+            <p title="{{this.description}}">{{this.description}}</p>
           </div>
           <div class="actions">
             <a href="{{this.link}}" class="btn btn-save" aria-label="View {{this.name}}" target="_blank"

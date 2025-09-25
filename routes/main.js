@@ -1,6 +1,5 @@
 import express from "express";
 import dotenv from "dotenv";
-import { media } from "./mediaimage.js";
 import { validateSession, checkRolePermission, validateSessionAndRole } from "mbkauthe";
 import { pool } from "./pool.js";
 
@@ -71,8 +70,8 @@ router.get("/", async (req, res) => {
     'Vary': 'Accept-Encoding, X-Query-Params',
     'X-Query-Params': queryString
   });
-
-  await renderUnilibBooks(req, res, "mainPages/index.handlebars", { layout: false });
+  let isLoggedIn = req.session.user ? true : false;
+  await renderUnilibBooks(req, res, "mainPages/index.handlebars", { layout: false, isLoggedIn });
 });
 
 router.get(["/dashboard/Unilib", "/dashboard"], validateSessionAndRole("any"), async (req, res) => {
@@ -199,9 +198,12 @@ router.get("/book/:id", async (req, res) => {
       });
     }
 
+    let isLoggedIn = req.session.user ? true : false;
+
     const book = result.rows[0];
     return res.render("mainPages/index.handlebars", {
       layout: false,
+      isLoggedIn,
       books: [book], // Single book as array for consistency
       singleBookView: true,
       bookId: bookId,
@@ -218,6 +220,5 @@ router.get("/book/:id", async (req, res) => {
     return res.status(500).send("Internal Server Error");
   }
 });
-router.use("/", media);
 
 export default router;

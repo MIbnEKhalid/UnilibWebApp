@@ -66,7 +66,6 @@ UnilibWebApp is an open-source web application for managing and sharing universi
 │   └── robots.txt
 ├── routes
 │   ├── main.js
-│   ├── mediaimage.js
 │   └── pool.js
 ├── vercel.json
 └── views

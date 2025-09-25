@@ -1,7 +1,6 @@
 {{! Using layout }}
 {{#section 'head'}}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<link rel="stylesheet" href="/Assets/Style/modal.css">
 {{/section}}
 
 <div class="dashboard-container">
@@ -77,9 +76,6 @@
               </label>
               <div style="display: flex; gap: 10px;">
                 <input id="imageURL" value="{{book.imageURL}}" data-org="{{book.imageURL}}" name="imageURL" required {{#unless (eq role "SuperAdmin" )}}readonly title="You Don't Have Permission To Change Img URL" {{/unless}} />
-                {{#if (eq role "SuperAdmin" )}}
-                <button type="button" class="buttons" onclick="openImageUploadModal()">Upload Image</button>
-                {{/if}}
               </div>
             </div>
 
@@ -124,141 +120,7 @@
   </div>
 </div>
 
-<!-- Image Upload Modal -->
-<div id="imageUploadModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeImageUploadModal()">×</span>
-        <h2>Upload Book Image</h2>
-        <div class="upload-container">
-            <div class="file-input-wrapper">
-                <button class="file-input-btn">Choose Image</button>
-                <input type="file" id="imageInput" class="file-input" accept="image/*">
-            </div>
-            <img id="imagePreview" class="image-preview" src="#" alt="Preview">
-            <button id="uploadBtn" class="upload-btn" disabled>Upload Image</button>
-
-            <div class="url-select-container">
-                 <label>Or select from existing images:</label>
-                 <div id="image-gallery" class="image-gallery">
-                     <!-- Images will be populated by JavaScript -->
-                 </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="cancel-btn" onclick="closeImageUploadModal()">Cancel</button>
-        </div>
-    </div>
-</div>
-
 <script>
-    // Image Upload Modal Functions
-    function openImageUploadModal() {
-        const modal = document.getElementById('imageUploadModal');
-        modal.style.display = 'block';
-        loadSavedImages();
-    }
-
-    function closeImageUploadModal() {
-        document.getElementById('imageUploadModal').style.display = 'none';
-    }
-
-    function loadSavedImages() {
-        fetch('/api/media-images')
-            .then(response => response.json())
-            .then(images => {
-                const gallery = document.getElementById('image-gallery');
-                gallery.innerHTML = ''; // Clear previous images
-
-                images.forEach(imageUrl => {
-                    const imgElement = document.createElement('img');
-                    imgElement.src = imageUrl;
-                    imgElement.alt = imageUrl.split('/').pop();
-                    imgElement.className = 'gallery-image';
-
-                    // Add click event to select image and close modal
-                    imgElement.addEventListener('click', () => {
-                        document.getElementById('imageURL').value = imageUrl;
-                        updateBookCard();
-                        closeImageUploadModal();
-                    });
-
-                    gallery.appendChild(imgElement);
-                });
-            })
-            .catch(error => {
-                console.error('Error loading saved images:', error);
-                const gallery = document.getElementById('image-gallery');
-                gallery.innerHTML = '<p style="color: red;">Could not load images.</p>';
-            });
-    }
-
-    // Image Preview and Upload Handling
-    document.getElementById('imageInput').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const preview = document.getElementById('imagePreview');
-                preview.src = event.target.result;
-                preview.style.display = 'block';
-                document.getElementById('uploadBtn').disabled = false;
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-
-    document.getElementById('uploadBtn').addEventListener('click', function() {
-        const fileInput = document.getElementById('imageInput');
-        const file = fileInput.files[0];
-
-        if (!file) {
-            alert('Please select an image first');
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            const base64Image = event.target.result;
-            const filename = file.name || 'book-image.jpg';
-
-            uploadImage(base64Image, filename)
-                .then(fileUrl => {
-                    document.getElementById('imageURL').value = fileUrl;
-                    updateBookCard();
-                    alert('Image uploaded successfully!');
-                    closeImageUploadModal();
-                })
-                .catch(error => {
-                    console.error('Upload error:', error);
-                    alert('Failed to upload image: ' + error.message);
-                });
-        };
-        reader.readAsDataURL(file);
-    });
-
-    async function uploadImage(base64Image, filename) {
-        try {
-            const response = await fetch('/upload', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    image: base64Image,
-                    filename: filename
-                })
-            });
-
-            const data = await response.json();
-            if (!response.ok) {
-                throw new Error(data.error || 'Upload failed');
-            }
-            return data.url;
-        } catch (error) {
-            console.error('Upload error:', error);
-            throw error;
-        }
-    }
 
     function updateBookCard() {
         document.getElementById("bookname").textContent = document.getElementById("name").value;
