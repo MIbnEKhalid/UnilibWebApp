@@ -22,7 +22,7 @@
         <article class="book-card linked">
           <div style="display: none;" class="book-badge" aria-label="Main resource">Main</div>
           <a id="bookurl" target="_blank">
-            <img id="bookcover" src="/Assets/Images/BookCovers/BookCover_Template.png" loading="lazy">
+            <img id="bookcover" src="/BookCovers/BookCover_Template.png" loading="lazy">
           </a>
           <div class="Bdetails">
             <h3 id="bookname"></h3>
@@ -75,7 +75,7 @@
               <label for="imageURL">
                 <strong>Image URL:</strong>
               </label>
-              <input id="imageURL" name="imageURL" value="/Assets/Images/BookCovers/BookCover_Template.png" required
+              <input id="imageURL" name="imageURL" value="/BookCovers/BookCover_Template.png" required
                 {{#unless (eq role "SuperAdmin" )}}readonly title="You Don't Have Permission To Change Img URL"
                 {{/unless}} />
             </div>
