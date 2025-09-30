@@ -4,7 +4,8 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon app.js",
+    "convertToWebp": "node convertToWebp.js"
   },
   "author": "Muhammad Bin Khalid",
   "license": "MIT",
@@ -16,7 +17,8 @@
     "express-handlebars": "^8.0.1",
     "handlebars": "^4.7.8",
     "mbkauthe": "latest",
-    "pg": "^8.13.3"
+    "pg": "^8.13.3",
+    "sharp": "^0.34.4"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"

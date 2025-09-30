@@ -4,7 +4,7 @@ CREATE TABLE unilibbook (
   name Text NOT NULL,
   category Text NOT NULL,
   description TEXT,
-  imageURL Text NOT NULL DEFAULT 'BookCover_Template.png',
+  imageURL Text NOT NULL DEFAULT 'BookCover_Template.webp',
   link TEXT NOT NULL,
   semester semesters NOT NULL,
   main BOOLEAN NOT NULL DEFAULT FALSE,

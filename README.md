@@ -12,6 +12,7 @@ UnilibWebApp is an open-source web application for managing and sharing universi
 - **Frontend**: Handlebars templating engine, HTML, CSS, JavaScript
 - **Database**: PostgreSQL
 - **Authentication**: mbkauthe (custom authentication library)
+- **Image Processing**: Sharp (for WebP conversion)
 - **Other**: Compression, CORS, Rate limiting
 
 ## Features
@@ -24,64 +25,80 @@ UnilibWebApp is an open-source web application for managing and sharing universi
 - Open-source and easy to contribute
 
 ## Tasks / Todo
-- [ ] Add Upload button to upload images to github repo /BookCovers/Semester[#]/[name].png
+- [ ] Add Upload button to upload images to github repo /BookCovers/Semester[#]/[name].webp
 - [ ] Test uploading books to s3 bucket.
 
 ## Project Structure
 
 ```
 .
-├── LICENSE
-├── README.md
-├── app.js
-├── env.md
-├── model.sql
-├── package.json
-├── public
-│   ├── Assets
-│   │   ├── Images
-│   │   │   ├── BookCovers
-│   │   │   │   ├── BookCover_Template.png
-│   │   │   │   ├── Semester1
-│   │   │   │   │   ├── FundamentalsofPhysics9thEdition.png
-│   │   │   │   │   ├── ThomasCalculus11thEdition.png
-│   │   │   │   │   └── UsingInformationTechnology.png
-│   │   │   │   ├── Semester2
-│   │   │   │   │   ├── BasicEngineeringCircuitAnalysis10th.png
-│   │   │   │   │   ├── CPL.png
-│   │   │   │   │   ├── ElementaryLinearAlgebraApplications.png
-│   │   │   │   │   ├── EngineeringCircuitAnalysis9thEd.png
-│   │   │   │   │   ├── HowToProgram.png
-│   │   │   │   │   ├── LinearAlgebra&ItsApplications.png
-│   │   │   │   │   └── circuitanalysisLab.png
-│   │   │   │   └── Semester3
-│   │   │   │       ├── AdvancedEngineeringMathematics.png
-│   │   │   │       ├── BrownChurchillComplexVariables&Application8ed.png
-│   │   │   │       └── ElectronicDevicesByFloyd9thEdition.png
-│   │   │   └── Icon
-│   │   │       ├── MBKSupportIcon.svg
-│   │   │       └── dg.svg
-│   │   ├── Scripts
-│   │   │   └── unilib.js
-│   │   └── Style
-│   │       ├── dashboard.css
-│   │       ├── style.css
-│   │       └── unilib.css
-│   └── robots.txt
-├── routes
-│   ├── main.js
-│   └── pool.js
-├── vercel.json
-└── views
-    ├── layouts
-    │   └── main.handlebars
-    └── mainPages
-        ├── AddBook.handlebars
-        ├── Book.handlebars
-        ├── EditBook.handlebars
-        └── index.handlebars
+│   .env
+│   .env.example
+│   .gitignore
+│   app.js
+│   convertToWebp.js
+│   env.md
+│   LICENSE
+│   model.sql
+│   package.json
+│   README.md
+│   vercel.json
+│
+├───public
+│   │   robots.txt
+│   │
+│   ├───Assets
+│   │   ├───Scripts
+│   │   │       unilib.js
+│   │   │
+│   │   └───Style
+│   │           dashboard.css
+│   │           style.css
+│   │           unilib.css
+│   │
+│   └───BookCovers
+│       │   BookCover_Template.webp
+│       │
+│       ├───Semester1
+│       │       FundamentalsofPhysics9thEdition.webp
+│       │       ThomasCalculus11thEdition.webp
+│       │       UsingInformationTechnology.webp
+│       │
+│       ├───Semester2
+│       │       BasicEngineeringCircuitAnalysis10th.webp
+│       │       circuitanalysisLab.webp
+│       │       CPL.webp
+│       │       ElementaryLinearAlgebraApplications.webp
+│       │       EngineeringCircuitAnalysis9thEd.webp
+│       │       HowToProgram.webp
+│       │       LinearAlgebra&ItsApplications.webp
+│       │
+│       ├───Semester3
+│       │       AdvancedEngineeringMathematics.webp
+│       │       BrownChurchillComplexVariables&Application8ed.webp
+│       │       ElectronicDevicesByFloyd9thEdition.webp
+│       │       RosenDiscreteMath&ItsApplications7thEd.webp
+│       │
+│       ├───Semester4
+│       ├───Semester5
+│       ├───Semester6
+│       ├───Semester7
+│       └───Semester8
+├───routes
+│       main.js
+│       pool.js
+│
+└───views
+    ├───layouts
+    │       main.handlebars
+    │
+    └───mainPages
+            AddBook.handlebars
+            Book.handlebars
+            EditBook.handlebars
+            index.handlebars
 
-15 directories, 36 files
+15 directories, 37 files
 ```
 
 ## Getting Started
@@ -114,6 +131,20 @@ UnilibWebApp is an open-source web application for managing and sharing universi
    npm start
    ```
    The server will run on [http://localhost:3333](http://localhost:3333) by default.
+
+## Image Conversion
+
+The project includes a script to convert PNG and JPG images to WebP format for better performance.
+
+- To convert images in `public/BookCovers/` without deleting originals:
+  ```sh
+  npm run convertToWebp
+  ```
+
+- To convert and delete the original PNG/JPG files:
+  ```sh
+  npm run convertToWebp -- --delete-old
+  ```
 
 ## Usage
 
