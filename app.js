@@ -9,6 +9,7 @@ import unilibRoutes from "./routes/main.js";
 import mbkautheRouter from "mbkauthe";
 import { pool } from "./routes/pool.js";
 import rateLimit from "express-rate-limit";
+import { json } from "stream/consumers";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -20,9 +21,7 @@ app.use(express.json());
 app.use(compression());
 app.set("trust proxy", 1);
 
-app.use("/Assets/Images", express.static(path.join(__dirname, "public/Assets/Images"), { maxAge: "7d" }));
-
-app.use("/", express.static(path.join(__dirname, "public/")));
+app.use("/", express.static(path.join(__dirname, "public/"), { maxAge: "7d" }));
 
 app.engine("handlebars", engine({
   defaultLayout: 'main',
@@ -38,6 +37,9 @@ app.engine("handlebars", engine({
       if(!this._sections) this._sections = {};
       this._sections[name] = options.fn(this);
       return null;
+    },
+    json: function(context) {
+      return JSON.stringify(context);
     },
     eq: function (a, b) {
       return a === b;
@@ -63,7 +65,16 @@ app.engine("handlebars", engine({
       return range;
     }, encodeURIComponent: function (str) {
       return encodeURIComponent(str);
-    }
+    },
+    validPageRange: function(current, total, delta = 2) {
+      const range = [];
+      let start = Math.max(1, current - delta);
+      let end = Math.min(total, current + delta);
+      for (let i = start; i <= end; i++) {
+        range.push(i);
+      }
+      return range;
+    },
   }
 }));
 

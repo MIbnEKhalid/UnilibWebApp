@@ -108,6 +108,11 @@
                       <a href="/dashboard/Book/Edit/{{this.id}}" class="book-btn edit-btn" title="Edit book">
                         <i class="fas fa-edit"></i>
                       </a>
+                      {{#if (eq this.category "LabManuals")}}
+                      <a href="/dashboard/Book/{{this.id}}/Labs" class="book-btn labs-btn" title="Manage Labs">
+                        <i class="fas fa-flask"></i>
+                      </a>
+                      {{/if}}
                   </div>
                 </div>
                 <p class="book-description">{{this.description}}</p>
@@ -190,6 +195,16 @@
       </div>
     </div>
   </section>
+
+  <style>
+    .book-btn.labs-btn {
+      background: linear-gradient(135deg, #17a2b8, #138496);
+      color: white;
+    }
+    .book-btn.labs-btn:hover {
+      background: linear-gradient(135deg, #138496, #117a8b);
+    }
+  </style>
 
   <script>
     function exportBooks() {
