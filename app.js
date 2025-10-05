@@ -6,6 +6,7 @@ import cors from "cors";
 import { engine } from "express-handlebars";
 import Handlebars from "handlebars";
 import unilibRoutes from "./routes/main.js";
+import pdfRoutes from "./routes/pdf.js";
 import mbkautheRouter from "mbkauthe";
 import { pool } from "./routes/pool.js";
 import rateLimit from "express-rate-limit";
@@ -102,6 +103,7 @@ app.get(["/login", "/signin"], (req, res) => {
 });
 
 app.use("/", unilibRoutes);
+app.use("/pdf", pdfRoutes);
 
 app.use((req, res) => {
   console.log(`Path not found: ${req.url}`);

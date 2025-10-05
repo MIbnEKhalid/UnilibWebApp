@@ -23,6 +23,7 @@ UnilibWebApp is an open-source web application for managing and sharing universi
 - Pagination and filtering for easy navigation
 - Admin dashboard for adding, editing, and deleting books/materials
 - User authentication and role-based access control (via [mbkauthe](https://www.npmjs.com/package/mbkauthe))
+- PDF streaming directly in the browser for seamless reading experience
 - Responsive design with modern dark theme UI
 - Open-source and easy to contribute
 
@@ -97,6 +98,7 @@ UnilibWebApp is an open-source web application for managing and sharing universi
 │       └───Semester8
 ├───routes
 │       main.js
+│       pdf.js
 │       pool.js
 │
 └───views
@@ -164,6 +166,8 @@ The project includes a script to convert PNG and JPG images to WebP format for b
 - Visit `/` to browse course materials with the modern dark theme interface
 - Use search and filters to find specific materials by semester, category, or keywords
 - For lab manuals, download individual labs or specific content sections
+- Stream PDFs directly in the browser using `/pdf/{bookId}/{filename}` endpoints
+- View books inline without downloading using the PDF streaming feature
 - Responsive design works seamlessly on desktop, tablet, and mobile devices
 
 ### For Administrators
@@ -192,10 +196,12 @@ The project includes a script to convert PNG and JPG images to WebP format for b
 
 ### 🔧 Technical Improvements
 - **PDF Processing**: Server-side PDF manipulation using PDF-lib for lab extraction
+- **PDF Streaming**: Efficient PDF streaming directly from Google Drive with content validation
 - **Database Optimization**: Enhanced JSONB storage for flexible lab metadata
 - **Frontend Architecture**: Improved JavaScript organization with better error handling
 - **CSS Variables**: Consistent theming system with CSS custom properties
 - **API Enhancements**: Better validation, transaction support, and error responses
+- **Security Improvements**: Content-type validation and rate limiting for PDF streaming
 
 ## Deployment
 
