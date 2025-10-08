@@ -14,7 +14,7 @@ async function renderUnilibBooks(req, res, view, data) {
   const conditions = [];
   const params = [];
 
-  if (semester) {
+  if (semester && semester !== 'all') {
     conditions.push(`semester = $${params.length + 1}`);
     params.push(semester);
   }

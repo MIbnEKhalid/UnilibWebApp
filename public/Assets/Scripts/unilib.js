@@ -131,12 +131,12 @@ window.goToPage = function (page) {
 
 // Reset filters
 window.resetFilters = function () {
-    elements.semesterFilter.value = 'Semester3';
+    elements.semesterFilter.value = 'all';
     elements.categoryFilter.value = 'all';
     elements.searchInput.value = '';
     elements.clearBtn.style.display = 'none';
     state.currentFilters = {
-        semester: 'Semester3',
+        semester: 'all',
         category: 'all',
         search: ''
     };
