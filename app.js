@@ -44,7 +44,11 @@ app.engine("handlebars", engine({
     },
     eq: function (a, b) {
       return a === b;
-    }, gt: function (a, b) {
+    }, 
+    or: function (a, b) {
+      return a || b;
+    },
+    gt: function (a, b) {
       return a > b;
     }, lt: function (a, b) {
       return a < b;

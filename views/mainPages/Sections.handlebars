@@ -23,6 +23,8 @@
   border-radius: 8px;
   text-align: center;
   border: 1px solid var(--border-color);
+  max-width: 400px;
+  width: 90%;
 }
 
 .spinner {
@@ -83,8 +85,8 @@
   display: none;
 }
 
-/* Enhanced lab items */
-.lab-item {
+/* Enhanced section items */
+.section-item {
   transition: all 0.3s ease;
   background: var(--bg-darker);
   border: 1px solid var(--border-color);
@@ -95,13 +97,13 @@
   align-items: center;
 }
 
-.lab-item:hover {
+.section-item:hover {
   background: var(--bg-light);
   border-color: var(--primary-color);
   transform: translateY(-1px);
 }
 
-.lab-status {
+.section-status {
   display: inline-block;
   padding: 2px 8px;
   border-radius: 12px;
@@ -110,13 +112,13 @@
   margin-left: 10px;
 }
 
-.lab-status.valid {
+.section-status.valid {
   background-color: rgba(46, 160, 67, 0.1);
   color: var(--success-color);
   border: 1px solid var(--success-color);
 }
 
-.lab-status.invalid {
+.section-status.invalid {
   background-color: rgba(248, 81, 73, 0.1);
   color: var(--error-color);
   border: 1px solid var(--error-color);
@@ -154,14 +156,14 @@
   display: block;
 }
 
-.lab-info {
+.section-info {
   display: flex;
   align-items: flex-start;
   gap: 10px;
   flex: 1;
 }
 
-.lab-checkbox {
+.section-checkbox {
   margin-top: 5px;
 }
 
@@ -196,23 +198,23 @@
   color: var(--error-color);
 }
 
-.labs-list {
+.sections-list {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
-.lab-details h3 {
+.section-details h3 {
   margin: 0 0 5px 0;
   color: var(--text-primary);
 }
 
-.lab-details p {
+.section-details p {
   margin: 0;
   color: var(--text-secondary);
 }
 
-.lab-actions {
+.section-actions {
   display: flex;
   gap: 10px;
 }
@@ -325,15 +327,15 @@
   <div class="dashboard-header">
     <div class="dashboard-title">
       <h1>Manage Content for {{book.name}}</h1>
-      <p>Add, edit, or delete labs and other content for this lab manual</p>
+      <p>Add, edit, or delete sections in this book</p>
     </div>
     <div class="dashboard-actions">
       <a href="/dashboard" class="action-button back-button">
         <i class="fas fa-arrow-left"></i> Back to Dashboard
       </a>
-      <button class="action-button add-button" onclick="showAddLabModal()">
+      <button class="action-button add-button" onclick="showAddSectionModal()">
         <i class="fas fa-plus"></i>
-        <span>Add Lab</span>
+        <span>Add Section</span>
       </button>
     </div>
   </div>
@@ -341,33 +343,33 @@
   <!-- Bulk Actions (hidden by default) -->
   <div class="bulk-actions" id="bulkActions">
     <span id="selectedCount">0 items selected</span>
-    <button class="btn btn-delete" onclick="bulkDeleteLabs()">
+    <button class="btn btn-delete" onclick="bulkDeleteSections()">
       <i class="fas fa-trash"></i> Delete Selected
     </button>
   </div>
 
-  <div class="labs-list" id="labsList">
-    {{#each labs}}
-    <div class="lab-item" data-lab-id="{{id}}" data-lab-number="{{lab_number}}" data-name="{{name}}">
-      <div class="lab-info">
-        <input type="checkbox" class="lab-checkbox" onchange="toggleBulkSelection()">
-        <div class="lab-details">
-          <h3>Lab {{lab_number}}: {{name}}</h3>
+  <div class="sections-list" id="sectionsList">
+    {{#each sections}}
+    <div class="section-item" data-section-id="{{id}}" data-section-number="{{section_number}}" data-name="{{name}}">
+      <div class="section-info">
+        <input type="checkbox" class="section-checkbox" onchange="toggleBulkSelection()">
+        <div class="section-details">
+          <h3>Section {{section_number}}: {{name}}</h3>
           <p>Pages: {{page_start}} - {{page_end}}
-            <span class="lab-status {{#if (gt page_start page_end)}}invalid{{else}}valid{{/if}}">
+            <span class="section-status {{#if (gt page_start page_end)}}invalid{{else}}valid{{/if}}">
               {{#if (gt page_start page_end)}}Invalid Range{{else}}Valid Range{{/if}}
             </span>
           </p>
         </div>
       </div>
-      <div class="lab-actions">
-        <button class="btn btn-edit" onclick="editLab({{id}}, {{lab_number}}, '{{name}}', {{page_start}}, {{page_end}})">
+      <div class="section-actions">
+        <button class="btn btn-edit" onclick="editSection({{id}}, {{section_number}}, '{{name}}', {{page_start}}, {{page_end}})">
           <i class="fas fa-edit"></i> Edit
         </button>
-        <button class="btn btn-delete" onclick="deleteLab({{id}})">
+        <button class="btn btn-delete" onclick="deleteSection({{id}})">
           <i class="fas fa-trash"></i> Delete
         </button>
-        <a href="/book/{{../book.id}}/lab/{{id}}/download" class="btn btn-download" target="_blank">
+        <a href="/book/{{../book.id}}/section/{{id}}/download" class="btn btn-download" target="_blank">
           <i class="fas fa-download"></i> Download
         </a>
       </div>
@@ -376,34 +378,34 @@
   </div>
 
   <!-- Empty state -->
-  {{#if (eq labs.length 0)}}
+  {{#if (eq sections.length 0)}}
   <div class="empty-state">
-    <i class="fas fa-flask"></i>
+    <i class="fas fa-book"></i>
     <h3>No Content Found</h3>
-    <p>Get started by adding content to this manual.</p>
-    <button class="action-button add-button" onclick="showAddLabModal()">
+    <p>Get started by adding content to this book.</p>
+    <button class="action-button add-button" onclick="showAddSectionModal()">
       <i class="fas fa-plus"></i> Add Content
     </button>
   </div>
   {{/if}}
 </div>
 
-<!-- Add/Edit Lab Modal -->
-<div id="labModal" class="modal" style="display: none;">
+<!-- Add/Edit Section Modal -->
+<div id="sectionModal" class="modal" style="display: none;">
   <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
     <h2 id="modalTitle">Add Content</h2>
-    <form id="labForm">
-      <input type="hidden" id="labId" value="">
+    <form id="sectionForm">
+      <input type="hidden" id="sectionId" value="">
       <div class="form-group">
-        <label for="labNumber">Entry Number: <span class="required">*</span></label>
-        <input type="number" id="labNumber" required min="1">
-        <span class="error-message" id="labNumberError"></span>
+        <label for="sectionNumber">Section Number: <span class="required">*</span></label>
+        <input type="number" id="sectionNumber" required min="1">
+        <span class="error-message" id="sectionNumberError"></span>
       </div>
       <div class="form-group">
-        <label for="labName">Content Name: <span class="required">*</span></label>
-        <input type="text" id="labName" required maxlength="200">
-        <span class="error-message" id="labNameError"></span>
+        <label for="sectionName">Section Name: <span class="required">*</span></label>
+        <input type="text" id="sectionName" required maxlength="200">
+        <span class="error-message" id="sectionNameError"></span>
       </div>
       <div class="form-group">
         <label for="pageStart">Start Page: <span class="required">*</span></label>
@@ -418,7 +420,7 @@
       <div class="form-actions">
         <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
         <button type="submit" class="btn btn-primary" id="submitBtn">
-          <span id="submitText">Save Content</span>
+          <span id="submitText">Save Section</span>
           <span id="submitSpinner" style="display: none;">
             <i class="fas fa-spinner fa-spin"></i> Saving...
           </span>
@@ -437,14 +439,13 @@
 </div>
 
 <script>
-
 // Global state
-let labs = {{{json labs}}} || [];
-let selectedLabs = new Set();
+let sections = {{{json sections}}} || [];
+let selectedSections = new Set();
 let bookId = {{{book.id}}};
 
 // DOM elements - declared globally but assigned in DOMContentLoaded
-let labsList;
+let sectionsList;
 let bulkActions;
 let selectedCount;
 let loadingOverlay;
@@ -452,21 +453,21 @@ let loadingText;
 
 // Initialize the page
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('DOM loaded, labs data:', labs);
-  console.log('labsList element:', document.getElementById('labsList'));
+  console.log('DOM loaded, sections data:', sections);
+  console.log('sectionsList element:', document.getElementById('sectionsList'));
 
   try {
     // Assign DOM elements after DOM is loaded
-    labsList = document.getElementById('labsList');
+    sectionsList = document.getElementById('sectionsList');
     bulkActions = document.getElementById('bulkActions');
     selectedCount = document.getElementById('selectedCount');
     loadingOverlay = document.getElementById('loadingOverlay');
     loadingText = document.getElementById('loadingText');
 
-    console.log('labsList assigned:', labsList);
+    console.log('sectionsList assigned:', sectionsList);
 
     setupEventListeners();
-    renderLabs();
+    renderSections();
     console.log('Initialization complete');
   } catch (error) {
     console.error('Error during initialization:', error);
@@ -479,40 +480,40 @@ function setupEventListeners() {
 
   try {
     // Form validation - attach directly to the form
-    const labForm = document.getElementById('labForm');
-    if (labForm) {
-      labForm.addEventListener('submit', function(e) {
+    const sectionForm = document.getElementById('sectionForm');
+    if (sectionForm) {
+      sectionForm.addEventListener('submit', function(e) {
         console.log('Form submit intercepted directly');
         handleFormSubmit(e);
       });
       console.log('Form submit event listener attached directly to form');
     } else {
-      console.error('labForm not found');
+      console.error('sectionForm not found');
     }
 
     // Page range validation
     document.getElementById('pageStart').addEventListener('input', validatePageRange);
     document.getElementById('pageEnd').addEventListener('input', validatePageRange);
 
-  // Download link handling
-  document.addEventListener('click', function(e) {
-    if (e.target.closest('.btn-download')) {
-      e.preventDefault();
-      const link = e.target.closest('.btn-download');
-      const labId = link.getAttribute('data-lab-id');
-      if (labId) {
-        window.open(`/book/${bookId}/lab/${labId}/download`, '_blank');
+    // Download link handling
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('.btn-download')) {
+        e.preventDefault();
+        const link = e.target.closest('.btn-download');
+        const sectionId = link.getAttribute('data-section-id');
+        if (sectionId) {
+          window.open(`/book/${bookId}/section/${sectionId}/download`, '_blank');
+        }
       }
-    }
-  });
+    });
 
-  // Close modal on outside click
-  window.addEventListener('click', function(event) {
-    const modal = document.getElementById('labModal');
-    if (event.target === modal) {
-      closeModal();
-    }
-  });
+    // Close modal on outside click
+    window.addEventListener('click', function(event) {
+      const modal = document.getElementById('sectionModal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    });
 
     console.log('All event listeners attached successfully');
   } catch (error) {
@@ -521,7 +522,6 @@ function setupEventListeners() {
 }
 
 // Utility functions
-
 function showAlert(message, type = 'info') {
   const alertContainer = document.getElementById('alertContainer');
   const alert = document.createElement('div');
@@ -552,30 +552,30 @@ function validateForm() {
   document.querySelectorAll('.form-group').forEach(group => group.classList.remove('error'));
   document.querySelectorAll('.error-message').forEach(msg => msg.style.display = 'none');
 
-  // Lab number validation
-  const labNumber = parseInt(document.getElementById('labNumber').value);
-  if (!labNumber || labNumber < 1) {
-    errors.labNumber = 'Entry number must be a positive integer';
+  // Section number validation
+  const sectionNumber = parseInt(document.getElementById('sectionNumber').value);
+  if (!sectionNumber || sectionNumber < 1) {
+    errors.sectionNumber = 'Section number must be a positive integer';
     isValid = false;
   } else {
-    // Check for duplicate lab numbers (excluding current lab being edited)
-    const currentLabId = document.getElementById('labId').value;
-    const duplicate = labs.find(lab =>
-      lab.lab_number === labNumber && lab.id.toString() !== currentLabId
+    // Check for duplicate section numbers (excluding current section being edited)
+    const currentSectionId = document.getElementById('sectionId').value;
+    const duplicate = sections.find(section =>
+      section.section_number === sectionNumber && section.id.toString() !== currentSectionId
     );
     if (duplicate) {
-      errors.labNumber = `Entry number ${labNumber} already exists`;
+      errors.sectionNumber = `Section number ${sectionNumber} already exists`;
       isValid = false;
     }
   }
 
-  // Lab name validation
-  const labName = document.getElementById('labName').value.trim();
-  if (!labName) {
-    errors.labName = 'Content name is required';
+  // Section name validation
+  const sectionName = document.getElementById('sectionName').value.trim();
+  if (!sectionName) {
+    errors.sectionName = 'Section name is required';
     isValid = false;
-  } else if (labName.length > 200) {
-    errors.labName = 'Content name must be less than 200 characters';
+  } else if (sectionName.length > 200) {
+    errors.sectionName = 'Section name must be less than 200 characters';
     isValid = false;
   }
 
@@ -625,56 +625,56 @@ function validatePageRange() {
 }
 
 // Modal functions
-function showAddLabModal() {
-  document.getElementById('modalTitle').textContent = 'Add Lab';
-  document.getElementById('labId').value = '';
-  document.getElementById('labNumber').value = '';
-  document.getElementById('labName').value = '';
+function showAddSectionModal() {
+  document.getElementById('modalTitle').textContent = 'Add Section';
+  document.getElementById('sectionId').value = '';
+  document.getElementById('sectionNumber').value = '';
+  document.getElementById('sectionName').value = '';
   document.getElementById('pageStart').value = '';
   document.getElementById('pageEnd').value = '';
-  document.getElementById('labModal').style.display = 'block';
+  document.getElementById('sectionModal').style.display = 'block';
 
   // Clear any previous errors
   document.querySelectorAll('.form-group').forEach(group => group.classList.remove('error'));
   document.querySelectorAll('.error-message').forEach(msg => msg.style.display = 'none');
 
   // Ensure form event listener is attached
-  const labForm = document.getElementById('labForm');
-  if (labForm && !labForm.hasAttribute('data-listener-attached')) {
-    labForm.addEventListener('submit', function(e) {
+  const sectionForm = document.getElementById('sectionForm');
+  if (sectionForm && !sectionForm.hasAttribute('data-listener-attached')) {
+    sectionForm.addEventListener('submit', function(e) {
       console.log('Form submit intercepted from modal');
       handleFormSubmit(e);
     });
-    labForm.setAttribute('data-listener-attached', 'true');
+    sectionForm.setAttribute('data-listener-attached', 'true');
   }
 }
 
-function editLab(id, number, name, start, end) {
-  document.getElementById('modalTitle').textContent = 'Edit Content';
-  document.getElementById('labId').value = id;
-  document.getElementById('labNumber').value = number;
-  document.getElementById('labName').value = name;
+function editSection(id, number, name, start, end) {
+  document.getElementById('modalTitle').textContent = 'Edit Section';
+  document.getElementById('sectionId').value = id;
+  document.getElementById('sectionNumber').value = number;
+  document.getElementById('sectionName').value = name;
   document.getElementById('pageStart').value = start;
   document.getElementById('pageEnd').value = end;
-  document.getElementById('labModal').style.display = 'block';
+  document.getElementById('sectionModal').style.display = 'block';
 
   // Clear any previous errors
   document.querySelectorAll('.form-group').forEach(group => group.classList.remove('error'));
   document.querySelectorAll('.error-message').forEach(msg => msg.style.display = 'none');
 
   // Ensure form event listener is attached
-  const labForm = document.getElementById('labForm');
-  if (labForm && !labForm.hasAttribute('data-listener-attached')) {
-    labForm.addEventListener('submit', function(e) {
+  const sectionForm = document.getElementById('sectionForm');
+  if (sectionForm && !sectionForm.hasAttribute('data-listener-attached')) {
+    sectionForm.addEventListener('submit', function(e) {
       console.log('Form submit intercepted from modal');
       handleFormSubmit(e);
     });
-    labForm.setAttribute('data-listener-attached', 'true');
+    sectionForm.setAttribute('data-listener-attached', 'true');
   }
 }
 
 function closeModal() {
-  document.getElementById('labModal').style.display = 'none';
+  document.getElementById('sectionModal').style.display = 'none';
 }
 
 // API functions
@@ -682,9 +682,9 @@ async function handleFormSubmit(e) {
   console.log('handleFormSubmit called at', new Date().toISOString());
   console.log('Event:', e);
   console.log('Form data:', {
-    labId: document.getElementById('labId').value,
-    labNumber: document.getElementById('labNumber').value,
-    labName: document.getElementById('labName').value,
+    sectionId: document.getElementById('sectionId').value,
+    sectionNumber: document.getElementById('sectionNumber').value,
+    sectionName: document.getElementById('sectionName').value,
     pageStart: document.getElementById('pageStart').value,
     pageEnd: document.getElementById('pageEnd').value
   });
@@ -707,20 +707,20 @@ async function handleFormSubmit(e) {
   submitText.style.display = 'none';
   submitSpinner.style.display = 'inline';
 
-  const labId = document.getElementById('labId').value;
-  const isEdit = labId !== '';
-  const url = isEdit ? `/api/admin/Lab/Edit/${labId}` : `/api/admin/Book/${bookId}/Lab/Add`;
+  const sectionId = document.getElementById('sectionId').value;
+  const isEdit = sectionId !== '';
+  const url = isEdit ? `/api/admin/section/edit/${sectionId}` : `/api/admin/book/${bookId}/section/add`;
   const method = 'POST';
 
   const formData = {
-    lab_number: parseInt(document.getElementById('labNumber').value),
-    name: document.getElementById('labName').value.trim(),
+    section_number: parseInt(document.getElementById('sectionNumber').value),
+    name: document.getElementById('sectionName').value.trim(),
     page_start: parseInt(document.getElementById('pageStart').value),
     page_end: parseInt(document.getElementById('pageEnd').value),
   };
 
   try {
-    showLoading(isEdit ? 'Updating lab...' : 'Adding lab...');
+    showLoading(isEdit ? 'Updating section...' : 'Adding section...');
     console.log('Making fetch request to:', url);
     console.log('Request data:', formData);
     const response = await fetch(url, {
@@ -743,10 +743,10 @@ async function handleFormSubmit(e) {
         window.location.reload();
       }, 1000);
     } else {
-      showAlert(result.error || 'Failed to save lab', 'error');
+      showAlert(result.error || 'Failed to save section', 'error');
     }
   } catch (error) {
-    console.error('Error saving lab:', error);
+    console.error('Error saving section:', error);
     showAlert('Network error. Please try again.', 'error');
   } finally {
     hideLoading();
@@ -756,50 +756,50 @@ async function handleFormSubmit(e) {
   }
 }
 
-async function deleteLab(labId) {
-  if (!confirm('Are you sure you want to delete this lab? This action cannot be undone.')) {
+async function deleteSection(sectionId) {
+  if (!confirm('Are you sure you want to delete this section? This action cannot be undone.')) {
     return;
   }
 
   try {
-    showLoading('Deleting lab...');
-    const response = await fetch(`/api/admin/Lab/Delete/${labId}`, { method: 'POST' });
+    showLoading('Deleting section...');
+    const response = await fetch(`/api/admin/section/delete/${sectionId}`, { method: 'POST' });
     const result = await response.json();
 
     if (response.ok) {
       showAlert(result.message, 'success');
       // Remove from local arrays
-      labs = labs.filter(lab => lab.id !== labId);
-      selectedLabs.delete(labId);
+      sections = sections.filter(section => section.id !== sectionId);
+      selectedSections.delete(sectionId);
 
-      renderLabs();
+      renderSections();
     } else {
-      showAlert(result.error || 'Failed to delete lab', 'error');
+      showAlert(result.error || 'Failed to delete section', 'error');
     }
   } catch (error) {
-    console.error('Error deleting lab:', error);
+    console.error('Error deleting section:', error);
     showAlert('Network error. Please try again.', 'error');
   } finally {
     hideLoading();
   }
 }
 
-async function bulkDeleteLabs() {
-  if (selectedLabs.size === 0) {
-    showAlert('No labs selected', 'error');
+async function bulkDeleteSections() {
+  if (selectedSections.size === 0) {
+    showAlert('No sections selected', 'error');
     return;
   }
 
-  if (!confirm(`Are you sure you want to delete ${selectedLabs.size} lab(s)? This action cannot be undone.`)) {
+  if (!confirm(`Are you sure you want to delete ${selectedSections.size} section(s)? This action cannot be undone.`)) {
     return;
   }
 
   try {
-    showLoading('Deleting selected labs...');
-    const response = await fetch(`/api/admin/Book/${bookId}/Labs/BulkDelete`, {
+    showLoading('Deleting selected sections...');
+    const response = await fetch(`/api/admin/book/${bookId}/sections/bulk-delete`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ labIds: Array.from(selectedLabs) }),
+      body: JSON.stringify({ sectionIds: Array.from(selectedSections) }),
     });
 
     const result = await response.json();
@@ -807,11 +807,11 @@ async function bulkDeleteLabs() {
     if (response.ok) {
       showAlert(result.message, 'success');
       // Remove from local arrays
-      labs = labs.filter(lab => !selectedLabs.has(lab.id));
-      selectedLabs.clear();
-      renderLabs();
+      sections = sections.filter(section => !selectedSections.has(section.id));
+      selectedSections.clear();
+      renderSections();
     } else {
-      showAlert(result.error || 'Failed to delete labs', 'error');
+      showAlert(result.error || 'Failed to delete sections', 'error');
     }
   } catch (error) {
     console.error('Error in bulk delete:', error);
@@ -823,83 +823,61 @@ async function bulkDeleteLabs() {
 
 // UI functions
 function toggleBulkSelection() {
-  const checkboxes = document.querySelectorAll('.lab-checkbox:checked');
-  selectedLabs.clear();
+  const checkboxes = document.querySelectorAll('.section-checkbox:checked');
+  selectedSections.clear();
   checkboxes.forEach(checkbox => {
-    selectedLabs.add(parseInt(checkbox.closest('.lab-item').dataset.labId));
+    selectedSections.add(parseInt(checkbox.closest('.section-item').dataset.sectionId));
   });
 
   updateBulkActions();
 }
 
 function updateBulkActions() {
-  if (selectedLabs.size > 0) {
+  if (selectedSections.size > 0) {
     bulkActions.classList.add('show');
-    selectedCount.textContent = `${selectedLabs.size} item${selectedLabs.size > 1 ? 's' : ''} selected`;
+    selectedCount.textContent = `${selectedSections.size} item${selectedSections.size > 1 ? 's' : ''} selected`;
   } else {
     bulkActions.classList.remove('show');
   }
 }
 
-function renderLabs() {
-  if (!labsList) {
-    console.error('labsList element not found');
+function renderSections() {
+  if (!sectionsList) {
+    console.error('sectionsList element not found');
     return;
   }
 
-  // Sort labs by page_start to ensure proper sequential numbering
-  const sortedLabs = [...labs].sort((a, b) => a.page_start - b.page_start);
+  // Sort sections by section_number for consistent display
+  const sortedSections = [...sections].sort((a, b) => a.section_number - b.section_number);
 
-  labsList.innerHTML = sortedLabs.map((lab, index) => {
-    const isValidRange = lab.page_start <= lab.page_end;
+  sectionsList.innerHTML = sortedSections.map(section => {
+    const isValidRange = section.page_start <= section.page_end;
     const statusClass = isValidRange ? 'valid' : 'invalid';
     const statusText = isValidRange ? 'Valid Range' : 'Invalid Range';
-    const checked = selectedLabs.has(lab.id) ? 'checked' : '';
-    const escapedName = lab.name.replace(/'/g, "\\'");
-
-    // Check if this is a title page or special content
-    const isTitlePage = lab.name.toLowerCase().includes('title') ||
-                       lab.name.toLowerCase().includes('cover') ||
-                       lab.page_start === lab.page_end; // Single page might be title
-
-    let displayNumber, displayName;
-
-    if (isTitlePage) {
-      displayNumber = '';
-      displayName = lab.name; // Display as "Title Page" or whatever the name is
-    } else {
-      // For actual labs, use sequential numbering based on position (excluding title pages)
-      const actualLabIndex = sortedLabs.slice(0, index + 1).filter(l =>
-        !l.name.toLowerCase().includes('title') &&
-        !l.name.toLowerCase().includes('cover') &&
-        l.page_start !== l.page_end
-      ).length;
-
-      displayNumber = actualLabIndex;
-      displayName = `Lab ${actualLabIndex}: ${lab.name}`;
-    }
+    const checked = selectedSections.has(section.id) ? 'checked' : '';
+    const escapedName = section.name.replace(/'/g, "\\'");
 
     return `
-    <div class="lab-item" data-lab-id="${lab.id}" data-lab-number="${lab.lab_number}" data-name="${lab.name}">
-      <div class="lab-info">
-        <input type="checkbox" class="lab-checkbox" onchange="toggleBulkSelection()" ${checked}>
-        <div class="lab-details">
-          <h3>${displayName}</h3>
-          <p>Pages: ${lab.page_start} - ${lab.page_end}
-            <span class="lab-status ${statusClass}">
+    <div class="section-item" data-section-id="${section.id}" data-section-number="${section.section_number}" data-name="${section.name}">
+      <div class="section-info">
+        <input type="checkbox" class="section-checkbox" onchange="toggleBulkSelection()" ${checked}>
+        <div class="section-details">
+          <h3>Section ${section.section_number}: ${section.name}</h3>
+          <p>Pages: ${section.page_start} - ${section.page_end}
+            <span class="section-status ${statusClass}">
               ${statusText}
             </span>
           </p>
         </div>
       </div>
-      <div class="lab-actions">
-        <button class="btn btn-edit" onclick="editLab(${lab.id}, ${lab.lab_number}, '${escapedName}', ${lab.page_start}, ${lab.page_end})">
+      <div class="section-actions">
+        <button class="btn btn-edit" onclick="editSection(${section.id}, ${section.section_number}, '${escapedName}', ${section.page_start}, ${section.page_end})">
           <i class="fas fa-edit"></i> Edit
         </button>
-        <button class="btn btn-delete" onclick="deleteLab(${lab.id})">
+        <button class="btn btn-delete" onclick="deleteSection(${section.id})">
           <i class="fas fa-trash"></i> Delete
         </button>
-        <a href="/book/${bookId}/lab/${lab.id}/download" class="btn btn-download" target="_blank">
+        <a href="/book/${bookId}/section/${section.id}/download" class="btn btn-download" target="_blank">
           <i class="fas fa-download"></i> Download
         </a>
       </div>

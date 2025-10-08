@@ -166,7 +166,7 @@ router.get("/api/admin/Unilib/Book/Export", validateSessionAndRole("Any"), async
       count: result.rows.length,
       filters: 'none',
       books: result.rows,
-      labs: result.rows.filter(book => book.category === 'LabManuals').map(book => ({ bookId: book.id, labs: book.labs || [] }))
+      sections: result.rows.map(book => ({ bookId: book.id, sections: book.sections || [] }))
     });
   } catch (error) {
     console.error('Error exporting books:', error);
@@ -203,11 +203,8 @@ router.get("/book/:id", async (req, res) => {
 
     const book = result.rows[0];
 
-    // If it's a lab manual, fetch labs from JSONB
-    let labs = [];
-    if (book.category === 'LabManuals') {
-      labs = book.labs || [];
-    }
+    // Get sections for all books
+    let sections = book.sections || [];
 
     return res.render("mainPages/index.handlebars", {
       layout: false,
@@ -215,7 +212,7 @@ router.get("/book/:id", async (req, res) => {
       books: [book], // Single book as array for consistency
       singleBookView: true,
       bookId: bookId,
-      labs: labs,
+      sections: sections,
       pagination: {
         page: 1,
         limit: 1,
@@ -230,48 +227,43 @@ router.get("/book/:id", async (req, res) => {
   }
 });
 
-// Lab management routes
-router.get("/dashboard/Book/:bookId/Labs", validateSessionAndRole("Any"), async (req, res) => {
+// Sections management routes
+router.get("/dashboard/Book/:bookId/Sections", validateSessionAndRole("Any"), async (req, res) => {
   const bookId = req.params.bookId;
   try {
-    const bookQuery = 'SELECT * FROM unilibbook WHERE id = $1 AND category = $2';
-    const bookResult = await pool.query(bookQuery, [bookId, 'LabManuals']);
+    const bookQuery = 'SELECT * FROM unilibbook WHERE id = $1';
+    const bookResult = await pool.query(bookQuery, [bookId]);
     if (bookResult.rows.length === 0) {
-      return res.status(404).send("Book not found or not a lab manual");
+      return res.status(404).send("Book not found");
     }
     const book = bookResult.rows[0];
-    const labs = book.labs || [];
+    const sections = book.sections || [];
 
-//    console.log('Rendering labs page for book:', bookId);
-//    console.log('Book data:', book);
-//    console.log('Labs data:', labs);
-//    console.log('Labs type:', typeof labs, Array.isArray(labs));
-
-    res.render("mainPages/Labs.handlebars", { book, labs, role: req.session.user.role });
+    res.render("mainPages/Sections.handlebars", { book, sections, role: req.session.user.role });
   } catch (error) {
-    console.error("Error fetching labs:", error);
+    console.error("Error fetching sections:", error);
     res.status(500).send("Internal Server Error");
   }
 });
 
-router.post("/api/admin/Book/:bookId/Lab/Add", async (req, res) => {
+router.post("/api/admin/Book/:bookId/Section/Add", validateSessionAndRole("Any"), async (req, res) => {
   const bookId = req.params.bookId;
-  const { lab_number, page_start, page_end, name } = req.body;
+  const { section_number, page_start, page_end, name } = req.body;
 
   // Input validation
-  if (!lab_number || !page_start || !page_end || !name) {
-    return res.status(400).json({ error: "All fields are required" });
+  if (!section_number || !page_start || !page_end || !name) {
+    return res.status(400).json({ error: "Missing required fields" });
   }
 
-  if (typeof lab_number !== 'number' || lab_number < 1) {
-    return res.status(400).json({ error: "Lab number must be a positive integer" });
+  if (!Number.isInteger(section_number) || section_number < 1) {
+    return res.status(400).json({ error: "Section number must be a positive integer" });
   }
 
-  if (typeof page_start !== 'number' || page_start < 1) {
+  if (!Number.isInteger(page_start) || page_start < 1) {
     return res.status(400).json({ error: "Start page must be a positive integer" });
   }
 
-  if (typeof page_end !== 'number' || page_end < 1) {
+  if (!Number.isInteger(page_end) || page_end < 1) {
     return res.status(400).json({ error: "End page must be a positive integer" });
   }
 
@@ -280,31 +272,31 @@ router.post("/api/admin/Book/:bookId/Lab/Add", async (req, res) => {
   }
 
   if (typeof name !== 'string' || name.trim().length === 0 || name.length > 200) {
-    return res.status(400).json({ error: "Lab name must be a non-empty string with maximum 200 characters" });
+    return res.status(400).json({ error: "Section name must be a non-empty string with maximum 200 characters" });
   }
 
   try {
-    // Check if book exists and is a lab manual
-    const bookQuery = 'SELECT id, labs FROM unilibbook WHERE id = $1 AND category = $2';
-    const bookResult = await pool.query(bookQuery, [bookId, 'LabManuals']);
+    // Check if book exists
+    const bookQuery = 'SELECT id, sections FROM unilibbook WHERE id = $1';
+    const bookResult = await pool.query(bookQuery, [bookId]);
     if (bookResult.rows.length === 0) {
-      return res.status(404).json({ error: "Book not found or not a lab manual" });
+      return res.status(404).json({ error: "Book not found" });
     }
 
     const book = bookResult.rows[0];
-    const currentLabs = book.labs || [];
+    const currentSections = book.sections || [];
 
-    // Check for duplicate lab numbers
-    const duplicateLab = currentLabs.find(lab => lab.lab_number === lab_number);
-    if (duplicateLab) {
-      return res.status(409).json({ error: `Entry number ${lab_number} already exists in this manual` });
+    // Check for duplicate section numbers
+    const duplicateSection = currentSections.find(section => section.section_number === section_number);
+    if (duplicateSection) {
+      return res.status(409).json({ error: `Section number ${section_number} already exists in this book` });
     }
 
     // Generate unique ID (using timestamp + random for better uniqueness)
-    const newLabId = Date.now() + Math.floor(Math.random() * 1000);
-    const newLab = {
-      id: newLabId,
-      lab_number: lab_number,
+    const newSectionId = Date.now() + Math.floor(Math.random() * 1000);
+    const newSection = {
+      id: newSectionId,
+      section_number: section_number,
       page_start: page_start,
       page_end: page_end,
       name: name.trim(),
@@ -312,22 +304,22 @@ router.post("/api/admin/Book/:bookId/Lab/Add", async (req, res) => {
       updated_at: new Date().toISOString()
     };
 
-    const updatedLabs = [...currentLabs, newLab];
+    const updatedSections = [...currentSections, newSection];
 
-    // Update the labs JSONB with transaction
+    // Update the sections JSONB with transaction
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
 
-      const updateQuery = 'UPDATE unilibbook SET labs = $1 WHERE id = $2';
-      await client.query(updateQuery, [JSON.stringify(updatedLabs), bookId]);
+      const updateQuery = 'UPDATE unilibbook SET sections = $1 WHERE id = $2';
+      await client.query(updateQuery, [JSON.stringify(updatedSections), bookId]);
 
       await client.query('COMMIT');
-      console.log(`Content ${lab_number} added to book ${bookId} by user ${req.session.user.username}`);
+      console.log(`Section ${section_number} added to book ${bookId} by user ${req.session.user.username}`);
 
       res.status(201).json({
-        message: `Content added successfully!`,
-        lab: newLab
+        message: `Section added successfully!`,
+        section: newSection
       });
     } catch (dbError) {
       await client.query('ROLLBACK');
@@ -336,29 +328,28 @@ router.post("/api/admin/Book/:bookId/Lab/Add", async (req, res) => {
       client.release();
     }
   } catch (error) {
-    console.error("Error adding lab:", error);
-    res.status(500).json({ error: "Failed to add lab. Please try again." });
+    console.error("Error adding section:", error);
+    res.status(500).json({ error: "Failed to add section. Please try again." });
   }
 });
 
-router.post("/api/admin/Lab/Edit/:labId", validateSessionAndRole("Any"), async (req, res) => {
-  const labId = parseInt(req.params.labId);
-  const { lab_number, page_start, page_end, name } = req.body;
+router.post("/api/admin/Section/Edit/:sectionId", validateSessionAndRole("Any"), async (req, res) => {
+  const sectionId = parseInt(req.params.sectionId);
+  const { section_number, page_start, page_end, name } = req.body;
 
-  // Input validation
-  if (!lab_number || !page_start || !page_end || !name) {
-    return res.status(400).json({ error: "All fields are required" });
+  if (!sectionId || isNaN(sectionId)) {
+    return res.status(400).json({ error: "Invalid section ID" });
   }
 
-  if (typeof lab_number !== 'number' || lab_number < 1) {
-    return res.status(400).json({ error: "Lab number must be a positive integer" });
+  if (!section_number || !Number.isInteger(section_number) || section_number < 1) {
+    return res.status(400).json({ error: "Section number must be a positive integer" });
   }
 
-  if (typeof page_start !== 'number' || page_start < 1) {
+  if (!page_start || !Number.isInteger(page_start) || page_start < 1) {
     return res.status(400).json({ error: "Start page must be a positive integer" });
   }
 
-  if (typeof page_end !== 'number' || page_end < 1) {
+  if (!page_end || !Number.isInteger(page_end) || page_end < 1) {
     return res.status(400).json({ error: "End page must be a positive integer" });
   }
 
@@ -367,55 +358,55 @@ router.post("/api/admin/Lab/Edit/:labId", validateSessionAndRole("Any"), async (
   }
 
   if (typeof name !== 'string' || name.trim().length === 0 || name.length > 200) {
-    return res.status(400).json({ error: "Lab name must be a non-empty string with maximum 200 characters" });
+    return res.status(400).json({ error: "Section name must be a non-empty string with maximum 200 characters" });
   }
 
   try {
-    // Find the book that contains this lab
-    const findBookQuery = "SELECT id, labs FROM unilibbook WHERE category = $1 AND labs @> $2";
-    const findBookResult = await pool.query(findBookQuery, ['LabManuals', JSON.stringify([{ id: labId }])]);
+    // Find the book that contains this section
+    const findBookQuery = "SELECT id, sections FROM unilibbook WHERE sections @> $1";
+    const findBookResult = await pool.query(findBookQuery, [JSON.stringify([{ id: sectionId }])]);
 
     if (findBookResult.rows.length === 0) {
-      return res.status(404).json({ error: "Lab not found" });
+      return res.status(404).json({ error: "Section not found" });
     }
 
     const book = findBookResult.rows[0];
-    const currentLabs = book.labs || [];
+    const currentSections = book.sections || [];
 
-    // Check for duplicate lab numbers (excluding current lab)
-    const duplicateLab = currentLabs.find(lab => lab.lab_number === lab_number && lab.id !== labId);
-    if (duplicateLab) {
-      return res.status(409).json({ error: `Entry number ${lab_number} already exists in this manual` });
+    // Check for duplicate section numbers (excluding current section)
+    const duplicateSection = currentSections.find(section => section.section_number === section_number && section.id !== sectionId);
+    if (duplicateSection) {
+      return res.status(409).json({ error: `Section number ${section_number} already exists in this book` });
     }
 
-    // Update the specific lab
-    const updatedLabs = currentLabs.map(lab =>
-      lab.id === labId
+    // Update the specific section
+    const updatedSections = currentSections.map(section =>
+      section.id === sectionId
         ? {
-            ...lab,
-            lab_number: lab_number,
+            ...section,
+            section_number: section_number,
             page_start: page_start,
             page_end: page_end,
             name: name.trim(),
             updated_at: new Date().toISOString()
           }
-        : lab
+        : section
     );
 
-    // Update the labs JSONB with transaction
+    // Update the sections JSONB with transaction
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
 
-      const updateQuery = 'UPDATE unilibbook SET labs = $1 WHERE id = $2';
-      await client.query(updateQuery, [JSON.stringify(updatedLabs), book.id]);
+      const updateQuery = 'UPDATE unilibbook SET sections = $1 WHERE id = $2';
+      await client.query(updateQuery, [JSON.stringify(updatedSections), book.id]);
 
       await client.query('COMMIT');
-      console.log(`Lab ${labId} updated in book ${book.id} by user ${req.session.user.username}`);
+      console.log(`Section ${sectionId} updated in book ${book.id} by user ${req.session.user.username}`);
 
       res.status(200).json({
-        message: `Content updated successfully!`,
-        lab: updatedLabs.find(lab => lab.id === labId)
+        message: `Section updated successfully!`,
+        section: updatedSections.find(section => section.id === sectionId)
       });
     } catch (dbError) {
       await client.query('ROLLBACK');
@@ -424,53 +415,53 @@ router.post("/api/admin/Lab/Edit/:labId", validateSessionAndRole("Any"), async (
       client.release();
     }
   } catch (error) {
-    console.error("Error updating lab:", error);
-    res.status(500).json({ error: "Failed to update lab. Please try again." });
+    console.error("Error updating section:", error);
+    res.status(500).json({ error: "Failed to update section. Please try again." });
   }
 });
 
-router.post("/api/admin/Lab/Delete/:labId", validateSessionAndRole("Any"), async (req, res) => {
-  const labId = parseInt(req.params.labId);
+router.post("/api/admin/Section/Delete/:sectionId", validateSessionAndRole("Any"), async (req, res) => {
+  const sectionId = parseInt(req.params.sectionId);
 
-  if (!labId || isNaN(labId)) {
-    return res.status(400).json({ error: "Invalid lab ID" });
+  if (!sectionId || isNaN(sectionId)) {
+    return res.status(400).json({ error: "Invalid section ID" });
   }
 
   try {
-    // Find the book that contains this lab
-    const findBookQuery = "SELECT id, labs FROM unilibbook WHERE category = $1 AND labs @> $2";
-    const findBookResult = await pool.query(findBookQuery, ['LabManuals', JSON.stringify([{ id: labId }])]);
+    // Find the book that contains this section
+    const findBookQuery = "SELECT id, sections FROM unilibbook WHERE sections @> $1";
+    const findBookResult = await pool.query(findBookQuery, [JSON.stringify([{ id: sectionId }])]);
 
     if (findBookResult.rows.length === 0) {
-      return res.status(404).json({ error: "Lab not found" });
+      return res.status(404).json({ error: "Section not found" });
     }
 
     const book = findBookResult.rows[0];
-    const currentLabs = book.labs || [];
+    const currentSections = book.sections || [];
 
-    // Find the lab to be deleted
-    const labToDelete = currentLabs.find(lab => lab.id === labId);
-    if (!labToDelete) {
-      return res.status(404).json({ error: "Lab not found" });
+    // Find the section to be deleted
+    const sectionToDelete = currentSections.find(section => section.id === sectionId);
+    if (!sectionToDelete) {
+      return res.status(404).json({ error: "Section not found" });
     }
 
-    // Remove the specific lab
-    const updatedLabs = currentLabs.filter(lab => lab.id !== labId);
+    // Remove the specific section
+    const updatedSections = currentSections.filter(section => section.id !== sectionId);
 
-    // Update the labs JSONB with transaction
+    // Update the sections JSONB with transaction
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
 
-      const updateQuery = 'UPDATE unilibbook SET labs = $1 WHERE id = $2';
-      await client.query(updateQuery, [JSON.stringify(updatedLabs), book.id]);
+      const updateQuery = 'UPDATE unilibbook SET sections = $1 WHERE id = $2';
+      await client.query(updateQuery, [JSON.stringify(updatedSections), book.id]);
 
       await client.query('COMMIT');
-      console.log(`Lab ${labId} (Lab ${labToDelete.lab_number}: ${labToDelete.name}) deleted from book ${book.id} by user ${req.session.user.username}`);
+      console.log(`Section ${sectionId} (Section ${sectionToDelete.section_number}: ${sectionToDelete.name}) deleted from book ${book.id} by user ${req.session.user.username}`);
 
       res.status(200).json({
-        message: `Content deleted successfully!`,
-        deletedLab: labToDelete
+        message: `Section deleted successfully!`,
+        deletedSection: sectionToDelete
       });
     } catch (dbError) {
       await client.query('ROLLBACK');
@@ -479,66 +470,65 @@ router.post("/api/admin/Lab/Delete/:labId", validateSessionAndRole("Any"), async
       client.release();
     }
   } catch (error) {
-    console.error("Error deleting lab:", error);
-    res.status(500).json({ error: "Failed to delete lab. Please try again." });
+    console.error("Error deleting section:", error);
+    res.status(500).json({ error: "Failed to delete section. Please try again." });
   }
 });
 
-// Bulk delete labs
-router.post("/api/admin/Book/:bookId/Labs/BulkDelete", validateSessionAndRole("Any"), async (req, res) => {
+router.post("/api/admin/Book/:bookId/Sections/BulkDelete", validateSessionAndRole("Any"), async (req, res) => {
   const bookId = req.params.bookId;
-  const { labIds } = req.body;
+  const { sectionIds } = req.body;
 
   // Input validation
-  if (!Array.isArray(labIds) || labIds.length === 0) {
-    return res.status(400).json({ error: "labIds must be a non-empty array" });
+  if (!Array.isArray(sectionIds) || sectionIds.length === 0) {
+    return res.status(400).json({ error: "sectionIds must be a non-empty array" });
   }
 
-  if (labIds.length > 50) {
-    return res.status(400).json({ error: "Cannot delete more than 50 labs at once" });
+  if (sectionIds.length > 50) {
+    return res.status(400).json({ error: "Cannot delete more than 50 sections at once" });
   }
 
-  // Validate lab IDs
-  const invalidIds = labIds.filter(id => !Number.isInteger(id) || id <= 0);
+  // Validate section IDs
+  const invalidIds = sectionIds.filter(id => !Number.isInteger(id) || id <= 0);
   if (invalidIds.length > 0) {
-    return res.status(400).json({ error: "All lab IDs must be positive integers" });
+    return res.status(400).json({ error: "All section IDs must be positive integers" });
   }
 
   try {
-    // Check if book exists and is a lab manual
-    const bookQuery = 'SELECT id, labs FROM unilibbook WHERE id = $1 AND category = $2';
-    const bookResult = await pool.query(bookQuery, [bookId, 'LabManuals']);
+    // Check if book exists
+    const bookQuery = 'SELECT id, sections FROM unilibbook WHERE id = $1';
+    const bookResult = await pool.query(bookQuery, [bookId]);
     if (bookResult.rows.length === 0) {
-      return res.status(404).json({ error: "Book not found or not a lab manual" });
+      return res.status(404).json({ error: "Book not found" });
     }
 
     const book = bookResult.rows[0];
-    const currentLabs = book.labs || [];
+    const currentSections = book.sections || [];
 
-    // Find labs to be deleted
-    const labsToDelete = currentLabs.filter(lab => labIds.includes(lab.id));
-    if (labsToDelete.length === 0) {
-      return res.status(404).json({ error: "No valid labs found to delete" });
+    // Find sections to be deleted
+    const sectionsToDelete = currentSections.filter(section => sectionIds.includes(section.id));
+    if (sectionsToDelete.length === 0) {
+      return res.status(404).json({ error: "No valid sections found to delete" });
     }
 
-    // Remove the specified labs
-    const updatedLabs = currentLabs.filter(lab => !labIds.includes(lab.id));
+    // Remove the specified sections
+    const updatedSections = currentSections.filter(section => !sectionIds.includes(section.id));
 
-    // Update the labs JSONB with transaction
+    // Update the sections JSONB with transaction
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
 
-      const updateQuery = 'UPDATE unilibbook SET labs = $1 WHERE id = $2';
-      await client.query(updateQuery, [JSON.stringify(updatedLabs), bookId]);
+      const updateQuery = 'UPDATE unilibbook SET sections = $1 WHERE id = $2';
+      await client.query(updateQuery, [JSON.stringify(updatedSections), bookId]);
 
       await client.query('COMMIT');
-      console.log(`${labsToDelete.length} labs deleted from book ${bookId} by user ${req.session.user.username}`);
+      console.log(`${sectionsToDelete.length} sections deleted from book ${bookId} by user ${req.session.user.username}`);
 
       res.status(200).json({
-        message: `Successfully deleted ${labsToDelete.length} item(s)`,
-        deletedLabs: labsToDelete,
-        deletedCount: labsToDelete.length
+        message: `Successfully deleted ${sectionsToDelete.length} section(s)`,
+        deletedSections: sectionsToDelete,
+        deletedCount: sectionsToDelete.length
       });
     } catch (dbError) {
       await client.query('ROLLBACK');
@@ -548,29 +538,30 @@ router.post("/api/admin/Book/:bookId/Labs/BulkDelete", validateSessionAndRole("A
     }
   } catch (error) {
     console.error("Error in bulk delete:", error);
-    res.status(500).json({ error: "Failed to delete labs. Please try again." });
+    res.status(500).json({ error: "Failed to delete sections. Please try again." });
   }
 });
 
-// Download lab PDF
-router.get("/book/:bookId/lab/:labId/download", async (req, res) => {
-  const { bookId, labId } = req.params;
-  const labIdNum = parseInt(labId);
+// Download section PDF
+router.get("/book/:bookId/section/:sectionId/download", async (req, res) => {
+  const { bookId, sectionId } = req.params;
+  const sectionIdNum = parseInt(sectionId);
 
   try {
     // Fetch book details
-    const bookQuery = 'SELECT * FROM unilibbook WHERE id = $1 AND category = $2';
-    const bookResult = await pool.query(bookQuery, [bookId, 'LabManuals']);
+    const bookQuery = 'SELECT * FROM unilibbook WHERE id = $1';
+    const bookResult = await pool.query(bookQuery, [bookId]);
+
     if (bookResult.rows.length === 0) {
-      return res.status(404).send("Book not found or not a lab manual");
+      return res.status(404).send("Book not found");
     }
     const book = bookResult.rows[0];
 
-    // Find the specific lab in the JSONB
-    const labs = book.labs || [];
-    const lab = labs.find(l => l.id === labIdNum);
-    if (!lab) {
-      return res.status(404).send("Lab not found");
+    // Find the specific section in the JSONB
+    const sections = book.sections || [];
+    const section = sections.find(s => s.id === sectionIdNum);
+    if (!section) {
+      return res.status(404).send("Section not found");
     }
 
     // Convert Google Drive sharing links to direct download links
@@ -592,10 +583,8 @@ router.get("/book/:bookId/lab/:labId/download", async (req, res) => {
       return res.status(500).send(`Failed to fetch PDF: ${response.status} ${response.statusText}`);
     }
 
-    // Check content type - accept PDF and octet-stream (Google Drive downloads)
+    // Check content type
     const contentType = response.headers.get('content-type');
-    console.log(`Content-Type: ${contentType}`);
-
     const validContentTypes = ['application/pdf', 'application/octet-stream'];
     const isValidContentType = validContentTypes.some(type => contentType && contentType.includes(type));
 
@@ -604,45 +593,39 @@ router.get("/book/:bookId/lab/:labId/download", async (req, res) => {
       return res.status(500).send(`Invalid PDF URL - received content type: ${contentType}`);
     }
 
-    const pdfBuffer = await response.arrayBuffer();
-
-    // Basic PDF validation - check for PDF header
-    const buffer = Buffer.from(pdfBuffer);
-    if (buffer.length < 4 || !buffer.slice(0, 4).equals(Buffer.from('%PDF'))) {
-      console.error('Fetched content is not a valid PDF file');
-      return res.status(500).send('The linked file is not a valid PDF document');
-    }
-
-    console.log(`PDF size: ${buffer.length} bytes`);
-
-    // Extract pages using pdf-lib
-    const { PDFDocument } = await import('pdf-lib');
-    const pdfDoc = await PDFDocument.load(pdfBuffer);
-    const newPdf = await PDFDocument.create();
-
-    console.log(`Original PDF has ${pdfDoc.getPageCount()} pages`);
-    console.log(`Extracting pages ${lab.page_start} to ${lab.page_end}`);
-
-    for (let i = lab.page_start - 1; i < lab.page_end; i++) {
-      if (i >= pdfDoc.getPageCount()) {
-        console.error(`Page ${i + 1} does not exist in PDF (total pages: ${pdfDoc.getPageCount()})`);
-        return res.status(400).send(`Invalid page range: page ${i + 1} does not exist in the PDF`);
-      }
-      const [page] = await newPdf.copyPages(pdfDoc, [i]);
-      newPdf.addPage(page);
-    }
-
-    const pdfBytes = await newPdf.save();
-    console.log(`Generated PDF with ${newPdf.getPageCount()} pages, size: ${pdfBytes.length} bytes`);
-
-    // Set headers for download
-    const filename = `${book.name}_Lab${lab.lab_number}.pdf`;
+    // Stream and extract section pages
+    // Set the response headers for the PDF file
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-    res.send(Buffer.from(pdfBytes));
+    res.setHeader('Content-Disposition', `attachment; filename="${book.name}_${section.name}.pdf"`);
+
+    // Stream the PDF response data through pdf-lib for page extraction
+    const pdfData = await response.arrayBuffer();
+    const pdfjsLib = await import('pdf-lib');
+    const { PDFDocument } = pdfjsLib;
+
+    try {
+      const originalDoc = await PDFDocument.load(pdfData);
+      const newDoc = await PDFDocument.create();
+
+      // Copy the pages from start_page to end_page
+      const pages = await newDoc.copyPages(originalDoc, 
+        Array.from({ length: section.page_end - section.page_start + 1 }, 
+          (_, i) => section.page_start - 1 + i)
+      );
+      pages.forEach(page => newDoc.addPage(page));
+
+      // Save the extracted pages as a new PDF
+      const extractedPdfBytes = await newDoc.save();
+      res.send(Buffer.from(extractedPdfBytes));
+
+    } catch (error) {
+      console.error('Error processing PDF:', error);
+      return res.status(500).send('Error processing PDF file');
+    }
+
   } catch (error) {
-    console.error("Error downloading lab PDF:", error);
-    res.status(500).send("Internal Server Error");
+    console.error('Error:', error);
+    res.status(500).send('Internal Server Error');
   }
 });
 

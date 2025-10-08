@@ -12,6 +12,7 @@
     content="Empowering technology through open-source innovation and collaborative development" />
   <meta property="og:image" content="https://www.mbktechstudio.com/Assets/Images/Icon/logo.png" />
   <meta property="og:url" content="https://mbktechstudio.com/">
+  <meta name="robots" content="noindex, follow">
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -1255,10 +1256,20 @@
                 <i class="fas fa-share-alt" aria-hidden="true"></i> Share
               </button>
             </div>
-            {{#if ../labs}}
+            {{#if (or ../sections ../labs)}}
             <div class="lab-downloads">
               <h3>Download Individual Content</h3>
               <div class="lab-list">
+                {{#if ../sections}}
+                {{#each ../sections}}
+                <div class="lab-item">
+                  <span>{{this.name}}</span>
+                  <a href="/book/{{../this.id}}/section/{{this.id}}/download" class="btn btn-lab-download" target="_blank">
+                    <i class="fas fa-download"></i> Download
+                  </a>
+                </div>
+                {{/each}}
+                {{else}}
                 {{#each ../labs}}
                 <div class="lab-item">
                   <span>{{this.name}}</span>
@@ -1267,6 +1278,7 @@
                   </a>
                 </div>
                 {{/each}}
+                {{/if}}
               </div>
             </div>
             {{/if}}
