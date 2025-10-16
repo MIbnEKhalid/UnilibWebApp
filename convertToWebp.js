@@ -2,7 +2,25 @@ import fs from 'fs/promises';
 import path from 'path';
 import sharp from 'sharp';
 
-const deleteOld = process.argv.includes('--delete-old');
+// Determine whether to delete original images after conversion.
+// Support direct CLI flag (--delete-old) and npm forwarded args (npm_config_argv).
+let deleteOld = process.argv.includes('--delete-old');
+try {
+    // Check npm's env mapping for flags like --delete-old -> npm_config_delete_old
+    if (!deleteOld && process.env.npm_config_delete_old) {
+        const v = process.env.npm_config_delete_old;
+        deleteOld = v === 'true' || v === '1' || v === 'yes';
+    }
+    if (!deleteOld && process.env.npm_config_argv) {
+        // npm forwards args in JSON in npm_config_argv
+        const parsed = JSON.parse(process.env.npm_config_argv);
+        if (parsed && Array.isArray(parsed.cooked)) {
+            deleteOld = parsed.cooked.includes('--delete-old');
+        }
+    }
+} catch (e) {
+    // ignore JSON parse errors and fall back to argv check
+}
 
 async function convertToWebp(dir) {
     try {
@@ -20,8 +38,13 @@ async function convertToWebp(dir) {
                     await sharp(filePath).webp().toFile(outputPath);
                     console.log(`Converted ${filePath} to ${outputPath}`);
                     if (deleteOld) {
-                        await fs.unlink(filePath);
-                        console.log(`Deleted original ${filePath}`);
+                        try {
+                            console.log(`Deleting original ${filePath}`);
+                            await fs.unlink(filePath);
+                            console.log(`Deleted original ${filePath}`);
+                        } catch (err) {
+                            console.error(`Failed to delete ${filePath}:`, err.message || err);
+                        }
                     }
                 }
             }
@@ -32,4 +55,4 @@ async function convertToWebp(dir) {
 }
 
 // Start conversion from the BookCovers directory
-convertToWebp('./public/BookCovers');
+convertToWebp('./BookCovers');
