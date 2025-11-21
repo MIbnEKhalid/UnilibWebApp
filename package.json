@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "nodemon app.js",
-    "convertToWebp": "node convertToWebp.js"
+    "convertToWebp": "node tool/convertToWebp.js",
+    "convertPageImages": "node tool/convertPageImages.js"
   },
   "author": "Muhammad Bin Khalid",
   "license": "MIT",
@@ -19,6 +20,7 @@
     "mbkauthe": "latest",
     "node-fetch": "^3.3.2",
     "pdf-lib": "^1.17.1",
+    "pdf-to-img": "^5.0.0",
     "pg": "^8.13.3",
     "sharp": "^0.34.4"
   },

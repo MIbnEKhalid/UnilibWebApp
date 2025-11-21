@@ -49,13 +49,44 @@ A modern web application for managing and sharing university course materials, f
    ```
    Access at [http://localhost:3333](http://localhost:3333)
 
-### Image Tools
+### Tools
 
+#### Convert Images to WebP
 Convert images to WebP format:
 ```sh
 npm run convertToWebp            # Keep originals
 npm run convertToWebp --delete-old   # Delete originals
 ```
+
+#### Convert PDF Pages to Images
+Extract specific pages from PDF files as high-quality images:
+```sh
+npm run convertPageImages <pdfPath> <pageNumber> <outputFormat> [outputPath]
+```
+
+**Arguments:**
+- `pdfPath` - Path to the PDF file
+- `pageNumber` - Page number to extract (starting from 1)
+- `outputFormat` - Output image format: `png`, `jpg`, `jpeg`, `webp`, `tiff`, or `avif`
+- `outputPath` - (Optional) Custom output file path
+
+**Examples:**
+```sh
+# Extract page 1 as PNG (auto-named output)
+npm run convertPageImages tool/edc.pdf 1 png
+
+# Extract page 2 as WebP with custom output path
+npm run convertPageImages tool/edc.pdf 2 webp ./output.webp
+
+# Extract page 5 as JPEG
+npm run convertPageImages ./document.pdf 5 jpg ./page5.jpg
+```
+
+**Features:**
+- High-quality output (300 DPI equivalent)
+- Multiple format support
+- Automatic output directory creation
+- If no output path is specified, saves as `<pdfName>_page<number>.<format>`
 
 ## Usage
 
@@ -77,6 +108,6 @@ Deploy on Vercel using included `vercel.json` or any Node.js server.
 
 ## Contact
 
-For questions or contributions, please contact Muhammad Bin Khalid at [mbktechstudio.com/Support](https://mbktechstudio.com/Support/?Project=MIbnEKhalidWeb), [support@mbktechstudio.com](mailto:support@mbktechstudio.com) or [chmuhammadbinkhalid28@gmail.com](mailto:chmuhammadbinkhalid28@gmail.com). 
+For questions or contributions, please contact Muhammad Bin Khalid at [mbktech.org/Support](https://mbktech.org/Support/?Project=MIbnEKhalidWeb), [support@mbktech.org](mailto:support@mbktech.org) or [chmuhammadbinkhalid28@gmail.com](mailto:chmuhammadbinkhalid28@gmail.com). 
 
-Developed by [Muhammad Bin Khalid](https://github.com/MIbnEKhalid) at [MBK Tech Studio](https://mbktechstudio.com/).
+Developed by [Muhammad Bin Khalid](https://github.com/MIbnEKhalid) at [mbktech.org](https://mbktech.org/).

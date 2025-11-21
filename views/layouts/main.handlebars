@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{{#if title}}{{title}} | {{/if}}Unilib Portal</title>
-  <link rel="icon" type="image/x-icon" href="https://portal.mbktechstudio.com/Assets/Images/dgicon.svg" />
+  <link rel="icon" type="image/x-icon" href="https://portal.mbktech.org/Assets/Images/dgicon.svg" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
   <link rel="stylesheet" href="/Assets/Style/style.css" />
   <link rel="stylesheet" href="/Assets/Style/unilib.css">
@@ -12,8 +12,7 @@
   <meta name="robots" content="noindex, follow">
   {{!-- Page specific extra head content --}}
   {{{_sections.head}}}
-  <script src="https://portal.mbktechstudio.com/Assets/Scripts/logout.js"></script>
-  <script src="https://portal.mbktechstudio.com/Assets/Scripts/main.js"></script>
+  <script src="/mbkauthe/main.js"></script>
 </head>
 <body>
 <header style="margin-bottom: 60px;">
@@ -21,7 +20,7 @@
     <div class="navbar">
       <div class="logo">
         <div class="image">
-          <img src="https://portal.mbktechstudio.com/Assets/Images/dg.svg" alt="DG" />
+          <img src="https://portal.mbktech.org/Assets/Images/dg.svg" alt="DG" />
         </div>
         <div class="text">
           <a href="/">Unilib Portal</a>
@@ -34,7 +33,7 @@
             <a class="a1" style="text-align:center;">
               <div id="headerProfileUserName"></div>
             </a>
-            <a class="a" href="https://portal.mbktechstudio.com/user/settings">Settings</a>
+            <a class="a" href="https://portal.mbktech.org/user/settings">Settings</a>
             <a class="a" onclick="logout()">Logout</a>
           </div>
         </div>
@@ -74,16 +73,16 @@
   <div class="text">
     <span>
       © <span id="year"></span>
-      <a href="https://mbktechstudio.com" target="_blank">MBK Tech Studio</a>. All Rights Reserved |
+      <a href="https://mbktech.org" target="_blank">mbktech.org</a>. All Rights Reserved |
       <a href="/info/Terms&Conditions" target="_blank">Terms &amp; Conditions</a> |
       <a href="/info/FAQs" target="_blank">FAQs</a> | <a href="/info/Credits" target="_blank">Credits</a> |
-      <a href="https://mbktechstudio.com/Support/" target="_blank">Support &amp; Contact</a>
+      <a href="https://mbktech.org/Support/" target="_blank">Support &amp; Contact</a>
     </span>
   </div>
 </footer>
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 <script src="/Assets/Scripts/unilib.js"></script>
-<script src="https://portal.mbktechstudio.com/Assets/Scripts/header.js"></script>
+<script src="https://portal.mbktech.org/Assets/Scripts/header.js"></script>
 {{!-- Page specific scripts injection point --}}
 {{{_sections.scripts}}}
 </body>

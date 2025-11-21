@@ -397,10 +397,12 @@
     <h2 id="modalTitle">Add Content</h2>
     <form id="sectionForm">
       <input type="hidden" id="sectionId" value="">
-      <div class="form-group">
-        <label for="sectionNumber">Section Number: <span class="required">*</span></label>
-        <input type="number" id="sectionNumber" required min="1">
-        <span class="error-message" id="sectionNumberError"></span>
+      <input type="hidden" id="sectionNumber" value="">
+      <div class="form-group" id="sectionNumberDisplay" style="display: none;">
+        <label>Section Number:</label>
+        <div style="padding: 8px; background: var(--bg-light); border-radius: 4px; color: var(--text-secondary);">
+          <span id="sectionNumberText"></span>
+        </div>
       </div>
       <div class="form-group">
         <label for="sectionName">Section Name: <span class="required">*</span></label>
@@ -552,20 +554,24 @@ function validateForm() {
   document.querySelectorAll('.form-group').forEach(group => group.classList.remove('error'));
   document.querySelectorAll('.error-message').forEach(msg => msg.style.display = 'none');
 
-  // Section number validation
-  const sectionNumber = parseInt(document.getElementById('sectionNumber').value);
-  if (!sectionNumber || sectionNumber < 1) {
-    errors.sectionNumber = 'Section number must be a positive integer';
-    isValid = false;
-  } else {
-    // Check for duplicate section numbers (excluding current section being edited)
-    const currentSectionId = document.getElementById('sectionId').value;
-    const duplicate = sections.find(section =>
-      section.section_number === sectionNumber && section.id.toString() !== currentSectionId
-    );
-    if (duplicate) {
-      errors.sectionNumber = `Section number ${sectionNumber} already exists`;
+  // Section number validation only for edit mode
+  const currentSectionId = document.getElementById('sectionId').value;
+  const isEdit = currentSectionId !== '';
+  
+  if (isEdit) {
+    const sectionNumber = parseInt(document.getElementById('sectionNumber').value);
+    if (!sectionNumber || sectionNumber < 1) {
+      errors.sectionNumber = 'Section number must be a positive integer';
       isValid = false;
+    } else {
+      // Check for duplicate section numbers (excluding current section being edited)
+      const duplicate = sections.find(section =>
+        section.section_number === sectionNumber && section.id.toString() !== currentSectionId
+      );
+      if (duplicate) {
+        errors.sectionNumber = `Section number ${sectionNumber} already exists`;
+        isValid = false;
+      }
     }
   }
 
@@ -628,7 +634,17 @@ function validatePageRange() {
 function showAddSectionModal() {
   document.getElementById('modalTitle').textContent = 'Add Section';
   document.getElementById('sectionId').value = '';
+  
+  // Calculate next section number
+  const maxSectionNumber = sections.length > 0 
+    ? Math.max(...sections.map(s => s.section_number))
+    : 0;
+  const nextSectionNumber = maxSectionNumber + 1;
+  
+  // Hide section number field for add mode
+  document.getElementById('sectionNumberDisplay').style.display = 'none';
   document.getElementById('sectionNumber').value = '';
+  
   document.getElementById('sectionName').value = '';
   document.getElementById('pageStart').value = '';
   document.getElementById('pageEnd').value = '';
@@ -653,6 +669,11 @@ function editSection(id, number, name, start, end) {
   document.getElementById('modalTitle').textContent = 'Edit Section';
   document.getElementById('sectionId').value = id;
   document.getElementById('sectionNumber').value = number;
+  
+  // Show section number field in edit mode (read-only display)
+  document.getElementById('sectionNumberDisplay').style.display = 'block';
+  document.getElementById('sectionNumberText').textContent = `Section ${number}`;
+  
   document.getElementById('sectionName').value = name;
   document.getElementById('pageStart').value = start;
   document.getElementById('pageEnd').value = end;
@@ -713,11 +734,15 @@ async function handleFormSubmit(e) {
   const method = 'POST';
 
   const formData = {
-    section_number: parseInt(document.getElementById('sectionNumber').value),
     name: document.getElementById('sectionName').value.trim(),
     page_start: parseInt(document.getElementById('pageStart').value),
     page_end: parseInt(document.getElementById('pageEnd').value),
   };
+  
+  // Only include section_number for edit operations
+  if (isEdit) {
+    formData.section_number = parseInt(document.getElementById('sectionNumber').value);
+  }
 
   try {
     showLoading(isEdit ? 'Updating section...' : 'Adding section...');

@@ -248,15 +248,11 @@ router.get("/dashboard/Book/:bookId/Sections", validateSessionAndRole("Any"), as
 
 router.post("/api/admin/Book/:bookId/Section/Add", validateSessionAndRole("Any"), async (req, res) => {
   const bookId = req.params.bookId;
-  const { section_number, page_start, page_end, name } = req.body;
+  const { page_start, page_end, name } = req.body;
 
   // Input validation
-  if (!section_number || !page_start || !page_end || !name) {
+  if (!page_start || !page_end || !name) {
     return res.status(400).json({ error: "Missing required fields" });
-  }
-
-  if (!Number.isInteger(section_number) || section_number < 1) {
-    return res.status(400).json({ error: "Section number must be a positive integer" });
   }
 
   if (!Number.isInteger(page_start) || page_start < 1) {
@@ -286,11 +282,11 @@ router.post("/api/admin/Book/:bookId/Section/Add", validateSessionAndRole("Any")
     const book = bookResult.rows[0];
     const currentSections = book.sections || [];
 
-    // Check for duplicate section numbers
-    const duplicateSection = currentSections.find(section => section.section_number === section_number);
-    if (duplicateSection) {
-      return res.status(409).json({ error: `Section number ${section_number} already exists in this book` });
-    }
+    // Auto-increment section number - find the highest section_number and add 1
+    const maxSectionNumber = currentSections.length > 0 
+      ? Math.max(...currentSections.map(s => s.section_number))
+      : 0;
+    const section_number = maxSectionNumber + 1;
 
     // Generate unique ID (using timestamp + random for better uniqueness)
     const newSectionId = Date.now() + Math.floor(Math.random() * 1000);
