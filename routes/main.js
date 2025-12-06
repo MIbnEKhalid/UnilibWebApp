@@ -72,7 +72,7 @@ router.get("/", async (req, res) => {
     'X-Query-Params': queryString
   });
   let isLoggedIn = req.session.user ? true : false;
-  await renderUnilibBooks(req, res, "mainPages/index.handlebars", { layout: false, isLoggedIn });
+  await renderUnilibBooks(req, res, "mainPages/index.handlebars", { isLoggedIn });
 });
 
 router.get(["/dashboard/Unilib", "/dashboard"], validateSessionAndRole("any"), async (req, res) => {
@@ -87,7 +87,7 @@ router.get("/dashboard/Book/Edit/:id", validateSessionAndRole("Any"), async (req
   try {
     const result = await pool.query(query, [bookId]);
     const book = result.rows[0];
-    res.render("mainPages/BookForm.handlebars", { isEdit: true, id: bookId, book, role: req.session.user.role });
+    res.render("mainPages/BookForm.handlebars", { layout: "main", isEdit: true, id: bookId, book, role: req.session.user.role });
   } catch (error) {
     console.error("Error fetching book details:", error);
     res.status(500).json({ error: "Failed to fetch book details" });
@@ -128,6 +128,7 @@ router.post("/api/admin/Unilib/Book/Delete/:id", validateSessionAndRole("Any"), 
 router.get("/dashboard/Book/Add", validateSessionAndRole("Any"), async (req, res) => {
   // Render unified BookForm for adding, with empty/default book data and isEdit=false
   res.render("mainPages/BookForm.handlebars", {
+    layout: "main",
     isEdit: false,
     book: null,
     role: req.session.user.role
@@ -143,9 +144,6 @@ router.post("/api/admin/Unilib/Book/Add", validateSessionAndRole("Any"), async (
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8);
     `;
     const values = [name, category, description, imageURL, link, semester, main, req.session.user.username];
-
-    console.log("Executing query:", query);
-    console.log("With values:", values);
 
     await pool.query(query, values);
     console.log("Book added successfully to the database.");
@@ -213,7 +211,6 @@ router.get("/book/:id", async (req, res) => {
     let sections = book.sections || [];
 
     return res.render("mainPages/index.handlebars", {
-      layout: false,
       isLoggedIn,
       books: [book], // Single book as array for consistency
       singleBookView: true,
@@ -245,7 +242,7 @@ router.get("/dashboard/Book/:bookId/Sections", validateSessionAndRole("Any"), as
     const book = bookResult.rows[0];
     const sections = book.sections || [];
 
-    res.render("mainPages/Sections.handlebars", { book, sections, role: req.session.user.role });
+    res.render("mainPages/Sections.handlebars", {layout: "main", book, sections, role: req.session.user.role });
   } catch (error) {
     console.error("Error fetching sections:", error);
     res.status(500).send("Internal Server Error");

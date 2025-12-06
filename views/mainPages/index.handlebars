@@ -1,1892 +1,236 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-
-<head>
-  <meta charset="UTF-8" />
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4489850175984495"
-     crossorigin="anonymous"></script>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description"
-    content="{{#if singleBookView}}{{#each books}}{{this.name}} - {{this.description}}{{/each}}{{else}}Get all your course materials and quiz / assignments here.{{/if}}">
-  <meta name="keywords" content="Unilib mbktech.org, Open-Source, Course Materials, Assignments, Quiz">
-  <meta property="og:title" content="mbktech.org | Open-Source and Innovation" />
-  <meta property="og:description"
-    content="Empowering technology through open-source innovation and collaborative development" />
-  <meta property="og:image" content="https://mbktech.org/Assets/Images/Icon/logo.png" />
-  <meta property="og:url" content="https://mbktech.org/">
-  <meta name="robots" content="noindex, follow">
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "mbktech.org",
-      "url": "https://mbktech.org/",
-      "logo": "https://mbktech.org/Assets/Images/Icon/logo.png",
-      "description": "mbktech.org: Empowering Technology Through Innovation. Explore our projects, services, and passion for cutting-edge solutions."
-    }
-  </script>
-  <script src="/mbkauthe/main.js" defer></script>
-  <link rel="icon" type="image/x-icon" href="https://mbktech.org/Assets/Images/Icon/dgicon.svg">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <title>{{#if singleBookView}}{{#each books}}{{this.name}} - {{/each}}{{/if}}Uni Books Home Page</title>
-  <style>
-    /* Base Styles */
-    :root {
-      --primary: #2196f3;
-      --primary-dark: #1769aa;
-      --secondary: #43e97b;
-      --accent: #00b894;
-      --dark: #101c1c;
-      --darker: #0a1414;
-      --light: #eaf6fb;
-      --text: #e0f7fa;
-      --text-light: #b2dfdb;
-      --text-dark: #1a2a2a;
-      --success: #43e97b;
-      --warning: #ffd166;
-      --danger: #ff7675;
-      --border-radius: 8px;
-      --box-shadow: 0 4px 20px rgba(33, 150, 243, 0.15);
-      --transition: all 0.3s cubic-bezier(.4, 0, .2, 1);
-      --primary-accent: #377a77;
-      --secondary-accent: #ff5722;
-      --text-primary: #fff;
-      --text-secondary: #bbb;
-      --card-bg: rgba(255, 255, 255, 0.05);
-      --main-border-color: rgba(255, 255, 255, 0.1);
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background-color: var(--dark);
-      color: var(--text);
-    }
-
-    /* Utility Classes */
-    .btn {
-      display: inline-block;
-      padding: 0.75rem 1.5rem;
-      border-radius: var(--border-radius);
-      font-weight: 600;
-      text-decoration: none;
-      transition: var(--transition);
-      border: none;
-      cursor: pointer;
-    }
-
-    .btn-primary {
-      background-color: var(--accent);
-      color: var(--dark);
-    }
-
-    .btn-primary:hover {
-      background-color: var(--secondary);
-    }
-
-    .btn-outline {
-      background-color: transparent;
-      color: white;
-      border: 2px solid white;
-    }
-
-    .btn-outline:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-      transform: translateY(-2px);
-    }
-
-    .section-container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .section-title {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
-    .section-title h2 {
-      font-size: 2.5rem;
-      color: var(--light);
-      position: relative;
-      display: inline-block;
-    }
-
-    .section-title h2::after {
-      content: '';
-      position: absolute;
-      bottom: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80px;
-      height: 4px;
-      background-color: var(--accent);
-      border-radius: 2px;
-    }
-
-    /* Header Styles */
-    header {
-      background-color: var(--darker);
-      box-shadow: var(--box-shadow);
-      position: fixed;
-      width: 100%;
-      z-index: 1000;
-      transition: var(--transition);
-      border-bottom: .125rem solid rgba(255, 255, 255, 0.1);
-      margin: 0 auto;
-    }
-
-    .header-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      text-decoration: none;
-    }
-
-    .logo img {
-      height: 40px;
-      width: auto;
-    }
-
-    .logo-text {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--light);
-    }
-
-    .logo-text span {
-      color: var(--accent);
-    }
-
-    nav ul {
-      display: flex;
-      list-style: none;
-      gap: 2rem;
-    }
-
-    nav a {
-      text-decoration: none;
-      color: var(--text);
-      font-weight: 600;
-      font-size: 1rem;
-      transition: var(--transition);
-      position: relative;
-      padding: 0.5rem 0;
-    }
-
-    nav a:hover {
-      color: var(--accent);
-    }
-
-    nav a::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background-color: var(--accent);
-      transition: var(--transition);
-    }
-
-    nav a:hover::after {
-      width: 100%;
-    }
-
-    nav a i {
-      margin-right: 0.5rem;
-      font-size: 1.1em;
-      opacity: 0.9;
-    }
-
-    .mobile-menu-btn {
-      display: none;
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      color: var(--text);
-      cursor: pointer;
-    }
-
-    /* Mobile Menu */
-    .mobile-menu {
-      position: fixed;
-      top: 40px;
-      left: 4%;
-      width: 90%;
-      margin: 0 auto;
-      background: var(--darker);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-      padding: 2rem;
-      transform: translateY(-150%);
-      transition: var(--transition);
-      z-index: 999;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: var(--border-radius);
-    }
-
-    .mobile-menu.active {
-      transform: translateY(0);
-      top: 80px;
-    }
-
-    .mobile-menu ul {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .mobile-menu a {
-      text-decoration: none;
-      color: var(--text);
-      font-weight: 600;
-      font-size: 1.1rem;
-      display: block;
-      padding: 0.5rem 0;
-    }
-
-    .mobile-menu a:hover {
-      color: var(--accent);
-    }
-
-    /* Footer Styles */
-    footer {
-      background-color: var(--darker);
-      color: white;
-      padding: 4rem 2rem 2rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .footer-container {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 3rem;
-    }
-
-    .footer-logo {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .footer-logo img {
-      height: 40px;
-      width: auto;
-    }
-
-    .footer-logo-text {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: white;
-    }
-
-    .footer-logo-text span {
-      color: var(--accent);
-    }
-
-    .footer-about p {
-      color: var(--text-light);
-      line-height: 1.6;
-      margin-bottom: 1.5rem;
-    }
-
-    .footer-social {
-      display: flex;
-      gap: 1rem;
-    }
-
-    .footer-social a {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-      transition: var(--transition);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .footer-social a:hover {
-      background: var(--accent);
-      transform: translateY(-3px);
-      color: var(--dark);
-    }
-
-    .footer-links h3 {
-      font-size: 1.25rem;
-      margin-bottom: 1.5rem;
-      position: relative;
-      padding-bottom: 0.75rem;
-      color: var(--light);
-    }
-
-    .footer-links h3::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 50px;
-      height: 2px;
-      background: var(--accent);
-    }
-
-    .footer-links ul {
-      list-style: none;
-    }
-
-    .footer-links li {
-      margin-bottom: 0.75rem;
-    }
-
-    .footer-links a {
-      color: var(--text-light);
-      text-decoration: none;
-      transition: var(--transition);
-    }
-
-    .footer-links a:hover {
-      color: var(--accent);
-      padding-left: 5px;
-    }
-
-    .footer-contact p {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      color: var(--text-light);
-      margin-bottom: 1rem;
-    }
-
-    .footer-contact i {
-      color: var(--accent);
-    }
-
-    .footer-bottom {
-      text-align: center;
-      padding-top: 3rem;
-      margin-top: 3rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      color: var(--text-light);
-      font-size: 0.9rem;
-    }
-
-    .footer-bottom a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-
-    /* Animation */
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .fade-in {
-      animation: fadeIn 0.8s ease forwards;
-    }
-
-    @keyframes slideInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .scroll-animate {
-      opacity: 0;
-      transform: translateY(50px);
-      transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-
-    .scroll-animate.animate {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* Animation for success notification */
-    @keyframes slideInRight {
-      from {
-        transform: translateX(100%);
-        opacity: 0;
-      }
-
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
-
-    /* Success notification styles */
-    .notification.is-success {
-      background: var(--success);
-      border: 1px solid var(--success);
-      color: white;
-    }
-
-    /* Single Book View Styles */
-    .single-book-view {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 60vh;
-      padding: 2rem 0;
-    }
-
-    .single-book-card {
-      max-width: 1100px;
-      width: 100%;
-      background: var(--card-bg);
-      border: .125rem solid var(--main-border-color);
-      border-radius: 20px;
-      overflow: visible;
-      box-shadow: 0 20px 60px rgba(55, 122, 119, 0.3);
-      backdrop-filter: blur(15px);
-      display: flex;
-      flex-direction: column;
-      transition: all 0.4s ease;
-    }
-
-    .single-book-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 25px 80px rgba(55, 122, 119, 0.4);
-    }
-
-    .single-book-header {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      gap: 2rem;
-      padding: 2rem;
-      border-bottom: .125rem solid var(--main-border-color);
-    }
-
-    .single-book-image {
-      position: relative;
-      background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-      border-radius: 12px;
-      height: fit-content;
-    }
-
-    .single-book-image img {
-      width: 100%;
-      height: auto;
-      max-height: 350px;
-      object-fit: contain;
-      border-radius: 8px;
-      transition: transform 0.3s ease;
-    }
-
-    .single-book-image img:hover {
-      transform: scale(1.03);
-    }
-
-    .single-book-info {
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-      justify-content: center;
-    }
-
-    .single-book-content {
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .single-book-details {
-      flex: 1;
-    }
-
-    .single-book-details h1 {
-      font-size: 2rem;
-      color: var(--text-primary);
-      margin-bottom: 0.75rem;
-      line-height: 1.3;
-      font-weight: 700;
-    }
-
-    .single-book-details p {
-      font-size: 1rem;
-      color: var(--text-secondary);
-      line-height: 1.7;
-      margin-bottom: 0;
-    }
-
-    .single-book-meta {
-      display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-    }
-
-    .meta-tag {
-      background: var(--primary-accent);
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: all 0.3s ease;
-    }
-
-    .meta-tag:hover {
-      background: var(--secondary-accent);
-      transform: translateY(-2px);
-    }
-
-    .meta-tag i {
-      font-size: 0.8rem;
-    }
-
-    .single-book-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-    }
-
-    .single-book-actions .btn {
-      padding: 0.75rem 1.5rem;
-      font-size: 0.9rem;
-      border-radius: 8px;
-      text-align: center;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      transition: all 0.3s ease;
-      white-space: nowrap;
-      flex: 0 1 auto;
-    }
-
-    .single-book-actions .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(55, 122, 119, 0.4);
-    }
-
-    .back-button {
-      background: transparent;
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-      transition: all 0.3s ease;
-      font-weight: 600;
-    }
-
-    .back-button:hover {
-      background: var(--primary-accent);
-      transform: translateX(-5px);
-    }
-
-    /* Hide regular grid when in single book view */
-    .single-book-mode .cards-container {
-      display: none !important;
-    }
-
-    .single-book-mode .filter,
-    .single-book-mode .search-bar,
-    .single-book-mode .pagination {
-      display: none !important;
-    }
-
-    /* Book title link styles */
-    .book-title-link {
-      color: var(--text-primary);
-      text-decoration: none;
-      transition: all 0.3s ease;
-    }
-
-    .book-title-link:hover {
-      color: var(--primary-accent);
-      text-decoration: underline;
-    }
-
-    .book-link {
-      display: block;
-      transition: all 0.3s ease;
-    }
-
-    .book-link:hover {
-      transform: scale(1.02);
-    }
-
-    /* Section Separators */
-    .section-separator {
-      margin-top: 0px;
-      border-top: .125rem solid var(--main-border-color);
-    }
-
-    .section-separator1 {
-      margin-top: 10px;
-      margin-bottom: 10px;
-      border-top: .125rem solid var(--main-border-color);
-    }
-
-    /* Info Section */
-    #info {
-      width: 90%;
-      margin: 0 auto;
-      padding-top: 0px;
-    }
-
-    /* Notification Styles */
-    .notification.is-info {
-      border-radius: 6px;
-      padding: 5px;
-      margin: 10px 0;
-      background-color: #fff8e1;
-      border: 1px solid #ffe082;
-      color: #8a6d3b;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Spinner */
-    .spinner {
-      border: 16px solid #f3f3f3;
-      border-top: 16px solid #377a77;
-      border-radius: 50%;
-      width: 100px;
-      height: 100px;
-      animation: spin 2s linear infinite;
-      margin: auto;
-      margin-top: 50px;
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-
-    /* Filter Styles */
-    .filter {
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .filter .select-dropdown select {
-      position: relative;
-      max-width: 150px !important;
-      width: 150px !important;
-    }
-
-    /* Cards Container */
-    .cards-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 1.5rem;
-      padding: 1rem 0;
-    }
-
-    /* Book card styles */
-    .book-card {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      background: var(--card-bg);
-      border: .125rem solid var(--main-border-color);
-      border-radius: 15px;
-      overflow: hidden;
-      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-      height: 100%;
-      backdrop-filter: blur(10px);
-      opacity: 0;
-      transform: translateY(30px) scale(0.97);
-      will-change: transform, opacity;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .badge-semester {
-      background-color: var(--primary) !important;
-      font-size: 0.8rem;
-      padding: 4px 8px;
-      transition: transform 0.2s ease;
-    }
-
-    .badges {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      z-index: 2;
-    }
-
-    .badge {
-      border-radius: 20px;
-      padding: 0.4rem 0.8rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      transition: all 0.2s ease;
-    }
-
-    .badge:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-    }
-
-    .book-card .btn {
-      flex: 1;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      padding: 0.75rem;
-      border-radius: 8px;
-      font-weight: 600;
-      transition: all 0.2s ease;
-    }
-
-    .book-card .btn i {
-      font-size: 1rem;
-    }
-
-    .book-card .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    }
-
-    .book-card .btn:active {
-      transform: translateY(0);
-    }
-
-    .book-card.animate {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(30px) scale(0.97);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    .cards-container {
-      perspective: 1000px;
-    }
-
-    .book-card:hover {
-       border-color: var(--primary-accent);
-      box-shadow: 0 15px 35px rgba(55, 122, 119, 0.3),
-                  0 0 0 1px var(--primary-accent);
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    .book-card:hover .book-title-link {
-      color: var(--accent);
-    }
-
-    .book-card:hover .actions {
-      border-color: var(--primary-accent);
-      background: rgba(0, 0, 0, 0.3);
-    }
-
-    .book-card:hover .btn {
-      transform: translateY(-1px);
-    }
-
-    .book-card img {
-      width: 100%;
-      height: 270px;
-      object-fit: contain;
-      background: #fff;
-      padding: 1rem;
-      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .book-card .Bdetails {
-      padding: 1.25rem;
-      text-align: left;
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .book-card .Bdetails h3 {
-      margin: 0;
-      font-size: 1.15rem;
-      color: var(--text-primary);
-      line-height: 1.4;
-      font-weight: 600;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .book-card .Bdetails p {
-      margin: 0;
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      line-height: 1.5;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      opacity: 0.9;
-    }
-
-    .book-card .actions {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      padding: 1rem;
-      background: rgba(0, 0, 0, 0.2);
-      border-top: 1px solid var(--main-border-color);
-      transition: all 0.3s ease;
-    }
-
-    .book-card .btn {
-      padding: 0.625rem 1.25rem;
-      font-size: 0.85rem;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .book-card .btn i {
-      font-size: 0.9rem;
-    }
-
-    .book-card .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    /* Badge Styles */
-    .badges {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      z-index: 1;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 0.25rem 0.75rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      border-radius: 20px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .badge-main {
-      background: linear-gradient(135deg, var(--secondary-accent), #ff8f5d);
-      color: #fff;
-    }
-
-    .badge-category {
-      background: linear-gradient(135deg, var(--primary-accent), #2c5f5d);
-      color: #fff;
-    }
-
-    /* Filter dropdown styles */
-    .filter .select-dropdown {
-      position: relative;
-    }
-
-    .filter .select-dropdown select {
-      position: relative;
-      max-width: 150px !important;
-      width: 150px !important;
-      padding: 10px 12px;
-      border: 2px solid var(--main-border-color);
-      border-radius: 8px;
-      background: var(--card-bg);
-      color: var(--text-primary);
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(5px);
-    }
-
-    .filter .select-dropdown select:focus {
-      outline: none;
-      border-color: var(--primary-accent);
-      box-shadow: 0 0 0 3px rgba(55, 122, 119, 0.2);
-    }
-
-    .filter .select-dropdown select option {
-      background: var(--darker);
-      color: var(--text-primary);
-      padding: 8px;
-    }
-
-    /* Pagination */
-    .pagination {
-      display: flex;
-      justify-content: center;
-      margin-top: 20px;
-      gap: 5px;
-    }
-
-    .pagination button {
-      padding: 8px 12px;
-      border: 1px solid var(--main-border-color);
-      background: var(--card-bg);
-      color: var(--text-primary);
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .pagination button:hover {
-      background: var(--primary-accent);
-      border-color: var(--primary-accent);
-    }
-
-    .pagination button.active {
-      background: var(--primary-accent);
-      border-color: var(--primary-accent);
-      font-weight: bold;
-    }
-
-    .pagination button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .pagination-info {
-      text-align: center;
-      margin-top: 10px;
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-    }
-
-    .no-results {
-      display: flex;
-      justify-content: space-around;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    /* About Section */
-    .about {
-      padding: 5rem 2rem;
-      background-color: var(--dark);
-      color: var(--text-primary);
-    }
-
-    .content {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .not {
-      height: 20px;
-      margin-bottom: 20px;
-    }
-
-    /* Search Bar Styles */
-    .search-bar {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin: 20px 0;
-      position: relative;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .search-bar input[type="text"] {
-      flex: 1;
-      padding: 12px 15px;
-      border: 2px solid var(--main-border-color);
-      border-radius: 8px;
-      background: var(--card-bg);
-      color: var(--text-primary);
-      font-size: 1rem;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(5px);
-    }
-
-    .search-bar input[type="text"]:focus {
-      outline: none;
-      border-color: var(--primary-accent);
-      box-shadow: 0 0 0 3px rgba(55, 122, 119, 0.2);
-    }
-
-    .search-bar input[type="text"]::placeholder {
-      color: var(--text-secondary);
-    }
-
-    .submit button {
-      padding: 12px 15px;
-      background: var(--primary-accent);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-size: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .submit button:hover {
-      background: var(--secondary-accent);
-      transform: translateY(-2px);
-    }
-
-    .clear-btn {
-      padding: 12px 15px;
-      background: var(--danger);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-size: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .clear-btn:hover {
-      background: #e74c3c;
-      transform: translateY(-2px);
-    }
-
-    /* Button Styles */
-    .btn-save {
-      background: linear-gradient(135deg, var(--primary-accent), #2c5f5d);
-      color: white;
-      border: 2px solid transparent;
-      transition: all 0.3s ease;
-    }
-
-    .btn-save:hover {
-      background: transparent;
-      border-color: var(--primary-accent);
-      color: var(--primary-accent);
-      transform: translateY(-2px);
-    }
-
-    .buttons {
-      display: inline-block;
-      padding: 12px 24px;
-      margin: 8px;
-      text-decoration: none;
-      border-radius: 8px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      text-align: center;
-      font-size: 1rem;
-    }
-
-    .githeme {
-      background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
-      color: white;
-      border: 2px solid transparent;
-    }
-
-    .githeme:hover {
-      background: transparent;
-      border-color: var(--primary-accent);
-      color: var(--primary-accent);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(55, 122, 119, 0.3);
-    }
-
-    .links {
-      color: var(--primary-accent);
-      text-decoration: none;
-      font-weight: 600;
-      transition: all 0.3s ease;
-    }
-
-    .links:hover {
-      color: var(--secondary-accent);
-      text-decoration: underline;
-    }
-
-    /* Responsive Adjustments */
-    @media (max-width: 992px) {
-      nav ul {
-        gap: 1.5rem;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .header-container {
-        padding: 1rem;
-      }
-
-      nav {
-        display: none;
-      }
-
-      .mobile-menu-btn {
-        display: block;
-      }
-
-      /* Single Book View Mobile Styles */
-      .single-book-header {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-      }
-
-      .single-book-card {
-        max-width: 95%;
-        margin: 0 auto;
-      }
-
-      .single-book-image {
-        max-width: 300px;
-        margin: 0 auto;
-      }
-
-      .single-book-image img {
-        max-height: 300px;
-      }
-
-      .single-book-content {
-        padding: 1.5rem;
-      }
-
-      .single-book-details h1 {
-        font-size: 1.5rem;
-      }
-
-      .single-book-details p {
-        font-size: 0.95rem;
-      }
-
-      .single-book-actions {
-        flex-direction: column;
-      }
-
-      .single-book-actions .btn {
-        width: 100%;
-        flex: 1 1 100%;
-      }
-
-      .lab-list {
-        max-height: none;
-      }
-
-      .lab-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.75rem;
-      }
-
-      .lab-item span {
-        white-space: normal;
-      }
-
-      .btn-lab-download {
-        width: 100%;
-        justify-content: center;
-      }
-
-      .filter {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .filter .select-dropdown select {
-        width: 100% !important;
-        max-width: 100% !important;
-      }
-    }
-
-    /* Filter Icons Styles */
-    .filter-icon {
-      position: absolute;
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-light);
-      opacity: 0.7;
-      font-size: 1rem;
-      pointer-events: none;
-    }
-
-    .select-dropdown {
-      position: relative;
-    }
-
-    .select-dropdown select {
-      padding-left: 35px !important;
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-light);
-      opacity: 0.7;
-      font-size: 1rem;
-      pointer-events: none;
-    }
-
-    .search-bar {
-      position: relative;
-    }
-
-    .search-bar input {
-      padding-left: 35px !important;
-      padding-right: 80px !important;
-    }
-
-    .submit-btn {
-      position: absolute;
-      right: 40px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: var(--accent);
-      cursor: pointer;
-      padding: 0 10px;
-      transition: var(--transition);
-    }
-
-    .submit-btn:hover {
-      color: var(--secondary);
-    }
-
-    .clear-btn {
-      position: absolute;
-      right: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: var(--text-light);
-      cursor: pointer;
-      padding: 0 10px;
-      opacity: 0.7;
-      transition: var(--transition);
-    }
-
-    .clear-btn:hover {
-      opacity: 1;
-      color: var(--danger);
-    }
-
-    /* Lab Downloads Styles */
-    .lab-downloads {
-      padding: 1.5rem;
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 12px;
-      border: 1px solid var(--main-border-color);
-    }
-
-    .lab-downloads h3 {
-      color: var(--text-primary);
-      margin-bottom: 1rem;
-      font-size: 1.15rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .lab-downloads h3 i {
-      color: var(--primary-accent);
-    }
-
-    .lab-list {
-      display: grid;
-      gap: 0.75rem;
-      max-height: 400px;
-      overflow-y: auto;
-      padding-right: 0.5rem;
-    }
-
-    .lab-list::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .lab-list::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 3px;
-    }
-
-    .lab-list::-webkit-scrollbar-thumb {
-      background: var(--primary-accent);
-      border-radius: 3px;
-    }
-
-    .lab-list::-webkit-scrollbar-thumb:hover {
-      background: var(--secondary-accent);
-    }
-
-    .lab-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.85rem;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: all 0.3s ease;
-      gap: 1rem;
-    }
-
-    .lab-item:hover {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: var(--primary-accent);
-      transform: translateX(3px);
-    }
-
-    .lab-item span {
-      color: var(--text-primary);
-      font-weight: 500;
-      font-size: 0.9rem;
-      flex: 1;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .btn-lab-download {
-      background: var(--accent);
-      color: var(--dark);
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      text-decoration: none;
-      font-size: 0.85rem;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .btn-lab-download:hover {
-      background: var(--secondary);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(67, 233, 123, 0.3);
-    }
-
-    .btn-lab-download i {
-      font-size: 0.8rem;
-    }
-  </style>
-</head>
-
-<body>
-  <!-- Header -->
-  <header>
-    <div class="header-container">
-      <a href="/" class="logo">
-        <img src="https://mbktech.org/Assets/Images/Icon/dg.svg" alt="mbktech.org Logo">
-        <span class="logo-text">MBK <span>Tech</span></span>
-      </a>
-
-      <nav>
-        <ul>
-          <li><a href="https://mbktech.org/"><i class="fas fa-home"></i>Main Website</a></li>
-          <li><a href="/dashboard/"><i class="fas fa-cog"></i>Admin Panel</a></li>
-          {{#if isLoggedIn}}
-          <li><a onclick="logout()"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
-          {{else}}
-          <li><a href="/mbkauthe/login"><i class="fas fa-sign-in-alt"></i>Login</a></li>
+<section class="about {{#if singleBookView}}single-book-mode{{/if}}" id="books">
+  <div class="content">
+    <div class="not"></div>
+    {{#if singleBookView}}
+    <!-- Single Book View -->
+    <a href="/" class="back-button">
+      <i class="fas fa-arrow-left"></i> Back to All Books
+    </a>
+    <div class="single-book-view">
+      {{#each books}}
+      <div class="single-book-card scroll-animate">
+        <div class="single-book-image">
+          {{#if this.main}}
+          <div class="badge" aria-label="Main resource"
+            style="position: absolute; top: 15px; left: 15px; background-color: #ff8f5d">Main</div>
           {{/if}}
-        </ul>
-      </nav>
-
-      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle mobile menu">
-        <i class="fas fa-bars"></i>
-      </button>
-    </div>
-
-    <div class="mobile-menu" id="mobileMenu">
-      <ul>
-        <li><a href="https://mbktech.org/"><i class="fas fa-home"></i>Main Website</a></li>
-        <li><a href="/dashboard/"><i class="fas fa-cog"></i>Admin Panel</a></li>
-        <li><a href="/mbkauthe/login"><i class="fas fa-sign-in-alt"></i>Login</a></li>
-      </ul>
-    </div>
-  </header>
-
-  <section class="about {{#if singleBookView}}single-book-mode{{/if}}" id="books">
-    <div class="content">
-      <div class="not"></div>
-      {{#if singleBookView}}
-      <!-- Single Book View -->
-      <a href="/" class="back-button">
-        <i class="fas fa-arrow-left"></i> Back to All Books
-      </a>
-      <div class="single-book-view">
-        {{#each books}}
-        <div class="single-book-card scroll-animate">
-          <div class="single-book-image">
-            {{#if this.main}}
-            <div class="badge" aria-label="Main resource" style="position: absolute; top: 15px; left: 15px; background-color: #ff8f5d">Main</div>
-            {{/if}}
-            <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" loading="lazy">
-          </div>
-          <div class="single-book-content">
-            <div class="single-book-details">
-              <h1>{{this.name}}</h1>
-              <p>{{this.description}}</p>
-            </div>
-                        <div class="single-book-actions">
-              <a href="{{this.link}}" class="btn btn-save" aria-label="View {{this.name}}" target="_blank"
-                rel="noopener noreferrer">
-                <i class="fas fa-eye" aria-hidden="true"></i> View Book
-              </a>
-              <button onclick="downloadResource('{{this.link}}')" class="btn btn-save"
-                aria-label="Download {{this.name}}">
-                <i class="fas fa-download" aria-hidden="true"></i>
-              </button>
-              <button onclick="shareBook('{{this.id}}', '{{this.name}}')" class="btn btn-save"
-                aria-label="Share {{this.name}}">
-                <i class="fas fa-share-alt" aria-hidden="true"></i> Share
-              </button>
-              {{#if ../isLoggedIn}}
-              <a href="/dashboard/Book/Edit/{{this.id}}" class="btn btn-save" aria-label="Edit {{this.name}}">
-                <i class="fas fa-edit" aria-hidden="true"></i> Edit
-              </a>
-              <a href="/dashboard/Book/{{this.id}}/Sections" class="btn btn-save" aria-label="Manage Sections for {{this.name}}">
-                <i class="fas fa-folder-open" aria-hidden="true"></i> Sections
-              </a>
-              {{/if}}
-             </div>
-            <div class="single-book-meta">
-              <span class="meta-tag"><i class="fas fa-graduation-cap"></i>{{this.semester}}</span>
-              <span class="meta-tag"><i class="fas fa-book"></i>{{this.category}}</span>
-            </div>
-
-            {{#if (or ../sections ../labs)}}
-            <div class="lab-downloads">
-              <h3><i class="fas fa-folder-open"></i>Download Individual Content</h3>
-              <div class="lab-list">
-                {{#if ../sections}}
-                {{#each ../sections}}
-                <div class="lab-item">
-                  <span>{{this.name}}</span>
-                  <a href="/book/{{../this.id}}/section/{{this.id}}/download" class="btn btn-lab-download" target="_blank">
-                    <i class="fas fa-download"></i> Download
-                  </a>
-                </div>
-                {{/each}}
-                {{else}}
-                {{#each ../labs}}
-                <div class="lab-item">
-                  <span>{{this.name}}</span>
-                  <a href="/book/{{../this.id}}/lab/{{this.id}}/download" class="btn btn-lab-download" target="_blank">
-                    <i class="fas fa-download"></i> Download
-                  </a>
-                </div>
-                {{/each}}
-                {{/if}}
-              </div>
-            </div>
-            {{/if}}
-          </div>
+          <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" loading="lazy">
         </div>
-        {{/each}}
-      </div>
-      {{else}}
-      <!-- Regular Grid View -->
-      <div class="title section-title">
-        <h1>Uni Course Materials</h1>
-      </div>
-      <div class="filter">
-        <div class="select-dropdown">
-          <i class="fas fa-graduation-cap filter-icon"></i>
-          <select id="semesterFilter" name="topics" aria-label="Select semester">
-            <option value="all" {{#if (eq filters.semester 'all' )}}selected{{/if}}><i class="fas fa-layer-group"></i> All Semesters</option>
-            <option value="Semester1" {{#if (eq filters.semester 'Semester1' )}}selected{{/if}}><i class="fas fa-1"></i> Semester 1</option>
-            <option value="Semester2" {{#if (eq filters.semester 'Semester2' )}}selected{{/if}}><i class="fas fa-2"></i> Semester 2</option>
-            <option value="Semester3" {{#if (eq filters.semester 'Semester3' )}}selected{{/if}}><i class="fas fa-3"></i> Semester 3</option>
-          </select>
-        </div>
-        <div class="select-dropdown">
-          <i class="fas fa-book filter-icon"></i>
-          <select id="categoryFilter" name="topics" aria-label="Select category">
-            <option value="all" {{#if (eq filters.category 'all' )}}selected{{/if}}>All Categories</option>
-            <option value="CourseBooks" {{#if (eq filters.category 'CourseBooks' )}}selected{{/if}}>Course Books</option>
-            <option value="LabManuals" {{#if (eq filters.category 'LabManuals' )}}selected{{/if}}>Lab Manuals</option>
-            <option value="other" {{#if (eq filters.category 'other' )}}selected{{/if}}>Other</option>
-          </select>
-        </div>
-      </div>
-      <div class="search-bar">
-        <i class="fas fa-search search-icon"></i>
-        <input type="text" id="searchProduct" placeholder="Search books by name..." value="{{filters.search}}"
-          aria-label="Search books">
-        <button type="button" id="searchSubmit" class="submit-btn" aria-label="Submit search">
-          <i class="fas fa-arrow-right"></i>
-        </button>
-        <button type="button" id="clearSearch" class="clear-btn" aria-label="Clear search"
-          style="display: {{#if filters.search}}block{{else}}none{{/if}};">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <div id="spinner" class="spinner" style="display: none;"></div>
-
-      <div class="cards-container products scroll-animate"
-        style="{{#if books}}display: grid;{{else}}display: block;{{/if}}">
-        {{#if books}}
-        {{#each books}}
-        <article class="book-card linked scroll-animate" id="{{this.id}}"
-          style="transition-delay: {{multiply @index 0.1}}s;">
-          <div class="badges">
-            {{#if this.main}}
-            <div class="badge badge-main" aria-label="Main resource">
-              <i class="fas fa-star"></i> Main
-            </div>
-            {{/if}}
-            {{#if (eq ../filters.semester 'all')}}
-            <div class="badge badge-semester" aria-label="Book semester">
-              <i class="fas fa-graduation-cap"></i> {{this.semester}}
-            </div>
-            {{/if}}
-            <div class="badge badge-category" aria-label="Book category">
-              <i class="fas fa-book"></i> {{this.category}}
-            </div>
+        <div class="single-book-content">
+          <div class="single-book-details">
+            <h1>{{this.name}}</h1>
+            <p>{{this.description}}</p>
           </div>
-          <a href="/book/{{this.id}}" aria-label="View {{this.name}} details" class="book-link">
-            <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" loading="lazy" class="lazy-load"
-              onerror="this.src='https://via.placeholder.com/300x400?text=No+Cover'">
-          </a>
-          <div class="Bdetails">
-            <h3><a href="/book/{{this.id}}" class="book-title-link" title="{{this.name}}">{{this.name}}</a></h3>
-            <p title="{{this.description}}">{{this.description}}</p>
-          </div>
-          <div class="actions">
+          <div class="single-book-actions">
             <a href="{{this.link}}" class="btn btn-save" aria-label="View {{this.name}}" target="_blank"
               rel="noopener noreferrer">
-              <i class="fas fa-eye" aria-hidden="true"></i> View
+              <i class="fas fa-eye" aria-hidden="true"></i> View Book
             </a>
-            {{#unless (eq this.category 'All')}}
-            <button onclick="downloadResource('{{this.link}}')" class="btn btn-primary"
+            <button onclick="downloadResource('{{this.link}}')" class="btn btn-save"
               aria-label="Download {{this.name}}">
               <i class="fas fa-download" aria-hidden="true"></i>
             </button>
-            {{/unless}}
+            <button onclick="shareBook('{{this.id}}', '{{this.name}}')" class="btn btn-save"
+              aria-label="Share {{this.name}}">
+              <i class="fas fa-share-alt" aria-hidden="true"></i> Share
+            </button>
+            {{#if ../isLoggedIn}}
+            <a href="/dashboard/Book/Edit/{{this.id}}" class="btn btn-save" aria-label="Edit {{this.name}}">
+              <i class="fas fa-edit" aria-hidden="true"></i> Edit
+            </a>
+            <a href="/dashboard/Book/{{this.id}}/Sections" class="btn btn-save"
+              aria-label="Manage Sections for {{this.name}}">
+              <i class="fas fa-folder-open" aria-hidden="true"></i> Sections
+            </a>
+            {{/if}}
           </div>
-        </article>
-        {{/each}}
-        {{else}}
-        <div class="no-results">
-          <i class="fas fa-book-open" style="font-size: 3rem; margin-bottom: 1rem; color: var(--text-secondary);"></i>
-          <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">No materials found matching your criteria</p>
-          <button class="btn btn-save" onclick="resetFilters()" style="margin: 0 auto;">
-            <i class="fas fa-filter"></i> Reset Filters
-          </button>
+          <div class="single-book-meta">
+            <span class="meta-tag"><i class="fas fa-graduation-cap"></i>{{this.semester}}</span>
+            <span class="meta-tag"><i class="fas fa-book"></i>{{this.category}}</span>
+          </div>
+
+          {{#if (or ../sections ../labs)}}
+          <div class="lab-downloads">
+            <h3><i class="fas fa-folder-open"></i>Download Individual Content</h3>
+            <div class="lab-list">
+              {{#if ../sections}}
+              {{#each ../sections}}
+              <div class="lab-item">
+                <span>{{this.name}}</span>
+                <a href="/book/{{../this.id}}/section/{{this.id}}/download" class="btn btn-lab-download"
+                  target="_blank">
+                  <i class="fas fa-download"></i> Download
+                </a>
+              </div>
+              {{/each}}
+              {{else}}
+              {{#each ../labs}}
+              <div class="lab-item">
+                <span>{{this.name}}</span>
+                <a href="/book/{{../this.id}}/lab/{{this.id}}/download" class="btn btn-lab-download" target="_blank">
+                  <i class="fas fa-download"></i> Download
+                </a>
+              </div>
+              {{/each}}
+              {{/if}}
+            </div>
+          </div>
+          {{/if}}
         </div>
-        {{/if}}
+      </div>
+      {{/each}}
+    </div>
+    {{else}}
+    <!-- Regular Grid View -->
+    <div class="title section-title">
+      <h1>Uni Course Materials</h1>
+    </div>
+    <div class="filter">
+      <div class="select-dropdown">
+        <i class="fas fa-graduation-cap filter-icon"></i>
+        <select id="semesterFilter" name="topics" aria-label="Select semester">
+          <option value="all" {{#if (eq filters.semester 'all' )}}selected{{/if}}><i class="fas fa-layer-group"></i> All
+            Semesters</option>
+          <option value="Semester1" {{#if (eq filters.semester 'Semester1' )}}selected{{/if}}><i class="fas fa-1"></i>
+            Semester 1</option>
+          <option value="Semester2" {{#if (eq filters.semester 'Semester2' )}}selected{{/if}}><i class="fas fa-2"></i>
+            Semester 2</option>
+          <option value="Semester3" {{#if (eq filters.semester 'Semester3' )}}selected{{/if}}><i class="fas fa-3"></i>
+            Semester 3</option>
+        </select>
+      </div>
+      <div class="select-dropdown">
+        <i class="fas fa-book filter-icon"></i>
+        <select id="categoryFilter" name="topics" aria-label="Select category">
+          <option value="all" {{#if (eq filters.category 'all' )}}selected{{/if}}>All Categories</option>
+          <option value="CourseBooks" {{#if (eq filters.category 'CourseBooks' )}}selected{{/if}}>Course Books</option>
+          <option value="Softwares" {{#if (eq filters.category 'Softwares' )}}selected{{/if}}>Softwares</option>
+          <option value="LabManuals" {{#if (eq filters.category 'LabManuals' )}}selected{{/if}}>Lab Manuals</option>
+          <option value="other" {{#if (eq filters.category 'other' )}}selected{{/if}}>Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="search-bar">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" id="searchProduct" placeholder="Search books by name..." value="{{filters.search}}"
+        aria-label="Search books">
+      <button type="button" id="searchSubmit" class="submit-btn" aria-label="Submit search">
+        <i class="fas fa-arrow-right"></i>
+      </button>
+      <button type="button" id="clearSearch" class="clear-btn" aria-label="Clear search"
+        style="display: {{#if filters.search}}block{{else}}none{{/if}};">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div id="spinner" class="spinner" style="display: none;"></div>
+
+    <div class="cards-container products scroll-animate"
+      style="{{#if books}}display: grid;{{else}}display: block;{{/if}}">
+      {{#if books}}
+      {{#each books}}
+      <article class="book-card linked scroll-animate" id="{{this.id}}"
+        style="transition-delay: {{multiply @index 0.1}}s;">
+        <div class="badges">
+          {{#if this.main}}
+          <div class="badge badge-main" aria-label="Main resource">
+            <i class="fas fa-star"></i> Main
+          </div>
+          {{/if}}
+          {{#if (eq ../filters.semester 'all')}}
+          <div class="badge badge-semester" aria-label="Book semester">
+            <i class="fas fa-graduation-cap"></i> {{this.semester}}
+          </div>
+          {{/if}}
+          <div class="badge badge-category" aria-label="Book category">
+            <i class="fas fa-book"></i> {{this.category}}
+          </div>
+        </div>
+        <a href="/book/{{this.id}}" aria-label="View {{this.name}} details" class="book-link">
+          <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" loading="lazy" class="lazy-load"
+            onerror="this.src='https://via.placeholder.com/300x400?text=No+Cover'">
+        </a>
+        <div class="Bdetails">
+          <h3><a href="/book/{{this.id}}" class="book-title-link" title="{{this.name}}">{{this.name}}</a></h3>
+          <p title="{{this.description}}">{{this.description}}</p>
+        </div>
+        <div class="actions">
+          <a href="{{this.link}}" class="btn btn-save" aria-label="View {{this.name}}" target="_blank"
+            rel="noopener noreferrer">
+            <i class="fas fa-eye" aria-hidden="true"></i> View
+          </a>
+          {{#unless (eq this.category 'All')}}
+          <button onclick="downloadResource('{{this.link}}')" class="btn btn-primary"
+            aria-label="Download {{this.name}}">
+            <i class="fas fa-download" aria-hidden="true"></i>
+          </button>
+          {{/unless}}
+        </div>
+      </article>
+      {{/each}}
+      {{else}}
+      <div class="no-results">
+        <i class="fas fa-book-open" style="font-size: 3rem; margin-bottom: 1rem; color: var(--text-secondary);"></i>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">No materials found matching your criteria</p>
+        <button class="btn btn-save" onclick="resetFilters()" style="margin: 0 auto;">
+          <i class="fas fa-filter"></i> Reset Filters
+        </button>
       </div>
       {{/if}}
-
-      {{#unless singleBookView}}
-      <div class="pagination" id="pagination">
-        {{#if (gt pagination.pages 1)}}
-        <button {{#if (eq pagination.page 1)}}disabled{{/if}} onclick="goToPage({{subtract pagination.page 1}})"
-          title="Previous page">
-          <i class="fas fa-chevron-left"></i>
-        </button>
-
-        {{#if (gt pagination.page 2)}}
-        <button onclick="goToPage(1)" title="First page">1</button>
-        {{#if (gt pagination.page 3)}}
-        <span style="padding: 0 10px; color: var(--text-secondary);">...</span>
-        {{/if}}
-        {{/if}}
-
-        {{#each (range (max 1 (subtract pagination.page 2)) (min pagination.pages (add pagination.page 2)))}}
-        <button {{#if (eq this ../pagination.page)}}class="active" disabled{{/if}} onclick="goToPage({{this}})"
-          title="Page {{this}}">{{this}}</button>
-        {{/each}}
-
-        {{#if (lt pagination.page (subtract pagination.pages 1))}}
-        <span style="padding: 0 10px; color: var(--text-secondary);">...</span>
-        <button onclick="goToPage({{pagination.pages}})" title="Last page">{{pagination.pages}}</button>
-        {{/if}}
-
-        <button {{#if (eq pagination.page pagination.pages)}}disabled{{/if}}
-          onclick="goToPage({{add pagination.page 1}})" title="Next page">
-          <i class="fas fa-chevron-right"></i>
-        </button>
-        {{/if}}
-      </div>
-      <div class="pagination-info" id="paginationInfo">
-        Showing {{add (multiply (subtract pagination.page 1) pagination.limit) 1}}-{{min (multiply pagination.page
-        pagination.limit) pagination.total}} of {{pagination.total}} item{{#if (gt pagination.total 1)}}s{{/if}}
-      </div>
-      {{/unless}}
     </div>
-  </section>
+    {{/if}}
 
-  <div class="section-separator1"></div>
+    {{#unless singleBookView}}
+    <div class="pagination" id="pagination">
+      {{#if (gt pagination.pages 1)}}
+      <button {{#if (eq pagination.page 1)}}disabled{{/if}} onclick="goToPage({{subtract pagination.page 1}})"
+        title="Previous page">
+        <i class="fas fa-chevron-left"></i>
+      </button>
 
-  <section id="info">
-    <div class="button" style="display: flex; justify-content: center; flex-wrap: wrap; gap:5px;">
-      <a class="buttons githeme" href="https://mbktech.org/Support/#requestbook">Request To Add Book</a>
-      <a class="buttons githeme" href="/dashboard/">Admin Panel</a>
+      {{#if (gt pagination.page 2)}}
+      <button onclick="goToPage(1)" title="First page">1</button>
+      {{#if (gt pagination.page 3)}}
+      <span style="padding: 0 10px; color: var(--text-secondary);">...</span>
+      {{/if}}
+      {{/if}}
+
+      {{#each (range (max 1 (subtract pagination.page 2)) (min pagination.pages (add pagination.page 2)))}}
+      <button {{#if (eq this ../pagination.page)}}class="active" disabled{{/if}} onclick="goToPage({{this}})"
+        title="Page {{this}}">{{this}}</button>
+      {{/each}}
+
+      {{#if (lt pagination.page (subtract pagination.pages 1))}}
+      <span style="padding: 0 10px; color: var(--text-secondary);">...</span>
+      <button onclick="goToPage({{pagination.pages}})" title="Last page">{{pagination.pages}}</button>
+      {{/if}}
+
+      <button {{#if (eq pagination.page pagination.pages)}}disabled{{/if}} onclick="goToPage({{add pagination.page 1}})"
+        title="Next page">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+      {{/if}}
     </div>
-    <div class="notification is-info">
-      <p>
-        The <strong>Unilib Project</strong> is open-source, and we welcome contributions! You can explore
-        and contribute on our <a class="links" href="https://github.com/MIbnEKhalid/UnilibWebApp/"
-          target="_blank">Project</a>.
-      </p>
+    <div class="pagination-info" id="paginationInfo">
+      Showing {{add (multiply (subtract pagination.page 1) pagination.limit) 1}}-{{min (multiply pagination.page
+      pagination.limit) pagination.total}} of {{pagination.total}} item{{#if (gt pagination.total 1)}}s{{/if}}
     </div>
-  </section>
-  <script src="/Assets/Scripts/unilib.js"></script>
-
-  <!-- Footer -->
-  <footer>
-    <div class="footer-container">
-      <div class="footer-about">
-        <div class="footer-logo">
-          <img src="https://mbktech.org/Assets/Images/Icon/dg.svg" alt="mbktech.org Logo">
-          <span class="footer-logo-text">MBK <span>Tech</span></span>
-        </div>
-        <p>Empowering technology through open-source innovation and collaborative development.</p>
-        <div class="footer-social">
-          <a href="https://github.com/MIbnEKhalid" target="_blank"><i class="fab fa-github"></i></a>
-          <a href="https://www.linkedin.com/in/muhammad-bin-khalid-89711b25b" target="_blank"><i
-              class="fab fa-linkedin-in"></i></a>
-          <a href="https://x.com/ibnekhalid28" target="_blank"><i class="fab fa-twitter"></i></a>
-          <a href="https://youtube.com/@mibnekhalid" target="_blank"><i class="fab fa-youtube"></i></a>
-        </div>
-      </div>
-
-      <div class="footer-links">
-        <h3>Quick Links</h3>
-
-        <ul>
-          <li><a href="https://mbktech.org/#about">About Us</a></li>
-          <li><a href="https://mbktech.org/#technologies">Technologies</a></li>
-          <li><a href="https://mbktech.org/#services">Resources</a></li>
-          <li><a href="https://mbktech.org/#collaborators">Collaborators</a></li>
-          <li><a href="https://mbktech.org/#contact">Contact</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-links">
-        <h3>Resources</h3>
-        <ul>
-          <li><a href="https://docs.mbktech.org" target="_blank">Documentation</a></li>
-          <li><a href="https://blog.mbktech.org" target="_blank">Blog</a></li>
-          <li><a href="https://privacy.mbktech.org" target="_blank">Privacy Policy</a></li>
-          <li><a href="https://portal.mbktech.org" target="_blank">Web Portal</a></li>
-          <li><a href="https://portfolio.mbktech.org" target="_blank">Portfolio</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-links">
-        <h3>Contact Info</h3>
-        <ul>
-          <li><i class="fas fa-envelope"></i> <a href="mailto:support@mbktech.org">support@mbktech.org</a>
-          </li>
-          <li><i class="fas fa-globe"></i> <a href="https://mbktech.org/Support"
-              target="_blank">https://mbktech.org/Support</a></li>
-          <li><i class="fas fa-map-marker-alt"></i> Open-source community worldwide</li>
-      </div>
-    </div>
-
-    <div class="footer-bottom">
-      <p>&copy;
-        <script>document.write(new Date().getFullYear()) + (' ')</script> mbktech.org. All rights reserved.
-        | <a href="https://privacy.mbktech.org" target="_blank">Privacy Policy</a>
-      </p>
-    </div>
-  </footer>
-
-  <!-- Scroll to Top Button -->
-  <div id="scrollToTop" style="position: fixed; bottom: 20px; right: 20px; display: none;">
-    <button
-      style="background-color: #377a77; color: white; border: none; border-radius: 50%; width: 50px; height: 50px; cursor: pointer;">
-      <i class="fas fa-arrow-up"></i>
-    </button>
+    {{/unless}}
   </div>
+</section>
 
-  <script>
-    // Mobile Menu Toggle
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
+<div class="section-separator1"></div>
 
-    mobileMenuBtn.addEventListener('click', () => {
-      mobileMenu.classList.toggle('active');
-      mobileMenuBtn.innerHTML = mobileMenu.classList.contains('active') ?
-        '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
-    });
-
-    // Close mobile menu when clicking a link
-    document.querySelectorAll('.mobile-menu a').forEach(link => {
-      link.addEventListener('click', () => {
-        mobileMenu.classList.remove('active');
-        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-      });
-    });
-
-    // Header scroll effect
-    window.addEventListener('scroll', () => {
-      const header = document.querySelector('header');
-      if (window.scrollY > 50) {
-        header.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.3)';
-      } else {
-        header.style.boxShadow = 'var(--box-shadow)';
-      }
-
-      // Scroll to Top button visibility
-      const scrollToTopButton = document.getElementById('scrollToTop');
-      if (window.scrollY > 200) {
-        scrollToTopButton.style.display = 'block';
-      } else {
-        scrollToTopButton.style.display = 'none';
-      }
-    });
-
-    // Scroll to Top button click event
-    document.getElementById('scrollToTop').addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-    // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-
-        const targetId = this.getAttribute('href');
-        const targetElement = document.querySelector(targetId);
-
-        if (targetElement) {
-          const headerHeight = document.querySelector('header').offsetHeight;
-          const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight;
-
-          window.scrollTo({
-            top: targetPosition,
-            behavior: 'smooth'
-          });
-        }
-      });
-    });
-
-    // Animation on scroll
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry, index) => {
-        if (entry.isIntersecting) {
-          // Add staggered animation delay for cards
-          setTimeout(() => {
-            entry.target.classList.add('animate');
-          }, index * 90); // Reduced delay for faster animation
-        }
-      });
-    }, {
-      threshold: 0.02, // Trigger when 2% of element is visible
-      rootMargin: '100px 0px 100px 0px' // Start animation 100px before element enters viewport
-    });
-
-    // Observe all scroll-animate elements
-    document.querySelectorAll('.scroll-animate').forEach((el) => {
-      observer.observe(el);
-    });
-
-    // Re-observe cards when they are dynamically loaded
-    function observeNewCards() {
-      document.querySelectorAll('.book-card:not(.animate)').forEach((el, index) => {
-        el.style.transitionDelay = `${index * 0.05}s`; // Faster stagger
-        observer.observe(el);
-      });
-    }
-
-    // Call this function after dynamic content loads
-    window.observeNewCards = observeNewCards;
-
-    // Initialize scroll animations when page loads
-    document.addEventListener('DOMContentLoaded', function () {
-      // Trigger initial animation for visible elements with improved detection
-      const visibleElements = document.querySelectorAll('.scroll-animate');
-      visibleElements.forEach((el, index) => {
-        const rect = el.getBoundingClientRect();
-        // More generous detection - animate if element is within viewport + 200px buffer
-        if (rect.top < window.innerHeight + 200 && rect.bottom > -200) {
-          setTimeout(() => {
-            el.classList.add('animate');
-          }, index * 50); // Faster initial animation
-        }
-      });
-    });
-  </script>
-</body>
-
-</html>
+<section id="info">
+  <div class="button" style="display: flex; justify-content: center; flex-wrap: wrap; gap:5px;">
+    <a class="buttons githeme" href="https://mbktech.org/Support/#requestbook">Request To Add Book</a>
+    <a class="buttons githeme" href="/dashboard/">Admin Panel</a>
+  </div>
+  <div class="notification is-info">
+    <p>
+      The <strong>Unilib Project</strong> is open-source, and we welcome contributions! You can explore
+      and contribute on our <a class="links" href="https://github.com/MIbnEKhalid/UnilibWebApp/"
+        target="_blank">Project</a>.
+    </p>
+  </div>
+</section>
+<script src="/Assets/Scripts/unilib.js"></script>

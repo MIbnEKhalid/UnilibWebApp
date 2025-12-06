@@ -1,89 +1,1760 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
+
 <head>
   <meta charset="UTF-8" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4489850175984495"
+    crossorigin="anonymous"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{{#if title}}{{title}} | {{/if}}Unilib Portal</title>
-  <link rel="icon" type="image/x-icon" href="https://portal.mbktech.org/Assets/Images/dgicon.svg" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-  <link rel="stylesheet" href="/Assets/Style/style.css" />
-  <link rel="stylesheet" href="/Assets/Style/unilib.css">
-  <link rel="stylesheet" href="/Assets/Style/dashboard.css">
+  <meta name="description"
+    content="{{#if singleBookView}}{{#each books}}{{this.name}} - {{this.description}}{{/each}}{{else}}Get all your course materials and quiz / assignments here.{{/if}}">
+  <meta name="keywords" content="Unilib mbktech.org, Open-Source, Course Materials, Assignments, Quiz">
+  <meta property="og:title" content="mbktech.org | Open-Source and Innovation" />
+  <meta property="og:description"
+    content="Empowering technology through open-source innovation and collaborative development" />
+  <meta property="og:image" content="https://mbktech.org/Assets/Images/Icon/logo.png" />
+  <meta property="og:url" content="https://mbktech.org/">
   <meta name="robots" content="noindex, follow">
-  {{!-- Page specific extra head content --}}
-  {{{_sections.head}}}
-  <script src="/mbkauthe/main.js"></script>
-</head>
-<body>
-<header style="margin-bottom: 60px;">
-  <nav>
-    <div class="navbar">
-      <div class="logo">
-        <div class="image">
-          <img src="https://portal.mbktech.org/Assets/Images/dg.svg" alt="DG" />
-        </div>
-        <div class="text">
-          <a href="/">Unilib Portal</a>
-        </div>
-      </div>
-      <div class="logout-btn">
-        <div class="profile-menu">
-          <i class="fa fa-user-circle" onclick="toggleProfileMenu()"></i>
-          <div class="dropdown-content" id="profileDropdown">
-            <a class="a1" style="text-align:center;">
-              <div id="headerProfileUserName"></div>
-            </a>
-            <a class="a" href="https://portal.mbktech.org/user/settings">Settings</a>
-            <a class="a" onclick="logout()">Logout</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav>
-</header>
-<script>
-  const headerElement = document.getElementById('headerProfileUserName');
-  if(headerElement){
-    headerElement.textContent = (typeof getCookieValue === 'function' && getCookieValue('username')) || 'Not Logged In';
-  }
-  function toggleProfileMenu() {
-    const dropdown = document.getElementById('profileDropdown');
-    if(dropdown){
-      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "mbktech.org",
+      "url": "https://mbktech.org/",
+      "logo": "https://mbktech.org/Assets/Images/Icon/logo.png",
+      "description": "mbktech.org: Empowering Technology Through Innovation. Explore our projects, services, and passion for cutting-edge solutions."
     }
-  }
-  window.addEventListener('click', function (event) {
-    if (!event.target.matches('.fa')) {
-      const dropdowns = document.getElementsByClassName('dropdown-content');
-      for (let i = 0; i < dropdowns.length; i++) {
-        const openDropdown = dropdowns[i];
-        if (openDropdown.style.display === 'block') {
-          openDropdown.style.display = 'none';
-        }
+  </script>
+  <script src="/mbkauthe/main.js" defer></script>
+  <link rel="icon" type="image/x-icon" href="https://mbktech.org/Assets/Images/Icon/dgicon.svg">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  {{{_sections.head}}}
+  <title>{{#if singleBookView}}{{#each books}}{{this.name}} - {{/each}}{{/if}}Uni Books Home Page</title>
+
+  <style>
+    /* Base Styles */
+    :root {
+      --primary: #2196f3;
+      --primary-dark: #1769aa;
+      --secondary: #43e97b;
+      --accent: #00b894;
+      --dark: #101c1c;
+      --darker: #0a1414;
+      --light: #eaf6fb;
+      --text: #e0f7fa;
+      --text-light: #b2dfdb;
+      --text-dark: #1a2a2a;
+      --success: #43e97b;
+      --warning: #ffd166;
+      --danger: #ff7675;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 20px rgba(33, 150, 243, 0.15);
+      --transition: all 0.3s cubic-bezier(.4, 0, .2, 1);
+      --primary-accent: #377a77;
+      --secondary-accent: #ff5722;
+      --text-primary: #fff;
+      --text-secondary: #bbb;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --main-border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--dark);
+      color: var(--text);
+    }
+
+    /* Utility Classes */
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: var(--dark);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--secondary);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      color: white;
+      border: 2px solid white;
+    }
+
+    .btn-outline:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .section-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .section-title h2 {
+      font-size: 2.5rem;
+      color: var(--light);
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-title h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background-color: var(--accent);
+      border-radius: 2px;
+    }
+
+    /* Header Styles */
+    header {
+      background-color: var(--darker);
+      box-shadow: var(--box-shadow);
+      position: fixed;
+      width: 100%;
+      z-index: 1000;
+      transition: var(--transition);
+      border-bottom: .125rem solid rgba(255, 255, 255, 0.1);
+      margin: 0 auto;
+    }
+
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .logo img {
+      height: 40px;
+      width: auto;
+    }
+
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--light);
+    }
+
+    .logo-text span {
+      color: var(--accent);
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 1rem;
+      transition: var(--transition);
+      position: relative;
+      padding: 0.5rem 0;
+    }
+
+    nav a:hover {
+      color: var(--accent);
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: var(--accent);
+      transition: var(--transition);
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    nav a i {
+      margin-right: 0.5rem;
+      font-size: 1.1em;
+      opacity: 0.9;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    /* Mobile Menu */
+    .mobile-menu {
+      position: fixed;
+      top: 40px;
+      left: 4%;
+      width: 90%;
+      margin: 0 auto;
+      background: var(--darker);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      padding: 2rem;
+      transform: translateY(-150%);
+      transition: var(--transition);
+      z-index: 999;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--border-radius);
+    }
+
+    .mobile-menu.active {
+      transform: translateY(0);
+      top: 80px;
+    }
+
+    .mobile-menu ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .mobile-menu a {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 1.1rem;
+      display: block;
+      padding: 0.5rem 0;
+    }
+
+    .mobile-menu a:hover {
+      color: var(--accent);
+    }
+
+    /* Footer Styles */
+    footer {
+      background-color: var(--darker);
+      color: white;
+      padding: 4rem 2rem 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .footer-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 3rem;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-logo img {
+      height: 40px;
+      width: auto;
+    }
+
+    .footer-logo-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .footer-logo-text span {
+      color: var(--accent);
+    }
+
+    .footer-about p {
+      color: var(--text-light);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .footer-social a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      transition: var(--transition);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .footer-social a:hover {
+      background: var(--accent);
+      transform: translateY(-3px);
+      color: var(--dark);
+    }
+
+    .footer-links h3 {
+      font-size: 1.25rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      padding-bottom: 0.75rem;
+      color: var(--light);
+    }
+
+    .footer-links h3::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 2px;
+      background: var(--accent);
+    }
+
+    .footer-links ul {
+      list-style: none;
+    }
+
+    .footer-links li {
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-links a {
+      color: var(--text-light);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .footer-links a:hover {
+      color: var(--accent);
+      padding-left: 5px;
+    }
+
+    .footer-contact p {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-light);
+      margin-bottom: 1rem;
+    }
+
+    .footer-contact i {
+      color: var(--accent);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 3rem;
+      margin-top: 3rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+
+    .footer-bottom a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
-  });
-</script>
 
-<main>
+    .fade-in {
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .scroll-animate {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .scroll-animate.animate {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Animation for success notification */
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Success notification styles */
+    .notification.is-success {
+      background: var(--success);
+      border: 1px solid var(--success);
+      color: white;
+    }
+
+    /* Single Book View Styles */
+    .single-book-view {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 60vh;
+      padding: 2rem 0;
+    }
+
+    .single-book-card {
+      max-width: 1100px;
+      width: 100%;
+      background: var(--card-bg);
+      border: .125rem solid var(--main-border-color);
+      border-radius: 20px;
+      overflow: visible;
+      box-shadow: 0 20px 60px rgba(55, 122, 119, 0.3);
+      backdrop-filter: blur(15px);
+      display: flex;
+      flex-direction: column;
+      transition: all 0.4s ease;
+    }
+
+    .single-book-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 25px 80px rgba(55, 122, 119, 0.4);
+    }
+
+    .single-book-header {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2rem;
+      padding: 2rem;
+      border-bottom: .125rem solid var(--main-border-color);
+    }
+
+    .single-book-image {
+      position: relative;
+      background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      border-radius: 12px;
+      height: fit-content;
+    }
+
+    .single-book-image img {
+      width: 100%;
+      height: auto;
+      max-height: 350px;
+      object-fit: contain;
+      border-radius: 8px;
+      transition: transform 0.3s ease;
+    }
+
+    .single-book-image img:hover {
+      transform: scale(1.03);
+    }
+
+    .single-book-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      justify-content: center;
+    }
+
+    .single-book-content {
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .single-book-details {
+      flex: 1;
+    }
+
+    .single-book-details h1 {
+      font-size: 2rem;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    .single-book-details p {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 0;
+    }
+
+    .single-book-meta {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .meta-tag {
+      background: var(--primary-accent);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .meta-tag:hover {
+      background: var(--secondary-accent);
+      transform: translateY(-2px);
+    }
+
+    .meta-tag i {
+      font-size: 0.8rem;
+    }
+
+    .single-book-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .single-book-actions .btn {
+      padding: 0.75rem 1.5rem;
+      font-size: 0.9rem;
+      border-radius: 8px;
+      text-align: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      flex: 0 1 auto;
+    }
+
+    .single-book-actions .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(55, 122, 119, 0.4);
+    }
+
+    .back-button {
+      background: transparent;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+
+    .back-button:hover {
+      background: var(--primary-accent);
+      transform: translateX(-5px);
+    }
+
+    /* Hide regular grid when in single book view */
+    .single-book-mode .cards-container {
+      display: none !important;
+    }
+
+    .single-book-mode .filter,
+    .single-book-mode .search-bar,
+    .single-book-mode .pagination {
+      display: none !important;
+    }
+
+    /* Book title link styles */
+    .book-title-link {
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .book-title-link:hover {
+      color: var(--primary-accent);
+      text-decoration: underline;
+    }
+
+    .book-link {
+      display: block;
+      transition: all 0.3s ease;
+    }
+
+    .book-link:hover {
+      transform: scale(1.02);
+    }
+
+    /* Section Separators */
+    .section-separator {
+      margin-top: 0px;
+      border-top: .125rem solid var(--main-border-color);
+    }
+
+    .section-separator1 {
+      margin-top: 10px;
+      margin-bottom: 10px;
+      border-top: .125rem solid var(--main-border-color);
+    }
+
+    /* Info Section */
+    #info {
+      width: 90%;
+      margin: 0 auto;
+      padding-top: 0px;
+    }
+
+    /* Notification Styles */
+    .notification.is-info {
+      border-radius: 6px;
+      padding: 5px;
+      margin: 10px 0;
+      background-color: #fff8e1;
+      border: 1px solid #ffe082;
+      color: #8a6d3b;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Spinner */
+    .spinner {
+      border: 16px solid #f3f3f3;
+      border-top: 16px solid #377a77;
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+      animation: spin 2s linear infinite;
+      margin: auto;
+      margin-top: 50px;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Filter Styles */
+    .filter {
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .filter .select-dropdown select {
+      position: relative;
+      max-width: 150px !important;
+      width: 150px !important;
+    }
+
+    /* Cards Container */
+    .cards-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+      padding: 1rem 0;
+    }
+
+    /* Book card styles */
+    .book-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      background: var(--card-bg);
+      border: .125rem solid var(--main-border-color);
+      border-radius: 15px;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      height: 100%;
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      transform: translateY(30px) scale(0.97);
+      will-change: transform, opacity;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .badge-semester {
+      background-color: var(--primary) !important;
+      font-size: 0.8rem;
+      padding: 4px 8px;
+      transition: transform 0.2s ease;
+    }
+
+    .badges {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 2;
+    }
+
+    .badge {
+      border-radius: 20px;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.2s ease;
+    }
+
+    .badge:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .book-card .btn {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .book-card .btn i {
+      font-size: 1rem;
+    }
+
+    .book-card .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .book-card .btn:active {
+      transform: translateY(0);
+    }
+
+    .book-card.animate {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .cards-container {
+      perspective: 1000px;
+    }
+
+    .book-card:hover {
+      border-color: var(--primary-accent);
+      box-shadow: 0 15px 35px rgba(55, 122, 119, 0.3),
+        0 0 0 1px var(--primary-accent);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .book-card:hover .book-title-link {
+      color: var(--accent);
+    }
+
+    .book-card:hover .actions {
+      border-color: var(--primary-accent);
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .book-card:hover .btn {
+      transform: translateY(-1px);
+    }
+
+    .book-card img {
+      width: 100%;
+      height: 270px;
+      object-fit: contain;
+      background: #fff;
+      padding: 1rem;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .book-card .Bdetails {
+      padding: 1.25rem;
+      text-align: left;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .book-card .Bdetails h3 {
+      margin: 0;
+      font-size: 1.15rem;
+      color: var(--text-primary);
+      line-height: 1.4;
+      font-weight: 600;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .book-card .Bdetails p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      opacity: 0.9;
+    }
+
+    .book-card .actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-top: 1px solid var(--main-border-color);
+      transition: all 0.3s ease;
+    }
+
+    .book-card .btn {
+      padding: 0.625rem 1.25rem;
+      font-size: 0.85rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .book-card .btn i {
+      font-size: 0.9rem;
+    }
+
+    .book-card .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Badge Styles */
+    .badges {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      z-index: 1;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .badge-main {
+      background: linear-gradient(135deg, var(--secondary-accent), #ff8f5d);
+      color: #fff;
+    }
+
+    .badge-category {
+      background: linear-gradient(135deg, var(--primary-accent), #2c5f5d);
+      color: #fff;
+    }
+
+    /* Book Card Action Buttons */
+    .book-btn {
+      border: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      height: 44px;
+      border-radius: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .book-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: left 0.3s ease;
+      z-index: -1;
+    }
+
+    .book-btn:hover::before {
+      left: 100%;
+    }
+
+    .delete-btn {
+      background: linear-gradient(135deg, var(--danger), #ff5252);
+      color: white;
+      border: 1px solid var(--danger);
+      box-shadow: 0 4px 8px rgba(255, 118, 117, 0.2);
+    }
+
+    .delete-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(255, 118, 117, 0.35);
+      background: linear-gradient(135deg, #ff5252, var(--danger));
+    }
+
+    .delete-btn:active {
+      transform: translateY(0);
+    }
+
+    .edit-btn {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border: 1px solid var(--primary);
+      box-shadow: 0 4px 8px rgba(33, 150, 243, 0.2);
+    }
+
+    .edit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(33, 150, 243, 0.35);
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    }
+
+    .edit-btn:active {
+      transform: translateY(0);
+    }
+
+    .sections-btn {
+      background: linear-gradient(135deg, var(--success), #5deb5d);
+      color: var(--dark);
+      border: 1px solid var(--success);
+      box-shadow: 0 4px 8px rgba(67, 233, 123, 0.2);
+      font-weight: 700;
+    }
+
+    .sections-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(67, 233, 123, 0.35);
+      background: linear-gradient(135deg, #5deb5d, var(--success));
+      color: var(--dark);
+    }
+
+    .sections-btn:active {
+      transform: translateY(0);
+    }
+
+    .book-btn i {
+      font-size: 1.1rem;
+    }
+
+    /* Filter dropdown styles */
+    .filter .select-dropdown {
+      position: relative;
+    }
+
+    .filter .select-dropdown select {
+      position: relative;
+      max-width: 150px !important;
+      width: 150px !important;
+      padding: 10px 12px;
+      border: 2px solid var(--main-border-color);
+      border-radius: 8px;
+      background: var(--card-bg);
+      color: var(--text-primary);
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
+
+    .filter .select-dropdown select:focus {
+      outline: none;
+      border-color: var(--primary-accent);
+      box-shadow: 0 0 0 3px rgba(55, 122, 119, 0.2);
+    }
+
+    .filter .select-dropdown select option {
+      background: var(--darker);
+      color: var(--text-primary);
+      padding: 8px;
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      gap: 5px;
+    }
+
+    .pagination button {
+      padding: 8px 12px;
+      border: 1px solid var(--main-border-color);
+      background: var(--card-bg);
+      color: var(--text-primary);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .pagination button:hover {
+      background: var(--primary-accent);
+      border-color: var(--primary-accent);
+    }
+
+    .pagination button.active {
+      background: var(--primary-accent);
+      border-color: var(--primary-accent);
+      font-weight: bold;
+    }
+
+    .pagination button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .pagination-info {
+      text-align: center;
+      margin-top: 10px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .no-results {
+      display: flex;
+      justify-content: space-around;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* About Section */
+    .about {
+      padding: 5rem 2rem;
+      background-color: var(--dark);
+      color: var(--text-primary);
+    }
+
+    .content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .not {
+      height: 20px;
+      margin-bottom: 20px;
+    }
+
+    /* Search Bar Styles */
+    .search-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+      position: relative;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .search-bar input[type="text"] {
+      flex: 1;
+      padding: 12px 15px;
+      border: 2px solid var(--main-border-color);
+      border-radius: 8px;
+      background: var(--card-bg);
+      color: var(--text-primary);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
+
+    .search-bar input[type="text"]:focus {
+      outline: none;
+      border-color: var(--primary-accent);
+      box-shadow: 0 0 0 3px rgba(55, 122, 119, 0.2);
+    }
+
+    .search-bar input[type="text"]::placeholder {
+      color: var(--text-secondary);
+    }
+
+    .submit button {
+      padding: 12px 15px;
+      background: var(--primary-accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .submit button:hover {
+      background: var(--secondary-accent);
+      transform: translateY(-2px);
+    }
+
+    .clear-btn {
+      padding: 12px 15px;
+      background: var(--danger);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .clear-btn:hover {
+      background: #e74c3c;
+      transform: translateY(-2px);
+    }
+
+    /* Button Styles */
+    .btn-save {
+      background: linear-gradient(135deg, var(--primary-accent), #2c5f5d);
+      color: white;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .btn-save:hover {
+      background: transparent;
+      border-color: var(--primary-accent);
+      color: var(--primary-accent);
+      transform: translateY(-2px);
+    }
+
+    .buttons {
+      display: inline-block;
+      padding: 12px 24px;
+      margin: 8px;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      text-align: center;
+      font-size: 1rem;
+    }
+
+    .githeme {
+      background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+      color: white;
+      border: 2px solid transparent;
+    }
+
+    .githeme:hover {
+      background: transparent;
+      border-color: var(--primary-accent);
+      color: var(--primary-accent);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(55, 122, 119, 0.3);
+    }
+
+    .links {
+      color: var(--primary-accent);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .links:hover {
+      color: var(--secondary-accent);
+      text-decoration: underline;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 992px) {
+      nav ul {
+        gap: 1.5rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header-container {
+        padding: 1rem;
+      }
+
+      nav {
+        display: none;
+      }
+
+      .mobile-menu-btn {
+        display: block;
+      }
+
+      /* Single Book View Mobile Styles */
+      .single-book-header {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .single-book-card {
+        max-width: 95%;
+        margin: 0 auto;
+      }
+
+      .single-book-image {
+        max-width: 300px;
+        margin: 0 auto;
+      }
+
+      .single-book-image img {
+        max-height: 300px;
+      }
+
+      .single-book-content {
+        padding: 1.5rem;
+      }
+
+      .single-book-details h1 {
+        font-size: 1.5rem;
+      }
+
+      .single-book-details p {
+        font-size: 0.95rem;
+      }
+
+      .single-book-actions {
+        flex-direction: column;
+      }
+
+      .single-book-actions .btn {
+        width: 100%;
+        flex: 1 1 100%;
+      }
+
+      .lab-list {
+        max-height: none;
+      }
+
+      .lab-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+
+      .lab-item span {
+        white-space: normal;
+      }
+
+      .btn-lab-download {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .filter {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .filter .select-dropdown select {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+    }
+
+    /* Filter Icons Styles */
+    .filter-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-light);
+      opacity: 0.7;
+      font-size: 1rem;
+      pointer-events: none;
+    }
+
+    .select-dropdown {
+      position: relative;
+    }
+
+    .select-dropdown select {
+      padding-left: 35px !important;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-light);
+      opacity: 0.7;
+      font-size: 1rem;
+      pointer-events: none;
+    }
+
+    .search-bar {
+      position: relative;
+    }
+
+    .search-bar input {
+      padding-left: 35px !important;
+      padding-right: 80px !important;
+    }
+
+    .submit-btn {
+      position: absolute;
+      right: 40px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--accent);
+      cursor: pointer;
+      padding: 0 10px;
+      transition: var(--transition);
+    }
+
+    .submit-btn:hover {
+      color: var(--secondary);
+    }
+
+    .clear-btn {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-light);
+      cursor: pointer;
+      padding: 0 10px;
+      opacity: 0.7;
+      transition: var(--transition);
+    }
+
+    .clear-btn:hover {
+      opacity: 1;
+      color: var(--danger);
+    }
+
+    /* Lab Downloads Styles */
+    .lab-downloads {
+      padding: 1.5rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      border: 1px solid var(--main-border-color);
+    }
+
+    .lab-downloads h3 {
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      font-size: 1.15rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .lab-downloads h3 i {
+      color: var(--primary-accent);
+    }
+
+    .lab-list {
+      display: grid;
+      gap: 0.75rem;
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+
+    .lab-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .lab-list::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 3px;
+    }
+
+    .lab-list::-webkit-scrollbar-thumb {
+      background: var(--primary-accent);
+      border-radius: 3px;
+    }
+
+    .lab-list::-webkit-scrollbar-thumb:hover {
+      background: var(--secondary-accent);
+    }
+
+    .lab-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.85rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      gap: 1rem;
+    }
+
+    .lab-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--primary-accent);
+      transform: translateX(3px);
+    }
+
+    .lab-item span {
+      color: var(--text-primary);
+      font-weight: 500;
+      font-size: 0.9rem;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .btn-lab-download {
+      background: var(--accent);
+      color: var(--dark);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .btn-lab-download:hover {
+      background: var(--secondary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(67, 233, 123, 0.3);
+    }
+
+    .btn-lab-download i {
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <a href="/" class="logo">
+        <img src="https://mbktech.org/Assets/Images/Icon/dg.svg" alt="mbktech.org Logo">
+        <span class="logo-text">MBK <span>Tech</span></span>
+      </a>
+
+      <nav>
+        <ul>
+          <li><a href="https://mbktech.org/"><i class="fas fa-home"></i>Main Website</a></li>
+          <li><a href="/dashboard/"><i class="fas fa-cog"></i>Admin Panel</a></li>
+          {{#if isLoggedIn}}
+          <li><a onclick="logout()"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+          {{else}}
+          <li><a href="/mbkauthe/login"><i class="fas fa-sign-in-alt"></i>Login</a></li>
+          {{/if}}
+        </ul>
+      </nav>
+
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle mobile menu">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+
+    <div class="mobile-menu" id="mobileMenu">
+      <ul>
+        <li><a href="https://mbktech.org/"><i class="fas fa-home"></i>Main Website</a></li>
+        <li><a href="/dashboard/"><i class="fas fa-cog"></i>Admin Panel</a></li>
+        <li><a href="/mbkauthe/login"><i class="fas fa-sign-in-alt"></i>Login</a></li>
+      </ul>
+    </div>
+  </header>
+
   {{{body}}}
-</main>
 
-<footer>
-  <div class="text">
-    <span>
-      © <span id="year"></span>
-      <a href="https://mbktech.org" target="_blank">mbktech.org</a>. All Rights Reserved |
-      <a href="/info/Terms&Conditions" target="_blank">Terms &amp; Conditions</a> |
-      <a href="/info/FAQs" target="_blank">FAQs</a> | <a href="/info/Credits" target="_blank">Credits</a> |
-      <a href="https://mbktech.org/Support/" target="_blank">Support &amp; Contact</a>
-    </span>
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-about">
+        <div class="footer-logo">
+          <img src="https://mbktech.org/Assets/Images/Icon/dg.svg" alt="mbktech.org Logo">
+          <span class="footer-logo-text">MBK <span>Tech</span></span>
+        </div>
+        <p>Empowering technology through open-source innovation and collaborative development.</p>
+        <div class="footer-social">
+          <a href="https://github.com/MIbnEKhalid" target="_blank"><i class="fab fa-github"></i></a>
+          <a href="https://www.linkedin.com/in/muhammad-bin-khalid-89711b25b" target="_blank"><i
+              class="fab fa-linkedin-in"></i></a>
+          <a href="https://x.com/ibnekhalid28" target="_blank"><i class="fab fa-twitter"></i></a>
+          <a href="https://youtube.com/@mibnekhalid" target="_blank"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-links">
+        <h3>Quick Links</h3>
+
+        <ul>
+          <li><a href="https://mbktech.org/#about">About Us</a></li>
+          <li><a href="https://mbktech.org/#technologies">Technologies</a></li>
+          <li><a href="https://mbktech.org/#services">Resources</a></li>
+          <li><a href="https://mbktech.org/#collaborators">Collaborators</a></li>
+          <li><a href="https://mbktech.org/#contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h3>Resources</h3>
+        <ul>
+          <li><a href="https://docs.mbktech.org" target="_blank">Documentation</a></li>
+          <li><a href="https://blog.mbktech.org" target="_blank">Blog</a></li>
+          <li><a href="https://privacy.mbktech.org" target="_blank">Privacy Policy</a></li>
+          <li><a href="https://portal.mbktech.org" target="_blank">Web Portal</a></li>
+          <li><a href="https://portfolio.mbktech.org" target="_blank">Portfolio</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h3>Contact Info</h3>
+        <ul>
+          <li><i class="fas fa-envelope"></i> <a href="mailto:support@mbktech.org">support@mbktech.org</a>
+          </li>
+          <li><i class="fas fa-globe"></i> <a href="https://mbktech.org/Support"
+              target="_blank">https://mbktech.org/Support</a></li>
+          <li><i class="fas fa-map-marker-alt"></i> Open-source community worldwide</li>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy;
+        <script>document.write(new Date().getFullYear()) + (' ')</script> mbktech.org. All rights reserved.
+        | <a href="https://privacy.mbktech.org" target="_blank">Privacy Policy</a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Scroll to Top Button -->
+  <div id="scrollToTop" style="position: fixed; bottom: 20px; right: 20px; display: none;">
+    <button
+      style="background-color: #377a77; color: white; border: none; border-radius: 50%; width: 50px; height: 50px; cursor: pointer;">
+      <i class="fas fa-arrow-up"></i>
+    </button>
   </div>
-</footer>
-<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
-<script src="/Assets/Scripts/unilib.js"></script>
-<script src="https://portal.mbktech.org/Assets/Scripts/header.js"></script>
-{{!-- Page specific scripts injection point --}}
-{{{_sections.scripts}}}
+
+  <script>
+    // Mobile Menu Toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('active');
+      mobileMenuBtn.innerHTML = mobileMenu.classList.contains('active') ?
+        '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+    });
+
+    // Close mobile menu when clicking a link
+    document.querySelectorAll('.mobile-menu a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('active');
+        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+      });
+    });
+
+    // Header scroll effect
+    window.addEventListener('scroll', () => {
+      const header = document.querySelector('header');
+      if (window.scrollY > 50) {
+        header.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.3)';
+      } else {
+        header.style.boxShadow = 'var(--box-shadow)';
+      }
+
+      // Scroll to Top button visibility
+      const scrollToTopButton = document.getElementById('scrollToTop');
+      if (window.scrollY > 200) {
+        scrollToTopButton.style.display = 'block';
+      } else {
+        scrollToTopButton.style.display = 'none';
+      }
+    });
+
+    // Scroll to Top button click event
+    document.getElementById('scrollToTop').addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const targetId = this.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+
+        if (targetElement) {
+          const headerHeight = document.querySelector('header').offsetHeight;
+          const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+
+    // Animation on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          // Add staggered animation delay for cards
+          setTimeout(() => {
+            entry.target.classList.add('animate');
+          }, index * 90); // Reduced delay for faster animation
+        }
+      });
+    }, {
+      threshold: 0.02, // Trigger when 2% of element is visible
+      rootMargin: '100px 0px 100px 0px' // Start animation 100px before element enters viewport
+    });
+
+    // Observe all scroll-animate elements
+    document.querySelectorAll('.scroll-animate').forEach((el) => {
+      observer.observe(el);
+    });
+
+    // Re-observe cards when they are dynamically loaded
+    function observeNewCards() {
+      document.querySelectorAll('.book-card:not(.animate)').forEach((el, index) => {
+        el.style.transitionDelay = `${index * 0.05}s`; // Faster stagger
+        observer.observe(el);
+      });
+    }
+
+    // Call this function after dynamic content loads
+    window.observeNewCards = observeNewCards;
+
+    // Initialize scroll animations when page loads
+    document.addEventListener('DOMContentLoaded', function () {
+      // Trigger initial animation for visible elements with improved detection
+      const visibleElements = document.querySelectorAll('.scroll-animate');
+      visibleElements.forEach((el, index) => {
+        const rect = el.getBoundingClientRect();
+        // More generous detection - animate if element is within viewport + 200px buffer
+        if (rect.top < window.innerHeight + 200 && rect.bottom > -200) {
+          setTimeout(() => {
+            el.classList.add('animate');
+          }, index * 50); // Faster initial animation
+        }
+      });
+    });
+  </script>
 </body>
+
 </html>

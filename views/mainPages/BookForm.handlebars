@@ -1,26 +1,161 @@
 {{! Single Book Form View for Add and Edit }}
 {{#section 'head'}}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" href="/Assets/Styles/common-admin.css">
+<style>
+
+/* Add/Edit Book Page Styles */
+.add-book-content {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.book-preview-section {
+  position: sticky;
+  top: 100px;
+  width: 100%;
+}
+
+.book-preview-section .cards-container {
+  display: flex;
+  justify-content: center;
+}
+
+.book-preview-section .book-card {
+  width: 100%;
+  max-width: 300px;
+  opacity: 1 !important;
+  transform: translateY(0) scale(1) !important;
+}
+
+/* Badge Styles for Preview */
+.book-preview-section .badges {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 10;
+}
+
+.form-section .profile-container {
+  background: rgba(10, 20, 20, 0.6);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--main-border-color);
+  backdrop-filter: blur(10px);
+}
+
+.form-section .profile-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+}
+
+.form-section .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-section .form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.form-section .form-group input,
+.form-section .form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--main-border-color);
+  border-radius: 8px;
+  background: rgba(16, 28, 28, 0.5);
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-section .form-group input:focus,
+.form-section .form-group select:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 184, 148, 0.2);
+  background: rgba(16, 28, 28, 0.8);
+}
+
+.form-section .buttons.full {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--accent);
+  color: var(--text-dark);
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.form-section .buttons.full:hover {
+  background: var(--secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(67, 233, 123, 0.25);
+}
+
+.form-section .buttons.full:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+ 
+@media (max-width: 768px) {
+  
+  .add-book-content {
+    grid-template-columns: 1fr;
+  }
+
+  .book-preview-section {
+    position: static;
+    top: auto;
+  }
+
+  .book-preview-section .book-card {
+    max-width: 100%;
+  }
+}
+</style>
+<title>{{#if isEdit}}Edit Book{{else}}Add Book{{/if}} - Unilib Admin Dashboard</title>
 {{/section}}
 
-<div class="dashboard-container">
-  <div class="dashboard-header">
-    <div class="dashboard-title">
-      <h1>{{#if isEdit}}Edit Book{{else}}Add New Book{{/if}}</h1>
-      <p>{{#if isEdit}}Modify the details of the selected book{{else}}Add a new book to the digital library{{/if}}</p>
-    </div>
-    <div class="dashboard-actions">
-      <a href="/dashboard" class="action-button back-button">
-        <i class="fas fa-arrow-left"></i> Back to Dashboard
-      </a>
-    </div>
-  </div>
-
-  <div class="add-book-content">
+<section class="about" id="books">
+  <div class="content">
+   <div class="add-book-content">
     <div class="book-preview-section">
       <div class="cards-container products">
         <article class="book-card linked" {{#if id}}id="{{id}}"{{/if}}>
-          <div style="display: {{#if book.main}}block{{else}}none{{/if}};" class="book-badge" aria-label="Main resource">Main</div>
+          <div class="badges">
+            {{#if book.main}}
+            <div class="badge badge-main" aria-label="Main resource">
+              <i class="fas fa-star"></i> Main
+            </div>
+            {{/if}}
+            {{#if book.semester}}
+            <div class="badge badge-semester" aria-label="Book semester">
+              <i class="fas fa-graduation-cap"></i> {{book.semester}}
+            </div>
+            {{/if}}
+            {{#if book.category}}
+            <div class="badge badge-category" aria-label="Book category">
+              <i class="fas fa-book"></i> {{book.category}}
+            </div>
+            {{/if}}
+          </div>
           <a id="bookurl" href="{{#if book}}{{book.link}}{{/if}}" target="_blank" aria-label="All">
             <img id="bookcover" src="{{#if book}}{{book.imageURL}}{{else}}/BookCovers/BookCover_Template.webp{{/if}}" alt="Cover of {{#if book}}{{book.name}}{{else}}book name{{/if}}" loading="lazy">
           </a>
@@ -40,73 +175,75 @@
     <div class="form-section">
       <div class="profile-container">
         <div class="profile-header">
-          <h2>Book Details</h2>
+          <h2><i class="fas fa-book"></i> Book Details</h2>
         </div>
         <div class="profile-details">
           <form class="profile-form" id="bookForm" data-is-edit="{{isEdit}}" {{#if id}}data-book-id="{{id}}"{{/if}}>
 
             <div class="form-group">
-              <label for="name"><strong>Book Name:</strong></label>
-              <input type="text" value="{{#if book}}{{book.name}}{{else}}book name{{/if}}" data-org="{{#if book}}{{book.name}}{{/if}}" id="name" name="name" required />
+              <label for="name"><i class="fas fa-heading"></i> Book Name:</label>
+              <input type="text" value="{{#if book}}{{book.name}}{{else}}book name{{/if}}" data-org="{{#if book}}{{book.name}}{{/if}}" id="name" name="name" placeholder="Enter book name" required />
             </div>
 
             <div class="form-group">
-              <label for="category"><strong>Category:</strong></label>
+              <label for="category"><i class="fas fa-folder"></i> Category:</label>
               <select id="category" name="category" data-org="{{#if book}}{{book.category}}{{/if}}" required>
                 <option value="All" {{#if (eq book.category "All" )}}selected{{/if}}>All</option>
                 <option value="CourseBooks" {{#if (eq book.category "CourseBooks" )}}selected{{else}}{{#unless book}}selected{{/unless}}{{/if}}>CourseBooks</option>
+                <option value="Softwares" {{#if (eq book.category "Softwares" )}}selected{{/if}}>Softwares</option>
                 <option value="LabManuals" {{#if (eq book.category "LabManuals" )}}selected{{/if}}>LabManuals</option>
                 <option value="Other" {{#if (eq book.category "Other" )}}selected{{/if}}>Other</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label for="description"><strong>Description:</strong></label>
-              <input id="description" value="{{#if book}}{{book.description}}{{else}}author name or other description{{/if}}" data-org="{{#if book}}{{book.description}}{{/if}}" name="description" required />
+              <label for="description"><i class="fas fa-align-left"></i> Description:</label>
+              <input id="description" value="{{#if book}}{{book.description}}{{else}}author name or other description{{/if}}" data-org="{{#if book}}{{book.description}}{{/if}}" name="description" placeholder="Enter book description" required />
             </div>
 
             <div class="form-group">
-              <label for="imageURL"><strong>Image URL:</strong></label>
-              <div style="display: flex; gap: 10px;">
-                <input id="imageURL" value="{{#if book}}{{book.imageURL}}{{else}}/BookCovers/BookCover_Template.webp{{/if}}" data-org="{{#if book}}{{book.imageURL}}{{/if}}" name="imageURL" required {{#unless (eq role "SuperAdmin" )}}readonly title="You Don't Have Permission To Change Img URL" {{/unless}} />
-              </div>
+              <label for="imageURL"><i class="fas fa-image"></i> Image URL:</label>
+              <input id="imageURL" value="{{#if book}}{{book.imageURL}}{{else}}/BookCovers/BookCover_Template.webp{{/if}}" data-org="{{#if book}}{{book.imageURL}}{{/if}}" name="imageURL" placeholder="Enter image URL" required {{#unless (eq role "SuperAdmin" )}}readonly title="You Don't Have Permission To Change Img URL" {{/unless}} />
             </div>
 
             <div class="form-group">
-              <label for="link"><strong>Book Url:</strong></label>
-              <input type="url" value="{{#if book}}{{book.link}}{{else}}https://drive.google.com/file/d/../view{{/if}}" data-org="{{#if book}}{{book.link}}{{/if}}" id="link" name="link" required />
+              <label for="link"><i class="fas fa-link"></i> Book URL:</label>
+              <input type="url" value="{{#if book}}{{book.link}}{{else}}https://drive.google.com/file/d/../view{{/if}}" data-org="{{#if book}}{{book.link}}{{/if}}" id="link" name="link" placeholder="Enter book URL" required />
             </div>
 
             <div class="form-group">
-              <label for="semester"><strong>Semester:</strong></label>
+              <label for="semester"><i class="fas fa-graduation-cap"></i> Semester:</label>
               <select id="semester" name="semester" data-org="{{#if book}}{{book.semester}}{{/if}}" required>
-                <option value="Semester1" {{#if (eq book.semester "Semester1" )}}selected{{/if}}>Semester1</option>
-                <option value="Semester2" {{#if (eq book.semester "Semester2" )}}selected{{/if}}>Semester2</option>
-                <option value="Semester3" {{#if (eq book.semester "Semester3" )}}selected{{else}}{{#unless book}}selected{{/unless}}{{/if}}>Semester3</option>
-                <option value="Semester4" {{#if (eq book.semester "Semester4" )}}selected{{/if}}>Semester4</option>
-                <option value="Semester5" {{#if (eq book.semester "Semester5" )}}selected{{/if}}>Semester5</option>
-                <option value="Semester6" {{#if (eq book.semester "Semester6" )}}selected{{/if}}>Semester6</option>
-                <option value="Semester7" {{#if (eq book.semester "Semester7" )}}selected{{/if}}>Semester7</option>
-                <option value="Semester8" {{#if (eq book.semester "Semester8" )}}selected{{/if}}>Semester8</option>
+                <option value="Semester1" {{#if (eq book.semester "Semester1" )}}selected{{/if}}>Semester 1</option>
+                <option value="Semester2" {{#if (eq book.semester "Semester2" )}}selected{{/if}}>Semester 2</option>
+                <option value="Semester3" {{#if (eq book.semester "Semester3" )}}selected{{else}}{{#unless book}}selected{{/unless}}{{/if}}>Semester 3</option>
+                <option value="Semester4" {{#if (eq book.semester "Semester4" )}}selected{{/if}}>Semester 4</option>
+                <option value="Semester5" {{#if (eq book.semester "Semester5" )}}selected{{/if}}>Semester 5</option>
+                <option value="Semester6" {{#if (eq book.semester "Semester6" )}}selected{{/if}}>Semester 6</option>
+                <option value="Semester7" {{#if (eq book.semester "Semester7" )}}selected{{/if}}>Semester 7</option>
+                <option value="Semester8" {{#if (eq book.semester "Semester8" )}}selected{{/if}}>Semester 8</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label for="main"><strong>Main:</strong></label>
+              <label for="main"><i class="fas fa-star"></i> Main Resource:</label>
               <select id="main" name="main" data-org="{{#if book}}{{book.main}}{{/if}}" required>
-                <option value="true" {{#if (eq book.main "true" )}}selected{{/if}}>True</option>
-                <option value="false" {{#if (eq book.main "false" )}}selected{{else}}{{#unless book}}selected{{/unless}}{{/if}}>False</option>
+                <option value="true" {{#if (eq book.main "true" )}}selected{{/if}}>Yes</option>
+                <option value="false" {{#if (eq book.main "false" )}}selected{{else}}{{#unless book}}selected{{/unless}}{{/if}}>No</option>
               </select>
             </div>
 
-            <button class="buttons full" id="submitButton">{{#if isEdit}}Edit Book{{else}}Add Book{{/if}}</button>
+            <button class="buttons full" id="submitButton">
+              <i class="fas fa-{{#if isEdit}}edit{{else}}plus{{/if}}"></i>
+              {{#if isEdit}}Edit Book{{else}}Add Book{{/if}}
+            </button>
           </form>
         </div>
       </div>
     </div>
   </div>
-</div>
-
+ </div>
+</section>
 <script>
     // Shared preview update for both Add and Edit
     function updateBookCard() {
@@ -115,6 +252,8 @@
         const imageURL = document.getElementById("imageURL").value;
         const link = document.getElementById("link").value;
         const mainValue = document.getElementById("main").value;
+        const category = document.getElementById("category").value;
+        const semester = document.getElementById("semester").value;
 
         document.getElementById("bookname").textContent = name;
         document.getElementById("bookdesciption").textContent = description;
@@ -122,13 +261,39 @@
         document.getElementById("bookurl").href = link;
         document.getElementById("bookurl1").href = link;
 
-        const badge = document.querySelector(".book-card .book-badge");
-        if (badge) {
-            badge.style.display = mainValue === "true" ? "block" : "none";
+        // Update badges
+        const badgesContainer = document.querySelector(".book-card .badges");
+        if (badgesContainer) {
+            // Clear existing badges
+            badgesContainer.innerHTML = '';
+            
+            // Add main badge if applicable
+            if (mainValue === "true") {
+                const mainBadge = document.createElement("div");
+                mainBadge.className = "badge badge-main";
+                mainBadge.innerHTML = '<i class="fas fa-star"></i> Main';
+                badgesContainer.appendChild(mainBadge);
+            }
+            
+            // Add semester badge
+            if (semester) {
+                const semesterBadge = document.createElement("div");
+                semesterBadge.className = "badge badge-semester";
+                semesterBadge.innerHTML = `<i class="fas fa-graduation-cap"></i> ${semester}`;
+                badgesContainer.appendChild(semesterBadge);
+            }
+            
+            // Add category badge
+            if (category && category !== "All") {
+                const categoryBadge = document.createElement("div");
+                categoryBadge.className = "badge badge-category";
+                categoryBadge.innerHTML = `<i class="fas fa-book"></i> ${category}`;
+                badgesContainer.appendChild(categoryBadge);
+            }
         }
     }
 
-    ["name", "description", "imageURL", "link", "main"].forEach(id => {
+    ["name", "description", "imageURL", "link", "main", "category", "semester"].forEach(id => {
         const el = document.getElementById(id);
         if (el) {
             el.addEventListener("input", updateBookCard);

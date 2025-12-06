@@ -12,6 +12,7 @@ CREATE TYPE semesters AS ENUM (
 CREATE TYPE bookcategories AS ENUM (
   'All',
   'CourseBooks',
+  'Softwares',
   'LabManuals',
   'Other'
 );
