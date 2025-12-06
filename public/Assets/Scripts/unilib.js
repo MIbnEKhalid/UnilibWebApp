@@ -16,6 +16,9 @@ const elements = {
     clearBtn: document.getElementById("clearSearch")
 };
 
+// Get submit button if present
+elements.submitBtn = document.getElementById('searchSubmit') || document.querySelector('.submit-btn');
+
 // Initialize the application
 document.addEventListener("DOMContentLoaded", () => {
     parseUrlParameters();
@@ -62,6 +65,13 @@ function updateUrl() {
 function setupEventListeners() {
     if (elements.searchInput) {
         elements.searchInput.addEventListener("input", debounce(filterProducts, 500));
+        // Trigger search when user presses Enter in the search input
+        elements.searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                filterProducts(e);
+            }
+        });
     }
     if (elements.categoryFilter) {
         elements.categoryFilter.addEventListener("change", filterProducts);
@@ -71,6 +81,14 @@ function setupEventListeners() {
     }
     if (elements.clearBtn) {
         elements.clearBtn.addEventListener("click", clearSearch);
+    }
+
+    // Bind the submit button if present - some pages may inline a click handler
+    if (elements.submitBtn) {
+        elements.submitBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            filterProducts(e);
+        });
     }
 
     // Handle browser back/forward navigation
@@ -104,7 +122,11 @@ function setupLazyLoadingObserver() {
 }
 
 // Filter products
-function filterProducts() {
+function filterProducts(e) {
+    // If called from event handlers that pass an event, prevent default action
+    if (e && e.preventDefault) {
+        e.preventDefault();
+    }
     state.currentPage = 1; // Reset to first page
     state.currentFilters.semester = elements.semesterFilter.value;
     state.currentFilters.category = elements.categoryFilter.value;

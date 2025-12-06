@@ -455,9 +455,6 @@ let loadingText;
 
 // Initialize the page
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('DOM loaded, sections data:', sections);
-  console.log('sectionsList element:', document.getElementById('sectionsList'));
-
   try {
     // Assign DOM elements after DOM is loaded
     sectionsList = document.getElementById('sectionsList');
@@ -466,11 +463,8 @@ document.addEventListener('DOMContentLoaded', function() {
     loadingOverlay = document.getElementById('loadingOverlay');
     loadingText = document.getElementById('loadingText');
 
-    console.log('sectionsList assigned:', sectionsList);
-
     setupEventListeners();
     renderSections();
-    console.log('Initialization complete');
   } catch (error) {
     console.error('Error during initialization:', error);
   }

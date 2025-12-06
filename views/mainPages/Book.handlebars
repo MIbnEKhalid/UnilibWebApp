@@ -26,8 +26,8 @@
   <div class="filter-section">
     <div class="search-box">
       <i class="fas fa-search"></i>
-      <input type="text" id="searchProduct" placeholder="Search books by name..." value="{{filters.search}}" oninput="debounce(filterProducts, 500)()">
-      <button type="button" id="clearSearch" class="clear-search" onclick="clearSearch()">
+      <input type="text" id="searchProduct" placeholder="Search books by name..." value="{{filters.search}}">
+      <button type="button" id="clearSearch" class="clear-search">
         <i class="fas fa-times"></i>
       </button>
     </div>
@@ -38,7 +38,7 @@
           <i class="fas fa-graduation-cap"></i>
           <span>Semester</span>
         </label>
-        <select id="semesterFilter" name="semester" onchange="filterProducts()">
+        <select id="semesterFilter" name="semester">
           <option value="Semester1" {{#if (eq filters.semester 'Semester1')}}selected{{/if}}>Semester 1</option>
           <option value="Semester2" {{#if (eq filters.semester 'Semester2')}}selected{{/if}}>Semester 2</option>
           <option value="Semester3" {{#if (eq filters.semester 'Semester3')}}selected{{/if}}>Semester 3</option>
@@ -50,7 +50,7 @@
           <i class="fas fa-book"></i>
           <span>Category</span>
         </label>
-        <select id="categoryFilter" name="category" onchange="filterProducts()">
+        <select id="categoryFilter" name="category">
           <option value="all" {{#if (eq filters.category 'all')}}selected{{/if}}>All Categories</option>
           <option value="CourseBooks" {{#if (eq filters.category 'CourseBooks')}}selected{{/if}}>Course Books</option>
           <option value="LabManuals" {{#if (eq filters.category 'LabManuals')}}selected{{/if}}>Lab Manuals</option>

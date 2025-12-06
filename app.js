@@ -4,13 +4,11 @@ import { fileURLToPath } from "url";
 import compression from "compression";
 import cors from "cors";
 import { engine } from "express-handlebars";
-import Handlebars from "handlebars";
 import unilibRoutes from "./routes/main.js";
 import pdfRoutes from "./routes/pdf.js";
 import mbkautheRouter from "mbkauthe";
-import { pool } from "./routes/pool.js";
+import { renderError } from "mbkauthe";
 import rateLimit from "express-rate-limit";
-import { json } from "stream/consumers";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -111,7 +109,7 @@ app.use("/pdf", pdfRoutes);
 
 app.use((req, res) => {
   console.log(`Path not found: ${req.url}`);
-  return res.status(404).render("Error/dError.handlebars", {
+  return renderError(res, {
     layout: false,
     code: 404,
     error: "Page Not Found",

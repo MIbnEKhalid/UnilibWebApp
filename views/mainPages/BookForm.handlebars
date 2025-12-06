@@ -1,0 +1,193 @@
+{{! Single Book Form View for Add and Edit }}
+{{#section 'head'}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{{/section}}
+
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <div class="dashboard-title">
+      <h1>{{#if isEdit}}Edit Book{{else}}Add New Book{{/if}}</h1>
+      <p>{{#if isEdit}}Modify the details of the selected book{{else}}Add a new book to the digital library{{/if}}</p>
+    </div>
+    <div class="dashboard-actions">
+      <a href="/dashboard" class="action-button back-button">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </a>
+    </div>
+  </div>
+
+  <div class="add-book-content">
+    <div class="book-preview-section">
+      <div class="cards-container products">
+        <article class="book-card linked" {{#if id}}id="{{id}}"{{/if}}>
+          <div style="display: {{#if book.main}}block{{else}}none{{/if}};" class="book-badge" aria-label="Main resource">Main</div>
+          <a id="bookurl" href="{{#if book}}{{book.link}}{{/if}}" target="_blank" aria-label="All">
+            <img id="bookcover" src="{{#if book}}{{book.imageURL}}{{else}}/BookCovers/BookCover_Template.webp{{/if}}" alt="Cover of {{#if book}}{{book.name}}{{else}}book name{{/if}}" loading="lazy">
+          </a>
+          <div class="Bdetails">
+            <h3 id="bookname" data-org="{{#if book}}{{book.name}}{{/if}}">{{#if book}}{{book.name}}{{/if}}</h3>
+            <p id="bookdesciption" data-org="{{#if book}}{{book.description}}{{/if}}">{{#if book}}{{book.description}}{{/if}}</p>
+          </div>
+          <div class="actions">
+            <a id="bookurl1" href="{{#if book}}{{book.link}}{{/if}}" target="_blank" class="btn btn-save" aria-label="View All">
+              <i class="fas fa-eye" aria-hidden="true"></i> View
+            </a>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="profile-container">
+        <div class="profile-header">
+          <h2>Book Details</h2>
+        </div>
+        <div class="profile-details">
+          <form class="profile-form" id="bookForm" data-is-edit="{{isEdit}}" {{#if id}}data-book-id="{{id}}"{{/if}}>
+
+            <div class="form-group">
+              <label for="name"><strong>Book Name:</strong></label>
+              <input type="text" value="{{#if book}}{{book.name}}{{else}}book name{{/if}}" data-org="{{#if book}}{{book.name}}{{/if}}" id="name" name="name" required />
+            </div>
+
+            <div class="form-group">
+              <label for="category"><strong>Category:</strong></label>
+              <select id="category" name="category" data-org="{{#if book}}{{book.category}}{{/if}}" required>
+                <option value="All" {{#if (eq book.category "All" )}}selected{{/if}}>All</option>
+                <option value="CourseBooks" {{#if (eq book.category "CourseBooks" )}}selected{{else}}{{#unless book}}selected{{/unless}}{{/if}}>CourseBooks</option>
+                <option value="LabManuals" {{#if (eq book.category "LabManuals" )}}selected{{/if}}>LabManuals</option>
+                <option value="Other" {{#if (eq book.category "Other" )}}selected{{/if}}>Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="description"><strong>Description:</strong></label>
+              <input id="description" value="{{#if book}}{{book.description}}{{else}}author name or other description{{/if}}" data-org="{{#if book}}{{book.description}}{{/if}}" name="description" required />
+            </div>
+
+            <div class="form-group">
+              <label for="imageURL"><strong>Image URL:</strong></label>
+              <div style="display: flex; gap: 10px;">
+                <input id="imageURL" value="{{#if book}}{{book.imageURL}}{{else}}/BookCovers/BookCover_Template.webp{{/if}}" data-org="{{#if book}}{{book.imageURL}}{{/if}}" name="imageURL" required {{#unless (eq role "SuperAdmin" )}}readonly title="You Don't Have Permission To Change Img URL" {{/unless}} />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="link"><strong>Book Url:</strong></label>
+              <input type="url" value="{{#if book}}{{book.link}}{{else}}https://drive.google.com/file/d/../view{{/if}}" data-org="{{#if book}}{{book.link}}{{/if}}" id="link" name="link" required />
+            </div>
+
+            <div class="form-group">
+              <label for="semester"><strong>Semester:</strong></label>
+              <select id="semester" name="semester" data-org="{{#if book}}{{book.semester}}{{/if}}" required>
+                <option value="Semester1" {{#if (eq book.semester "Semester1" )}}selected{{/if}}>Semester1</option>
+                <option value="Semester2" {{#if (eq book.semester "Semester2" )}}selected{{/if}}>Semester2</option>
+                <option value="Semester3" {{#if (eq book.semester "Semester3" )}}selected{{else}}{{#unless book}}selected{{/unless}}{{/if}}>Semester3</option>
+                <option value="Semester4" {{#if (eq book.semester "Semester4" )}}selected{{/if}}>Semester4</option>
+                <option value="Semester5" {{#if (eq book.semester "Semester5" )}}selected{{/if}}>Semester5</option>
+                <option value="Semester6" {{#if (eq book.semester "Semester6" )}}selected{{/if}}>Semester6</option>
+                <option value="Semester7" {{#if (eq book.semester "Semester7" )}}selected{{/if}}>Semester7</option>
+                <option value="Semester8" {{#if (eq book.semester "Semester8" )}}selected{{/if}}>Semester8</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="main"><strong>Main:</strong></label>
+              <select id="main" name="main" data-org="{{#if book}}{{book.main}}{{/if}}" required>
+                <option value="true" {{#if (eq book.main "true" )}}selected{{/if}}>True</option>
+                <option value="false" {{#if (eq book.main "false" )}}selected{{else}}{{#unless book}}selected{{/unless}}{{/if}}>False</option>
+              </select>
+            </div>
+
+            <button class="buttons full" id="submitButton">{{#if isEdit}}Edit Book{{else}}Add Book{{/if}}</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    // Shared preview update for both Add and Edit
+    function updateBookCard() {
+        const name = document.getElementById("name").value;
+        const description = document.getElementById("description").value;
+        const imageURL = document.getElementById("imageURL").value;
+        const link = document.getElementById("link").value;
+        const mainValue = document.getElementById("main").value;
+
+        document.getElementById("bookname").textContent = name;
+        document.getElementById("bookdesciption").textContent = description;
+        document.getElementById("bookcover").src = imageURL;
+        document.getElementById("bookurl").href = link;
+        document.getElementById("bookurl1").href = link;
+
+        const badge = document.querySelector(".book-card .book-badge");
+        if (badge) {
+            badge.style.display = mainValue === "true" ? "block" : "none";
+        }
+    }
+
+    ["name", "description", "imageURL", "link", "main"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener("input", updateBookCard);
+            el.addEventListener("change", updateBookCard);
+        }
+    });
+
+    updateBookCard();
+
+    // Unified submit handler
+    document.getElementById("bookForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const form = e.target;
+        const submitButton = document.getElementById("submitButton");
+        submitButton.disabled = true;
+        submitButton.textContent = (form.dataset.isEdit === 'true') ? "Editing..." : "Adding...";
+
+        const payload = {
+            name: document.getElementById("name").value,
+            category: document.getElementById("category").value,
+            description: document.getElementById("description").value,
+            imageURL: document.getElementById("imageURL").value,
+            link: document.getElementById("link").value,
+            semester: document.getElementById("semester").value,
+            main: document.getElementById("main").value,
+        };
+
+        try {
+            let url;
+            if (form.dataset.isEdit === 'true') {
+                const bookId = form.dataset.bookId;
+                url = `/api/admin/Unilib/Book/Edit/${bookId}`;
+            } else {
+                url = `/api/admin/Unilib/Book/Add`;
+            }
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const result = await response.json();
+            if (response.ok) {
+                alert(result.message);
+                // Redirect for Add, reload for Edit to show changes
+                if (form.dataset.isEdit === 'true') window.location.reload();
+                else window.location.href = '/dashboard';
+            } else {
+                alert(result.error || 'Something went wrong');
+            }
+        } catch (err) {
+            console.error('Error submitting form:', err);
+            alert('Failed to submit form.');
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = (form.dataset.isEdit === 'true') ? 'Edit Book' : 'Add Book';
+        }
+    });
+</script>
+
+{{!-- Extra scripts or sections can be included if needed --}}

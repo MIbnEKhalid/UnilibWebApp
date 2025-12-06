@@ -1569,7 +1569,7 @@
       <div class="filter">
         <div class="select-dropdown">
           <i class="fas fa-graduation-cap filter-icon"></i>
-          <select id="semesterFilter" name="topics" onchange="filterProducts()" aria-label="Select semester">
+          <select id="semesterFilter" name="topics" aria-label="Select semester">
             <option value="all" {{#if (eq filters.semester 'all' )}}selected{{/if}}><i class="fas fa-layer-group"></i> All Semesters</option>
             <option value="Semester1" {{#if (eq filters.semester 'Semester1' )}}selected{{/if}}><i class="fas fa-1"></i> Semester 1</option>
             <option value="Semester2" {{#if (eq filters.semester 'Semester2' )}}selected{{/if}}><i class="fas fa-2"></i> Semester 2</option>
@@ -1578,7 +1578,7 @@
         </div>
         <div class="select-dropdown">
           <i class="fas fa-book filter-icon"></i>
-          <select id="categoryFilter" name="topics" onchange="filterProducts()" aria-label="Select category">
+          <select id="categoryFilter" name="topics" aria-label="Select category">
             <option value="all" {{#if (eq filters.category 'all' )}}selected{{/if}}>All Categories</option>
             <option value="CourseBooks" {{#if (eq filters.category 'CourseBooks' )}}selected{{/if}}>Course Books</option>
             <option value="LabManuals" {{#if (eq filters.category 'LabManuals' )}}selected{{/if}}>Lab Manuals</option>
@@ -1589,12 +1589,12 @@
       <div class="search-bar">
         <i class="fas fa-search search-icon"></i>
         <input type="text" id="searchProduct" placeholder="Search books by name..." value="{{filters.search}}"
-          oninput="debounce(filterProducts, 500)()" aria-label="Search books">
-        <button type="submit" class="submit-btn" onclick="filterProducts()" aria-label="Submit search">
+          aria-label="Search books">
+        <button type="button" id="searchSubmit" class="submit-btn" aria-label="Submit search">
           <i class="fas fa-arrow-right"></i>
         </button>
         <button type="button" id="clearSearch" class="clear-btn" aria-label="Clear search"
-          style="display: {{#if filters.search}}block{{else}}none{{/if}};" onclick="clearSearch()">
+          style="display: {{#if filters.search}}block{{else}}none{{/if}};">
           <i class="fas fa-times"></i>
         </button>
       </div>

@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
-import { validateSession, checkRolePermission, validateSessionAndRole } from "mbkauthe";
+import { validateSessionAndRole } from "mbkauthe";
+import { renderError } from "mbkauthe";
 import { pool } from "./pool.js";
 
 dotenv.config();
@@ -86,7 +87,7 @@ router.get("/dashboard/Book/Edit/:id", validateSessionAndRole("Any"), async (req
   try {
     const result = await pool.query(query, [bookId]);
     const book = result.rows[0];
-    res.render("mainPages/EditBook.handlebars", { id: bookId, book, role: req.session.user.role });
+    res.render("mainPages/BookForm.handlebars", { isEdit: true, id: bookId, book, role: req.session.user.role });
   } catch (error) {
     console.error("Error fetching book details:", error);
     res.status(500).json({ error: "Failed to fetch book details" });
@@ -125,7 +126,12 @@ router.post("/api/admin/Unilib/Book/Delete/:id", validateSessionAndRole("Any"), 
 });
 
 router.get("/dashboard/Book/Add", validateSessionAndRole("Any"), async (req, res) => {
-  res.render("mainPages/AddBook.handlebars", { role: req.session.user.role });
+  // Render unified BookForm for adding, with empty/default book data and isEdit=false
+  res.render("mainPages/BookForm.handlebars", {
+    isEdit: false,
+    book: null,
+    role: req.session.user.role
+  });
 });
 
 router.post("/api/admin/Unilib/Book/Add", validateSessionAndRole("Any"), async (req, res) => {
@@ -189,7 +195,7 @@ router.get("/book/:id", async (req, res) => {
     const result = await pool.query(query, [bookId]);
 
     if (result.rows.length === 0) {
-      return res.status(404).render("Error/dError.handlebars", {
+      return renderError(res, {
         layout: false,
         code: 404,
         error: "Book Not Found",
