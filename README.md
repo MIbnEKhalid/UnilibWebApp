@@ -2,7 +2,7 @@
 
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen)](https://nodejs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.6.1-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.7.0-blue.svg)]()
 
 <p align="center">
   <img height="64px" src="https://unilib.mbktech.org/icon.svg" alt="MBK Chat Platform" />

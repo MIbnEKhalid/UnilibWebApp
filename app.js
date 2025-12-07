@@ -9,6 +9,11 @@ import pdfRoutes from "./routes/pdf.js";
 import mbkautheRouter from "mbkauthe";
 import { renderError } from "mbkauthe";
 import rateLimit from "express-rate-limit";
+import { readFileSync } from "fs";
+
+// Read version from package.json for cache busting
+const packageJson = JSON.parse(readFileSync(new URL('./package.json', import.meta.url)));
+const APP_VERSION = packageJson.version;
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -89,6 +94,12 @@ app.set("views", [
 ]);
 
 app.use(mbkautheRouter);
+
+// Make app version available to all views for cache busting
+app.use((req, res, next) => {
+  res.locals.appVersion = APP_VERSION;
+  next();
+});
 
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000,
