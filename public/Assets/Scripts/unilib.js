@@ -169,8 +169,18 @@ window.resetFilters = function () {
 // Download resource handler
 window.downloadResource = function (driveLink) {
     try {
+        // Check if it's a folder link
+        const folderIdMatch = driveLink.match(/\/folders\/([a-zA-Z0-9_-]+)/);
+        if (folderIdMatch) {
+            // Open the original folder link in a new tab
+            window.open(driveLink, '_blank');
+            return;
+        }
+
+        // Check if it's a file link
         const fileIdMatch = driveLink.match(/\/d\/([a-zA-Z0-9_-]+)/) || driveLink.match(/id=([a-zA-Z0-9_-]+)/);
         const fileId = fileIdMatch ? fileIdMatch[1] : null;
+        
         if (fileId) {
             window.open(`https://drive.usercontent.google.com/uc?id=${fileId}&export=download`, '_blank');
         } else {
