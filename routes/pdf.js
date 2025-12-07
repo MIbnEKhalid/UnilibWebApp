@@ -10,7 +10,10 @@ router.get('/:bookId/:filename', async (req, res) => {
 
     try {
         // Fetch book details from database
-        const bookQuery = 'SELECT * FROM unilibbook WHERE id = $1';
+        // For PDF access, only allow visible books unless user is authenticated admin
+        const isAdmin = req.session && req.session.user;
+        const visibilityCheck = isAdmin ? '' : ' AND visible = true';
+        const bookQuery = `SELECT * FROM unilibbook WHERE id = $1${visibilityCheck}`;
         const bookResult = await pool.query(bookQuery, [bookId]);
 
         if (bookResult.rows.length === 0) {

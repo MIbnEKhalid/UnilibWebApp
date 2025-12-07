@@ -2,9 +2,18 @@
 
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen)](https://nodejs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.3.0-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-1.6.0-blue.svg)]()
 
-A modern web application for managing and sharing university course materials, featuring a dark theme and lab management system.
+<p align="center">
+  <img height="64px" src="https://unilib.mbktech.org/icon.svg" alt="MBK Chat Platform" />
+</p>
+
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=nodejs,express,postgres" />
+  <img height="48px" src="https://handlebarsjs.com/handlebars-icon.svg" alt="Handlebars" />
+</p>
+
+A modern web application for managing and sharing university course materials, featuring a dark theme, lab management system, and advanced book visibility controls.
 
 ## Tech Stack
 
@@ -18,6 +27,7 @@ A modern web application for managing and sharing university course materials, f
 
 - Browse & search course materials by semester
 - Admin dashboard for content management
+- **Book visibility controls with bulk actions** (new in v1.4)
 - Lab management with individual downloads
 - PDF streaming with browser preview
 - Modern dark theme UI
@@ -98,9 +108,19 @@ npm run convertPageImages ./document.pdf 5 jpg ./page5.jpg
 
 ### Admins
 - Manage content via `/dashboard`
+- **Hide/show books individually or in bulk** (new in v1.4)
+- **Select multiple books for batch operations** (new in v1.4)
 - Handle lab content at `/dashboard/Book/:bookId/Labs`
 - Organize labs with page ranges
 - Perform bulk operations
+
+## What's New in v1.6.0
+
+### Book Visibility Management
+- **Hide/Show Books**: Control which books are visible to students
+- **Bulk Actions**: Select multiple books and hide/show them at once
+- **Visual Indicators**: Hidden books display a red "Hidden" badge
+- **Smart Filtering**: Public users only see visible books; admins see all books
 
 ## Deploy
 

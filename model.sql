@@ -27,6 +27,7 @@ CREATE TABLE unilibbook (
   link TEXT NOT NULL,
   semester semesters NOT NULL,
   main BOOLEAN NOT NULL DEFAULT FALSE,
+  visible BOOLEAN NOT NULL DEFAULT TRUE,
   sections JSONB DEFAULT '[]'::jsonb,
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -51,10 +52,15 @@ unilibbook.sections structure:
 CREATE INDEX idx_unilibbook_category ON unilibbook(category);
 CREATE INDEX idx_unilibbook_semester ON unilibbook(semester);
 CREATE INDEX idx_unilibbook_main ON unilibbook(main);
+CREATE INDEX idx_unilibbook_visible ON unilibbook(visible);
 
 -- Composite index for common query patterns
 CREATE INDEX IF NOT EXISTS idx_unilibbook_semester_category_main
 ON unilibbook(semester, category, main);
+
+-- Composite index including visibility for admin queries
+CREATE INDEX IF NOT EXISTS idx_unilibbook_visible_semester_category
+ON unilibbook(visible, semester, category);
 
 -- Trigram extension for text search
 CREATE EXTENSION IF NOT EXISTS pg_trgm;

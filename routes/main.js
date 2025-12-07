@@ -15,6 +15,13 @@ async function renderUnilibBooks(req, res, view, data) {
   const conditions = [];
   const params = [];
 
+  // For admin dashboard views, show all books regardless of visibility
+  // For public views, only show visible books
+  const isAdminView = view === 'mainPages/Book.handlebars';
+  if (!isAdminView) {
+    conditions.push(`visible = true`);
+  }
+
   if (semester && semester !== 'all') {
     conditions.push(`semester = $${params.length + 1}`);
     params.push(semester);
@@ -96,13 +103,13 @@ router.get("/dashboard/Book/Edit/:id", validateSessionAndRole("Any"), async (req
 
 router.post("/api/admin/Unilib/Book/Edit/:id", validateSessionAndRole("Any"), async (req, res) => {
   const bookId = req.params.id;
-  const { name, category, description, imageURL, link, semester, main } = req.body;
+  const { name, category, description, imageURL, link, semester, main, visible } = req.body;
   const query = `
       UPDATE "unilibbook"
-      SET name = $1, category = $2, description = $3, "imageURL" = $4, link = $5, semester = $6, main = $7
-      WHERE id = $8
+      SET name = $1, category = $2, description = $3, "imageURL" = $4, link = $5, semester = $6, main = $7, visible = $8
+      WHERE id = $9
     `;
-  const values = [name, category, description, imageURL, link, semester, main, bookId];
+  const values = [name, category, description, imageURL, link, semester, main, visible ?? true, bookId];
   try {
     await pool.query(query, values); // Use pool.query for database operations
     res.status(200).json({ message: "Book updated successfully!" });
@@ -125,6 +132,32 @@ router.post("/api/admin/Unilib/Book/Delete/:id", validateSessionAndRole("Any"), 
   }
 });
 
+// Bulk hide/show books
+router.post("/api/admin/Unilib/Book/BulkVisibility", validateSessionAndRole("Any"), async (req, res) => {
+  const { bookIds, visible } = req.body;
+
+  if (!Array.isArray(bookIds) || bookIds.length === 0) {
+    return res.status(400).json({ error: "Invalid book IDs" });
+  }
+
+  if (typeof visible !== 'boolean') {
+    return res.status(400).json({ error: "Visible must be a boolean value" });
+  }
+
+  try {
+    const query = `UPDATE "unilibbook" SET visible = $1 WHERE id = ANY($2::int[])`;
+    const result = await pool.query(query, [visible, bookIds]);
+    
+    res.status(200).json({ 
+      message: `${result.rowCount} book(s) ${visible ? 'shown' : 'hidden'} successfully!`,
+      count: result.rowCount
+    });
+  } catch (error) {
+    console.error("Error updating book visibility:", error);
+    res.status(500).json({ error: "Failed to update book visibility" });
+  }
+});
+
 router.get("/dashboard/Book/Add", validateSessionAndRole("Any"), async (req, res) => {
   // Render unified BookForm for adding, with empty/default book data and isEdit=false
   res.render("mainPages/BookForm.handlebars", {
@@ -136,14 +169,14 @@ router.get("/dashboard/Book/Add", validateSessionAndRole("Any"), async (req, res
 });
 
 router.post("/api/admin/Unilib/Book/Add", validateSessionAndRole("Any"), async (req, res) => {
-  const { name, category, description, imageURL, link, semester, main } = req.body;
+  const { name, category, description, imageURL, link, semester, main, visible } = req.body;
 
   try {
     const query = `
-      INSERT INTO "unilibbook" (name, category, description, "imageURL", link, semester, main, "UserName")
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8);
+      INSERT INTO "unilibbook" (name, category, description, "imageURL", link, semester, main, visible, "UserName")
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
     `;
-    const values = [name, category, description, imageURL, link, semester, main, req.session.user.username];
+    const values = [name, category, description, imageURL, link, semester, main, visible ?? true, req.session.user.username];
 
     await pool.query(query, values);
     console.log("Book added successfully to the database.");
@@ -189,7 +222,7 @@ router.get("/book/:id", async (req, res) => {
   });
 
   try {
-    const query = 'SELECT * FROM unilibbook WHERE id = $1';
+    const query = 'SELECT * FROM unilibbook WHERE id = $1 AND visible = true';
     const result = await pool.query(query, [bookId]);
 
     if (result.rows.length === 0) {
