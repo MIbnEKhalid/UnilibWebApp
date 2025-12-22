@@ -25,7 +25,7 @@ app.use(express.json());
 app.use(compression());
 app.set("trust proxy", 1);
 
-app.use("/", express.static(path.join(__dirname, "public/"), { maxAge: "7d" }));
+app.use("/", express.static(path.join(__dirname, "public/"), { maxAge: "1y" }));
 
 app.engine("handlebars", engine({
   defaultLayout: 'main',
@@ -108,12 +108,6 @@ const limiter = rateLimit({
 });
 
 app.use(limiter);
-
-app.get(["/login", "/signin"], (req, res) => {
-  const queryParams = new URLSearchParams(req.query).toString();
-  const redirectUrl = `/mbkauthe/login${queryParams ? `?${queryParams}` : ''}`;
-  return res.redirect(redirectUrl);
-});
 
 app.use("/", unilibRoutes);
 app.use("/pdf", pdfRoutes);

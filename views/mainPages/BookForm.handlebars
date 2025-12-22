@@ -1,7 +1,6 @@
 {{! Single Book Form View for Add and Edit }}
 {{#section 'head'}}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<link rel="stylesheet" href="/Assets/Styles/common-admin.css">
+<link rel="stylesheet" href="/Assets/Styles/common-admin.css?v={{appVersion}}">
 <style>
 
 /* Add/Edit Book Page Styles */
@@ -241,8 +240,20 @@
               </select>
             </div>
 
+            
+            <a class="buttons full" {{#if isEdit}}href="/dashboard/Book/{{id}}/Sections"{{/if}}
+            {{#unless isEdit}} title="Create the Book to Enable Manage Sections Button"{{/unless}}
+             id="manageSectionButton">
+              <i class="fas fa-edit"></i>
+              {{#if isEdit}}
+              Manage Sections
+              {{else}}
+              Create the Book to Enable Manage Sections Button
+              {{/if}}
+            </a>
+
             <button class="buttons full" id="submitButton">
-              <i class="fas fa-{{#if isEdit}}edit{{else}}plus{{/if}}"></i>
+              <i class="fas fa-save"></i>
               {{#if isEdit}}Edit Book{{else}}Add Book{{/if}}
             </button>
           </form>

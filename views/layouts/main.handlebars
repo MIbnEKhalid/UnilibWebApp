@@ -3,8 +3,6 @@
 
 <head>
   <meta charset="UTF-8" />
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4489850175984495"
-    crossorigin="anonymous"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description"
     content="{{#if singleBookView}}{{#each books}}{{this.name}} - {{this.description}}{{/each}}{{else}}Get all your course materials and quiz / assignments here.{{/if}}">
@@ -27,7 +25,11 @@
   </script>
   <script src="/mbkauthe/main.js" defer></script>
   <link rel="icon" type="image/x-icon" href="/icon.svg">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style"
+    onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  </noscript>
   {{{_sections.head}}}
   <title>{{#if singleBookView}}{{#each books}}{{this.name}} - {{/each}}{{/if}}Uni Books Home Page</title>
 

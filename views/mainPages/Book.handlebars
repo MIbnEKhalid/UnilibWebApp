@@ -1,6 +1,6 @@
 {{#section 'head'}}
 <title>Uni Books Dashboard</title>
-<link rel="stylesheet" href="/Assets/Styles/common-admin.css">
+<link rel="stylesheet" href="/Assets/Styles/common-admin.css?v={{appVersion}}">
 {{/section}}
 <section class="about {{#if singleBookView}}single-book-mode{{/if}}" id="books">
   <div class="content">
@@ -307,4 +307,4 @@
     }
   }
 </script>
-<script src="/Assets/Scripts/unilib.js?v={{appVersion}}"></script>
+<script src="/Assets/Scripts/unilib.js?v={{appVersion}}" defer></script>

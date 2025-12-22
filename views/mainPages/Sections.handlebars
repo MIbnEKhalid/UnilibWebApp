@@ -1,7 +1,7 @@
 {{! Using main layout }}
 {{#section 'head'}}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<link rel="stylesheet" href="/Assets/Styles/common-admin.css">
+<link rel="preload" href="/Assets/Styles/common-admin.css?v={{appVersion}}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="/Assets/Styles/common-admin.css?v={{appVersion}}"></noscript>
 <style>
   /* Sections-specific styles */
   
@@ -145,10 +145,16 @@
         <h1>Manage Content for "{{book.name}}"</h1>
         <p>Add, edit, or delete sections in this book</p>
       </div>
-      <button class="action-button add-button" onclick="showAddSectionModal()">
-        <i class="fas fa-plus"></i>
-        <span>Add Section</span>
-      </button>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <button class="action-button add-button" onclick="showAddSectionModal()">
+          <i class="fas fa-plus"></i>
+          <span>Add Section</span>
+        </button>
+        <a href="/dashboard/Book/Edit/{{book.id}}" class="action-button edit-button" style="background: var(--primary); color: #fff;">
+          <i class="fas fa-edit"></i>
+          <span>Edit Book</span>
+        </a>
+      </div>
     </div>
     <!-- Bulk Actions (hidden by default) -->
     <div class="bulk-actions" id="bulkActions">

@@ -48,8 +48,7 @@ async function renderUnilibBooks(req, res, view, data) {
     const countResult = await pool.query(countQuery, params.slice(0, -2));
     const total = parseInt(countResult.rows[0].count, 10);
     const pages = Math.ceil(total / limit);
-
-    return res.render(view, {
+    return renderPage(req, res, view, true, {
       ...data,
       books: result.rows,
       pagination: {
@@ -66,6 +65,21 @@ async function renderUnilibBooks(req, res, view, data) {
   }
 }
 
+export async function renderPage(req, res, fileLocation, layout = true, data = {}) {
+  const username = req.session?.user?.UserName || req.session?.user?.username || "NotLoggedIn";
+  const role = req.session?.user?.role || "NotLoggedIn";
+  const isLoggedIn = req.session.user ? true : false;
+  const renderOptions = {
+    ...data,
+    username,
+    role,
+    isLoggedIn,
+    ...(layout === false ? { layout: false } : {}),
+  };
+
+  return res.render(fileLocation, renderOptions);
+}
+
 // Route for '/' with caching
 router.get("/", async (req, res) => {
   // Normalize query parameters for consistent cache keys
@@ -78,8 +92,8 @@ router.get("/", async (req, res) => {
     'Vary': 'Accept-Encoding, X-Query-Params',
     'X-Query-Params': queryString
   });
-  let isLoggedIn = req.session.user ? true : false;
-  await renderUnilibBooks(req, res, "mainPages/index.handlebars", { isLoggedIn });
+
+  await renderUnilibBooks(req, res, "mainPages/index.handlebars");
 });
 
 router.get(["/dashboard/Unilib", "/dashboard"], validateSessionAndRole("any"), async (req, res) => {
@@ -94,7 +108,7 @@ router.get("/dashboard/Book/Edit/:id", validateSessionAndRole("Any"), async (req
   try {
     const result = await pool.query(query, [bookId]);
     const book = result.rows[0];
-    res.render("mainPages/BookForm.handlebars", { layout: "main", isEdit: true, id: bookId, book, role: req.session.user.role });
+    return renderPage(req, res, "mainPages/BookForm.handlebars", true, { isEdit: true, id: bookId, book });
   } catch (error) {
     console.error("Error fetching book details:", error);
     res.status(500).json({ error: "Failed to fetch book details" });
@@ -147,8 +161,8 @@ router.post("/api/admin/Unilib/Book/BulkVisibility", validateSessionAndRole("Any
   try {
     const query = `UPDATE "unilibbook" SET visible = $1 WHERE id = ANY($2::int[])`;
     const result = await pool.query(query, [visible, bookIds]);
-    
-    res.status(200).json({ 
+
+    res.status(200).json({
       message: `${result.rowCount} book(s) ${visible ? 'shown' : 'hidden'} successfully!`,
       count: result.rowCount
     });
@@ -159,13 +173,7 @@ router.post("/api/admin/Unilib/Book/BulkVisibility", validateSessionAndRole("Any
 });
 
 router.get("/dashboard/Book/Add", validateSessionAndRole("Any"), async (req, res) => {
-  // Render unified BookForm for adding, with empty/default book data and isEdit=false
-  res.render("mainPages/BookForm.handlebars", {
-    layout: "main",
-    isEdit: false,
-    book: null,
-    role: req.session.user.role
-  });
+  return renderPage(req, res, "mainPages/BookForm.handlebars", true, { isEdit: false, book: null });
 });
 
 router.post("/api/admin/Unilib/Book/Add", validateSessionAndRole("Any"), async (req, res) => {
@@ -242,10 +250,8 @@ router.get("/book/:id", async (req, res) => {
 
     // Get sections for all books
     let sections = book.sections || [];
-
-    return res.render("mainPages/index.handlebars", {
-      isLoggedIn,
-      books: [book], // Single book as array for consistency
+    renderPage(req, res, "mainPages/index.handlebars", true, {
+      books: [book],
       singleBookView: true,
       bookId: bookId,
       sections: sections,
@@ -275,7 +281,7 @@ router.get("/dashboard/Book/:bookId/Sections", validateSessionAndRole("Any"), as
     const book = bookResult.rows[0];
     const sections = book.sections || [];
 
-    res.render("mainPages/Sections.handlebars", {layout: "main", book, sections, role: req.session.user.role });
+    return renderPage(req, res, "mainPages/Sections.handlebars", true, { book, sections });
   } catch (error) {
     console.error("Error fetching sections:", error);
     res.status(500).send("Internal Server Error");
@@ -319,7 +325,7 @@ router.post("/api/admin/Book/:bookId/Section/Add", validateSessionAndRole("Any")
     const currentSections = book.sections || [];
 
     // Auto-increment section number - find the highest section_number and add 1
-    const maxSectionNumber = currentSections.length > 0 
+    const maxSectionNumber = currentSections.length > 0
       ? Math.max(...currentSections.map(s => s.section_number))
       : 0;
     const section_number = maxSectionNumber + 1;
@@ -415,13 +421,13 @@ router.post("/api/admin/Section/Edit/:sectionId", validateSessionAndRole("Any"),
     const updatedSections = currentSections.map(section =>
       section.id === sectionId
         ? {
-            ...section,
-            section_number: section_number,
-            page_start: page_start,
-            page_end: page_end,
-            name: name.trim(),
-            updated_at: new Date().toISOString()
-          }
+          ...section,
+          section_number: section_number,
+          page_start: page_start,
+          page_end: page_end,
+          name: name.trim(),
+          updated_at: new Date().toISOString()
+        }
         : section
     );
 
@@ -640,8 +646,8 @@ router.get("/book/:bookId/section/:sectionId/download", async (req, res) => {
       const newDoc = await PDFDocument.create();
 
       // Copy the pages from start_page to end_page
-      const pages = await newDoc.copyPages(originalDoc, 
-        Array.from({ length: section.page_end - section.page_start + 1 }, 
+      const pages = await newDoc.copyPages(originalDoc,
+        Array.from({ length: section.page_end - section.page_start + 1 },
           (_, i) => section.page_start - 1 + i)
       );
       pages.forEach(page => newDoc.addPage(page));
