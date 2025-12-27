@@ -34,7 +34,7 @@
               aria-label="Share {{this.name}}">
               <i class="fas fa-share-alt" aria-hidden="true"></i> Share
             </button>
-            {{#if ../isLoggedIn}}
+            {{#if isLoggedIn}}
             <a href="/dashboard/Book/Edit/{{this.id}}" class="btn btn-save" aria-label="Edit {{this.name}}">
               <i class="fas fa-edit" aria-hidden="true"></i> Edit
             </a>
@@ -48,10 +48,15 @@
             <span class="meta-tag"><i class="fas fa-graduation-cap"></i>{{this.semester}}</span>
             <span class="meta-tag"><i class="fas fa-book"></i>{{this.category}}</span>
           </div>
+        </div>
+      </div>
 
-          {{#if (or ../sections ../labs)}}
+      <br>
+
+      {{#if (or ../sections ../labs)}}
+      <div class="single-book-card scroll-animate">
           <div class="lab-downloads">
-            <h3><i class="fas fa-folder-open"></i>Download Individual Content</h3>
+            <h3><i class="fas fa-folder-open"></i>Download Individual Sections</h3>
             <div class="lab-list">
               {{#if ../sections}}
               {{#each ../sections}}
@@ -75,10 +80,12 @@
               {{/if}}
             </div>
           </div>
-          {{/if}}
         </div>
       </div>
+      {{/if}}
       {{/each}}
+
+
     </div>
     {{else}}
     <!-- Regular Grid View -->
