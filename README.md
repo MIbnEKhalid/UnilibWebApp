@@ -50,7 +50,7 @@ A modern web application for managing and sharing university course materials, f
    ```
 
 2. Configure:
-   - Set up `.env` (see `env.md`)
+   - Set up `.env` (see `env.md`) — optionally add Upstash credentials (`UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`) to enable caching for public pages. Use `REDIS_ENABLED=false` to explicitly turn off Redis caching if needed.
    - Initialize database using `model.sql`
 
 3. Run:

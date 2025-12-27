@@ -3,9 +3,52 @@ import dotenv from "dotenv";
 import { validateSessionAndRole } from "mbkauthe";
 import { renderError } from "mbkauthe";
 import { pool } from "./pool.js";
+import redis from "../lib/redisClient.js";
 
 dotenv.config();
 const router = express.Router();
+
+// Redis helpers (no-ops if redis client not initialized)
+async function cacheGet(key) {
+  if (!redis) return null;
+  try {
+    return await redis.get(key);
+  } catch (e) {
+    console.error("Redis GET error:", e);
+    return null;
+  }
+}
+
+async function cacheSet(key, value, ttlSeconds) {
+  if (!redis) return;
+  try {
+    await redis.set(key, value, { ex: ttlSeconds });
+  } catch (e) {
+    console.error("Redis SET error:", e);
+  }
+}
+
+async function invalidateIndexCaches() {
+  if (!redis) return;
+  try {
+    const keys = await redis.keys('index:*');
+    if (keys && keys.length) {
+      await redis.del(...keys);
+    }
+  } catch (e) {
+    console.error('Redis invalidate index caches error:', e);
+  }
+}
+
+async function invalidateBookCache(bookId) {
+  if (!redis) return;
+  try {
+    await redis.del(`book:${bookId}`);
+  } catch (e) {
+    console.error('Redis del book error:', e);
+  }
+}
+
 
 // define a reusable handler function
 async function renderUnilibBooks(req, res, view, data) {
@@ -80,7 +123,7 @@ export async function renderPage(req, res, fileLocation, layout = true, data = {
   return res.render(fileLocation, renderOptions);
 }
 
-// Route for '/' with caching
+// Route for '/' with Redis-backed caching (public responses only)
 router.get("/", async (req, res) => {
   // Normalize query parameters for consistent cache keys
   const { page = '1', limit = '12', semester = 'Semester3', category = 'all', search = '' } = req.query;
@@ -93,7 +136,36 @@ router.get("/", async (req, res) => {
     'X-Query-Params': queryString
   });
 
-  await renderUnilibBooks(req, res, "mainPages/index.handlebars");
+  const cacheKey = `index:${queryString}`;
+
+  // Only use shared cache for anonymous/public users
+  if (!req.session?.user && redis) {
+    const cached = await cacheGet(cacheKey);
+    if (cached) {
+      return res.send(cached);
+    }
+
+    // Intercept render to capture HTML and cache it
+    const originalRender = res.render.bind(res);
+    res.render = (view, options = {}, cb) => {
+      originalRender(view, options, async (err, html) => {
+        if (err) {
+          if (cb) return cb(err);
+          return res.status(500).send("Render error");
+        }
+        try {
+          await cacheSet(cacheKey, html, 120);
+        } catch (e) {
+          console.error(e);
+        }
+        res.send(html);
+      });
+    };
+
+    await renderUnilibBooks(req, res, "mainPages/index.handlebars");
+  } else {
+    await renderUnilibBooks(req, res, "mainPages/index.handlebars");
+  }
 });
 
 router.get(["/dashboard/Unilib", "/dashboard"], validateSessionAndRole("any"), async (req, res) => {
@@ -126,6 +198,13 @@ router.post("/api/admin/Unilib/Book/Edit/:id", validateSessionAndRole("Any"), as
   const values = [name, category, description, imageURL, link, semester, main, visible ?? true, bookId];
   try {
     await pool.query(query, values); // Use pool.query for database operations
+    // Invalidate relevant caches
+    try {
+      await invalidateBookCache(bookId);
+      await invalidateIndexCaches();
+    } catch (e) {
+      console.error('Cache invalidation error after edit:', e);
+    }
     res.status(200).json({ message: "Book updated successfully!" });
   } catch (error) {
     console.error("Error updating book:", error);
@@ -139,6 +218,13 @@ router.post("/api/admin/Unilib/Book/Delete/:id", validateSessionAndRole("Any"), 
 
   try {
     await pool.query(query, [bookId]); // Execute the query using pool
+    // Invalidate caches
+    try {
+      await invalidateBookCache(bookId);
+      await invalidateIndexCaches();
+    } catch (e) {
+      console.error('Cache invalidation error after delete:', e);
+    }
     res.status(200).json({ message: "Book deleted successfully!" }); // Send success response
   } catch (error) {
     console.error("Error deleting book:", error);
@@ -161,6 +247,18 @@ router.post("/api/admin/Unilib/Book/BulkVisibility", validateSessionAndRole("Any
   try {
     const query = `UPDATE "unilibbook" SET visible = $1 WHERE id = ANY($2::int[])`;
     const result = await pool.query(query, [visible, bookIds]);
+
+    // Invalidate caches for index and affected books
+    try {
+      await invalidateIndexCaches();
+      if (Array.isArray(bookIds)) {
+        for (const id of bookIds) {
+          await invalidateBookCache(id);
+        }
+      }
+    } catch (e) {
+      console.error('Cache invalidation error after bulk visibility change:', e);
+    }
 
     res.status(200).json({
       message: `${result.rowCount} book(s) ${visible ? 'shown' : 'hidden'} successfully!`,
@@ -188,6 +286,13 @@ router.post("/api/admin/Unilib/Book/Add", validateSessionAndRole("Any"), async (
 
     await pool.query(query, values);
     console.log("Book added successfully to the database.");
+
+    // Invalidate index caches so the new book appears quickly
+    try {
+      await invalidateIndexCaches();
+    } catch (e) {
+      console.error('Cache invalidation error after add:', e);
+    }
 
     res.status(201).json({ message: "Book added successfully!" });
   } catch (error) {
@@ -219,7 +324,7 @@ router.get("/api/admin/Unilib/Book/Export", validateSessionAndRole("Any"), async
   }
 });
 
-// Route for single book view '/book/:id'
+// Route for single book view '/book/:id' with Redis caching for anonymous users
 router.get("/book/:id", async (req, res) => {
   const bookId = req.params.id;
 
@@ -228,6 +333,33 @@ router.get("/book/:id", async (req, res) => {
     'Cache-Control': 'public, max-age=300, s-maxage=300, stale-while-revalidate=120',
     'Vary': 'Accept-Encoding'
   });
+
+  const cacheKey = `book:${bookId}`;
+
+  // Serve from shared cache for anonymous/public users
+  if (!req.session?.user && redis) {
+    const cached = await cacheGet(cacheKey);
+    if (cached) {
+      return res.send(cached);
+    }
+
+    // Intercept render to capture HTML and cache it
+    const originalRender = res.render.bind(res);
+    res.render = (view, options = {}, cb) => {
+      originalRender(view, options, async (err, html) => {
+        if (err) {
+          if (cb) return cb(err);
+          return res.status(500).send("Render error");
+        }
+        try {
+          await cacheSet(cacheKey, html, 300);
+        } catch (e) {
+          console.error(e);
+        }
+        res.send(html);
+      });
+    };
+  }
 
   try {
     const query = 'SELECT * FROM unilibbook WHERE id = $1 AND visible = true';

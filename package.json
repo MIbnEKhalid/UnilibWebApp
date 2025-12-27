@@ -11,6 +11,7 @@
   "author": "Muhammad Bin Khalid",
   "license": "MIT",
   "dependencies": {
+    "@upstash/redis": "^1.19.0",
     "compression": "^1.8.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
