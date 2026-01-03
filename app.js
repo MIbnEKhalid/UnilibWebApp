@@ -114,7 +114,7 @@ app.use("/pdf", pdfRoutes);
 
 app.use((req, res) => {
   console.log(`Path not found: ${req.url}`);
-  return renderError(res, {
+  return renderError(res, req, {
     layout: false,
     code: 404,
     error: "Page Not Found",

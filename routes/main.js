@@ -366,7 +366,7 @@ router.get("/book/:id", async (req, res) => {
     const result = await pool.query(query, [bookId]);
 
     if (result.rows.length === 0) {
-      return renderError(res, {
+      return renderError(res, req, {
         layout: false,
         code: 404,
         error: "Book Not Found",
