@@ -28,6 +28,7 @@ CREATE TABLE unilibbook (
   semester semesters NOT NULL,
   main BOOLEAN NOT NULL DEFAULT FALSE,
   visible BOOLEAN NOT NULL DEFAULT TRUE,
+  views INTEGER NOT NULL DEFAULT 0,
   sections JSONB DEFAULT '[]'::jsonb,
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -87,6 +88,9 @@ ON unilibbook((jsonb_array_length(sections) > 0)) WHERE jsonb_array_length(secti
 
 -- Index for sorting by creation date
 CREATE INDEX idx_unilibbook_created_at ON unilibbook(created_at DESC);
+
+-- Index for sorting by views (for popular books)
+CREATE INDEX idx_unilibbook_views ON unilibbook(views DESC);
 
 -- Partial index for main books
 CREATE INDEX idx_unilibbook_main_partial ON unilibbook(main) WHERE main = TRUE;

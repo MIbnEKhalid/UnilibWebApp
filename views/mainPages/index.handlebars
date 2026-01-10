@@ -11,8 +11,10 @@
       <div class="single-book-card scroll-animate">
         <div class="single-book-image">
           {{#if this.main}}
-          <div class="badge" aria-label="Main resource"
-            style="position: absolute; top: 15px; left: 15px; background-color: #ff8f5d">Main</div>
+            {{#unless (eq this.category 'LabManuals')}}
+            <div class="badge" aria-label="Main resource"
+              style="position: absolute; top: 15px; left: 15px; background-color: #ff8f5d">Main</div>
+            {{/unless}}
           {{/if}}
           <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" loading="lazy">
         </div>
@@ -22,11 +24,11 @@
             <p>{{this.description}}</p>
           </div>
           <div class="single-book-actions">
-            <a href="{{this.link}}" class="btn btn-save" aria-label="View {{this.name}}" target="_blank"
-              rel="noopener noreferrer">
+            <button onclick="trackView('{{this.id}}', '{{this.link}}')" class="btn btn-save"
+              aria-label="View {{this.name}}">
               <i class="fas fa-eye" aria-hidden="true"></i> View Book
-            </a>
-            <button onclick="downloadResource('{{this.link}}')" class="btn btn-save"
+            </button>
+            <button onclick="downloadResource('{{this.link}}', '{{this.id}}')" class="btn btn-save"
               aria-label="Download {{this.name}}">
               <i class="fas fa-download" aria-hidden="true"></i>
             </button>
@@ -34,7 +36,7 @@
               aria-label="Share {{this.name}}">
               <i class="fas fa-share-alt" aria-hidden="true"></i> Share
             </button>
-            {{#if isLoggedIn}}
+            {{#if ../userLoggedIn}}
             <a href="/dashboard/Book/Edit/{{this.id}}" class="btn btn-save" aria-label="Edit {{this.name}}">
               <i class="fas fa-edit" aria-hidden="true"></i> Edit
             </a>
@@ -47,6 +49,8 @@
           <div class="single-book-meta">
             <span class="meta-tag"><i class="fas fa-graduation-cap"></i>{{this.semester}}</span>
             <span class="meta-tag"><i class="fas fa-book"></i>{{this.category}}</span>
+            <span class="meta-tag"><i class="fas fa-eye"></i>{{formatNumber this.views}} {{#if (gt this.views
+              1)}}views{{else}}view{{/if}}</span>
           </div>
         </div>
       </div>
@@ -55,189 +59,205 @@
 
       {{#if (or ../sections ../labs)}}
       <div class="single-book-card scroll-animate">
-          <div class="lab-downloads">
-            <h3><i class="fas fa-folder-open"></i>Download Individual Sections</h3>
-            <div class="lab-list">
-              {{#if ../sections}}
-              {{#each ../sections}}
-              <div class="lab-item">
-                <span>{{this.name}}</span>
-                <a href="/book/{{../this.id}}/section/{{this.id}}/download" class="btn btn-lab-download"
-                  target="_blank">
-                  <i class="fas fa-download"></i> Download
-                </a>
-              </div>
-              {{/each}}
-              {{else}}
-              {{#each ../labs}}
-              <div class="lab-item">
-                <span>{{this.name}}</span>
-                <a href="/book/{{../this.id}}/lab/{{this.id}}/download" class="btn btn-lab-download" target="_blank">
-                  <i class="fas fa-download"></i> Download
-                </a>
-              </div>
-              {{/each}}
-              {{/if}}
+        <div class="lab-downloads">
+          <h3><i class="fas fa-folder-open"></i>Download Individual Sections</h3>
+          <div class="lab-list">
+            {{#if ../sections}}
+            {{#each ../sections}}
+            <div class="lab-item">
+              <span>{{this.name}}</span>
+              <a href="/book/{{../this.id}}/section/{{this.id}}/download" class="btn btn-lab-download" target="_blank">
+                <i class="fas fa-download"></i> Download
+              </a>
             </div>
+            {{/each}}
+            {{else}}
+            {{#each ../labs}}
+            <div class="lab-item">
+              <span>{{this.name}}</span>
+              <a href="/book/{{../this.id}}/lab/{{this.id}}/download" class="btn btn-lab-download" target="_blank">
+                <i class="fas fa-download"></i> Download
+              </a>
+            </div>
+            {{/each}}
+            {{/if}}
           </div>
         </div>
       </div>
-      {{/if}}
-      {{/each}}
+    </div>
+    {{/if}}
+    {{/each}}
 
 
+  </div>
+  {{else}}
+  <!-- Regular Grid View -->
+  <div class="title section-title">
+    <h1>Uni Course Materials</h1>
+  </div>
+  <div class="filter">
+    <div class="select-dropdown">
+      <i class="fas fa-graduation-cap filter-icon"></i>
+      <select id="semesterFilter" name="topics" aria-label="Select semester">
+        <option value="all" {{#if (eq filters.semester 'all' )}}selected{{/if}}><i class="fas fa-layer-group"></i> All
+          Semesters</option>
+        <option value="Semester1" {{#if (eq filters.semester 'Semester1' )}}selected{{/if}}><i class="fas fa-1"></i>
+          Semester 1</option>
+        <option value="Semester2" {{#if (eq filters.semester 'Semester2' )}}selected{{/if}}><i class="fas fa-2"></i>
+          Semester 2</option>
+        <option value="Semester3" {{#if (eq filters.semester 'Semester3' )}}selected{{/if}}><i class="fas fa-3"></i>
+          Semester 3</option>
+      </select>
     </div>
-    {{else}}
-    <!-- Regular Grid View -->
-    <div class="title section-title">
-      <h1>Uni Course Materials</h1>
+    <div class="select-dropdown">
+      <i class="fas fa-book filter-icon"></i>
+      <select id="categoryFilter" name="topics" aria-label="Select category">
+        <option value="all" {{#if (eq filters.category 'all' )}}selected{{/if}}>All Categories</option>
+        <option value="CourseBooks" {{#if (eq filters.category 'CourseBooks' )}}selected{{/if}}>Course Books</option>
+        <option value="Softwares" {{#if (eq filters.category 'Softwares' )}}selected{{/if}}>Softwares</option>
+        <option value="LabManuals" {{#if (eq filters.category 'LabManuals' )}}selected{{/if}}>Lab Manuals</option>
+        <option value="other" {{#if (eq filters.category 'other' )}}selected{{/if}}>Other</option>
+      </select>
     </div>
-    <div class="filter">
-      <div class="select-dropdown">
-        <i class="fas fa-graduation-cap filter-icon"></i>
-        <select id="semesterFilter" name="topics" aria-label="Select semester">
-          <option value="all" {{#if (eq filters.semester 'all' )}}selected{{/if}}><i class="fas fa-layer-group"></i> All
-            Semesters</option>
-          <option value="Semester1" {{#if (eq filters.semester 'Semester1' )}}selected{{/if}}><i class="fas fa-1"></i>
-            Semester 1</option>
-          <option value="Semester2" {{#if (eq filters.semester 'Semester2' )}}selected{{/if}}><i class="fas fa-2"></i>
-            Semester 2</option>
-          <option value="Semester3" {{#if (eq filters.semester 'Semester3' )}}selected{{/if}}><i class="fas fa-3"></i>
-            Semester 3</option>
-        </select>
-      </div>
-      <div class="select-dropdown">
-        <i class="fas fa-book filter-icon"></i>
-        <select id="categoryFilter" name="topics" aria-label="Select category">
-          <option value="all" {{#if (eq filters.category 'all' )}}selected{{/if}}>All Categories</option>
-          <option value="CourseBooks" {{#if (eq filters.category 'CourseBooks' )}}selected{{/if}}>Course Books</option>
-          <option value="Softwares" {{#if (eq filters.category 'Softwares' )}}selected{{/if}}>Softwares</option>
-          <option value="LabManuals" {{#if (eq filters.category 'LabManuals' )}}selected{{/if}}>Lab Manuals</option>
-          <option value="other" {{#if (eq filters.category 'other' )}}selected{{/if}}>Other</option>
-        </select>
-      </div>
-    </div>
-    <div class="search-bar">
-      <i class="fas fa-search search-icon"></i>
-      <input type="text" id="searchProduct" placeholder="Search books by name..." value="{{filters.search}}"
-        aria-label="Search books">
-      <button type="button" id="searchSubmit" class="submit-btn" aria-label="Submit search">
-        <i class="fas fa-arrow-right"></i>
-      </button>
-      <button type="button" id="clearSearch" class="clear-btn" aria-label="Clear search"
-        style="display: {{#if filters.search}}block{{else}}none{{/if}};">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-    <div id="spinner" class="spinner" style="display: none;"></div>
+  </div>
+  <div class="search-bar">
+    <i class="fas fa-search search-icon"></i>
+    <input type="text" id="searchProduct" placeholder="Search books by name..." value="{{filters.search}}"
+      aria-label="Search books">
+    <button type="button" id="searchSubmit" class="submit-btn" aria-label="Submit search">
+      <i class="fas fa-arrow-right"></i>
+    </button>
+    <button type="button" id="clearSearch" class="clear-btn" aria-label="Clear search"
+      style="display: {{#if filters.search}}block{{else}}none{{/if}};">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div id="spinner" class="spinner" style="display: none;"></div>
 
-    <div class="cards-container products scroll-animate"
-      style="{{#if books}}display: grid;{{else}}display: block;{{/if}}">
-      {{#if books}}
-      {{#each books}}
-      <article class="book-card linked scroll-animate" id="{{this.id}}"
-        style="transition-delay: {{multiply @index 0.1}}s;">
-        <div class="badges">
-          {{#if this.main}}
+  <div class="cards-container products scroll-animate"
+    style="{{#if books}}display: grid;{{else}}display: block;{{/if}}">
+    {{#if books}}
+    {{#each books}}
+    <article class="book-card linked scroll-animate" id="{{this.id}}"
+      style="transition-delay: {{multiply @index 0.1}}s;">
+      <div class="badges">
+        {{#if this.main}}
+          {{#unless (eq this.category 'LabManuals')}}
           <div class="badge badge-main" aria-label="Main resource">
             <i class="fas fa-star"></i> Main
           </div>
-          {{/if}}
-          {{#if (eq ../filters.semester 'all')}}
-          <div class="badge badge-semester" aria-label="Book semester">
-            <i class="fas fa-graduation-cap"></i> {{this.semester}}
-          </div>
-          {{/if}}
-          <div class="badge badge-category" aria-label="Book category">
-            <i class="fas fa-book"></i> {{this.category}}
-          </div>
-        </div>
-        <a href="/book/{{this.id}}" aria-label="View {{this.name}} details" class="book-link">
-          <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" loading="lazy" class="lazy-load"
-            onerror="this.src='https://via.placeholder.com/300x400?text=No+Cover'">
-        </a>
-        <div class="Bdetails">
-          <h3><a href="/book/{{this.id}}" class="book-title-link" title="{{this.name}}">{{this.name}}</a></h3>
-          <p title="{{this.description}}">{{this.description}}</p>
-        </div>
-        <div class="actions">
-          <a href="{{this.link}}" class="btn btn-save" aria-label="View {{this.name}}" target="_blank"
-            rel="noopener noreferrer">
-            <i class="fas fa-eye" aria-hidden="true"></i> View
-          </a>
-          {{#unless (eq this.category 'All')}}
-          <button onclick="downloadResource('{{this.link}}')" class="btn btn-primary"
-            aria-label="Download {{this.name}}">
-            <i class="fas fa-download" aria-hidden="true"></i>
-          </button>
           {{/unless}}
+        {{/if}}
+        {{#if (eq ../filters.semester 'all')}}
+        <div class="badge badge-semester" aria-label="Book semester">
+          <i class="fas fa-graduation-cap"></i> {{this.semester}}
         </div>
-      </article>
-      {{/each}}
-      {{else}}
-      <div class="no-results">
-        <i class="fas fa-book-open" style="font-size: 3rem; margin-bottom: 1rem; color: var(--text-secondary);"></i>
-        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">No materials found matching your criteria</p>
-        <button class="btn btn-save" onclick="resetFilters()" style="margin: 0 auto;">
-          <i class="fas fa-filter"></i> Reset Filters
-        </button>
+        {{/if}}
+        <div class="badge badge-category" aria-label="Book category">
+          <i class="fas fa-book"></i> {{this.category}}
+        </div>
       </div>
-      {{/if}}
+      <a href="/book/{{this.id}}" aria-label="View {{this.name}} details" class="book-link">
+        <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" loading="lazy" class="lazy-load"
+          onerror="this.src='https://placehold.co/400x600?text=No+Cover'">
+      </a>
+      <div class="Bdetails">
+        <h3><a href="/book/{{this.id}}" class="book-title-link" title="{{this.name}}">{{this.name}}</a></h3>
+        <p title="{{this.description}}">{{this.description}}</p>
+      </div>
+      <div class="actions">
+        <button onclick="trackView('{{this.id}}', '{{this.link}}')" class="btn btn-save"
+          aria-label="View {{this.name}}">
+          <i class="fas fa-eye" aria-hidden="true"></i> View
+        </button>
+        {{#unless (eq this.category 'All')}}
+        <button onclick="downloadResource('{{this.link}}', '{{this.id}}')" class="btn btn-primary"
+          aria-label="Download {{this.name}}">
+          <i class="fas fa-download" aria-hidden="true"></i>
+        </button>
+        {{/unless}}
+      </div>
+    </article>
+    {{/each}}
+    {{else}}
+    <div class="no-results">
+      <i class="fas fa-book-open" style="font-size: 3rem; margin-bottom: 1rem; color: var(--text-secondary);"></i>
+      <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">No materials found matching your criteria</p>
+      <button class="btn btn-save" onclick="resetFilters()" style="margin: 0 auto;">
+        <i class="fas fa-filter"></i> Reset Filters
+      </button>
     </div>
     {{/if}}
-
-    {{#unless singleBookView}}
-    <div class="pagination" id="pagination">
-      {{#if (gt pagination.pages 1)}}
-      <button {{#if (eq pagination.page 1)}}disabled{{/if}} onclick="goToPage({{subtract pagination.page 1}})"
-        title="Previous page">
-        <i class="fas fa-chevron-left"></i>
-      </button>
-
-      {{#if (gt pagination.page 2)}}
-      <button onclick="goToPage(1)" title="First page">1</button>
-      {{#if (gt pagination.page 3)}}
-      <span style="padding: 0 10px; color: var(--text-secondary);">...</span>
-      {{/if}}
-      {{/if}}
-
-      {{#each (range (max 1 (subtract pagination.page 2)) (min pagination.pages (add pagination.page 2)))}}
-      <button {{#if (eq this ../pagination.page)}}class="active" disabled{{/if}} onclick="goToPage({{this}})"
-        title="Page {{this}}">{{this}}</button>
-      {{/each}}
-
-      {{#if (lt pagination.page (subtract pagination.pages 1))}}
-      <span style="padding: 0 10px; color: var(--text-secondary);">...</span>
-      <button onclick="goToPage({{pagination.pages}})" title="Last page">{{pagination.pages}}</button>
-      {{/if}}
-
-      <button {{#if (eq pagination.page pagination.pages)}}disabled{{/if}} onclick="goToPage({{add pagination.page 1}})"
-        title="Next page">
-        <i class="fas fa-chevron-right"></i>
-      </button>
-      {{/if}}
-    </div>
-    <div class="pagination-info" id="paginationInfo">
-      Showing {{add (multiply (subtract pagination.page 1) pagination.limit) 1}}-{{min (multiply pagination.page
-      pagination.limit) pagination.total}} of {{pagination.total}} item{{#if (gt pagination.total 1)}}s{{/if}}
-    </div>
-    {{/unless}}
   </div>
-</section>
+  {{/if}}
 
-<div class="section-separator1"></div>
+  {{#unless singleBookView}}
+  <div class="pagination" id="pagination">
+    {{#if (gt pagination.pages 1)}}
+    <button {{#if (eq pagination.page 1)}}disabled{{/if}} onclick="goToPage({{subtract pagination.page 1}})"
+      title="Previous page">
+      <i class="fas fa-chevron-left"></i>
+    </button>
 
-<section id="info">
-  <div class="button" style="display: flex; justify-content: center; flex-wrap: wrap; gap:5px;">
-    <a class="buttons githeme" href="https://mbktech.org/Support/#requestbook">Request To Add Book</a>
-    <a class="buttons githeme" href="/dashboard/">Admin Panel</a>
+    {{#if (gt pagination.page 2)}}
+    <button onclick="goToPage(1)" title="First page">1</button>
+    {{#if (gt pagination.page 3)}}
+    <span style="padding: 0 10px; color: var(--text-secondary);">...</span>
+    {{/if}}
+    {{/if}}
+
+    {{#each (range (max 1 (subtract pagination.page 2)) (min pagination.pages (add pagination.page 2)))}}
+    <button {{#if (eq this ../pagination.page)}}class="active" disabled{{/if}} onclick="goToPage({{this}})"
+      title="Page {{this}}">{{this}}</button>
+    {{/each}}
+
+    {{#if (lt pagination.page (subtract pagination.pages 1))}}
+    <span style="padding: 0 10px; color: var(--text-secondary);">...</span>
+    <button onclick="goToPage({{pagination.pages}})" title="Last page">{{pagination.pages}}</button>
+    {{/if}}
+
+    <button {{#if (eq pagination.page pagination.pages)}}disabled{{/if}} onclick="goToPage({{add pagination.page 1}})"
+      title="Next page">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+    {{/if}}
   </div>
-  <div class="notification is-info">
-    <p>
-      The <strong>Unilib Project</strong> is open-source, and we welcome contributions! You can explore
-      and contribute on our <a class="links" href="https://github.com/MIbnEKhalid/UnilibWebApp/"
-        target="_blank">Project</a>.
+  <div class="pagination-info" id="paginationInfo">
+    Showing {{add (multiply (subtract pagination.page 1) pagination.limit) 1}}-{{min (multiply pagination.page
+    pagination.limit) pagination.total}} of {{pagination.total}} item{{#if (gt pagination.total 1)}}s{{/if}}
+  </div>
+  {{/unless}}
+
+
+
+
+  <div class="info-card scroll-animate"
+    style="background: var(--card-bg, #fff); border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin: 1rem auto; max-width: 800px;">
+    <div
+      style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <i class="fas fa-code-branch" style="color: var(--primary-color, #007acc); font-size: 1.2rem;"></i>
+        <span style="font-weight: 600; color: var(--text-primary, #333);">Open Source Project</span>
+      </div>
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <a class="btn btn-save" href="https://mbktech.org/Support/#requestbook"
+          style="font-size: 0.9rem; padding: 0.5rem 1rem;">
+          <i class="fas fa-plus" aria-hidden="true"></i> Request Book
+        </a>
+        <a class="btn btn-primary" href="/dashboard/" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
+          <i class="fas fa-cog" aria-hidden="true"></i> Admin
+        </a>
+      </div>
+    </div>
+    <p style="margin: 0; color: var(--text-secondary, #666); line-height: 1.4; font-size: 0.95rem;">
+      <strong>Unilib</strong> is open-source and welcomes contributions!
+      <a class="links" href="https://github.com/MIbnEKhalid/UnilibWebApp/" target="_blank" rel="noopener noreferrer"
+        style="color: var(--primary-color, #007acc); text-decoration: none; font-weight: 500;">
+        <i class="fab fa-github" style="margin-right: 0.25rem;"></i>View on GitHub
+      </a>
     </p>
   </div>
+  </div>
 </section>
-<script src="/Assets/Scripts/unilib.js?v={{appVersion}}" defer></script>
+
+<script src="/Assets/Scripts/unilib.js?v={{appVersion}}"></script>

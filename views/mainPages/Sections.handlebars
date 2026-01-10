@@ -1,10 +1,13 @@
 {{! Using main layout }}
 {{#section 'head'}}
-<link rel="preload" href="/Assets/Styles/common-admin.css?v={{appVersion}}" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="/Assets/Styles/common-admin.css?v={{appVersion}}"></noscript>
+<link rel="preload" href="/Assets/Styles/common-admin.css?v={{appVersion}}" as="style"
+  onload="this.onload=null;this.rel='stylesheet'">
+<noscript>
+  <link rel="stylesheet" href="/Assets/Styles/common-admin.css?v={{appVersion}}">
+</noscript>
 <style>
   /* Sections-specific styles */
-  
+
   .section-item {
     transition: all 0.3s ease;
     background: var(--dark);
@@ -21,7 +24,6 @@
   .section-item:hover {
     background: rgba(255, 255, 255, 0.08);
     border-color: var(--primary);
-    transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(33, 150, 243, 0.15);
   }
 
@@ -102,6 +104,7 @@
       opacity: 0;
       transform: translateY(-10px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -150,7 +153,8 @@
           <i class="fas fa-plus"></i>
           <span>Add Section</span>
         </button>
-        <a href="/dashboard/Book/Edit/{{book.id}}" class="action-button edit-button" style="background: var(--primary); color: #fff;">
+        <a href="/dashboard/Book/Edit/{{book.id}}" class="action-button edit-button"
+          style="background: var(--primary); color: #fff;">
           <i class="fas fa-edit"></i>
           <span>Edit Book</span>
         </a>

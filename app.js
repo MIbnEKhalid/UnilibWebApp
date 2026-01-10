@@ -37,17 +37,32 @@ app.engine("handlebars", engine({
     path.join(__dirname, "node_modules/mbkauthe/views"),
   ], cache: false,
   helpers: {
-    section: function(name, options) {
-      if(!this._sections) this._sections = {};
+    formatNumber: function (num) {
+      if (num == null) return '';
+      if (num < 1000) return num;
+      if (num < 1000000) return (num / 1000).toFixed(num % 1000 === 0 ? 0 : 1) + 'k';
+      if (num < 1000000000) return (num / 1000000).toFixed(num % 1000000 === 0 ? 0 : 1) + 'M';
+      return (num / 1000000000).toFixed(num % 1000000000 === 0 ? 0 : 1) + 'B';
+    },
+    // Truncate string and add ellipsis if longer than maxLen
+    truncate: function (str, maxLen = 100) {
+      if (str == null) return '';
+      const s = String(str);
+      if (s.length <= maxLen) return s;
+      return s.slice(0, maxLen - 1).trimEnd() + '…';
+    },
+
+    section: function (name, options) {
+      if (!this._sections) this._sections = {};
       this._sections[name] = options.fn(this);
       return null;
     },
-    json: function(context) {
+    json: function (context) {
       return JSON.stringify(context);
     },
     eq: function (a, b) {
       return a === b;
-    }, 
+    },
     or: function (a, b) {
       return a || b;
     },
@@ -74,7 +89,7 @@ app.engine("handlebars", engine({
     }, encodeURIComponent: function (str) {
       return encodeURIComponent(str);
     },
-    validPageRange: function(current, total, delta = 2) {
+    validPageRange: function (current, total, delta = 2) {
       const range = [];
       let start = Math.max(1, current - delta);
       let end = Math.min(total, current + delta);

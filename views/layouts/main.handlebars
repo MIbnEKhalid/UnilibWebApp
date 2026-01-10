@@ -101,7 +101,6 @@
 
     .btn-outline:hover {
       background-color: rgba(255, 255, 255, 0.1);
-      transform: translateY(-2px);
     }
 
     .section-container {
@@ -112,6 +111,7 @@
     .section-title {
       text-align: center;
       margin-bottom: 2rem;
+      margin-top: 3rem;
     }
 
     .section-title h2 {
@@ -180,6 +180,7 @@
       display: flex;
       list-style: none;
       gap: 2rem;
+      align-items: center;
     }
 
     nav a {
@@ -573,7 +574,6 @@
 
     .meta-tag:hover {
       background: var(--secondary-accent);
-      transform: translateY(-2px);
     }
 
     .meta-tag i {
@@ -601,7 +601,6 @@
     }
 
     .single-book-actions .btn:hover {
-      transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(55, 122, 119, 0.4);
     }
 
@@ -800,7 +799,6 @@
     }
 
     .book-card .btn:hover {
-      transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     }
 
@@ -843,10 +841,6 @@
     .book-card:hover .actions {
       border-color: var(--primary-accent);
       background: rgba(0, 0, 0, 0.3);
-    }
-
-    .book-card:hover .btn {
-      transform: translateY(-1px);
     }
 
     .book-card img {
@@ -922,7 +916,6 @@
     }
 
     .book-card .btn:hover {
-      transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
@@ -1058,8 +1051,8 @@
 
     .filter .select-dropdown select {
       position: relative;
-      max-width: 150px !important;
-      width: 150px !important;
+      max-width: 2000px !important;
+      width: 200px !important;
       padding: 10px 12px;
       border: 2px solid var(--main-border-color);
       border-radius: 8px;
@@ -1140,12 +1133,7 @@
 
     .content {
       max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .not {
-      height: 20px;
-      margin-bottom: 20px;
+      margin: 5rem auto;
     }
 
     /* Search Bar Styles */
@@ -1233,7 +1221,6 @@
       background: transparent;
       border-color: var(--primary-accent);
       color: var(--primary-accent);
-      transform: translateY(-2px);
     }
 
     .buttons {
@@ -1505,7 +1492,6 @@
     .lab-item:hover {
       background: rgba(255, 255, 255, 0.08);
       border-color: var(--primary-accent);
-      transform: translateX(3px);
     }
 
     .lab-item span {
@@ -1536,7 +1522,6 @@
 
     .btn-lab-download:hover {
       background: var(--secondary);
-      transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(67, 233, 123, 0.3);
     }
 
@@ -1559,11 +1544,7 @@
         <ul>
           <li><a href="https://mbktech.org/"><i class="fas fa-home"></i>Main Website</a></li>
           <li><a href="/dashboard/"><i class="fas fa-cog"></i>Admin Panel</a></li>
-          {{#if isLoggedIn}}
-          <li><a onclick="logout()"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
-          {{else}}
-          <li><a href="/mbkauthe/login"><i class="fas fa-sign-in-alt"></i>Login</a></li>
-          {{/if}}
+          {{> profilemenu}}
         </ul>
       </nav>
 

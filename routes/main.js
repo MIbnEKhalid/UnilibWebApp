@@ -49,12 +49,25 @@ async function invalidateBookCache(bookId) {
   }
 }
 
+// Invalidate multiple book caches at once to avoid N+1 Redis calls
+async function invalidateBookCaches(bookIds) {
+  if (!redis) return;
+  if (!Array.isArray(bookIds) || bookIds.length === 0) return;
+  try {
+    const keys = bookIds.map(id => `book:${id}`);
+    await redis.del(...keys);
+  } catch (e) {
+    console.error('Redis del multiple books error:', e);
+  }
+}
+
 
 // define a reusable handler function
 async function renderUnilibBooks(req, res, view, data) {
   const { page = 1, limit = 12, semester = 'Semester3', category = 'all', search = '' } = req.query;
   const offset = (page - 1) * limit;
-  let query = 'SELECT * FROM unilibbook';
+  // Select only columns needed for list view to reduce data transfer
+  let query = 'SELECT id, name, category, description, "imageURL", link, semester, main, visible, views FROM unilibbook';
   const conditions = [];
   const params = [];
 
@@ -111,12 +124,13 @@ async function renderUnilibBooks(req, res, view, data) {
 export async function renderPage(req, res, fileLocation, layout = true, data = {}) {
   const username = req.session?.user?.UserName || req.session?.user?.username || "NotLoggedIn";
   const role = req.session?.user?.role || "NotLoggedIn";
-  const isLoggedIn = req.session.user ? true : false;
+  const userLoggedIn = req.session.user ? true : false;
+
   const renderOptions = {
     ...data,
     username,
     role,
-    isLoggedIn,
+    userLoggedIn,
     ...(layout === false ? { layout: false } : {}),
   };
 
@@ -174,9 +188,7 @@ router.get(["/dashboard/Unilib", "/dashboard"], validateSessionAndRole("any"), a
 
 router.get("/dashboard/Book/Edit/:id", validateSessionAndRole("Any"), async (req, res) => {
   const bookId = req.params.id;
-  const query = `
-      SELECT id, name, category, description, "imageURL", link, semester, main FROM "unilibbook"
-      WHERE id = $1`;
+  const query = `SELECT id, "UserName", name, category, description, "imageURL", link, semester, main, visible, views, sections, created_at FROM "unilibbook" WHERE id = $1`;
   try {
     const result = await pool.query(query, [bookId]);
     const book = result.rows[0];
@@ -251,13 +263,11 @@ router.post("/api/admin/Unilib/Book/BulkVisibility", validateSessionAndRole("Any
     // Invalidate caches for index and affected books
     try {
       await invalidateIndexCaches();
-      if (Array.isArray(bookIds)) {
-        for (const id of bookIds) {
-          await invalidateBookCache(id);
-        }
-      }
-    } catch (e) {
-      console.error('Cache invalidation error after bulk visibility change:', e);
+      // Batch invalidate book caches to avoid N+1 Redis calls
+      await invalidateBookCaches(bookIds);
+    }
+    catch (e) {
+      console.error('Cache invalidation error after bulk visibility update:', e);
     }
 
     res.status(200).json({
@@ -304,7 +314,7 @@ router.post("/api/admin/Unilib/Book/Add", validateSessionAndRole("Any"), async (
 // Export all (optionally filtered) books as JSON file
 router.get("/api/admin/Unilib/Book/Export", validateSessionAndRole("Any"), async (_req, res) => {
   // Always export ALL books, ignoring any provided filters
-  const query = 'SELECT * FROM unilibbook ORDER BY main DESC, name ASC';
+  const query = 'SELECT id, name, category, description, "imageURL", link, semester, main, visible, views, sections FROM unilibbook ORDER BY main DESC, name ASC';
   try {
     const result = await pool.query(query);
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -362,7 +372,7 @@ router.get("/book/:id", async (req, res) => {
   }
 
   try {
-    const query = 'SELECT * FROM unilibbook WHERE id = $1 AND visible = true';
+    const query = 'SELECT id, "UserName", name, category, description, "imageURL", link, semester, main, visible, sections, views FROM unilibbook WHERE id = $1 AND visible = true';
     const result = await pool.query(query, [bookId]);
 
     if (result.rows.length === 0) {
@@ -375,8 +385,6 @@ router.get("/book/:id", async (req, res) => {
         page: `/`,
       });
     }
-
-    let isLoggedIn = req.session.user ? true : false;
 
     const book = result.rows[0];
 
@@ -405,7 +413,7 @@ router.get("/book/:id", async (req, res) => {
 router.get("/dashboard/Book/:bookId/Sections", validateSessionAndRole("Any"), async (req, res) => {
   const bookId = req.params.bookId;
   try {
-    const bookQuery = 'SELECT * FROM unilibbook WHERE id = $1';
+    const bookQuery = 'SELECT id, sections, name FROM unilibbook WHERE id = $1';
     const bookResult = await pool.query(bookQuery, [bookId]);
     if (bookResult.rows.length === 0) {
       return res.status(404).send("Book not found");
@@ -718,8 +726,8 @@ router.get("/book/:bookId/section/:sectionId/download", async (req, res) => {
   const sectionIdNum = parseInt(sectionId);
 
   try {
-    // Fetch book details
-    const bookQuery = 'SELECT * FROM unilibbook WHERE id = $1';
+    // Fetch book details (only needed columns)
+    const bookQuery = 'SELECT id, sections, name, link FROM unilibbook WHERE id = $1';
     const bookResult = await pool.query(bookQuery, [bookId]);
 
     if (bookResult.rows.length === 0) {
@@ -788,6 +796,19 @@ router.get("/book/:bookId/section/:sectionId/download", async (req, res) => {
       const extractedPdfBytes = await newDoc.save();
       res.send(Buffer.from(extractedPdfBytes));
 
+      // Track the section download as a book view (async, after response sent)
+      setImmediate(async () => {
+        try {
+          await pool.query(
+            'UPDATE unilibbook SET views = views + 1 WHERE id = $1 AND visible = true',
+            [bookId]
+          );
+          await invalidateBookCache(bookId);
+        } catch (error) {
+          console.error('Error tracking section download view:', error);
+        }
+      });
+
     } catch (error) {
       console.error('Error processing PDF:', error);
       return res.status(500).send('Error processing PDF file');
@@ -796,6 +817,78 @@ router.get("/book/:bookId/section/:sectionId/download", async (req, res) => {
   } catch (error) {
     console.error('Error:', error);
     res.status(500).send('Internal Server Error');
+  }
+});
+
+// Track book views - increment view count when user views a book
+router.post("/api/book/:id/view", async (req, res) => {
+  const bookId = req.params.id;
+
+  try {
+    // Check if book exists first
+    const checkResult = await pool.query(
+      'SELECT id FROM unilibbook WHERE id = $1 AND visible = true',
+      [bookId]
+    );
+
+    if (checkResult.rows.length === 0) {
+      return res.status(404).json({ error: "Book not found" });
+    }
+
+    // Send response immediately
+    res.json({ success: true });
+    
+    // Track view asynchronously after response sent
+    setImmediate(async () => {
+      try {
+        await pool.query(
+          'UPDATE unilibbook SET views = views + 1 WHERE id = $1 AND visible = true',
+          [bookId]
+        );
+        await invalidateBookCache(bookId);
+      } catch (error) {
+        console.error('Error tracking book view:', error);
+      }
+    });
+  } catch (error) {
+    console.error('Error in view tracking API:', error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Track book downloads - increment view count when user downloads a book
+router.post("/api/book/:id/download", async (req, res) => {
+  const bookId = req.params.id;
+
+  try {
+    // Check if book exists first
+    const checkResult = await pool.query(
+      'SELECT id FROM unilibbook WHERE id = $1 AND visible = true',
+      [bookId]
+    );
+
+    if (checkResult.rows.length === 0) {
+      return res.status(404).json({ error: "Book not found" });
+    }
+
+    // Send response immediately
+    res.json({ success: true });
+    
+    // Track download as view asynchronously after response sent
+    setImmediate(async () => {
+      try {
+        await pool.query(
+          'UPDATE unilibbook SET views = views + 1 WHERE id = $1 AND visible = true',
+          [bookId]
+        );
+        await invalidateBookCache(bookId);
+      } catch (error) {
+        console.error('Error tracking book download:', error);
+      }
+    });
+  } catch (error) {
+    console.error('Error in download tracking API:', error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 

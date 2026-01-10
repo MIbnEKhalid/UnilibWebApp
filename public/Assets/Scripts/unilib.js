@@ -166,9 +166,53 @@ window.resetFilters = function () {
     updateUrl();
 };
 
-// Download resource handler
-window.downloadResource = function (driveLink) {
+// Track book views
+async function trackBookView(bookId) {
     try {
+        await fetch(`/api/book/${bookId}/view`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+    } catch (error) {
+        console.error('Error tracking book view:', error);
+        // Don't show error to user as this is not critical functionality
+    }
+}
+
+// Track book downloads
+async function trackBookDownload(bookId) {
+    try {
+        await fetch(`/api/book/${bookId}/download`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+    } catch (error) {
+        console.error('Error tracking book download:', error);
+        // Don't show error to user as this is not critical functionality
+    }
+}
+
+// Track view when user clicks "View Book" link
+window.trackView = function(bookId, originalUrl) {
+    // Track the view
+    trackBookView(bookId);
+    
+    // Open the original link
+    window.open(originalUrl, '_blank');
+};
+
+// Download resource handler
+window.downloadResource = function (driveLink, bookId = null) {
+    try {
+        // Track download if bookId is provided
+        if (bookId) {
+            trackBookDownload(bookId);
+        }
+
         // Check if it's a folder link
         const folderIdMatch = driveLink.match(/\/folders\/([a-zA-Z0-9_-]+)/);
         if (folderIdMatch) {
