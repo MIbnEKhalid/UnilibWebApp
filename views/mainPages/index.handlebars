@@ -11,10 +11,10 @@
       <div class="single-book-card scroll-animate">
         <div class="single-book-image">
           {{#if this.main}}
-            {{#unless (eq this.category 'LabManuals')}}
-            <div class="badge" aria-label="Main resource"
-              style="position: absolute; top: 15px; left: 15px; background-color: #ff8f5d">Main</div>
-            {{/unless}}
+          {{#unless (eq this.category 'LabManuals')}}
+          <div class="badge" aria-label="Main resource"
+            style="position: absolute; top: 15px; left: 15px; background-color: #ff8f5d">Main</div>
+          {{/unless}}
           {{/if}}
           <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" loading="lazy">
         </div>
@@ -142,11 +142,11 @@
       style="transition-delay: {{multiply @index 0.1}}s;">
       <div class="badges">
         {{#if this.main}}
-          {{#unless (eq this.category 'LabManuals')}}
-          <div class="badge badge-main" aria-label="Main resource">
-            <i class="fas fa-star"></i> Main
-          </div>
-          {{/unless}}
+        {{#unless (eq this.category 'LabManuals')}}
+        <div class="badge badge-main" aria-label="Main resource">
+          <i class="fas fa-star"></i> Main
+        </div>
+        {{/unless}}
         {{/if}}
         {{#if (eq ../filters.semester 'all')}}
         <div class="badge badge-semester" aria-label="Book semester">
@@ -228,9 +228,6 @@
   </div>
   {{/unless}}
 
-
-
-
   <div class="info-card scroll-animate"
     style="background: var(--card-bg, #fff); border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin: 1rem auto; max-width: 800px;">
     <div
@@ -238,15 +235,6 @@
       <div style="display: flex; align-items: center; gap: 0.5rem;">
         <i class="fas fa-code-branch" style="color: var(--primary-color, #007acc); font-size: 1.2rem;"></i>
         <span style="font-weight: 600; color: var(--text-primary, #333);">Open Source Project</span>
-      </div>
-      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-        <a class="btn btn-save" href="https://mbktech.org/Support/#requestbook"
-          style="font-size: 0.9rem; padding: 0.5rem 1rem;">
-          <i class="fas fa-plus" aria-hidden="true"></i> Request Book
-        </a>
-        <a class="btn btn-primary" href="/dashboard/" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
-          <i class="fas fa-cog" aria-hidden="true"></i> Admin
-        </a>
       </div>
     </div>
     <p style="margin: 0; color: var(--text-secondary, #666); line-height: 1.4; font-size: 0.95rem;">
