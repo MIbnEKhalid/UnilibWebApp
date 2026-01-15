@@ -86,6 +86,107 @@
     background: rgba(16, 28, 28, 0.8);
   }
 
+  /* Custom select and multiselect styles 🔧 */
+  .form-section .form-group select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 2.25rem;
+    background-position: right 0.75rem center;
+    background-repeat: no-repeat;
+    background-size: 0.85rem 0.85rem;
+  }
+
+  .form-section .form-group select::-ms-expand { display: none; }
+
+  .custom-multiselect {
+    position: relative;
+    border: 1px solid var(--main-border-color);
+    border-radius: 8px;
+    background: rgba(16, 28, 28, 0.6);
+    padding: 0.45rem;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+
+  .custom-multiselect.has-selection { padding-bottom: 0.5rem; }
+
+  .multiselect-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+    min-height: 36px;
+    width: 100%;
+  }
+
+  .multiselect-tags .placeholder {
+    color: var(--text-secondary);
+    padding: 0.2rem 0.4rem;
+    font-size: 0.95rem;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0, 0, 0, 0.32);
+    border-radius: 16px;
+    padding: 0.25rem 0.5rem;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+  }
+
+  .tag-remove {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    margin-left: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  .multiselect-dropdown {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 6px);
+    background: rgba(12, 18, 18, 0.98);
+    border: 1px solid var(--main-border-color);
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+    max-height: 240px;
+    overflow: auto;
+    z-index: 50;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .multiselect-option {
+    padding: 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--text-primary);
+  }
+
+  .multiselect-option:hover { background: rgba(0, 184, 148, 0.06); }
+  .multiselect-option.selected { background: rgba(0, 184, 148, 0.12); border-left: 4px solid var(--accent); padding-left: 0.6rem; }
+
+  .hidden { display: none; }
+
+  /* tiny utility to keep native select accessible but visually hidden */
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+  @media (max-width: 768px) {
+    .multiselect-dropdown { position: static; max-height: 180px; }
+  }
+
   .form-section .buttons.full {
     width: 100%;
     padding: 0.75rem;
@@ -229,7 +330,15 @@
 
               <div class="form-group">
                 <label for="semester"><i class="fas fa-graduation-cap"></i> Semester(s):</label>
-                <select id="semester" name="semester" data-org='{{json book.semester}}' multiple required>
+
+                <!-- Custom multiselect UI: keeps native select in DOM for accessibility & form submission -->
+                <div class="custom-multiselect" id="semesterMulti" role="listbox" aria-label="Semester selection">
+                  <div class="multiselect-tags" tabindex="0" aria-live="polite"></div>
+                  <div class="multiselect-dropdown hidden" aria-hidden="true"></div>
+                </div>
+
+                <!-- Native select is visually hidden but remains the authoritative form control -->
+                <select id="semester" name="semester" data-org='{{json book.semester}}' multiple required class="sr-only">
                   <option value="all" {{#if (eq book.semester "all")}}selected{{/if}}>All Semesters</option>
                   <option value="Semester1" {{#if (includes book.semester "Semester1" )}}selected{{/if}}>Semester 1</option>
                   <option value="Semester2" {{#if (includes book.semester "Semester2" )}}selected{{/if}}>Semester 2</option>
@@ -240,7 +349,7 @@
                   <option value="Semester7" {{#if (includes book.semester "Semester7" )}}selected{{/if}}>Semester 7</option>
                   <option value="Semester8" {{#if (includes book.semester "Semester8" )}}selected{{/if}}>Semester 8</option>
                 </select>
-              </div>
+              </div> 
 
               <div class="form-group">
                 <label for="main"><i class="fas fa-star"></i> Main Resource:</label>
@@ -352,7 +461,13 @@
     submitButton.disabled = true;
     submitButton.textContent = (form.dataset.isEdit === 'true') ? "Editing..." : "Adding...";
 
-    const semesterSelected = Array.from(document.getElementById("semester").selectedOptions).map(o => o.value);
+    // gather selected semesters and expand a logical "all" to actual enum values the DB accepts
+    let semesterSelected = Array.from(document.getElementById("semester").selectedOptions).map(o => o.value);
+    const ALL_SEMESTERS = ['Semester1','Semester2','Semester3','Semester4','Semester5','Semester6','Semester7','Semester8'];
+    if (semesterSelected.includes('all')) {
+      semesterSelected = ALL_SEMESTERS.slice();
+    }
+
     const payload = {
       name: document.getElementById("name").value,
       category: document.getElementById("category").value,
@@ -395,6 +510,144 @@
       submitButton.textContent = (form.dataset.isEdit === 'true') ? 'Edit Book' : 'Add Book';
     }
   });
+
+  // Initialize a lightweight custom multiselect for the Semester field 🔧
+  (function initCustomMultiselect() {
+    function createMultiselect(selectId) {
+      const select = document.getElementById(selectId);
+      if (!select) return;
+      const wrapper = document.getElementById(selectId + 'Multi');
+      const tags = wrapper.querySelector('.multiselect-tags');
+      const dropdown = wrapper.querySelector('.multiselect-dropdown');
+
+      // If server-rendered select had its values encoded in data-org, parse and apply them.
+      // This runs even if no options appear selected due to rendering differences.
+      try {
+        let org = select.getAttribute('data-org') || select.dataset.org;
+        if (org) {
+          let parsed = org;
+          try { parsed = JSON.parse(org); } catch (e) { /* not JSON, keep as string */ }
+
+          // Handle comma-separated string like "Semester1,Semester2"
+          if (typeof parsed === 'string' && parsed.includes(',')) {
+            parsed = parsed.split(',').map(s => s.trim()).filter(Boolean);
+          }
+
+          const ALL_SEM = ['Semester1','Semester2','Semester3','Semester4','Semester5','Semester6','Semester7','Semester8'];
+          if (parsed === 'all' || parsed === 'All' || (Array.isArray(parsed) && parsed.includes('all'))) {
+            Array.from(select.options).forEach(o => { if (o.value.startsWith('Semester')) o.selected = true; });
+          } else if (Array.isArray(parsed)) {
+            // Protect against parsed being empty array
+            if (parsed.length > 0) {
+              Array.from(select.options).forEach(o => { o.selected = parsed.includes(o.value); });
+            }
+          } else if (typeof parsed === 'string') {
+            // single value
+            Array.from(select.options).forEach(o => { o.selected = (o.value === parsed); });
+          }
+        }
+      } catch (err) {
+        console.warn('semester init parse failed', err);
+      }
+
+      // Build dropdown options from native select
+      dropdown.innerHTML = '';
+      Array.from(select.options).forEach(opt => {
+        const item = document.createElement('div');
+        item.className = 'multiselect-option' + (opt.selected ? ' selected' : '');
+        item.setAttribute('data-value', opt.value);
+        item.textContent = opt.textContent;
+        dropdown.appendChild(item);
+      });
+
+      function refreshTags() {
+        tags.innerHTML = '';
+        const selected = Array.from(select.selectedOptions);
+        if (selected.length === 0) {
+          const placeholder = document.createElement('span');
+          placeholder.className = 'placeholder';
+          placeholder.textContent = 'Select semesters...';
+          tags.appendChild(placeholder);
+          wrapper.classList.remove('has-selection');
+        } else {
+          wrapper.classList.add('has-selection');
+          selected.forEach(o => {
+            const tag = document.createElement('span');
+            tag.className = 'tag';
+            tag.textContent = o.textContent;
+            const rem = document.createElement('button');
+            rem.type = 'button';
+            rem.className = 'tag-remove';
+            rem.innerHTML = '&times;';
+            rem.addEventListener('click', (ev) => {
+              ev.stopPropagation();
+              o.selected = false;
+              Array.from(dropdown.children).forEach(d => { if (d.dataset.value === o.value) d.classList.remove('selected'); });
+              refreshTags();
+              updateBookCard();
+            });
+            tag.appendChild(rem);
+            tags.appendChild(tag);
+          });
+        }
+      }
+
+      dropdown.addEventListener('click', (e) => {
+        const item = e.target.closest('.multiselect-option');
+        if (!item) return;
+        const value = item.dataset.value;
+        const opt = Array.from(select.options).find(o => o.value === value);
+        if (!opt) return;
+
+        const willSelect = !opt.selected;
+        if (value === 'all' && willSelect) {
+          // if user selects 'All', mark all concrete semesters selected (avoid sending invalid 'all' enum to DB)
+          Array.from(select.options).forEach(o => {
+            if (o.value.startsWith('Semester')) o.selected = true;
+            else o.selected = false;
+          });
+          Array.from(dropdown.children).forEach(d => {
+            d.classList.toggle('selected', d.dataset.value.startsWith('Semester'));
+            if (d.dataset.value === 'all') d.classList.remove('selected');
+          });
+        } else if (value === 'all' && !willSelect) {
+          // deselecting 'All' will clear all semesters
+          Array.from(select.options).forEach(o => o.selected = false);
+          Array.from(dropdown.children).forEach(d => d.classList.remove('selected'));
+        } else {
+          opt.selected = willSelect;
+          if (select.querySelector('option[value="all"]')?.selected && value !== 'all') {
+            select.querySelector('option[value="all"]').selected = false;
+            Array.from(dropdown.children).forEach(d => { if (d.dataset.value === 'all') d.classList.remove('selected'); });
+          }
+          item.classList.toggle('selected', willSelect);
+        }
+        refreshTags();
+        updateBookCard();
+      });
+
+      tags.addEventListener('click', () => {
+        dropdown.classList.toggle('hidden');
+        wrapper.classList.toggle('open');
+        dropdown.setAttribute('aria-hidden', dropdown.classList.contains('hidden'));
+      });
+
+      // close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!wrapper.contains(e.target)) {
+          dropdown.classList.add('hidden');
+          wrapper.classList.remove('open');
+          dropdown.setAttribute('aria-hidden', 'true');
+        }
+      });
+
+      // initial render
+      refreshTags();
+    }
+
+    // init on DOM ready
+    try { createMultiselect('semester'); } catch (err) { console.error('Multiselect init failed', err); }
+  })();
 </script>
 
 {{!-- Extra scripts or sections can be included if needed --}}

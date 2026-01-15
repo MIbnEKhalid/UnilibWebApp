@@ -214,7 +214,18 @@ router.get("/dashboard/Book/Edit/:id", validateSessionAndRole("Any"), async (req
   const query = `SELECT id, "UserName", name, category, description, "imageURL", link, semester, main, visible, views, sections, created_at FROM "unilibbook" WHERE id = $1`;
   try {
     const result = await pool.query(query, [bookId]);
-    const book = result.rows[0];
+    let book = result.rows[0];
+
+    // Normalize semester field to a plain JS array of semester strings.
+    // Some Postgres drivers or DB configs sometimes return array values as a string like "{Semester1,Semester2}".
+    // Fix that here so the template helpers and client JS get a predictable array.
+    if (book && typeof book.semester === 'string') {
+      let s = book.semester.trim();
+      if (s.startsWith('{') && s.endsWith('}')) s = s.slice(1, -1);
+      const arr = s.length ? s.split(',').map(x => x.trim().replace(/^"|"$/g, '')) : [];
+      book.semester = arr;
+    }
+
     return renderPage(req, res, "mainPages/BookForm.handlebars", true, { isEdit: true, id: bookId, book });
   } catch (error) {
     console.error("Error fetching book details:", error);
