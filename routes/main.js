@@ -66,6 +66,28 @@ async function invalidateBookCaches(bookIds) {
 async function renderUnilibBooks(req, res, view, data) {
   const { page = 1, limit = 12, semester = 'Semester3', category = 'all', search = '' } = req.query;
   const offset = (page - 1) * limit;
+
+  // Normalize semester filter: accept 'all', single string, comma-separated string, or array
+  let semesterFilter = semester;
+  if (semesterFilter === 'all') {
+    // leave as-is 'all' sentinel
+  } else if (Array.isArray(semesterFilter)) {
+    semesterFilter = semesterFilter.map(s => String(s).trim()).filter(Boolean);
+    // If client selected 'all' among other options treat as 'all' (no filtering)
+    if (semesterFilter.includes('all')) semesterFilter = 'all';
+  } else if (typeof semesterFilter === 'string') {
+    if (semesterFilter.includes(',')) {
+      semesterFilter = semesterFilter.split(',').map(s => s.trim()).filter(Boolean);
+      if (semesterFilter.includes('all')) semesterFilter = 'all';
+    } else {
+      // wrap single value into an array so PG receives an array parameter
+      semesterFilter = [semesterFilter.trim()];
+    }
+  } else {
+    // Fallback: ensure it's an array
+    semesterFilter = Array.isArray(semesterFilter) ? semesterFilter : [String(semesterFilter)];
+  }
+
   // Select only columns needed for list view to reduce data transfer
   let query = 'SELECT id, name, category, description, "imageURL", link, semester, main, visible, views FROM unilibbook';
   const conditions = [];
@@ -78,9 +100,10 @@ async function renderUnilibBooks(req, res, view, data) {
     conditions.push(`visible = true`);
   }
 
-  if (semester && semester !== 'all') {
-    conditions.push(`semester = $${params.length + 1}`);
-    params.push(semester);
+  if (semesterFilter && semesterFilter !== 'all' && semesterFilter.length > 0) {
+    // Use array overlap operator so books that belong to any of the selected semesters match
+    conditions.push(`semester && $${params.length + 1}::semesters[]`);
+    params.push(semesterFilter);
   }
   if (category !== 'all') {
     conditions.push(`category = $${params.length + 1}`);
@@ -113,7 +136,7 @@ async function renderUnilibBooks(req, res, view, data) {
         total,
         pages
       },
-      filters: { semester, category, search }
+      filters: { semester: semesterFilter, category, search }
     });
   } catch (err) {
     console.error("Error fetching books:", err);
@@ -202,12 +225,14 @@ router.get("/dashboard/Book/Edit/:id", validateSessionAndRole("Any"), async (req
 router.post("/api/admin/Unilib/Book/Edit/:id", validateSessionAndRole("Any"), async (req, res) => {
   const bookId = req.params.id;
   const { name, category, description, imageURL, link, semester, main, visible } = req.body;
+  // Normalize semester into an array for DB storage
+  const semesterForDb = Array.isArray(semester) ? semester : (typeof semester === 'string' && semester.includes(',') ? semester.split(',').map(s => s.trim()).filter(Boolean) : [semester]);
   const query = `
       UPDATE "unilibbook"
       SET name = $1, category = $2, description = $3, "imageURL" = $4, link = $5, semester = $6, main = $7, visible = $8
       WHERE id = $9
     `;
-  const values = [name, category, description, imageURL, link, semester, main, visible ?? true, bookId];
+  const values = [name, category, description, imageURL, link, semesterForDb, main, visible ?? true, bookId];
   try {
     await pool.query(query, values); // Use pool.query for database operations
     // Invalidate relevant caches
@@ -286,13 +311,14 @@ router.get("/dashboard/Book/Add", validateSessionAndRole("Any"), async (req, res
 
 router.post("/api/admin/Unilib/Book/Add", validateSessionAndRole("Any"), async (req, res) => {
   const { name, category, description, imageURL, link, semester, main, visible } = req.body;
+  const semesterForDb = Array.isArray(semester) ? semester : (typeof semester === 'string' && semester.includes(',') ? semester.split(',').map(s => s.trim()).filter(Boolean) : [semester]);
 
   try {
     const query = `
       INSERT INTO "unilibbook" (name, category, description, "imageURL", link, semester, main, visible, "UserName")
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
     `;
-    const values = [name, category, description, imageURL, link, semester, main, visible ?? true, req.session.user.username];
+    const values = [name, category, description, imageURL, link, semesterForDb, main, visible ?? true, req.session.user.username];
 
     await pool.query(query, values);
     console.log("Book added successfully to the database.");

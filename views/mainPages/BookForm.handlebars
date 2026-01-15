@@ -146,7 +146,7 @@
               {{/if}}
               {{#if book.semester}}
               <div class="badge badge-semester" aria-label="Book semester">
-                <i class="fas fa-graduation-cap"></i> {{book.semester}}
+                <i class="fas fa-graduation-cap"></i> {{join book.semester}}
               </div>
               {{/if}}
               {{#if book.category}}
@@ -187,7 +187,7 @@
                 <label for="name"><i class="fas fa-heading"></i> Book Name:</label>
                 <input type="text" value="{{#if book}}{{book.name}}{{else}}book name{{/if}}"
                   data-org="{{#if book}}{{book.name}}{{/if}}" id="name" name="name" placeholder="Enter book name"
-                  required readonly/>
+                  required/>
               </div>
 
               <div class="form-group">
@@ -228,17 +228,17 @@
               </div>
 
               <div class="form-group">
-                <label for="semester"><i class="fas fa-graduation-cap"></i> Semester:</label>
-                <select id="semester" name="semester" data-org="{{#if book}}{{book.semester}}{{/if}}" required>
-                  <option value="Semester1" {{#if (eq book.semester "Semester1" )}}selected{{/if}}>Semester 1</option>
-                  <option value="Semester2" {{#if (eq book.semester "Semester2" )}}selected{{/if}}>Semester 2</option>
-                  <option value="Semester3" {{#if (eq book.semester "Semester3" )}}selected{{else}}{{#unless
-                    book}}selected{{/unless}}{{/if}}>Semester 3</option>
-                  <option value="Semester4" {{#if (eq book.semester "Semester4" )}}selected{{/if}}>Semester 4</option>
-                  <option value="Semester5" {{#if (eq book.semester "Semester5" )}}selected{{/if}}>Semester 5</option>
-                  <option value="Semester6" {{#if (eq book.semester "Semester6" )}}selected{{/if}}>Semester 6</option>
-                  <option value="Semester7" {{#if (eq book.semester "Semester7" )}}selected{{/if}}>Semester 7</option>
-                  <option value="Semester8" {{#if (eq book.semester "Semester8" )}}selected{{/if}}>Semester 8</option>
+                <label for="semester"><i class="fas fa-graduation-cap"></i> Semester(s):</label>
+                <select id="semester" name="semester" data-org='{{json book.semester}}' multiple required>
+                  <option value="all" {{#if (eq book.semester "all")}}selected{{/if}}>All Semesters</option>
+                  <option value="Semester1" {{#if (includes book.semester "Semester1" )}}selected{{/if}}>Semester 1</option>
+                  <option value="Semester2" {{#if (includes book.semester "Semester2" )}}selected{{/if}}>Semester 2</option>
+                  <option value="Semester3" {{#if (includes book.semester "Semester3" )}}{{else}}{{#unless book}}selected{{/unless}}{{/if}}>Semester 3</option>
+                  <option value="Semester4" {{#if (includes book.semester "Semester4" )}}selected{{/if}}>Semester 4</option>
+                  <option value="Semester5" {{#if (includes book.semester "Semester5" )}}selected{{/if}}>Semester 5</option>
+                  <option value="Semester6" {{#if (includes book.semester "Semester6" )}}selected{{/if}}>Semester 6</option>
+                  <option value="Semester7" {{#if (includes book.semester "Semester7" )}}selected{{/if}}>Semester 7</option>
+                  <option value="Semester8" {{#if (includes book.semester "Semester8" )}}selected{{/if}}>Semester 8</option>
                 </select>
               </div>
 
@@ -290,7 +290,8 @@
     const link = document.getElementById("link").value;
     const mainValue = document.getElementById("main").value;
     const category = document.getElementById("category").value;
-    const semester = document.getElementById("semester").value;
+    const semesterEl = document.getElementById("semester");
+    const selectedSemesters = semesterEl ? Array.from(semesterEl.selectedOptions).map(o => o.value) : [];
 
     document.getElementById("bookname").textContent = name;
     document.getElementById("bookdesciption").textContent = description;
@@ -312,12 +313,14 @@
         badgesContainer.appendChild(mainBadge);
       }
 
-      // Add semester badge
-      if (semester) {
-        const semesterBadge = document.createElement("div");
-        semesterBadge.className = "badge badge-semester";
-        semesterBadge.innerHTML = `<i class="fas fa-graduation-cap"></i> ${semester}`;
-        badgesContainer.appendChild(semesterBadge);
+      // Add semester badges
+      if (selectedSemesters && selectedSemesters.length > 0) {
+        selectedSemesters.forEach(s => {
+          const semesterBadge = document.createElement("div");
+          semesterBadge.className = "badge badge-semester";
+          semesterBadge.innerHTML = `<i class="fas fa-graduation-cap"></i> ${s}`;
+          badgesContainer.appendChild(semesterBadge);
+        });
       }
 
       // Add category badge
@@ -349,13 +352,14 @@
     submitButton.disabled = true;
     submitButton.textContent = (form.dataset.isEdit === 'true') ? "Editing..." : "Adding...";
 
+    const semesterSelected = Array.from(document.getElementById("semester").selectedOptions).map(o => o.value);
     const payload = {
       name: document.getElementById("name").value,
       category: document.getElementById("category").value,
       description: document.getElementById("description").value,
       imageURL: document.getElementById("imageURL").value,
       link: document.getElementById("link").value,
-      semester: document.getElementById("semester").value,
+      semester: semesterSelected,
       main: document.getElementById("main").value,
       visible: document.getElementById("visible").value,
     };

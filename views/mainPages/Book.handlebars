@@ -94,9 +94,9 @@
             <i class="fas fa-eye-slash"></i> Hidden
           </div>
           {{/unless}}
-          {{#if (eq ../filters.semester 'all')}}
+          {{#if this.semester}}
           <div class="badge badge-semester" aria-label="Book semester">
-            <i class="fas fa-graduation-cap"></i> {{this.semester}}
+            <i class="fas fa-graduation-cap"></i> {{join this.semester}}
           </div>
           {{/if}}
           <div class="badge badge-category" aria-label="Book category">

@@ -63,6 +63,14 @@ app.engine("handlebars", engine({
     eq: function (a, b) {
       return a === b;
     },
+    includes: function (arr, val) {
+      if (Array.isArray(arr)) return arr.includes(val);
+      return arr === val;
+    },
+    join: function (arr, sep = ', ') {
+      if (Array.isArray(arr)) return arr.join(sep);
+      return arr || '';
+    },
     or: function (a, b) {
       return a || b;
     },

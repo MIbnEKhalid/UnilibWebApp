@@ -31,13 +31,22 @@ function parseUrlParameters() {
     const urlParams = new URLSearchParams(window.location.search);
 
     state.currentPage = parseInt(urlParams.get('page')) || 1;
-    state.currentFilters.semester = urlParams.get('semester') || 'Semester3';
+    // semester can be a CSV list or a single value
+    const semesterParam = urlParams.get('semester');
+    state.currentFilters.semester = semesterParam ? (semesterParam.includes(',') ? semesterParam.split(',').map(s=>s.trim()) : semesterParam) : 'Semester3';
     state.currentFilters.category = urlParams.get('category') || 'all';
     state.currentFilters.search = urlParams.get('search') || '';
 
     // Update UI to reflect URL parameters
     if (state.currentFilters.semester && elements.semesterFilter) {
-        elements.semesterFilter.value = state.currentFilters.semester;
+        if (Array.isArray(state.currentFilters.semester)) {
+            // Set multiple selection
+            Array.from(elements.semesterFilter.options).forEach(opt => {
+                opt.selected = state.currentFilters.semester.includes(opt.value);
+            });
+        } else {
+            elements.semesterFilter.value = state.currentFilters.semester;
+        }
     }
     if (state.currentFilters.category && elements.categoryFilter) {
         elements.categoryFilter.value = state.currentFilters.category;
@@ -78,6 +87,8 @@ function setupEventListeners() {
     }
     if (elements.semesterFilter) {
         elements.semesterFilter.addEventListener("change", filterProducts);
+    // Support keyboard selection toggles (shift+click) for some browsers
+    elements.semesterFilter.addEventListener("keydown", (e) => { if (e.key === 'Enter') filterProducts(e); });
     }
     if (elements.clearBtn) {
         elements.clearBtn.addEventListener("click", clearSearch);
@@ -128,7 +139,14 @@ function filterProducts(e) {
         e.preventDefault();
     }
     state.currentPage = 1; // Reset to first page
-    state.currentFilters.semester = elements.semesterFilter.value;
+    // Gather selected semesters (multiple select) into CSV for URL param
+    const selectedOptions = Array.from(elements.semesterFilter.selectedOptions || []).map(o => o.value);
+    // If none selected or 'all' selected, treat as 'all'
+    if (selectedOptions.length === 0 || selectedOptions.includes('all')) {
+        state.currentFilters.semester = 'all';
+    } else {
+        state.currentFilters.semester = selectedOptions.length === 1 ? selectedOptions[0] : selectedOptions.join(',');
+    }
     state.currentFilters.category = elements.categoryFilter.value;
     state.currentFilters.search = elements.searchInput.value.toLowerCase();
 

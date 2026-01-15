@@ -25,7 +25,7 @@ CREATE TABLE unilibbook (
   description TEXT,
   imageURL Text NOT NULL DEFAULT 'BookCover_Template.webp',
   link TEXT NOT NULL,
-  semester semesters NOT NULL,
+  semester semesters[] NOT NULL DEFAULT ARRAY['Semester 3']::semesters[],
   main BOOLEAN NOT NULL DEFAULT FALSE,
   visible BOOLEAN NOT NULL DEFAULT TRUE,
   views INTEGER NOT NULL DEFAULT 0,
@@ -51,17 +51,17 @@ unilibbook.sections structure:
 
 -- Indexes for unilibbook table
 CREATE INDEX idx_unilibbook_category ON unilibbook(category);
-CREATE INDEX idx_unilibbook_semester ON unilibbook(semester);
+CREATE INDEX IF NOT EXISTS idx_unilibbook_semester ON unilibbook USING gin (semester);
 CREATE INDEX idx_unilibbook_main ON unilibbook(main);
 CREATE INDEX idx_unilibbook_visible ON unilibbook(visible);
 
 -- Composite index for common query patterns
-CREATE INDEX IF NOT EXISTS idx_unilibbook_semester_category_main
-ON unilibbook(semester, category, main);
+-- Replaced composite semester index with a category+main btree index for better compatibility with array-typed semester
+CREATE INDEX IF NOT EXISTS idx_unilibbook_category_main ON unilibbook(category, main);
 
 -- Composite index including visibility for admin queries
-CREATE INDEX IF NOT EXISTS idx_unilibbook_visible_semester_category
-ON unilibbook(visible, semester, category);
+CREATE INDEX IF NOT EXISTS idx_unilibbook_visible_category
+ON unilibbook(visible, category);
 
 -- Trigram extension for text search
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
