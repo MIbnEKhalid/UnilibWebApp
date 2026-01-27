@@ -38,3 +38,24 @@
     REDIS_ENABLED=false
     ```
     Accepts `false` or `0` (case-insensitive) to disable; any other value enables it.
+
+- **TASJEEL_SYNC_CRON**  
+    Cron expression for scheduling tasjeel sync job (default every 6 hours):
+    ```bash
+    TASJEEL_SYNC_CRON="0 */6 * * *"
+    ```
+
+- **TASJEEL_SYNC_COOKIE**  
+    Optional cookie string to use for authenticated requests to tasjeel when syncing subjects and materials. Example:
+    ```bash
+    TASJEEL_SYNC_COOKIE="session_id=abc123..."
+    ```
+
+Notes:
+- To apply the SQL migration(s) run the migration runner:
+  ```bash
+  node tool/runMigrations.js
+  ```
+  This will execute all SQL files in `migrations/` (idempotent if files use IF NOT EXISTS).
+- The sync tool will also attempt to create required tables automatically when it runs, so the scheduler won't fail on a missing table. However it is recommended to run migrations explicitly in production.
+- In serverless environments (Vercel) in-memory caches are ephemeral; prefer setting `TASJEEL_SYNC_COOKIE` and relying on scheduled sync to keep DB up-to-date.

@@ -1,0 +1,1012 @@
+<section class="section subjects-section">
+  <div class="section-container content">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span> / </span>
+      <span>Subjects & Materials</span>
+    </nav>
+
+    <div class="subjects-container">
+      <header class="subjects-header">
+        <div class="header-content">
+          <h1>📚 Subjects & Materials</h1>
+          <p class="subtitle">Access all your course materials in one place</p>
+        </div>
+        
+        {{#if error}}
+          <div class="error-message mobile-error">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <div>
+              <strong>Error</strong>
+              <span>{{error}}</span>
+            </div>
+            <button class="close-error">&times;</button>
+          </div>
+        {{/if}}
+      </header>
+
+  <div class="header-controls">
+    <div class="search-bar desktop-search">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" id="subjectSearch" placeholder="Search subjects..." aria-label="Search subjects">
+      <button type="button" id="subjectSearchClear" class="clear-btn" title="Clear search" style="display:none;">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="controls-right">
+      <button id="load-all-materials" class="btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Load All Materials
+      </button>
+      <div class="view-toggle">
+        <button class="view-toggle-btn active" data-view="grid" title="Grid view">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+          </svg>
+        </button>
+        <button class="view-toggle-btn" data-view="list" title="List view">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="8" y1="6" x2="21" y2="6"></line>
+            <line x1="8" y1="12" x2="21" y2="12"></line>
+            <line x1="8" y1="18" x2="21" y2="18"></line>
+            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  {{#if subjects.length}}
+    <div class="subjects-grid" id="subjects-view">
+      {{#each subjects}}
+        <div class="subject-card" data-courseid="{{courseId}}">
+          <div class="card">
+            <div class="card-header">
+              <div class="subject-info">
+                <h3 class="subject-title">{{subject}}</h3>
+                <div class="course-meta">
+                  <span class="course-id">{{courseId}}</span>
+                  <span class="material-count">0 materials</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="card-content">
+              <button class="load-materials-btn mobile-expand-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+                <span class="btn-text">Show Materials</span>
+                <span class="material-badge">0</span>
+              </button>
+              
+              <div class="materials-section">
+                <div class="loading-spinner">
+                  <div class="spinner"></div>
+                  <span>Loading materials...</span>
+                </div>
+                
+                <div class="materials-content">
+                  <ul class="materials-list"></ul>
+                </div>
+                
+                <div class="materials-actions">
+                  <button class="btn btn-primary small-btn download-all-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="7 10 12 15 17 10"></polyline>
+                      <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Download All
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {{/each}}
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // Mobile error dismiss
+        document.querySelectorAll('.close-error').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.target.closest('.error-message').style.display = 'none';
+          });
+        });
+        
+        // View toggle
+        document.querySelectorAll('.view-toggle-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.view-toggle-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const view = btn.dataset.view;
+            document.getElementById('subjects-view').className = `subjects-${view}`;
+          });
+        });
+
+        // Desktop search (filters subject cards client-side for responsiveness)
+        const subjectSearch = document.getElementById('subjectSearch');
+        const subjectSearchClear = document.getElementById('subjectSearchClear');
+        if (subjectSearch) {
+          const filterCards = () => {
+            const q = subjectSearch.value.trim().toLowerCase();
+            document.querySelectorAll('.subject-card').forEach(card => {
+              const title = (card.querySelector('.subject-title')?.textContent || '').toLowerCase();
+              card.style.display = title.includes(q) ? '' : 'none';
+            });
+            subjectSearchClear.style.display = q ? 'inline-block' : 'none';
+          };
+
+          subjectSearch.addEventListener('input', filterCards);
+          subjectSearchClear.addEventListener('click', () => { subjectSearch.value = ''; subjectSearchClear.style.display = 'none'; filterCards(); });
+        }
+        
+        // Close mobile menus when clicking elsewhere
+        document.addEventListener('click', () => {
+          document.querySelectorAll('.subject-card').forEach(card => {
+            card.classList.remove('menu-open');
+          });
+        });
+        
+        // Load materials functionality
+        document.querySelectorAll('.subject-card').forEach(card => {
+          const loadBtn = card.querySelector('.load-materials-btn');
+          const downloadAllBtn = card.querySelector('.download-all-btn');
+          const list = card.querySelector('.materials-list');
+          const spinner = card.querySelector('.loading-spinner');
+          const btnText = card.querySelector('.btn-text');
+          const materialBadge = card.querySelector('.material-badge');
+          const materialCount = card.querySelector('.material-count');
+          const materialsSection = card.querySelector('.materials-section');
+          let loaded = false;
+          let materials = [];
+
+          // Toggle materials visibility
+          const toggleMaterials = () => {
+            const isCollapsed = materialsSection.classList.contains('collapsed');
+            if (isCollapsed) {
+              materialsSection.classList.remove('collapsed');
+              card.classList.add('expanded');
+            } else {
+              materialsSection.classList.add('collapsed');
+              card.classList.remove('expanded');
+            }
+          };
+
+          loadBtn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            
+            if (!loaded) {
+              await loadMaterials();
+            }
+            toggleMaterials();
+          });
+
+          async function loadMaterials() {
+            if (loaded) return;
+
+            spinner.style.display = 'flex';
+            loadBtn.disabled = true;
+            const courseId = card.dataset.courseid;
+
+            try {
+              const resp = await fetch(`/api/get/all/materials/${encodeURIComponent(courseId)}`, { 
+                credentials: 'same-origin' 
+              });
+              
+              if (!resp.ok) throw new Error('Failed to load materials');
+              const json = await resp.json();
+              materials = json.materials || [];
+
+              updateMaterialCount(materials.length);
+              
+              if (materials.length) {
+                list.innerHTML = '';
+                materials.forEach(m => {
+                  const li = document.createElement('li');
+                  li.className = 'material-item';
+                  
+                  const fileIcon = document.createElement('span');
+                  fileIcon.className = 'file-icon';
+                  fileIcon.innerHTML = getFileIcon(m.name);
+                  
+                  const fileInfo = document.createElement('div');
+                  fileInfo.className = 'file-info';
+                  
+                  const fileName = document.createElement('span');
+                  fileName.className = 'file-name';
+                  fileName.textContent = m.name || 'Unnamed File';
+                  fileName.title = m.name;
+                  
+                  const fileSize = document.createElement('span');
+                  fileSize.className = 'file-size';
+                  fileSize.textContent = m.size ? formatFileSize(m.size) : '';
+                  
+                  fileInfo.appendChild(fileName);
+                  fileInfo.appendChild(fileSize);
+                  
+                  if (m.href) {
+                    const downloadBtn = document.createElement('a');
+                    downloadBtn.href = m.href;
+                    downloadBtn.className = 'download-btn mobile-download';
+                    downloadBtn.target = '_blank';
+                    downloadBtn.setAttribute('download', '');
+                    downloadBtn.innerHTML = `
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                      </svg>
+                    `;
+                    li.appendChild(downloadBtn);
+                  }
+                  
+                  li.appendChild(fileIcon);
+                  li.appendChild(fileInfo);
+                  list.appendChild(li);
+                });
+                
+                // Setup download all functionality
+                downloadAllBtn.addEventListener('click', () => {
+                  materials.forEach(m => {
+                    if (m.href) {
+                      const a = document.createElement('a');
+                      a.href = m.href;
+                      a.target = '_blank';
+                      a.setAttribute('download', '');
+                      document.body.appendChild(a);
+                      a.click();
+                      document.body.removeChild(a);
+                    }
+                  });
+                });
+              } else {
+                list.innerHTML = `
+                  <li class="no-materials">
+                    <span class="empty-icon">📭</span>
+                    <div>
+                      <strong>No materials found</strong>
+                      <span>Check back later for updates</span>
+                    </div>
+                  </li>
+                `;
+                downloadAllBtn.style.display = 'none';
+              }
+
+              loaded = true;
+              materialsSection.classList.add('loaded');
+            } catch (err) {
+              list.innerHTML = `
+                <li class="error-message">
+                  <span class="error-icon">⚠️</span>
+                  <div>
+                    <strong>Error loading materials</strong>
+                    <span>Please try again later</span>
+                  </div>
+                </li>
+              `;
+              console.error(err);
+            } finally {
+              spinner.style.display = 'none';
+              loadBtn.disabled = false;
+            }
+          }
+
+          function updateMaterialCount(count) {
+            materialBadge.textContent = count;
+            materialCount.textContent = `${count} material${count !== 1 ? 's' : ''}`;
+          }
+
+          function getFileIcon(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            const icons = {
+              pdf: '📕',
+              doc: '📘', docx: '📘',
+              xls: '📊', xlsx: '📊',
+              ppt: '📽', pptx: '📽',
+              zip: '📦', rar: '📦',
+              mp4: '🎬', avi: '🎬', mov: '🎬',
+              mp3: '🎵', wav: '🎵',
+              jpg: '🖼', jpeg: '🖼', png: '🖼', gif: '🖼',
+              txt: '📃',
+              default: '📄'
+            };
+            return icons[ext] || icons.default;
+          }
+
+          function formatFileSize(bytes) {
+            if (!bytes) return '';
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            let i = 0;
+            while (bytes >= 1024 && i < sizes.length - 1) {
+              bytes /= 1024;
+              i++;
+            }
+            return `${bytes.toFixed(1)} ${sizes[i]}`;
+          }
+        });
+
+        // Load all materials button
+        const loadAllBtn = document.getElementById('load-all-materials');
+        if (loadAllBtn) {
+          loadAllBtn.addEventListener('click', () => {
+            document.querySelectorAll('.subject-card').forEach(card => {
+              const loadBtn = card.querySelector('.load-materials-btn');
+              const materialsSection = card.querySelector('.materials-section');
+              
+              if (!materialsSection.classList.contains('loaded')) {
+                loadBtn.click();
+              }
+              materialsSection.classList.remove('collapsed');
+              card.classList.add('expanded');
+            });
+          });
+        }
+      });
+    </script>
+
+  {{else}}
+    <div class="empty-state">
+      <div class="empty-icon">📚</div>
+      <h3>No Subjects Found</h3>
+      <p>There are currently no subjects available. Please check back later.</p>
+      <button class="btn btn-primary" onclick="location.reload()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M23 4v6h-6"></path>
+          <path d="M1 20v-6h6"></path>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"></path>
+          <path d="M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+        Refresh Page
+      </button>
+    </div>
+  {{/if}}
+</div>
+  </div>
+</section>
+
+<style>
+  /* Provide page-scoped fallback variables so missing globals don't break styles */
+  :root {
+    --light-gray: rgba(255,255,255,0.04);
+    --border-radius-xs: 8px;
+  }
+
+  /* Use main layout variables and don't override global body styles */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    font-size: 16px;
+  }
+
+  /* Keep page styles scoped so they inherit the main site theme */
+  .subjects-section { padding: 1.5rem 0 0; }
+  .subjects-container { padding-top: 0; }
+
+  .subjects-container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0;
+    min-height: 100vh;
+  }
+
+  .subjects-header {
+    background: transparent;
+    color: var(--text);
+    padding: clamp(12px, 3vw, 20px) 12px;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    box-shadow: none;
+    position: relative;
+    overflow: visible;
+  }
+
+  .header-content {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .breadcrumb {
+    font-size: 0.9rem;
+    color: var(--gray);
+    max-width: 1200px;
+    margin: 18px auto 6px;
+  }
+
+  .breadcrumb a { color: inherit; text-decoration: none; opacity: 0.95; }
+  .breadcrumb span { opacity: 0.7; }
+
+  .subjects-header h1 {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    line-height: 1.2;
+  }
+
+  .subtitle {
+    font-size: clamp(0.875rem, 2.5vw, 1rem);
+    opacity: 0.9;
+    max-width: 600px;
+  }
+
+  .mobile-error {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    margin-top: 20px;
+    padding: 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border-radius: var(--border-radius-xs);
+    position: relative;
+  }
+
+  .mobile-error > div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .mobile-error strong {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .mobile-error span {
+    font-size: 0.875rem;
+    opacity: 0.9;
+    color: var(--text-light, rgba(255,255,255,0.7));
+  }
+
+  .close-error {
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    transition: var(--transition);
+  }
+
+  .close-error:hover {
+    opacity: 1;
+  }
+
+  .mobile-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 20px 0;
+    gap: 16px;
+  }
+
+  /* Desktop header controls */
+  .header-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .desktop-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: var(--border-radius-xs);
+    min-width: 320px;
+    flex: 1;
+  }
+
+  .desktop-search input {
+    border: none;
+    outline: none;
+    font-size: 0.95rem;
+    width: 100%;
+  }
+
+  .controls-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  @media (max-width: 768px) {
+    .header-controls { display: none; }
+  }
+
+  .mobile-btn {
+    flex: 1;
+    padding: 14px 20px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    border-radius: var(--border-radius-sm);
+    box-shadow: var(--shadow);
+  }
+
+  .view-toggle {
+    display: flex;
+    background: var(--card-bg, rgba(255,255,255,0.03));
+    border-radius: var(--border-radius-sm);
+    padding: 4px;
+    box-shadow: var(--box-shadow);
+    border: 1px solid rgba(255,255,255,0.03);
+  }
+
+  .view-toggle-btn {
+    width: 44px;
+    height: 44px;
+    border: none;
+    background: transparent;
+    border-radius: var(--border-radius-xs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .view-toggle-btn.active {
+    background: var(--primary-light);
+    color: var(--primary);
+  }
+
+  .subjects-grid, .subjects-list {
+    padding: 20px;
+    display: grid;
+    gap: 16px;
+  }
+
+  .subjects-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    padding: 24px;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .subjects-list .subject-card {
+    max-width: 100%;
+  }
+
+  .card {
+    background: var(--card-bg, rgba(255,255,255,0.03));
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    border: 1px solid var(--main-border-color, rgba(255,255,255,0.06));
+  }
+
+  .card-header {
+    padding: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    position: relative;
+  }
+
+  .subject-info {
+    flex: 1;
+    min-width: 0; /* Enable text truncation */
+  }
+
+  .subject-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .course-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .course-id {
+    font-size: 0.8125rem;
+    color: var(--text-light, rgba(255,255,255,0.7));
+    background: rgba(255,255,255,0.03);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+    border: 1px solid rgba(255,255,255,0.02);
+  }
+
+  .material-count {
+    font-size: 0.8125rem;
+    color: var(--text-light, rgba(255,255,255,0.75));
+  }
+
+  .card-content {
+    padding: 0 20px 20px;
+  }
+
+  .mobile-expand-btn {
+    width: 100%;
+    padding: 10px 16px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: var(--border-radius-xs);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text);
+    transition: var(--transition);
+    font-size: 0.9375rem;
+  }
+
+  .mobile-expand-btn:hover {
+    background: rgba(255,255,255,0.04);
+  }
+
+  .mobile-expand-btn svg {
+    transition: transform 0.3s ease;
+  }
+
+  .card.expanded .mobile-expand-btn svg {
+    transform: rotate(180deg);
+  }
+
+  .material-badge {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid rgba(255,255,255,0.04);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .materials-section {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .materials-section:not(.collapsed) {
+    max-height: 500px;
+    margin-top: 10px;
+  }
+
+  .materials-content {
+    max-height: 300px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-light) transparent;
+    margin: 0 -20px;
+    padding: 0 20px;
+  }
+
+  .materials-content::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .materials-content::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .materials-content::-webkit-scrollbar-thumb {
+    background: var(--primary-light);
+    border-radius: 3px;
+  }
+
+  .materials-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .material-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 5px;
+    background: transparent;
+    border: solid 1px var(--light-gray);
+    border-radius: var(--border-radius-xs);
+    transition: var(--transition);
+    position: relative;
+  }
+
+  .file-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .file-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .file-name {
+    font-weight: 500;
+    color: var(--text);
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.9375rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .file-size {
+    font-size: 0.75rem;
+    color: var(--text-light, rgba(255,255,255,0.7));
+  }
+
+  .mobile-download {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    text-decoration: none;
+  }
+
+  .mobile-download:hover {
+    transform: scale(1.1);
+  }
+
+  .materials-actions {
+    border-top: 1px solid var(--light-gray);
+    display: flex;
+    justify-content: center;
+  }
+
+  .download-all-btn {
+    padding: 8px 14px;
+    background: var(--accent, var(--primary));
+    color: var(--dark, #0a1414);
+    border: none;
+    border-radius: var(--border-radius-xs);
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .download-all-btn:hover {
+    opacity: 0.95;
+  }
+
+  .small-btn {
+    padding: 6px 10px;
+    font-size: 0.8125rem;
+    border-radius: 6px;
+  }
+
+  .loading-spinner {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 40px 20px;
+    color: var(--gray);
+  }
+
+  .spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid var(--light-gray);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  .no-materials, .error-message {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+    text-align: left;
+  }
+
+  .no-materials .empty-icon, .error-message .error-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .no-materials > div, .error-message > div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .no-materials strong, .error-message strong {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .no-materials span, .error-message span {
+    font-size: 0.875rem;
+    color: var(--gray);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    max-width: 400px;
+    margin: 40px auto;
+  }
+
+  .empty-state .empty-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    opacity: 0.3;
+  }
+
+  .empty-state h3 {
+    font-size: 1.25rem;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .empty-state p {
+    color: var(--gray);
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Responsive Breakpoints */
+  @media (max-width: 768px) {
+    .subjects-grid {
+      grid-template-columns: 1fr;
+      padding: 16px;
+      gap: 12px;
+    }
+    
+    .mobile-controls {
+      padding: 16px 16px 0;
+    }
+    
+    .card-header {
+      padding: 16px;
+    }
+    
+    .card-content {
+      padding: 0 16px 16px;
+    }
+    
+    .mobile-error {
+      margin-top: 16px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    html {
+      font-size: 15px;
+    }
+    
+    .subjects-header {
+      padding: 20px 16px;
+    }
+    
+    .mobile-controls {
+      flex-direction: column;
+    }
+    
+    .view-toggle {
+      align-self: flex-end;
+    }
+    
+    .subject-title {
+      -webkit-line-clamp: 1;
+    }
+    
+    .course-meta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .subjects-container {
+      max-width: 1200px;
+      padding: 0 24px;
+    }
+    
+    .subjects-header {
+      margin: 24px 24px 0;
+      border-radius: var(--border-radius);
+    }
+    
+    .mobile-controls {
+      padding: 24px 24px 0;
+    }
+    
+    .subjects-grid, .subjects-list {
+      padding: 24px;
+    }
+  }
+
+
+
+  /* Accessibility improvements */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Touch device optimizations */
+  @media (hover: none) and (pointer: coarse) {
+    .card:hover {
+      transform: none;
+    }
+    
+    .material-item {
+      padding: 16px 12px;
+    }
+    
+    button, a {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  }
+</style>

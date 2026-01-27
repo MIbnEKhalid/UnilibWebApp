@@ -2,8 +2,11 @@ import express from "express";
 import dotenv from "dotenv";
 import { validateSessionAndRole } from "mbkauthe";
 import { renderError } from "mbkauthe";
-import { pool } from "./pool.js";
+import { pool, pool2 } from "./pool.js";
 import redis from "../lib/redisClient.js";
+import { randomUUID } from "crypto";
+import { syncTasjeel, getLatestSession } from '../tool/syncTasjeel.js';
+
 
 dotenv.config();
 const router = express.Router();
@@ -61,10 +64,9 @@ async function invalidateBookCaches(bookIds) {
   }
 }
 
-
 // define a reusable handler function
 async function renderUnilibBooks(req, res, view, data) {
-  const { page = 1, limit = 12, semester = 'Semester3', category = 'all', search = '' } = req.query;
+  const { page = 1, limit = process.env.DEFAULT_LIMIT, semester = 'Semester3', category = 'all', search = '' } = req.query;
   const offset = (page - 1) * limit;
 
   // Normalize semester filter: accept 'all', single string, comma-separated string, or array
@@ -102,7 +104,8 @@ async function renderUnilibBooks(req, res, view, data) {
 
   if (semesterFilter && semesterFilter !== 'all' && semesterFilter.length > 0) {
     // Use array overlap operator so books that belong to any of the selected semesters match
-    conditions.push(`semester && $${params.length + 1}::semesters[]`);
+    // Compare by casting DB array to text[] and parameter to text[] to avoid custom-type mismatches
+    conditions.push(`semester::text[] && $${params.length + 1}::text[]`);
     params.push(semesterFilter);
   }
   if (category !== 'all') {
@@ -162,10 +165,10 @@ export async function renderPage(req, res, fileLocation, layout = true, data = {
 
 // Route for '/' with Redis-backed caching (public responses only)
 router.get("/", async (req, res) => {
-  // Normalize query parameters for consistent cache keys
-  const { page = '1', limit = '12', semester = 'Semester3', category = 'all', search = '' } = req.query;
-  const queryString = new URLSearchParams({ page, limit, semester, category, search }).toString();
 
+  // Normalize query parameters for consistent cache keys
+  const { page = '1', limit = process.env.DEFAULT_LIMIT, semester = 'Semester3', category = 'all', search = '' } = req.query;
+  const queryString = new URLSearchParams({ page, limit, semester, category, search }).toString();
   // Set Cache-Control and Vary headers for 2-minute edge caching
   res.set({
     'Cache-Control': 'public, max-age=120, s-maxage=120, stale-while-revalidate=60',
@@ -507,8 +510,8 @@ router.post("/api/admin/Book/:bookId/Section/Add", validateSessionAndRole("Any")
       : 0;
     const section_number = maxSectionNumber + 1;
 
-    // Generate unique ID (using timestamp + random for better uniqueness)
-    const newSectionId = Date.now() + Math.floor(Math.random() * 1000);
+    // Generate unique ID using UUID v4
+    const newSectionId = randomUUID();
     const newSection = {
       id: newSectionId,
       section_number: section_number,
@@ -521,16 +524,24 @@ router.post("/api/admin/Book/:bookId/Section/Add", validateSessionAndRole("Any")
 
     const updatedSections = [...currentSections, newSection];
 
-    // Update the sections JSONB with transaction
+    // Update the sections JSONB with transaction (cast parameter to jsonb)
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
 
-      const updateQuery = 'UPDATE unilibbook SET sections = $1 WHERE id = $2';
+      const updateQuery = 'UPDATE unilibbook SET sections = $1::jsonb WHERE id = $2';
       await client.query(updateQuery, [JSON.stringify(updatedSections), bookId]);
 
       await client.query('COMMIT');
       console.log(`Section ${section_number} added to book ${bookId} by user ${req.session.user.username}`);
+
+      // Invalidate caches so public pages reflect the updated sections
+      try {
+        await invalidateBookCache(bookId);
+        await invalidateIndexCaches();
+      } catch (e) {
+        console.error('Cache invalidation error after section add:', e);
+      }
 
       res.status(201).json({
         message: `Section added successfully!`,
@@ -549,10 +560,11 @@ router.post("/api/admin/Book/:bookId/Section/Add", validateSessionAndRole("Any")
 });
 
 router.post("/api/admin/Section/Edit/:sectionId", validateSessionAndRole("Any"), async (req, res) => {
-  const sectionId = parseInt(req.params.sectionId);
+  const sectionIdParam = req.params.sectionId;
+  const parsedSectionId = /^\d+$/.test(sectionIdParam) ? Number(sectionIdParam) : sectionIdParam;
   const { section_number, page_start, page_end, name } = req.body;
 
-  if (!sectionId || isNaN(sectionId)) {
+  if (!sectionIdParam) {
     return res.status(400).json({ error: "Invalid section ID" });
   }
 
@@ -578,8 +590,8 @@ router.post("/api/admin/Section/Edit/:sectionId", validateSessionAndRole("Any"),
 
   try {
     // Find the book that contains this section
-    const findBookQuery = "SELECT id, sections FROM unilibbook WHERE sections @> $1";
-    const findBookResult = await pool.query(findBookQuery, [JSON.stringify([{ id: sectionId }])]);
+    const findBookQuery = "SELECT id, sections FROM unilibbook WHERE sections @> $1::jsonb";
+    const findBookResult = await pool.query(findBookQuery, [JSON.stringify([{ id: parsedSectionId }])]);
 
     if (findBookResult.rows.length === 0) {
       return res.status(404).json({ error: "Section not found" });
@@ -589,14 +601,14 @@ router.post("/api/admin/Section/Edit/:sectionId", validateSessionAndRole("Any"),
     const currentSections = book.sections || [];
 
     // Check for duplicate section numbers (excluding current section)
-    const duplicateSection = currentSections.find(section => section.section_number === section_number && section.id !== sectionId);
+    const duplicateSection = currentSections.find(section => section.section_number === section_number && section.id !== parsedSectionId);
     if (duplicateSection) {
       return res.status(409).json({ error: `Section number ${section_number} already exists in this book` });
     }
 
     // Update the specific section
     const updatedSections = currentSections.map(section =>
-      section.id === sectionId
+      section.id === parsedSectionId
         ? {
           ...section,
           section_number: section_number,
@@ -608,20 +620,28 @@ router.post("/api/admin/Section/Edit/:sectionId", validateSessionAndRole("Any"),
         : section
     );
 
-    // Update the sections JSONB with transaction
+    // Update the sections JSONB with transaction (cast parameter to jsonb)
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
 
-      const updateQuery = 'UPDATE unilibbook SET sections = $1 WHERE id = $2';
+      const updateQuery = 'UPDATE unilibbook SET sections = $1::jsonb WHERE id = $2';
       await client.query(updateQuery, [JSON.stringify(updatedSections), book.id]);
 
       await client.query('COMMIT');
-      console.log(`Section ${sectionId} updated in book ${book.id} by user ${req.session.user.username}`);
+      console.log(`Section ${parsedSectionId} updated in book ${book.id} by user ${req.session.user.username}`);
+
+      // Invalidate caches so public pages reflect the updated sections
+      try {
+        await invalidateBookCache(book.id);
+        await invalidateIndexCaches();
+      } catch (e) {
+        console.error('Cache invalidation error after section edit:', e);
+      }
 
       res.status(200).json({
         message: `Section updated successfully!`,
-        section: updatedSections.find(section => section.id === sectionId)
+        section: updatedSections.find(section => section.id === parsedSectionId)
       });
     } catch (dbError) {
       await client.query('ROLLBACK');
@@ -636,16 +656,17 @@ router.post("/api/admin/Section/Edit/:sectionId", validateSessionAndRole("Any"),
 });
 
 router.post("/api/admin/Section/Delete/:sectionId", validateSessionAndRole("Any"), async (req, res) => {
-  const sectionId = parseInt(req.params.sectionId);
+  const sectionIdParam = req.params.sectionId;
+  const parsedSectionId = /^\d+$/.test(sectionIdParam) ? Number(sectionIdParam) : sectionIdParam;
 
-  if (!sectionId || isNaN(sectionId)) {
+  if (!sectionIdParam) {
     return res.status(400).json({ error: "Invalid section ID" });
   }
 
   try {
     // Find the book that contains this section
-    const findBookQuery = "SELECT id, sections FROM unilibbook WHERE sections @> $1";
-    const findBookResult = await pool.query(findBookQuery, [JSON.stringify([{ id: sectionId }])]);
+    const findBookQuery = "SELECT id, sections FROM unilibbook WHERE sections @> $1::jsonb";
+    const findBookResult = await pool.query(findBookQuery, [JSON.stringify([{ id: parsedSectionId }])]);
 
     if (findBookResult.rows.length === 0) {
       return res.status(404).json({ error: "Section not found" });
@@ -655,24 +676,32 @@ router.post("/api/admin/Section/Delete/:sectionId", validateSessionAndRole("Any"
     const currentSections = book.sections || [];
 
     // Find the section to be deleted
-    const sectionToDelete = currentSections.find(section => section.id === sectionId);
+    const sectionToDelete = currentSections.find(section => section.id === parsedSectionId);
     if (!sectionToDelete) {
       return res.status(404).json({ error: "Section not found" });
     }
 
     // Remove the specific section
-    const updatedSections = currentSections.filter(section => section.id !== sectionId);
+    const updatedSections = currentSections.filter(section => section.id !== parsedSectionId);
 
     // Update the sections JSONB with transaction
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
 
-      const updateQuery = 'UPDATE unilibbook SET sections = $1 WHERE id = $2';
+      const updateQuery = 'UPDATE unilibbook SET sections = $1::jsonb WHERE id = $2';
       await client.query(updateQuery, [JSON.stringify(updatedSections), book.id]);
 
       await client.query('COMMIT');
-      console.log(`Section ${sectionId} (Section ${sectionToDelete.section_number}: ${sectionToDelete.name}) deleted from book ${book.id} by user ${req.session.user.username}`);
+      console.log(`Section ${parsedSectionId} (Section ${sectionToDelete.section_number}: ${sectionToDelete.name}) deleted from book ${book.id} by user ${req.session.user.username}`);
+
+      // Invalidate caches so public pages reflect the updated sections
+      try {
+        await invalidateBookCache(book.id);
+        await invalidateIndexCaches();
+      } catch (e) {
+        console.error('Cache invalidation error after section delete:', e);
+      }
 
       res.status(200).json({
         message: `Section deleted successfully!`,
@@ -703,10 +732,10 @@ router.post("/api/admin/Book/:bookId/Sections/BulkDelete", validateSessionAndRol
     return res.status(400).json({ error: "Cannot delete more than 50 sections at once" });
   }
 
-  // Validate section IDs
-  const invalidIds = sectionIds.filter(id => !Number.isInteger(id) || id <= 0);
+  // Validate section IDs: allow positive integers or non-empty strings (UUID)
+  const invalidIds = sectionIds.filter(id => !((typeof id === 'number' && Number.isInteger(id) && id > 0) || (typeof id === 'string' && id.trim().length > 0)));
   if (invalidIds.length > 0) {
-    return res.status(400).json({ error: "All section IDs must be positive integers" });
+    return res.status(400).json({ error: "All section IDs must be positive integers or non-empty strings" });
   }
 
   try {
@@ -720,25 +749,35 @@ router.post("/api/admin/Book/:bookId/Sections/BulkDelete", validateSessionAndRol
     const book = bookResult.rows[0];
     const currentSections = book.sections || [];
 
+    // Normalize IDs to strings for reliable comparison
+    const sectionIdSet = new Set(sectionIds.map(id => String(id)));
     // Find sections to be deleted
-    const sectionsToDelete = currentSections.filter(section => sectionIds.includes(section.id));
+    const sectionsToDelete = currentSections.filter(section => sectionIdSet.has(String(section.id)));
     if (sectionsToDelete.length === 0) {
       return res.status(404).json({ error: "No valid sections found to delete" });
     }
 
     // Remove the specified sections
-    const updatedSections = currentSections.filter(section => !sectionIds.includes(section.id));
+    const updatedSections = currentSections.filter(section => !sectionIdSet.has(String(section.id)));
 
     // Update the sections JSONB with transaction
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
 
-      const updateQuery = 'UPDATE unilibbook SET sections = $1 WHERE id = $2';
+      const updateQuery = 'UPDATE unilibbook SET sections = $1::jsonb WHERE id = $2';
       await client.query(updateQuery, [JSON.stringify(updatedSections), bookId]);
 
       await client.query('COMMIT');
       console.log(`${sectionsToDelete.length} sections deleted from book ${bookId} by user ${req.session.user.username}`);
+
+      // Invalidate caches so public pages reflect the updated sections
+      try {
+        await invalidateBookCache(bookId);
+        await invalidateIndexCaches();
+      } catch (e) {
+        console.error('Cache invalidation error after bulk section delete:', e);
+      }
 
       res.status(200).json({
         message: `Successfully deleted ${sectionsToDelete.length} section(s)`,
@@ -874,7 +913,7 @@ router.post("/api/book/:id/view", async (req, res) => {
 
     // Send response immediately
     res.json({ success: true });
-    
+
     // Track view asynchronously after response sent
     setImmediate(async () => {
       try {
@@ -910,7 +949,7 @@ router.post("/api/book/:id/download", async (req, res) => {
 
     // Send response immediately
     res.json({ success: true });
-    
+
     // Track download as view asynchronously after response sent
     setImmediate(async () => {
       try {
@@ -926,6 +965,96 @@ router.post("/api/book/:id/download", async (req, res) => {
   } catch (error) {
     console.error('Error in download tracking API:', error);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.get('/api/get/all/subjects', validateSessionAndRole("SuperAdmin"), async (req, res) => {
+  try {
+    const query = `SELECT course_id, subject, href FROM subjects ORDER BY subject ASC`;
+    const result = await pool2.query(query);
+    const links = result.rows.map(r => ({ href: r.href, subject: r.subject }));
+    return res.json({ success: true, links });
+  } catch (err) {
+    console.error('Error querying subjects from DB:', err);
+    return res.status(500).json({ success: false, message: 'Failed to fetch subjects from DB', error: err.message });
+  }
+});
+
+router.get('/api/get/all/materials/:id', validateSessionAndRole("SuperAdmin"), async (req, res) => {
+  const courseId = req.params.id;
+
+  try {
+    // find subject id
+    const s = await pool2.query('SELECT id, course_id FROM subjects WHERE course_id = $1', [courseId]);
+    if (s.rows.length === 0) return res.json({ success: true, materials: [] });
+    const subjectId = s.rows[0].id;
+
+    const m = await pool2.query('SELECT name, href FROM materials WHERE subject_id = $1 ORDER BY name ASC', [subjectId]);
+    return res.json({ success: true, materials: m.rows });
+  } catch (err) {
+    console.error('Error querying materials from DB:', err);
+    return res.status(500).json({ success: false, message: 'Failed to fetch materials from DB', error: err.message });
+  }
+});
+
+// Proxy route for downloading materials from tasjeel
+router.get('/student/class/material/download/:id', validateSessionAndRole("SuperAdmin"), async (req, res) => {
+  try {
+    const id = req.params.id;
+    const url = `https://tasjeel.cust.edu.pk/student/class/material/download/${id}`;
+    const cookie = `session_id=${(await getLatestSession())}`;
+
+    const upstream = await fetch(url, {
+      method: 'GET',
+      headers: { Cookie: cookie },
+      redirect: 'follow'
+    });
+
+    if (!upstream.ok) {
+      const body = await upstream.text().catch(() => '');
+      return res.status(upstream.status).send(body || 'Download failed');
+    }
+
+    const contentType = upstream.headers.get('content-type');
+    const contentDisposition = upstream.headers.get('content-disposition');
+    if (contentType) res.setHeader('content-type', contentType);
+    if (contentDisposition) res.setHeader('content-disposition', contentDisposition);
+
+    // Stream the upstream body to the client
+    if (upstream.body && typeof upstream.body.pipe === 'function') {
+      upstream.body.pipe(res);
+    } else {
+      const buffer = Buffer.from(await upstream.arrayBuffer());
+      res.end(buffer);
+    }
+
+  } catch (err) {
+    console.error('Download proxy error:', err);
+    res.status(500).json({ success: false, message: 'Download failed', error: err.message });
+  }
+});
+
+// Page showing all subjects and their materials
+router.get('/materials', validateSessionAndRole("SuperAdmin"), async (req, res) => {
+  try {
+    const result = await pool2.query('SELECT course_id, subject, href FROM subjects ORDER BY subject ASC');
+    const subjects = result.rows.map(r => ({ href: r.href, subject: r.subject, courseId: r.course_id }));
+    renderPage(req, res, "mainPages/subjects.handlebars", true, { page: "Subjects & Materials", subjects });
+  } catch (err) {
+    console.error('Error building subjects page from DB:', err);
+    renderPage(req, res, "mainPages/subjects.handlebars", true, { page: "Subjects & Materials", subjects: [], error: err.message });
+  }
+});
+
+// Manual sync endpoint (protected)
+router.get('/api/admin/sync/tasjeel', validateSessionAndRole("SuperAdmin"), async (req, res) => {
+  try {
+    const cookie = `session_id=${(await getLatestSession())}`;
+    const result = await syncTasjeel(cookie);
+    return res.json(result);
+  } catch (err) {
+    console.error('Manual sync failed:', err);
+    return res.status(500).json({ success: false, error: err.message });
   }
 });
 

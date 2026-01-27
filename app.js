@@ -6,6 +6,10 @@ import cors from "cors";
 import { engine } from "express-handlebars";
 import unilibRoutes from "./routes/main.js";
 import pdfRoutes from "./routes/pdf.js";
+
+// Sync job for tasjeel subjects/materials
+import cron from 'node-cron';
+import { syncTasjeel, getLatestSession } from './tool/syncTasjeel.js';
 import mbkautheRouter from "mbkauthe";
 import { renderError } from "mbkauthe";
 import rateLimit from "express-rate-limit";
@@ -105,7 +109,10 @@ app.engine("handlebars", engine({
         range.push(i);
       }
       return range;
-    },
+    }, substr: function (str, start, len) {
+      if (str == null) return '';
+      return String(str).substr(start, len);
+    }
   }
 }));
 
@@ -148,8 +155,31 @@ app.use((req, res) => {
 });
 
 const PORT = process.env.PORT || 3333;
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Server running on http://localhost:${PORT}`);
+  if (process.env.NODE_ENV != 'development') {
+    // Schedule tasjeel sync using cron expression from env or default every 6 hours
+    const cronExpr = process.env.TASJEEL_SYNC_CRON || '0 */6 * * *';
+    console.log(`Scheduling tasjeel sync with cron: ${cronExpr}`);
+    try {
+      // run once immediately on startup
+      await syncTasjeel(await getLatestSession());
+
+      if (cron.validate(cronExpr)) {
+        cron.schedule(cronExpr, async () => {
+          try {
+            await syncTasjeel(await getLatestSession());
+          } catch (err) {
+            console.error('Scheduled sync failed:', err);
+          }
+        });
+      } else {
+        console.warn('Invalid cron expression for TASJEEL_SYNC_CRON; skipping schedule.');
+      }
+    } catch (err) {
+      console.error('Error initializing tasjeel sync schedule:', err);
+    }
+  }
 });
 
 export default app;
