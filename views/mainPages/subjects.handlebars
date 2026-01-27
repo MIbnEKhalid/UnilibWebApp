@@ -47,74 +47,51 @@
         </svg>
         Load All Materials
       </button>
-      <div class="view-toggle">
-        <button class="view-toggle-btn active" data-view="grid" title="Grid view">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="7" height="7"></rect>
-            <rect x="14" y="3" width="7" height="7"></rect>
-            <rect x="3" y="14" width="7" height="7"></rect>
-            <rect x="14" y="14" width="7" height="7"></rect>
-          </svg>
-        </button>
-        <button class="view-toggle-btn" data-view="list" title="List view">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="8" y1="6" x2="21" y2="6"></line>
-            <line x1="8" y1="12" x2="21" y2="12"></line>
-            <line x1="8" y1="18" x2="21" y2="18"></line>
-            <line x1="3" y1="6" x2="3.01" y2="6"></line>
-            <line x1="3" y1="12" x2="3.01" y2="12"></line>
-            <line x1="3" y1="18" x2="3.01" y2="18"></line>
-          </svg>
-        </button>
-      </div>
     </div>
   </div>
 
   {{#if subjects.length}}
-    <div class="subjects-grid" id="subjects-view">
+    <div class="subjects-list" id="subjects-view">
       {{#each subjects}}
         <div class="subject-card" data-courseid="{{courseId}}">
           <div class="card">
             <div class="card-header">
               <div class="subject-info">
-                <h3 class="subject-title">{{subject}}</h3>
-                <div class="course-meta">
-                  <span class="course-id">{{courseId}}</span>
-                  <span class="material-count">0 materials</span>
-                </div>
+                <h3 class="subject-title">{{subject}}<span class="material-count">0 materials</span></h3>
               </div>
-            </div>
-            
+
+                 <button class="btn btn-primary small-btn download-all-btn top-download" style="display:none;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  Download All
+                </button>
+
+                <button class="load-materials-btn mobile-expand-btn" aria-expanded="false">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                  <span class="btn-text">Show Materials</span>
+                  <span class="material-badge">0</span>
+                </button>
+              </div> 
             <div class="card-content">
-              <button class="load-materials-btn mobile-expand-btn">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-                <span class="btn-text">Show Materials</span>
-                <span class="material-badge">0</span>
-              </button>
-              
-              <div class="materials-section">
-                <div class="loading-spinner">
-                  <div class="spinner"></div>
-                  <span>Loading materials...</span>
-                </div>
-                
-                <div class="materials-content">
-                  <ul class="materials-list"></ul>
-                </div>
-                
-                <div class="materials-actions">
-                  <button class="btn btn-primary small-btn download-all-btn">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                      <polyline points="7 10 12 15 17 10"></polyline>
-                      <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                    Download All
-                  </button>
+              <div class="content-left">
+                <div class="materials-section collapsed">
+                  <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <span>Loading materials...</span>
+                  </div>
+
+                  <div class="materials-content">
+                    <ul class="materials-list"></ul>
+                  </div>
                 </div>
               </div>
+
+
             </div>
           </div>
         </div>
@@ -130,15 +107,7 @@
           });
         });
         
-        // View toggle
-        document.querySelectorAll('.view-toggle-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            document.querySelectorAll('.view-toggle-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            const view = btn.dataset.view;
-            document.getElementById('subjects-view').className = `subjects-${view}`;
-          });
-        });
+        // View toggle removed — page now displays list view only.
 
         // Desktop search (filters subject cards client-side for responsiveness)
         const subjectSearch = document.getElementById('subjectSearch');
@@ -177,25 +146,18 @@
           let loaded = false;
           let materials = [];
 
-          // Toggle materials visibility
-          const toggleMaterials = () => {
-            const isCollapsed = materialsSection.classList.contains('collapsed');
-            if (isCollapsed) {
-              materialsSection.classList.remove('collapsed');
-              card.classList.add('expanded');
-            } else {
-              materialsSection.classList.add('collapsed');
-              card.classList.remove('expanded');
-            }
-          };
-
+          // Open materials on click (do not close on repeated clicks)
           loadBtn.addEventListener('click', async (e) => {
             e.stopPropagation();
-            
+
             if (!loaded) {
               await loadMaterials();
             }
-            toggleMaterials();
+
+            // Ensure the materials section is open and keep it open
+            materialsSection.classList.remove('collapsed');
+            card.classList.add('expanded');
+            if (loadBtn) loadBtn.setAttribute('aria-expanded', 'true');
           });
 
           async function loadMaterials() {
@@ -262,20 +224,23 @@
                   list.appendChild(li);
                 });
                 
-                // Setup download all functionality
-                downloadAllBtn.addEventListener('click', () => {
-                  materials.forEach(m => {
-                    if (m.href) {
-                      const a = document.createElement('a');
-                      a.href = m.href;
-                      a.target = '_blank';
-                      a.setAttribute('download', '');
-                      document.body.appendChild(a);
-                      a.click();
-                      document.body.removeChild(a);
-                    }
-                  });
-                });
+                // Setup download all functionality (show only after materials loaded)
+                if (downloadAllBtn) {
+                  downloadAllBtn.style.display = 'inline-flex';
+                  downloadAllBtn.onclick = () => {
+                    materials.forEach(m => {
+                      if (m.href) {
+                        const a = document.createElement('a');
+                        a.href = m.href;
+                        a.target = '_blank';
+                        a.setAttribute('download', '');
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                      }
+                    });
+                  };
+                }
               } else {
                 list.innerHTML = `
                   <li class="no-materials">
@@ -286,7 +251,7 @@
                     </div>
                   </li>
                 `;
-                downloadAllBtn.style.display = 'none';
+                if (downloadAllBtn) downloadAllBtn.style.display = 'none';
               }
 
               loaded = true;
@@ -358,6 +323,30 @@
             });
           });
         }
+
+        // Fetch and render material counts for all subjects in a single request
+        fetch('/api/get/all/materials-counts', { credentials: 'same-origin' })
+          .then(resp => {
+            if (!resp.ok) throw new Error('Failed to fetch material counts');
+            return resp.json();
+          })
+          .then(json => {
+            const counts = json.counts || {};
+            document.querySelectorAll('.subject-card').forEach(card => {
+              const courseId = card.dataset.courseid;
+              const count = counts[courseId] || 0;
+              const materialBadge = card.querySelector('.material-badge');
+              const materialCount = card.querySelector('.material-count');
+              const downloadAllBtn = card.querySelector('.download-all-btn');
+
+              if (materialBadge) materialBadge.textContent = count;
+              if (materialCount) materialCount.textContent = `${count} material${count !== 1 ? 's' : ''}`;
+              if (downloadAllBtn) downloadAllBtn.style.display = count ? 'inline-flex' : 'none';
+            });
+          })
+          .catch(err => {
+            console.error('Error fetching material counts', err);
+          });
       });
     </script>
 
@@ -412,6 +401,7 @@
   }
 
   .subjects-header {
+    z-index: 0;
     background: transparent;
     color: var(--text);
     padding: clamp(12px, 3vw, 20px) 12px;
@@ -556,47 +546,26 @@
     padding: 14px 20px;
     font-size: 0.9375rem;
     font-weight: 600;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-xs);
     box-shadow: var(--shadow);
   }
 
-  .view-toggle {
-    display: flex;
-    background: var(--card-bg, rgba(255,255,255,0.03));
-    border-radius: var(--border-radius-sm);
-    padding: 4px;
-    box-shadow: var(--box-shadow);
-    border: 1px solid rgba(255,255,255,0.03);
-  }
+  /* View toggle removed — list-only layout */
 
-  .view-toggle-btn {
-    width: 44px;
-    height: 44px;
-    border: none;
-    background: transparent;
-    border-radius: var(--border-radius-xs);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: var(--transition);
-  }
-
-  .view-toggle-btn.active {
-    background: var(--primary-light);
-    color: var(--primary);
-  }
-
-  .subjects-grid, .subjects-list {
+  .subjects-list {
     padding: 20px;
-    display: grid;
-    gap: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 1200px;
+    margin: 0 auto;
   }
 
-  .subjects-grid {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    padding: 24px;
-    gap: 20px;
+  .subjects-list {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     max-width: 1200px;
     margin: 0 auto;
   }
@@ -615,7 +584,9 @@
   }
 
   .card-header {
-    padding: 20px;
+    padding-left: 20px;
+    padding-top: 15px;
+    padding-bottom: 15px;
     display: flex;
     align-items: flex-start;
     gap: 16px;
@@ -631,7 +602,6 @@
     font-size: 1.125rem;
     font-weight: 600;
     color: var(--text);
-    margin-bottom: 8px;
     line-height: 1.3;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -639,30 +609,41 @@
     overflow: hidden;
   }
 
-  .course-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    align-items: center;
-  }
-
-  .course-id {
-    font-size: 0.8125rem;
-    color: var(--text-light, rgba(255,255,255,0.7));
-    background: rgba(255,255,255,0.03);
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-weight: 500;
-    border: 1px solid rgba(255,255,255,0.02);
-  }
-
   .material-count {
+    margin-left: 8px;
     font-size: 0.8125rem;
     color: var(--text-light, rgba(255,255,255,0.75));
   }
 
+  /* Redesigned card content: responsive two-column layout with actions */
   .card-content {
-    padding: 0 20px 20px;
+    padding: 12px 20px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border-top: 1px solid var(--light-gray);
+    background: linear-gradient(180deg, transparent, rgba(255,255,255,0.01));
+    transition: background 0.18s ease, padding 0.18s ease;
+  }
+
+  /* Left column holds the materials content and main controls */
+  .card-content .content-left {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Header-aligned actions (Download / Show Materials) */
+  .header-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  /* Keep mobile expand button compact on wider screens */
+  .mobile-expand-btn {
+    min-width: 140px;
+    padding: 10px 14px;
   }
 
   .mobile-expand-btn {
@@ -912,8 +893,7 @@
 
   /* Responsive Breakpoints */
   @media (max-width: 768px) {
-    .subjects-grid {
-      grid-template-columns: 1fr;
+    .subjects-list {
       padding: 16px;
       gap: 12px;
     }
@@ -927,7 +907,21 @@
     }
     
     .card-content {
-      padding: 0 16px 16px;
+      padding: 8px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .header-actions {
+      width: 100%;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .mobile-expand-btn {
+      width: 100%;
     }
     
     .mobile-error {
@@ -948,18 +942,8 @@
       flex-direction: column;
     }
     
-    .view-toggle {
-      align-self: flex-end;
-    }
-    
     .subject-title {
       -webkit-line-clamp: 1;
-    }
-    
-    .course-meta {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 6px;
     }
   }
 
@@ -978,7 +962,7 @@
       padding: 24px 24px 0;
     }
     
-    .subjects-grid, .subjects-list {
+    .subjects-list {
       padding: 24px;
     }
   }

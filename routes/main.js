@@ -6,7 +6,7 @@ import { pool, pool2 } from "./pool.js";
 import redis from "../lib/redisClient.js";
 import { randomUUID } from "crypto";
 import { syncTasjeel, getLatestSession } from '../tool/syncTasjeel.js';
-
+import materialRouter from "./material.js";
 
 dotenv.config();
 const router = express.Router();
@@ -968,94 +968,6 @@ router.post("/api/book/:id/download", async (req, res) => {
   }
 });
 
-router.get('/api/get/all/subjects', validateSessionAndRole("SuperAdmin"), async (req, res) => {
-  try {
-    const query = `SELECT course_id, subject, href FROM subjects ORDER BY subject ASC`;
-    const result = await pool2.query(query);
-    const links = result.rows.map(r => ({ href: r.href, subject: r.subject }));
-    return res.json({ success: true, links });
-  } catch (err) {
-    console.error('Error querying subjects from DB:', err);
-    return res.status(500).json({ success: false, message: 'Failed to fetch subjects from DB', error: err.message });
-  }
-});
-
-router.get('/api/get/all/materials/:id', validateSessionAndRole("SuperAdmin"), async (req, res) => {
-  const courseId = req.params.id;
-
-  try {
-    // find subject id
-    const s = await pool2.query('SELECT id, course_id FROM subjects WHERE course_id = $1', [courseId]);
-    if (s.rows.length === 0) return res.json({ success: true, materials: [] });
-    const subjectId = s.rows[0].id;
-
-    const m = await pool2.query('SELECT name, href FROM materials WHERE subject_id = $1 ORDER BY name ASC', [subjectId]);
-    return res.json({ success: true, materials: m.rows });
-  } catch (err) {
-    console.error('Error querying materials from DB:', err);
-    return res.status(500).json({ success: false, message: 'Failed to fetch materials from DB', error: err.message });
-  }
-});
-
-// Proxy route for downloading materials from tasjeel
-router.get('/student/class/material/download/:id', validateSessionAndRole("SuperAdmin"), async (req, res) => {
-  try {
-    const id = req.params.id;
-    const url = `https://tasjeel.cust.edu.pk/student/class/material/download/${id}`;
-    const cookie = `session_id=${(await getLatestSession())}`;
-
-    const upstream = await fetch(url, {
-      method: 'GET',
-      headers: { Cookie: cookie },
-      redirect: 'follow'
-    });
-
-    if (!upstream.ok) {
-      const body = await upstream.text().catch(() => '');
-      return res.status(upstream.status).send(body || 'Download failed');
-    }
-
-    const contentType = upstream.headers.get('content-type');
-    const contentDisposition = upstream.headers.get('content-disposition');
-    if (contentType) res.setHeader('content-type', contentType);
-    if (contentDisposition) res.setHeader('content-disposition', contentDisposition);
-
-    // Stream the upstream body to the client
-    if (upstream.body && typeof upstream.body.pipe === 'function') {
-      upstream.body.pipe(res);
-    } else {
-      const buffer = Buffer.from(await upstream.arrayBuffer());
-      res.end(buffer);
-    }
-
-  } catch (err) {
-    console.error('Download proxy error:', err);
-    res.status(500).json({ success: false, message: 'Download failed', error: err.message });
-  }
-});
-
-// Page showing all subjects and their materials
-router.get('/materials', validateSessionAndRole("SuperAdmin"), async (req, res) => {
-  try {
-    const result = await pool2.query('SELECT course_id, subject, href FROM subjects ORDER BY subject ASC');
-    const subjects = result.rows.map(r => ({ href: r.href, subject: r.subject, courseId: r.course_id }));
-    renderPage(req, res, "mainPages/subjects.handlebars", true, { page: "Subjects & Materials", subjects });
-  } catch (err) {
-    console.error('Error building subjects page from DB:', err);
-    renderPage(req, res, "mainPages/subjects.handlebars", true, { page: "Subjects & Materials", subjects: [], error: err.message });
-  }
-});
-
-// Manual sync endpoint (protected)
-router.get('/api/admin/sync/tasjeel', validateSessionAndRole("SuperAdmin"), async (req, res) => {
-  try {
-    const cookie = `session_id=${(await getLatestSession())}`;
-    const result = await syncTasjeel(cookie);
-    return res.json(result);
-  } catch (err) {
-    console.error('Manual sync failed:', err);
-    return res.status(500).json({ success: false, error: err.message });
-  }
-});
+router.use(materialRouter);
 
 export default router;
