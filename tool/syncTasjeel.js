@@ -5,7 +5,7 @@ import { pool2 } from '../routes/pool.js';
 const DEFAULT_BASE = 'https://tasjeel.cust.edu.pk';
 const SYNC_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36';
 
-function isLoginPageHtml(html) {
+export function isLoginPageHtml(html) {
     if (!html || typeof html !== 'string') return false;
     // Look for common login page markers (forms to /web/login, CSRF token, Odoo login classes, or MS login links)
     const patterns = [

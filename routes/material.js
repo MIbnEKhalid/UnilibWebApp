@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import { validateSessionAndRole, renderError, renderPage } from "mbkauthe";
 import { pool, pool2 } from "./pool.js";
-import { syncTasjeel, getLatestSession } from '../tool/syncTasjeel.js';
+import { syncTasjeel, getLatestSession, isLoginPageHtml } from '../tool/syncTasjeel.js';
 
 dotenv.config();
 const router = express.Router();
@@ -76,10 +76,21 @@ router.get('/student/class/material/download/:id', validateSessionAndRole("Super
       return res.status(upstream.status).send(body || 'Download failed');
     }
 
-    const contentType = upstream.headers.get('content-type');
+    const contentType = upstream.headers.get('content-type') || '';
     const contentDisposition = upstream.headers.get('content-disposition');
-    if (contentType) res.setHeader('content-type', contentType);
     if (contentDisposition) res.setHeader('content-disposition', contentDisposition);
+
+    // If upstream returned HTML, read it and check for login page
+    if (contentType.includes('text/html')) {
+      const text = await upstream.text().catch(() => '');
+      if (isLoginPageHtml(text)) {
+        return res.status(401).json({ success: false, message: 'Not authenticated with Tasjeel; session invalid or expired' });
+      }
+      res.setHeader('content-type', 'text/html; charset=utf-8');
+      return res.send(text);
+    }
+
+    if (contentType) res.setHeader('content-type', contentType);
 
     // Stream the upstream body to the client
     if (upstream.body && typeof upstream.body.pipe === 'function') {

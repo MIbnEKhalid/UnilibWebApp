@@ -57,10 +57,11 @@
           <div class="card">
             <div class="card-header">
               <div class="subject-info">
-                <h3 class="subject-title">{{subject}}<span class="material-count">0 materials</span></h3>
+                <h3 class="subject-title">{{subject}}</h3>
               </div>
 
-                 <button class="btn btn-primary small-btn download-all-btn top-download" style="display:none;">
+              <div class="header-actions">
+                <button class="btn btn-primary small-btn download-all-btn top-download" style="display:none;">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                     <polyline points="7 10 12 15 17 10"></polyline>
@@ -76,7 +77,8 @@
                   <span class="btn-text">Show Materials</span>
                   <span class="material-badge">0</span>
                 </button>
-              </div> 
+              </div>
+            </div>
             <div class="card-content">
               <div class="content-left">
                 <div class="materials-section collapsed">
@@ -133,6 +135,55 @@
           });
         });
         
+        // Helper: show an inline error for a subject card
+        function showCardError(card, message) {
+          let err = card.querySelector('.materials-error');
+          if (!err) {
+            err = document.createElement('div');
+            err.className = 'materials-error error-message';
+            err.style.marginTop = '12px';
+            err.innerHTML = `<span class="error-icon">⚠️</span><div><strong>Error</strong><span class="materials-error-text"></span></div>`;
+            const section = card.querySelector('.materials-section');
+            if (section) section.prepend(err);
+          }
+          const text = err.querySelector('.materials-error-text');
+          if (text) text.textContent = message;
+          err.style.display = 'flex';
+          // auto-hide after a while
+          setTimeout(() => { err.style.display = 'none'; }, 8000);
+        }
+
+        // Helper: perform fetch-based download and handle auth errors
+        async function fetchAndDownload(href, suggestedName, card) {
+          try {
+            const resp = await fetch(href, { credentials: 'same-origin' });
+            if (resp.status === 401) {
+              const j = await resp.json().catch(() => ({}));
+              showCardError(card, j.message || 'Authentication required. Please refresh or re-sync.');
+              return;
+            }
+            if (!resp.ok) {
+              showCardError(card, 'Download failed');
+              return;
+            }
+            const blob = await resp.blob();
+            const disposition = resp.headers.get('content-disposition') || '';
+            const match = /filename="?([^";]+)"?/.exec(disposition);
+            const filename = match ? match[1] : (suggestedName || 'download.bin');
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+          } catch (err) {
+            console.error('Download error', err);
+            showCardError(card, 'Download failed');
+          }
+        }
+
         // Load materials functionality
         document.querySelectorAll('.subject-card').forEach(card => {
           const loadBtn = card.querySelector('.load-materials-btn');
@@ -141,7 +192,6 @@
           const spinner = card.querySelector('.loading-spinner');
           const btnText = card.querySelector('.btn-text');
           const materialBadge = card.querySelector('.material-badge');
-          const materialCount = card.querySelector('.material-count');
           const materialsSection = card.querySelector('.materials-section');
           let loaded = false;
           let materials = [];
@@ -205,10 +255,8 @@
                   
                   if (m.href) {
                     const downloadBtn = document.createElement('a');
-                    downloadBtn.href = m.href;
+                    downloadBtn.href = '#';
                     downloadBtn.className = 'download-btn mobile-download';
-                    downloadBtn.target = '_blank';
-                    downloadBtn.setAttribute('download', '');
                     downloadBtn.innerHTML = `
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -216,6 +264,11 @@
                         <line x1="12" y1="15" x2="12" y2="3"></line>
                       </svg>
                     `;
+                    downloadBtn.addEventListener('click', (e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      fetchAndDownload(m.href, m.name, card);
+                    });
                     li.appendChild(downloadBtn);
                   }
                   
@@ -227,18 +280,13 @@
                 // Setup download all functionality (show only after materials loaded)
                 if (downloadAllBtn) {
                   downloadAllBtn.style.display = 'inline-flex';
-                  downloadAllBtn.onclick = () => {
-                    materials.forEach(m => {
-                      if (m.href) {
-                        const a = document.createElement('a');
-                        a.href = m.href;
-                        a.target = '_blank';
-                        a.setAttribute('download', '');
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
+                  downloadAllBtn.onclick = async (e) => {
+                    e.stopPropagation();
+                    for (const mm of materials) {
+                      if (mm.href) {
+                        await fetchAndDownload(mm.href, mm.name, card);
                       }
-                    });
+                    }
                   };
                 }
               } else {
@@ -275,7 +323,6 @@
 
           function updateMaterialCount(count) {
             materialBadge.textContent = count;
-            materialCount.textContent = `${count} material${count !== 1 ? 's' : ''}`;
           }
 
           function getFileIcon(filename) {
@@ -336,11 +383,9 @@
               const courseId = card.dataset.courseid;
               const count = counts[courseId] || 0;
               const materialBadge = card.querySelector('.material-badge');
-              const materialCount = card.querySelector('.material-count');
               const downloadAllBtn = card.querySelector('.download-all-btn');
 
               if (materialBadge) materialBadge.textContent = count;
-              if (materialCount) materialCount.textContent = `${count} material${count !== 1 ? 's' : ''}`;
               if (downloadAllBtn) downloadAllBtn.style.display = count ? 'inline-flex' : 'none';
             });
           })
@@ -595,7 +640,7 @@
 
   .subject-info {
     flex: 1;
-    min-width: 0; /* Enable text truncation */
+    min-width: 200px;
   }
 
   .subject-title {
@@ -607,12 +652,6 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-  }
-
-  .material-count {
-    margin-left: 8px;
-    font-size: 0.8125rem;
-    color: var(--text-light, rgba(255,255,255,0.75));
   }
 
   /* Redesigned card content: responsive two-column layout with actions */
@@ -904,6 +943,8 @@
     
     .card-header {
       padding: 16px;
+      flex-direction: column;
+      align-items: flex-start;
     }
     
     .card-content {
@@ -918,6 +959,7 @@
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
+      margin-top: 8px;
     }
 
     .mobile-expand-btn {
