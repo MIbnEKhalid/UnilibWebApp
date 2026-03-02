@@ -1,7 +1,7 @@
 // Global state
 const state = {
     currentFilters: {
-        semester: 'Semester3',
+        semester: 'Semester4',
         category: 'all',
         search: ''
     },
@@ -33,7 +33,7 @@ function parseUrlParameters() {
     state.currentPage = parseInt(urlParams.get('page')) || 1;
     // semester can be a CSV list or a single value
     const semesterParam = urlParams.get('semester');
-    state.currentFilters.semester = semesterParam ? (semesterParam.includes(',') ? semesterParam.split(',').map(s=>s.trim()) : semesterParam) : 'Semester3';
+    state.currentFilters.semester = semesterParam ? (semesterParam.includes(',') ? semesterParam.split(',').map(s=>s.trim()) : semesterParam) : 'Semester4';
     state.currentFilters.category = urlParams.get('category') || 'all';
     state.currentFilters.search = urlParams.get('search') || '';
 

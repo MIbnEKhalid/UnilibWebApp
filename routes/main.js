@@ -66,7 +66,7 @@ async function invalidateBookCaches(bookIds) {
 
 // define a reusable handler function
 async function renderUnilibBooks(req, res, view, data) {
-  const { page = 1, limit = process.env.DEFAULT_LIMIT, semester = 'Semester3', category = 'all', search = '' } = req.query;
+  const { page = 1, limit = process.env.DEFAULT_LIMIT, semester = 'Semester4', category = 'all', search = '' } = req.query;
   const offset = (page - 1) * limit;
 
   // Normalize semester filter: accept 'all', single string, comma-separated string, or array
@@ -167,7 +167,7 @@ export async function renderPage(req, res, fileLocation, layout = true, data = {
 router.get("/", async (req, res) => {
 
   // Normalize query parameters for consistent cache keys
-  const { page = '1', limit = process.env.DEFAULT_LIMIT, semester = 'Semester3', category = 'all', search = '' } = req.query;
+  const { page = '1', limit = process.env.DEFAULT_LIMIT, semester = 'Semester4', category = 'all', search = '' } = req.query;
   const queryString = new URLSearchParams({ page, limit, semester, category, search }).toString();
   // Set Cache-Control and Vary headers for 2-minute edge caching
   res.set({
