@@ -8,9 +8,7 @@ import sharp from 'sharp';
  * Usage: node tool/convertPageImages.js <pdfPath> <pageNumber> <outputFormat> [outputPath]
  * Example: node tool/convertPageImages.js ./document.pdf 1 png ./output.png
  * Example: node tool/convertPageImages.js ./DSA_Lab.pdf 1 png ./output.png
-
- * Example: node tool/convertPageImages.js ./document.pdf 2 jpg
- * 
+ *
  * Supported formats: png, jpg, jpeg, webp, tiff, avif
  */
 

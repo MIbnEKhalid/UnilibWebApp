@@ -12,6 +12,7 @@ import cron from 'node-cron';
 import { syncTasjeel, getLatestSession } from './tool/syncTasjeel.js';
 import mbkautheRouter from "mbkauthe";
 import { renderError } from "mbkauthe";
+import mbkbucket from "mbkbucket";
 import rateLimit from "express-rate-limit";
 import { readFileSync } from "fs";
 
@@ -124,6 +125,7 @@ app.set("views", [
 ]);
 
 app.use(mbkautheRouter);
+app.use(mbkbucket);
 
 // Make app version available to all views for cache busting
 app.use((req, res, next) => {
