@@ -799,7 +799,6 @@ router.post("/api/admin/Book/:bookId/Sections/BulkDelete", validateSessionAndRol
 // Download section PDF
 router.get("/book/:bookId/section/:sectionId/download", async (req, res) => {
   const { bookId, sectionId } = req.params;
-  const sectionIdNum = parseInt(sectionId);
 
   try {
     // Fetch book details (only needed columns)
@@ -812,8 +811,9 @@ router.get("/book/:bookId/section/:sectionId/download", async (req, res) => {
     const book = bookResult.rows[0];
 
     // Find the specific section in the JSONB
+    // Section IDs are UUIDs (strings), not numbers
     const sections = book.sections || [];
-    const section = sections.find(s => s.id === sectionIdNum);
+    const section = sections.find(s => s.id === sectionId);
     if (!section) {
       return res.status(404).send("Section not found");
     }

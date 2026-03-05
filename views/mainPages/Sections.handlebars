@@ -184,10 +184,10 @@
         </div>
         <div class="section-actions">
           <button class="btn btn-edit"
-            onclick="editSection({{id}}, {{section_number}}, '{{name}}', {{page_start}}, {{page_end}})">
+            onclick="editSection('{{id}}', {{section_number}}, '{{name}}', {{page_start}}, {{page_end}})">
             <i class="fas fa-edit"></i> Edit
           </button>
-          <button class="btn btn-delete" onclick="deleteSection({{id}})">
+          <button class="btn btn-delete" onclick="deleteSection('{{id}}')">
             <i class="fas fa-trash"></i> Delete
           </button>
           <a href="/book/{{../book.id}}/section/{{id}}/download" class="btn btn-download" target="_blank">
@@ -712,13 +712,13 @@
         </div>
       </div>
       <div class="section-actions">
-        <button class="btn btn-edit" onclick="editSection(${section.id}, ${section.section_number}, '${escapedName}', ${section.page_start}, ${section.page_end})">
+        <button class="btn btn-edit" onclick="editSection('${section.id}', ${section.section_number}, '${escapedName}', ${section.page_start}, ${section.page_end})">
           <i class="fas fa-edit"></i> Edit
         </button>
-        <button class="btn btn-delete" onclick="deleteSection(${section.id})">
+        <button class="btn btn-delete" onclick="deleteSection('${section.id}')">
           <i class="fas fa-trash"></i> Delete
         </button>
-        <a href="/book/${bookId}/section/${section.id}/download" class="btn btn-download" target="_blank">
+        <a href="/book/${bookId}/section/${section.id}/download" class="btn btn-download" data-section-id="${section.id}" target="_blank">
           <i class="fas fa-download"></i> Download
         </a>
       </div>
@@ -726,4 +726,5 @@
   `;
     }).join('');
   }
+</script>
 </script>
