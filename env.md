@@ -1,10 +1,27 @@
 ## Environment Variables
 
-- **NEON_POSTGRES**  
-    Connection string for the Neon Postgres database.  
+- **DB_TYPE**  
+    Database engine to use: `postgres` or `sqlite`.  
+    Defaults to `postgres` if `NEON_POSTGRES` is set, otherwise defaults to `sqlite`.  
+    Example:
+    ```bash
+    DB_TYPE=sqlite
+    ```
+
+- **SQLITE_PATH**  
+    Path to the SQLite database file when `DB_TYPE=sqlite`.  
+    Defaults to `./data/unilib.sqlite`. (Supports `:memory:` for testing).  
+    Example:
+    ```bash
+    SQLITE_PATH=./data/unilib.sqlite
+    ```
+
+- **NEON_POSTGRES and NEON_POSTGRES2**  
+    Connection strings for the Neon Postgres database.  
     Example:
     ```bash
     NEON_POSTGRES=postgres://username:password@host:port/database
+    NEON_POSTGRES2=postgres://username:password@host:port/database
     ```
 
 - **MBKAUTHE_VAR**  
@@ -39,6 +56,13 @@
     ```
     Accepts `false` or `0` (case-insensitive) to disable; any other value enables it.
 
+- **DEFAULT_SEMESTER**  
+    Default semester filter to use for the course catalog and administrative dashboard when no semester query parameter is provided. Defaults to `Semester1`.  
+    Example:
+    ```bash
+    DEFAULT_SEMESTER=Semester1
+    ```
+
 - **TASJEEL_SYNC_CRON**  
     Cron expression for scheduling tasjeel sync job (default every 6 hours):
     ```bash
@@ -52,10 +76,5 @@
     ```
 
 Notes:
-- To apply the SQL migration(s) run the migration runner:
-  ```bash
-  node tool/runMigrations.js
-  ```
-  This will execute all SQL files in `migrations/` (idempotent if files use IF NOT EXISTS).
 - The sync tool will also attempt to create required tables automatically when it runs, so the scheduler won't fail on a missing table. However it is recommended to run migrations explicitly in production.
 - In serverless environments (Vercel) in-memory caches are ephemeral; prefer setting `TASJEEL_SYNC_COOKIE` and relying on scheduled sync to keep DB up-to-date.

@@ -1,34 +1,54 @@
 {
   "name": "unilibwebapp",
-  "version": "1.9.3",
-  "main": "app.js",
+  "version": "2.0.0",
+  "main": "src/server.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon app.js",
-    "convertToWebp": "node tool/convertToWebp.js",
-    "convertPageImages": "node tool/convertPageImages.js"
+    "start": "node src/server.js",
+    "dev": "nodemon -e js,mjs,cjs,json,handlebars src/server.js",
+    "build:css": "tailwindcss -i src/styles/input.css -o public/Assets/Styles/tailwind.css --minify",
+    "watch:css": "tailwindcss -i src/styles/input.css -o public/Assets/Styles/tailwind.css --watch",
+    "convertToWebp": "node scripts/convertToWebp.js",
+    "convertPageImages": "node scripts/convertPageImages.js",
+    "db:init": "node scripts/initDb.js",
+    "db:init:sqlite": "node scripts/initDb.js --type=sqlite",
+    "db:init:postgres": "node scripts/initDb.js --type=postgres",
+    "test": "node tests/db.test.js && node tests/app.test.js"
   },
   "author": "Muhammad Bin Khalid",
   "license": "MIT",
   "dependencies": {
     "@upstash/redis": "^1.19.0",
+    "admindb": "^2.2.1",
     "cheerio": "^1.1.2",
     "compression": "^1.8.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "express-handlebars": "^8.0.1",
-    "express-rate-limit": "^8.2.1",
-    "mbkauthe": "^4.4.0",
+    "dotenv": "^16.6.1",
+    "express": "^5.1.0",
+    "express-handlebars": "^8.0.3",
+    "express-rate-limit": "^7.5.0",
+    "mbkauthe": "latest",
     "mbkbucket": "latest",
-    "node-cron": "^3.0.2",
+    "node-cron": "^4.6.0",
     "node-fetch": "^3.3.2",
     "pdf-lib": "^1.17.1",
     "pdf-to-img": "^5.0.0",
     "pg": "^8.13.3",
-    "sharp": "^0.34.4"
+    "sharp": "^0.35.3"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "@tailwindcss/cli": "^4.3.3",
+    "autoprefixer": "^10.5.4",
+    "nodemon": "^3.1.14",
+    "postcss": "^8.5.26",
+    "tailwindcss": "^4.3.3"
+  },
+  "overrides": {
+    "csurf": {
+      "cookie": "^0.7.0"
+    },
+    "mbkbucket": {
+      "mbkauthe": "latest"
+    }
   }
 }

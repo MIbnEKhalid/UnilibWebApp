@@ -1,0 +1,13 @@
+<div class="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none select-none" {{#if tabContainerId}}id="{{tabContainerId}}"{{/if}}>
+  <button type="button" class="semester-tab" data-semester="all" onclick="{{#if tabHandler}}{{tabHandler}}{{else}}selectSemesterTab{{/if}}('all')">
+    <i class="fas fa-layer-group text-[10px] mr-1"></i> All Semesters
+  </button>
+  <button type="button" class="semester-tab" data-semester="Semester 1" onclick="{{#if tabHandler}}{{tabHandler}}{{else}}selectSemesterTab{{/if}}('Semester 1')">Semester 1</button>
+  <button type="button" class="semester-tab" data-semester="Semester 2" onclick="{{#if tabHandler}}{{tabHandler}}{{else}}selectSemesterTab{{/if}}('Semester 2')">Semester 2</button>
+  <button type="button" class="semester-tab" data-semester="Semester 3" onclick="{{#if tabHandler}}{{tabHandler}}{{else}}selectSemesterTab{{/if}}('Semester 3')">Semester 3</button>
+  <button type="button" class="semester-tab" data-semester="Semester 4" onclick="{{#if tabHandler}}{{tabHandler}}{{else}}selectSemesterTab{{/if}}('Semester 4')">Semester 4</button>
+  <button type="button" class="semester-tab" data-semester="Semester 5" onclick="{{#if tabHandler}}{{tabHandler}}{{else}}selectSemesterTab{{/if}}('Semester 5')">Semester 5</button>
+  <button type="button" class="semester-tab" data-semester="Semester 6" onclick="{{#if tabHandler}}{{tabHandler}}{{else}}selectSemesterTab{{/if}}('Semester 6')">Semester 6</button>
+  <button type="button" class="semester-tab" data-semester="Semester 7" onclick="{{#if tabHandler}}{{tabHandler}}{{else}}selectSemesterTab{{/if}}('Semester 7')">Semester 7</button>
+  <button type="button" class="semester-tab" data-semester="Semester 8" onclick="{{#if tabHandler}}{{tabHandler}}{{else}}selectSemesterTab{{/if}}('Semester 8')">Semester 8</button>
+</div>

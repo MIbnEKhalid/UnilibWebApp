@@ -1,0 +1,481 @@
+{{! Single Book Form View for Add and Edit }}
+{{#section 'head'}}
+<title>{{#if isEdit}}Edit Book{{else}}Add New Book{{/if}} | Unilib Creator Studio</title>
+<link rel="stylesheet" href="/Assets/Styles/common-admin.css?v={{appVersion}}">
+{{/section}}
+
+<section class="w-full space-y-5" id="books">
+  
+  <!-- Breadcrumb & Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-stone-200">
+    <div class="space-y-0.5">
+      <div class="flex items-center gap-2 text-xs text-stone-500">
+        <a href="/dashboard" class="hover:text-[#162e4a] transition-colors">Admin Console</a>
+        <span>/</span>
+        <span class="text-stone-800">{{#if isEdit}}Edit Publication{{else}}Catalog Publication{{/if}}</span>
+      </div>
+      <h1 class="font-serif font-bold text-xl sm:text-2xl text-stone-900 tracking-normal">
+        {{#if isEdit}}Edit Publication Metadata{{else}}New Publication Studio{{/if}}
+      </h1>
+    </div>
+
+    <a href="/dashboard" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-white hover:bg-stone-50 text-stone-700 border border-stone-300 text-xs font-semibold uppercase tracking-wider transition-colors shadow-sm self-start sm:self-auto">
+      <i class="fas fa-arrow-left text-stone-400"></i>
+      <span>Back to Registry</span>
+    </a>
+  </div>
+
+  <!-- Split-Screen Creator Studio Layout -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    
+    <!-- LEFT: Live Interactive Previewer -->
+    <div class="lg:col-span-5 space-y-3 lg:sticky lg:top-20">
+      <div class="flex items-center justify-between px-1">
+        <span class="text-xs font-serif font-bold uppercase tracking-wider text-stone-800 flex items-center gap-1.5">
+          <i class="fas fa-eye text-[#162e4a]"></i>
+          Live Catalog Preview
+        </span>
+        <div class="flex items-center gap-1">
+          <button type="button" id="previewCardTab" onclick="switchPreviewMode('card')" class="px-2 py-0.5 rounded text-[11px] font-semibold bg-[#f0f4f9] text-[#162e4a] border border-[#bad0e4]">
+            Card View
+          </button>
+          <button type="button" id="previewDetailTab" onclick="switchPreviewMode('detail')" class="px-2 py-0.5 rounded text-[11px] font-medium text-stone-500 hover:text-stone-800">
+            Detail View
+          </button>
+        </div>
+      </div>
+
+      <!-- Preview 1: Catalog Card Preview -->
+      <article id="previewCardBox" class="bg-white rounded-lg border border-stone-300 overflow-hidden flex flex-col shadow-sm max-w-sm mx-auto w-full transition-all">
+        <div class="relative aspect-[3/4] bg-[#f2f0ec] overflow-hidden border-b border-stone-200 flex items-center justify-center p-3 group/cover">
+          
+          <div id="ambientPreviewBlur" class="absolute inset-0 bg-cover bg-center opacity-15 blur-md scale-110 pointer-events-none" style="background-image: url('{{#if book}}{{book.imageURL}}{{else}}/BookCovers/BookCover_Template.webp{{/if}}');"></div>
+
+          <!-- Badges -->
+          <div class="badges absolute top-2 left-2 right-2 z-20 flex flex-wrap gap-1 pointer-events-none">
+            {{#if book.main}}
+              {{#unless (eq book.category 'LabManuals')}}
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-600 text-white shadow-sm flex items-center gap-1">
+                <i class="fas fa-star text-[8px]"></i> Main
+              </span>
+              {{/unless}}
+            {{/if}}
+
+            {{#if book.semester}}
+            <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-stone-900/85 text-white backdrop-blur-sm shadow-sm">
+              {{formatSemesterBadge book.semester}}
+            </span>
+            {{/if}}
+
+            {{#if book.category}}
+            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-white/95 text-stone-700 border border-stone-300 shadow-sm ml-auto backdrop-blur-sm">
+              {{book.category}}
+            </span>
+            {{/if}}
+          </div>
+
+          <!-- Centered Contained Cover -->
+          <a id="bookurl" href="{{#if book}}{{book.link}}{{else}}#{{/if}}" target="_blank" class="relative z-10 w-full h-full flex items-center justify-center" aria-label="Preview Book Cover">
+            <img id="bookcover" src="{{#if book}}{{book.imageURL}}{{else}}/BookCovers/BookCover_Template.webp{{/if}}" alt="Cover preview" class="max-h-full max-w-full object-contain rounded-sm shadow-md transition-transform duration-300" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'">
+          </a>
+        </div>
+
+        <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+          <div class="space-y-1">
+            <h3 id="bookname" class="font-serif font-bold text-sm text-stone-900 line-clamp-1" data-org="{{#if book}}{{book.name}}{{/if}}">
+              {{#if book}}{{book.name}}{{else}}Book Title Preview{{/if}}
+            </h3>
+            <p id="bookdesciption" class="text-xs text-stone-600 line-clamp-2 leading-relaxed" data-org="{{#if book}}{{book.description}}{{/if}}">
+              {{#if book}}{{book.description}}{{else}}Bibliographic author and syllabus summary...{{/if}}
+            </p>
+          </div>
+
+          <div class="pt-2.5 border-t border-stone-100 flex items-center gap-2">
+            <a id="bookurl1" href="{{#if book}}{{book.link}}{{else}}#{{/if}}" target="_blank" class="w-full inline-flex items-center justify-center gap-1.5 py-1.5 px-3 rounded bg-[#f0f4f9] text-[#162e4a] text-xs font-semibold uppercase tracking-wider border border-[#bad0e4]">
+              <i class="fas fa-book-reader text-[#162e4a]"></i>
+              <span>Study Hub Preview</span>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Preview 2: Detail Summary Preview (Hidden by default) -->
+      <div id="previewDetailBox" class="hidden bg-white rounded-lg p-4 border border-stone-300 shadow-sm space-y-3 text-xs max-w-sm mx-auto">
+        <h4 class="font-serif font-bold text-stone-900 text-sm pb-2 border-b border-stone-200">Catalogue Record Specs</h4>
+        <div class="space-y-1.5 text-stone-700">
+          <div class="flex justify-between"><span class="text-stone-500">Title:</span> <span id="detailPreviewTitle" class="font-semibold text-stone-900 truncate max-w-[180px]">{{#if book}}{{book.name}}{{else}}-{{/if}}</span></div>
+          <div class="flex justify-between"><span class="text-stone-500">Classification:</span> <span id="detailPreviewCategory" class="font-semibold text-stone-900">{{#if book}}{{book.category}}{{else}}CourseBooks{{/if}}</span></div>
+          <div class="flex justify-between"><span class="text-stone-500">Semesters:</span> <span id="detailPreviewSemesters" class="font-semibold text-[#162e4a]">{{#if book}}{{formatSemesterBadge book.semester}}{{else}}All{{/if}}</span></div>
+          <div class="flex justify-between"><span class="text-stone-500">Main Distinction:</span> <span id="detailPreviewMain" class="font-semibold text-stone-900">{{#if book.main}}Yes{{else}}No{{/if}}</span></div>
+          <div class="flex justify-between"><span class="text-stone-500">Catalog Visibility:</span> <span id="detailPreviewVisible" class="font-semibold text-emerald-800">{{#if (eq book.visible "false")}}Hidden{{else}}Visible{{/if}}</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Form Section -->
+    <div class="lg:col-span-7">
+      <div class="bg-white rounded-lg p-5 sm:p-6 border border-stone-300 shadow-sm space-y-6">
+        
+        <form id="bookForm" data-is-edit="{{isEdit}}" {{#if id}}data-book-id="{{id}}"{{/if}} class="space-y-5">
+          
+          <!-- Section 1: General Information -->
+          <div class="space-y-3.5">
+            <h3 class="font-serif font-bold text-xs uppercase tracking-wider text-stone-600 flex items-center gap-1.5 pb-1.5 border-b border-stone-200">
+              <i class="fas fa-info-circle text-[#162e4a]"></i>
+              <span>1. General Bibliographic Data</span>
+            </h3>
+
+            <div class="form-group">
+              <label for="name" class="block text-xs font-semibold text-stone-800 uppercase tracking-wider mb-1">
+                Publication Title <span class="text-rose-700">*</span>
+              </label>
+              <input type="text" id="name" name="name" value="{{#if book}}{{book.name}}{{/if}}" data-org="{{#if book}}{{book.name}}{{/if}}" placeholder="e.g. Operating System Concepts" required class="input-classic w-full px-3 py-2 text-xs">
+            </div>
+
+            <div class="form-group">
+              <label for="category" class="block text-xs font-semibold text-stone-800 uppercase tracking-wider mb-1">
+                Classification / Category <span class="text-rose-700">*</span>
+              </label>
+              <select id="category" name="category" data-org="{{#if book}}{{book.category}}{{/if}}" required class="input-classic w-full px-3 py-2 text-xs appearance-none cursor-pointer">
+                <option value="All" {{#if (eq book.category "All")}}selected{{/if}}>All</option>
+                <option value="CourseBooks" {{#if (eq book.category "CourseBooks")}}selected{{else}}{{#unless book}}selected{{/unless}}{{/if}}>Course Books</option>
+                <option value="Softwares" {{#if (eq book.category "Softwares")}}selected{{/if}}>Softwares</option>
+                <option value="LabManuals" {{#if (eq book.category "LabManuals")}}selected{{/if}}>Lab Manuals</option>
+                <option value="Other" {{#if (eq book.category "Other")}}selected{{/if}}>Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="description" class="block text-xs font-semibold text-stone-800 uppercase tracking-wider mb-1">
+                Authors & Curriculum Summary <span class="text-rose-700">*</span>
+              </label>
+              <textarea id="description" name="description" rows="2" data-org="{{#if book}}{{book.description}}{{/if}}" placeholder="Author citations, publication editions, or curriculum course syllabus..." required class="input-classic w-full px-3 py-2 text-xs leading-relaxed">{{#if book}}{{book.description}}{{/if}}</textarea>
+            </div>
+          </div>
+
+          <!-- Section 2: Links & Media -->
+          <div class="space-y-3.5 pt-2">
+            <h3 class="font-serif font-bold text-xs uppercase tracking-wider text-stone-600 flex items-center gap-1.5 pb-1.5 border-b border-stone-200">
+              <i class="fas fa-link text-emerald-700"></i>
+              <span>2. Links & Cover Media</span>
+            </h3>
+
+            <div class="form-group">
+              <label for="link" class="block text-xs font-semibold text-stone-800 uppercase tracking-wider mb-1">
+                Resource Link (Google Drive / Direct PDF) <span class="text-rose-700">*</span>
+              </label>
+              <input type="url" id="link" name="link" value="{{#if book}}{{book.link}}{{/if}}" data-org="{{#if book}}{{book.link}}{{/if}}" placeholder="https://drive.google.com/file/d/..." required class="input-classic w-full px-3 py-2 text-xs">
+            </div>
+
+            <div class="form-group">
+              <label for="imageURL" class="block text-xs font-semibold text-stone-800 uppercase tracking-wider mb-1">
+                Cover Image URL <span class="text-rose-700">*</span>
+              </label>
+              <input id="imageURL" name="imageURL" value="{{#if book}}{{book.imageURL}}{{else}}/BookCovers/BookCover_Template.webp{{/if}}" data-org="{{#if book}}{{book.imageURL}}{{/if}}" placeholder="/BookCovers/... or https://..." required {{#unless (eq role "SuperAdmin")}}readonly title="SuperAdmin permissions required to modify image URL"{{/unless}} class="input-classic w-full px-3 py-2 text-xs">
+              
+              <div class="flex items-center gap-1.5 pt-1.5">
+                <span class="text-[10px] text-stone-500">Presets:</span>
+                <button type="button" onclick="setCoverPreset('/BookCovers/BookCover_Template.webp')" class="px-2 py-0.5 rounded text-[10px] bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200">Default Template</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Academic Classification & Publishing -->
+          <div class="space-y-3.5 pt-2">
+            <h3 class="font-serif font-bold text-xs uppercase tracking-wider text-stone-600 flex items-center gap-1.5 pb-1.5 border-b border-stone-200">
+              <i class="fas fa-tags text-[#162e4a]"></i>
+              <span>3. Academic Tagging & Catalog Status</span>
+            </h3>
+
+            <!-- 1-Click Semester Chip Selector -->
+            <div class="form-group">
+              <label class="block text-xs font-semibold text-stone-800 uppercase tracking-wider mb-1.5">
+                Semester Assignment <span class="text-rose-700">*</span>
+              </label>
+
+              <div class="flex flex-wrap gap-1.5 select-none" id="semesterChipContainer">
+                <button type="button" class="semester-chip-btn" data-sem="all" onclick="toggleSemesterChip('all')">All Semesters</button>
+                <button type="button" class="semester-chip-btn" data-sem="Semester 1" onclick="toggleSemesterChip('Semester 1')">Sem 1</button>
+                <button type="button" class="semester-chip-btn" data-sem="Semester 2" onclick="toggleSemesterChip('Semester 2')">Sem 2</button>
+                <button type="button" class="semester-chip-btn" data-sem="Semester 3" onclick="toggleSemesterChip('Semester 3')">Sem 3</button>
+                <button type="button" class="semester-chip-btn" data-sem="Semester 4" onclick="toggleSemesterChip('Semester 4')">Sem 4</button>
+                <button type="button" class="semester-chip-btn" data-sem="Semester 5" onclick="toggleSemesterChip('Semester 5')">Sem 5</button>
+                <button type="button" class="semester-chip-btn" data-sem="Semester 6" onclick="toggleSemesterChip('Semester 6')">Sem 6</button>
+                <button type="button" class="semester-chip-btn" data-sem="Semester 7" onclick="toggleSemesterChip('Semester 7')">Sem 7</button>
+                <button type="button" class="semester-chip-btn" data-sem="Semester 8" onclick="toggleSemesterChip('Semester 8')">Sem 8</button>
+              </div>
+
+              <!-- Native Hidden Select -->
+              <select id="semester" name="semester" data-org='{{json book.semester}}' multiple required class="sr-only">
+                <option value="all" {{#if (eq book.semester "all")}}selected{{/if}}>All Semesters</option>
+                <option value="Semester 1" {{#if (includes book.semester "Semester 1")}}selected{{else}}{{#unless book}}{{#if (eq @root.defaultSemester "Semester 1")}}selected{{/if}}{{/unless}}{{/if}}>Semester 1</option>
+                <option value="Semester 2" {{#if (includes book.semester "Semester 2")}}selected{{else}}{{#unless book}}{{#if (eq @root.defaultSemester "Semester 2")}}selected{{/if}}{{/unless}}{{/if}}>Semester 2</option>
+                <option value="Semester 3" {{#if (includes book.semester "Semester 3")}}selected{{else}}{{#unless book}}{{#if (eq @root.defaultSemester "Semester 3")}}selected{{/if}}{{/unless}}{{/if}}>Semester 3</option>
+                <option value="Semester 4" {{#if (includes book.semester "Semester 4")}}selected{{else}}{{#unless book}}{{#if (eq @root.defaultSemester "Semester 4")}}selected{{/if}}{{/unless}}{{/if}}>Semester 4</option>
+                <option value="Semester 5" {{#if (includes book.semester "Semester 5")}}selected{{else}}{{#unless book}}{{#if (eq @root.defaultSemester "Semester 5")}}selected{{/if}}{{/unless}}{{/if}}>Semester 5</option>
+                <option value="Semester 6" {{#if (includes book.semester "Semester 6")}}selected{{else}}{{#unless book}}{{#if (eq @root.defaultSemester "Semester 6")}}selected{{/if}}{{/unless}}{{/if}}>Semester 6</option>
+                <option value="Semester 7" {{#if (includes book.semester "Semester 7")}}selected{{else}}{{#unless book}}{{#if (eq @root.defaultSemester "Semester 7")}}selected{{/if}}{{/unless}}{{/if}}>Semester 7</option>
+                <option value="Semester 8" {{#if (includes book.semester "Semester 8")}}selected{{else}}{{#unless book}}{{#if (eq @root.defaultSemester "Semester 8")}}selected{{/if}}{{/unless}}{{/if}}>Semester 8</option>
+              </select>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div class="form-group">
+                <label for="main" class="block text-xs font-semibold text-stone-800 uppercase tracking-wider mb-1">
+                  Primary Material Distinction
+                </label>
+                <select id="main" name="main" data-org="{{#if book}}{{book.main}}{{/if}}" required class="input-classic w-full px-3 py-2 text-xs appearance-none cursor-pointer">
+                  <option value="true" {{#if (eq book.main "true")}}selected{{/if}}>Yes - Highlight as Main</option>
+                  <option value="false" {{#if (eq book.main "false")}}selected{{else}}{{#unless book}}selected{{/unless}}{{/if}}>No - Standard Resource</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="visible" class="block text-xs font-semibold text-stone-800 uppercase tracking-wider mb-1">
+                  Catalog Registry Visibility
+                </label>
+                <select id="visible" name="visible" data-org="{{#if book}}{{book.visible}}{{/if}}" required class="input-classic w-full px-3 py-2 text-xs appearance-none cursor-pointer">
+                  <option value="true" {{#if (eq book.visible "false")}}{{else}}selected{{/if}}>Visible on Public Catalog</option>
+                  <option value="false" {{#if (eq book.visible "false")}}selected{{/if}}>Hidden</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions Footer -->
+          <div class="pt-4 border-t border-stone-200 flex flex-col sm:flex-row items-center gap-2.5">
+            {{#if isEdit}}
+            <a href="/dashboard/Book/{{id}}/Sections" class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-300 text-xs font-semibold uppercase tracking-wider transition-colors">
+              <i class="fas fa-list-ul"></i>
+              <span>Manage Chapters</span>
+            </a>
+            {{/if}}
+
+            <button type="submit" id="submitButton" class="w-full sm:flex-1 inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded bg-[#162e4a] hover:bg-[#0f2035] text-white font-semibold text-xs uppercase tracking-wider shadow-sm transition-colors">
+              <i class="fas fa-save text-amber-100"></i>
+              <span>{{#if isEdit}}Save Registry Changes{{else}}Publish Publication{{/if}}</span>
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+<script>
+  function switchPreviewMode(mode) {
+    const cardBox = document.getElementById("previewCardBox");
+    const detailBox = document.getElementById("previewDetailBox");
+    const cardTab = document.getElementById("previewCardTab");
+    const detailTab = document.getElementById("previewDetailTab");
+
+    const isDetail = mode === 'detail';
+    cardBox.classList.toggle('hidden', isDetail);
+    detailBox.classList.toggle('hidden', !isDetail);
+
+    detailTab.className = isDetail ? 'px-2 py-0.5 rounded text-[11px] font-semibold bg-[#f0f4f9] text-[#162e4a] border border-[#bad0e4]' : 'px-2 py-0.5 rounded text-[11px] font-medium text-stone-500 hover:text-stone-800';
+    cardTab.className = isDetail ? 'px-2 py-0.5 rounded text-[11px] font-medium text-stone-500 hover:text-stone-800' : 'px-2 py-0.5 rounded text-[11px] font-semibold bg-[#f0f4f9] text-[#162e4a] border border-[#bad0e4]';
+  }
+
+  function setCoverPreset(url) {
+    const imgInput = document.getElementById("imageURL");
+    if (imgInput && !imgInput.readOnly) {
+      imgInput.value = url;
+      updateBookCard();
+    }
+  }
+
+  // Real-time Preview Update
+  function updateBookCard() {
+    const name = document.getElementById("name")?.value || "Book Title Preview";
+    const description = document.getElementById("description")?.value || "Bibliographic author and syllabus summary...";
+    const imageURL = document.getElementById("imageURL")?.value || "/BookCovers/BookCover_Template.webp";
+    const link = document.getElementById("link")?.value || "#";
+    const mainValue = document.getElementById("main")?.value;
+    const category = document.getElementById("category")?.value;
+    const visibleValue = document.getElementById("visible")?.value;
+    const semesterEl = document.getElementById("semester");
+    const selectedSemesters = semesterEl ? Array.from(semesterEl.selectedOptions).map(o => o.value) : [];
+
+    const nameEl = document.getElementById("bookname");
+    const descEl = document.getElementById("bookdesciption");
+    const coverEl = document.getElementById("bookcover");
+    const urlEl = document.getElementById("bookurl");
+    const url1El = document.getElementById("bookurl1");
+    const ambientEl = document.getElementById("ambientPreviewBlur");
+
+    if (nameEl) nameEl.textContent = name;
+    if (descEl) descEl.textContent = description;
+    if (coverEl) coverEl.src = imageURL;
+    if (ambientEl) ambientEl.style.backgroundImage = `url('${imageURL}')`;
+    if (urlEl) urlEl.href = link;
+    if (url1El) url1El.href = link;
+
+    const dpTitle = document.getElementById("detailPreviewTitle");
+    const dpCat = document.getElementById("detailPreviewCategory");
+    const dpSem = document.getElementById("detailPreviewSemesters");
+    const dpMain = document.getElementById("detailPreviewMain");
+    const dpVis = document.getElementById("detailPreviewVisible");
+
+    if (dpTitle) dpTitle.textContent = name;
+    if (dpCat) dpCat.textContent = category;
+    if (dpSem) dpSem.textContent = window.formatSemesterBadge(selectedSemesters) || 'None';
+    if (dpMain) dpMain.textContent = mainValue === 'true' ? 'Yes' : 'No';
+    if (dpVis) dpVis.textContent = visibleValue === 'false' ? 'Hidden' : 'Visible';
+
+    const badgesContainer = document.querySelector(".badges");
+    if (badgesContainer) {
+      badgesContainer.innerHTML = '';
+      if (mainValue === "true") {
+        const mainBadge = document.createElement("span");
+        mainBadge.className = "px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-600 text-white shadow-sm flex items-center gap-1";
+        mainBadge.innerHTML = '<i class="fas fa-star text-[8px]"></i> Main';
+        badgesContainer.appendChild(mainBadge);
+      }
+
+      if (selectedSemesters && selectedSemesters.length > 0) {
+        const semBadgeText = window.formatSemesterBadge(selectedSemesters);
+        if (semBadgeText) {
+          const semBadge = document.createElement("span");
+          semBadge.className = "px-2 py-0.5 rounded text-[10px] font-semibold bg-stone-900/85 text-white backdrop-blur-sm shadow-sm";
+          semBadge.textContent = semBadgeText;
+          badgesContainer.appendChild(semBadge);
+        }
+      }
+
+      if (category && category !== "All") {
+        const catBadge = document.createElement("span");
+        catBadge.className = "px-2 py-0.5 rounded text-[10px] font-medium bg-white/95 text-stone-700 border border-stone-300 shadow-sm ml-auto backdrop-blur-sm";
+        catBadge.textContent = category;
+        badgesContainer.appendChild(catBadge);
+      }
+    }
+  }
+
+  function toggleSemesterChip(sem) {
+    const select = document.getElementById("semester");
+    if (!select) return;
+
+    if (sem === 'all') {
+      const allOpt = select.querySelector('option[value="all"]');
+      const willSelect = allOpt ? !allOpt.selected : true;
+      Array.from(select.options).forEach(o => { o.selected = willSelect; });
+    } else {
+      const opt = select.querySelector(`option[value="${sem}"]`);
+      if (opt) opt.selected = !opt.selected;
+      const allOpt = select.querySelector('option[value="all"]');
+      if (allOpt) allOpt.selected = false;
+    }
+
+    syncSemesterChipsUI();
+    updateBookCard();
+  }
+
+  function syncSemesterChipsUI() {
+    const select = document.getElementById("semester");
+    if (!select) return;
+    const selectedValues = Array.from(select.selectedOptions).map(o => o.value);
+    document.querySelectorAll(".semester-chip-btn").forEach(btn => {
+      btn.classList.toggle('selected', selectedValues.includes(btn.dataset.sem));
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const select = document.getElementById("semester");
+    if (select) {
+      try {
+        let org = select.getAttribute('data-org') || select.dataset.org;
+        if (org) {
+          let parsed = org;
+          try { parsed = JSON.parse(org); } catch (e) {}
+          if (typeof parsed === 'string' && parsed.includes(',')) {
+            parsed = parsed.split(',').map(s => s.trim()).filter(Boolean);
+          }
+          if (parsed === 'all' || (Array.isArray(parsed) && parsed.includes('all'))) {
+            Array.from(select.options).forEach(o => o.selected = true);
+          } else if (Array.isArray(parsed)) {
+            Array.from(select.options).forEach(o => { o.selected = parsed.includes(o.value); });
+          } else if (typeof parsed === 'string') {
+            Array.from(select.options).forEach(o => { o.selected = (o.value === parsed); });
+          }
+        }
+      } catch (err) {
+        console.warn('Semester org parse warning', err);
+      }
+      syncSemesterChipsUI();
+    }
+
+    ["name", "description", "imageURL", "link", "main", "category", "semester", "visible"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener("input", updateBookCard);
+        el.addEventListener("change", updateBookCard);
+      }
+    });
+
+    updateBookCard();
+  });
+
+  // Submit Handler
+  document.getElementById("bookForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const submitButton = document.getElementById("submitButton");
+    const isEdit = form.dataset.isEdit === 'true';
+    
+    submitButton.disabled = true;
+    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Saving...</span>';
+
+    let semesterSelected = Array.from(document.getElementById("semester").selectedOptions).map(o => o.value);
+    const ALL_SEMESTERS = ['Semester 1','Semester 2','Semester 3','Semester 4','Semester 5','Semester 6','Semester 7','Semester 8'];
+    if (semesterSelected.includes('all') || semesterSelected.length === 0) {
+      semesterSelected = ALL_SEMESTERS.slice();
+    }
+
+    const payload = {
+      name: document.getElementById("name").value.trim(),
+      category: document.getElementById("category").value,
+      description: document.getElementById("description").value.trim(),
+      imageURL: document.getElementById("imageURL").value.trim(),
+      link: document.getElementById("link").value.trim(),
+      semester: semesterSelected,
+      main: document.getElementById("main").value,
+      visible: document.getElementById("visible").value,
+    };
+
+    try {
+      const url = isEdit 
+        ? `/api/admin/Unilib/Book/Edit/${form.dataset.bookId}`
+        : `/api/admin/Unilib/Book/Add`;
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const result = await response.json();
+      
+      if (response.ok) {
+        showToast(result.message || 'Publication saved successfully!', 'success');
+        setTimeout(() => {
+          if (isEdit) window.location.reload();
+          else window.location.href = '/dashboard';
+        }, 800);
+      } else {
+        showToast(result.error || 'Failed to save publication', 'error');
+        submitButton.disabled = false;
+        submitButton.innerHTML = `<i class="fas fa-save text-amber-100"></i> <span>${isEdit ? 'Save Registry Changes' : 'Publish Publication'}</span>`;
+      }
+    } catch (err) {
+      console.error('Error submitting form:', err);
+      showToast('Network error while saving publication.', 'error');
+      submitButton.disabled = false;
+      submitButton.innerHTML = `<i class="fas fa-save text-amber-100"></i> <span>${isEdit ? 'Save Registry Changes' : 'Publish Publication'}</span>`;
+    }
+  });
+</script>

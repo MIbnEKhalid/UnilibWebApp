@@ -1,0 +1,309 @@
+<section class="w-full space-y-5">
+  
+  <!-- Breadcrumbs -->
+  <nav class="flex items-center gap-2 text-xs text-stone-500" aria-label="Breadcrumb">
+    <a href="/" class="hover:text-[#162e4a] transition-colors">Library Catalog</a>
+    <span>/</span>
+    <span class="text-stone-800">Materials Archive</span>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-stone-200">
+    <div class="space-y-0.5">
+      <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[11px] font-semibold bg-[#f0f4f9] text-[#162e4a] border border-[#bad0e4]">
+        <i class="fas fa-landmark text-[10px]"></i>
+        <span class="uppercase tracking-wider">Tasjeel Archive Sync</span>
+      </div>
+      <h1 class="font-serif font-bold text-xl sm:text-2xl text-stone-900 tracking-normal">
+        Course Subjects & Materials Archive
+      </h1>
+      <p class="text-xs text-stone-600">
+        Access official lecture materials, syllabi, software documentation, and laboratory guides by subject and semester.
+      </p>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button id="load-all-materials" class="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-[#162e4a] hover:bg-[#0f2035] text-white font-medium text-xs uppercase tracking-wider shadow-sm transition-colors">
+        <i class="fas fa-cloud-download-alt text-amber-100"></i>
+        <span>Load All Materials</span>
+      </button>
+    </div>
+  </div>
+
+  {{#if error}}
+  <div class="p-3 rounded bg-rose-50 border border-rose-300 text-rose-900 text-xs flex items-center justify-between gap-2">
+    <div class="flex items-center gap-2">
+      <i class="fas fa-exclamation-triangle text-rose-600"></i>
+      <span>{{error}}</span>
+    </div>
+    <button class="close-error text-rose-500 hover:text-rose-800" onclick="this.parentElement.remove()">&times;</button>
+  </div>
+  {{/if}}
+
+  <!-- Top Semester 1-Click Tabstrip Partial -->
+  {{> semesterTabs tabContainerId="subjectSemesterTabs"}}
+
+  <!-- Search Filter Toolbar -->
+  <div class="bg-white rounded-lg p-3 border border-stone-300 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div class="relative w-full sm:max-w-md">
+      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
+        <i class="fas fa-search text-xs"></i>
+      </div>
+      <input type="text" id="subjectSearch" placeholder="Search subjects by name or course code..." aria-label="Search subjects" class="input-classic w-full pl-9 pr-9 py-2 text-xs">
+      
+      <button type="button" id="subjectSearchClear" aria-label="Clear search" class="absolute inset-y-0 right-0 pr-2.5 flex items-center text-stone-400 hover:text-stone-700" style="display:none;">
+        <i class="fas fa-times text-xs bg-stone-100 p-1 rounded-full"></i>
+      </button>
+    </div>
+
+    <div class="text-xs text-stone-600 font-medium self-end sm:self-auto">
+      Showing <strong id="subjectVisibleCount">{{subjects.length}}</strong> of {{subjects.length}} subjects
+    </div>
+  </div>
+
+  <!-- Subjects Accordion / List -->
+  {{#if subjects.length}}
+  <div class="space-y-3" id="subjects-view">
+    {{#each subjects}}
+    <div class="subject-card bg-white rounded-lg border border-stone-300 shadow-sm overflow-hidden transition-colors" data-courseid="{{courseId}}" data-semester="{{semester}}">
+      
+      <!-- Card Header -->
+      <div class="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer select-none card-header hover:bg-stone-50 transition-colors">
+        
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-8 h-8 rounded bg-[#f0f4f9] border border-[#bad0e4] flex items-center justify-center text-[#162e4a] flex-shrink-0">
+            <i class="fas fa-book-bookmark text-xs"></i>
+          </div>
+          
+          <div class="space-y-1 min-w-0">
+            <h3 class="subject-title font-serif font-bold text-sm text-stone-900 truncate">
+              {{subject}}
+            </h3>
+            <div class="flex flex-wrap items-center gap-2 text-xs text-stone-500">
+              <span>Code: <strong class="text-stone-800">{{courseId}}</strong></span>
+              <span>&bull;</span>
+              <span class="subject-semester-label text-[#162e4a] font-semibold">{{semester}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 self-end sm:self-auto flex-shrink-0">
+          <span class="material-badge inline-flex items-center justify-center px-2 py-0.5 rounded text-[11px] font-semibold bg-[#f0f4f9] text-[#162e4a] border border-[#bad0e4]">0</span>
+
+          <button type="button" class="download-all-btn hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded bg-stone-100 hover:bg-[#162e4a] text-stone-700 hover:text-white border border-stone-300 text-xs font-semibold transition-colors" style="display: none;">
+            <i class="fas fa-download text-[10px]"></i>
+            <span>All</span>
+          </button>
+
+          <div class="w-7 h-7 rounded border border-stone-200 flex items-center justify-center text-stone-400 expand-icon transition-transform">
+            <i class="fas fa-chevron-down text-xs"></i>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Materials List Section -->
+      <div class="materials-section border-t border-stone-200 p-4 bg-stone-50/50 hidden">
+        
+        <div class="loading-spinner py-6 flex flex-col items-center justify-center gap-2 text-stone-500 text-xs" style="display: none;">
+          <i class="fas fa-circle-notch fa-spin text-[#162e4a] text-base"></i>
+          <span>Retrieving archived course materials...</span>
+        </div>
+
+        <ul class="materials-list divide-y divide-stone-200 text-xs"></ul>
+
+      </div>
+
+    </div>
+    {{/each}}
+  </div>
+
+  <!-- Empty filtered state -->
+  <div id="noSubjectsFiltered" class="bg-white rounded-lg p-10 text-center max-w-md mx-auto border border-stone-300 space-y-3" style="display: none;">
+    <div class="w-12 h-12 rounded-full bg-stone-100 flex items-center justify-center mx-auto text-stone-400 text-xl">
+      <i class="fas fa-folder-open"></i>
+    </div>
+    <div class="space-y-1">
+      <h3 class="font-serif font-bold text-base text-stone-900">No Subjects in this Semester</h3>
+      <p class="text-xs text-stone-500">No subjects currently match the selected semester filter or search query.</p>
+    </div>
+    <button onclick="selectSemesterTab('all')" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded bg-[#162e4a] text-white font-medium text-xs hover:bg-[#0f2035] transition-colors shadow-sm">
+      <i class="fas fa-layer-group"></i>
+      <span>Show All Semesters</span>
+    </button>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const filterEngine = window.initSubjectFilterEngine({
+        containerSelector: '#subjects-view',
+        cardSelector: '.subject-card',
+        tabsContainerSelector: '#subjectSemesterTabs',
+        searchInputId: 'subjectSearch',
+        searchClearId: 'subjectSearchClear',
+        counterId: 'subjectVisibleCount',
+        noResultsId: 'noSubjectsFiltered',
+        defaultSemester: window.DEFAULT_SEMESTER || 'Semester 1'
+      });
+
+      window.selectSemesterTab = filterEngine.setSemester;
+
+      async function fetchAndDownload(href, suggestedName) {
+        try {
+          const resp = await fetch(href, { credentials: 'same-origin' });
+          if (resp.status === 401) return showToast('Authentication required. Please log in.', 'error');
+          if (!resp.ok) return showToast('Download failed. Please try again.', 'error');
+          
+          const blob = await resp.blob();
+          const disposition = resp.headers.get('content-disposition') || '';
+          const match = /filename="?([^";]+)"?/.exec(disposition);
+          const filename = match ? match[1] : (suggestedName || 'course-material.bin');
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+          showToast(`Downloaded: ${filename}`, 'success');
+        } catch (err) {
+          console.error('Download error', err);
+          showToast('Failed to download material.', 'error');
+        }
+      }
+
+      document.querySelectorAll('.subject-card').forEach(card => {
+        const header = card.querySelector('.card-header');
+        const downloadAllBtn = card.querySelector('.download-all-btn');
+        const list = card.querySelector('.materials-list');
+        const spinner = card.querySelector('.loading-spinner');
+        const materialBadge = card.querySelector('.material-badge');
+        const materialsSection = card.querySelector('.materials-section');
+        const expandIcon = card.querySelector('.expand-icon');
+        let loaded = false;
+        let materials = [];
+
+        const toggleMaterials = async (e) => {
+          if (e.target.closest('.download-all-btn') || e.target.closest('select')) return;
+          const isHidden = materialsSection.classList.contains('hidden');
+
+          if (isHidden && !loaded) {
+            await loadMaterials();
+          }
+
+          materialsSection.classList.toggle('hidden', !isHidden);
+          if (expandIcon) expandIcon.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+        };
+
+        if (header) header.addEventListener('click', toggleMaterials);
+
+        async function loadMaterials() {
+          if (loaded) return;
+          spinner.style.display = 'flex';
+          const courseId = card.dataset.courseid;
+
+          try {
+            const resp = await fetch(`/api/get/all/materials/${encodeURIComponent(courseId)}`, { credentials: 'same-origin' });
+            if (!resp.ok) throw new Error('Failed to load materials');
+            const json = await resp.json();
+            materials = json.materials || [];
+
+            if (materialBadge) materialBadge.textContent = materials.length;
+            
+            if (materials.length) {
+              list.innerHTML = materials.map(m => `
+                <li class="py-2.5 flex items-center justify-between gap-3">
+                  <div class="flex items-center gap-2.5 min-w-0 pr-2">
+                    <span class="text-base flex-shrink-0">📄</span>
+                    <div class="min-w-0">
+                      <span class="text-xs font-semibold text-stone-900 block truncate" title="${m.name || 'File'}">${m.name || 'Unnamed File'}</span>
+                    </div>
+                  </div>
+                  ${m.href ? `
+                    <button type="button" data-href="${m.href}" data-name="${m.name || ''}" class="file-download-btn inline-flex items-center gap-1 px-2.5 py-1 rounded bg-white hover:bg-[#162e4a] text-[#162e4a] hover:text-white text-xs font-semibold border border-stone-300 hover:border-[#162e4a] transition-colors flex-shrink-0">
+                      <i class="fas fa-download text-[9px]"></i>
+                      <span>Download</span>
+                    </button>
+                  ` : ''}
+                </li>
+              `).join('');
+
+              list.querySelectorAll('.file-download-btn').forEach(btn => {
+                btn.addEventListener('click', (ev) => {
+                  ev.stopPropagation();
+                  fetchAndDownload(btn.dataset.href, btn.dataset.name);
+                });
+              });
+              
+              if (downloadAllBtn) {
+                downloadAllBtn.style.display = 'inline-flex';
+                downloadAllBtn.onclick = async (ev) => {
+                  ev.stopPropagation();
+                  showToast('Starting batch download...', 'info');
+                  for (const mm of materials) {
+                    if (mm.href) await fetchAndDownload(mm.href, mm.name);
+                  }
+                };
+              }
+            } else {
+              list.innerHTML = `<li class="py-4 text-center text-stone-500 text-xs">No materials found for this subject.</li>`;
+              if (downloadAllBtn) downloadAllBtn.style.display = 'none';
+            }
+
+            loaded = true;
+          } catch (err) {
+            list.innerHTML = `<li class="py-3 text-rose-700 text-xs flex items-center justify-center gap-1.5"><i class="fas fa-exclamation-triangle"></i><span>Failed to load materials.</span></li>`;
+            console.error(err);
+          } finally {
+            spinner.style.display = 'none';
+          }
+        }
+      });
+
+      const loadAllBtn = document.getElementById('load-all-materials');
+      if (loadAllBtn) {
+        loadAllBtn.addEventListener('click', () => {
+          document.querySelectorAll('.subject-card').forEach(card => {
+            const header = card.querySelector('.card-header');
+            const materialsSection = card.querySelector('.materials-section');
+            if (materialsSection && materialsSection.classList.contains('hidden') && header) {
+              header.click();
+            }
+          });
+        });
+      }
+
+      fetch('/api/get/all/materials-counts', { credentials: 'same-origin' })
+        .then(r => r.ok ? r.json() : {})
+        .then(json => {
+          const counts = json.counts || {};
+          document.querySelectorAll('.subject-card').forEach(card => {
+            const count = counts[card.dataset.courseid] || 0;
+            const badge = card.querySelector('.material-badge');
+            const downloadAllBtn = card.querySelector('.download-all-btn');
+            if (badge) badge.textContent = count;
+            if (downloadAllBtn) downloadAllBtn.style.display = count ? 'inline-flex' : 'none';
+          });
+        })
+        .catch(() => {});
+    });
+  </script>
+
+  {{else}}
+  <div class="bg-white rounded-lg p-10 text-center max-w-md mx-auto border border-stone-300 space-y-3">
+    <div class="w-12 h-12 rounded-full bg-stone-100 flex items-center justify-center mx-auto text-stone-400 text-xl">
+      <i class="fas fa-folder-open"></i>
+    </div>
+    <div class="space-y-1">
+      <h3 class="font-serif font-bold text-base text-stone-900">No Subjects in Archive</h3>
+      <p class="text-xs text-stone-500">There are currently no course materials synced in the archive.</p>
+    </div>
+    <button onclick="location.reload()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded bg-[#162e4a] text-white font-medium text-xs hover:bg-[#0f2035] transition-colors shadow-sm">
+      <i class="fas fa-redo"></i>
+      <span>Refresh Registry</span>
+    </button>
+  </div>
+  {{/if}}
+
+</section>

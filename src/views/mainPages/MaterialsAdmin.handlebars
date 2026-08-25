@@ -1,0 +1,601 @@
+{{#section 'head'}}
+<title>Materials Registry & Management | Unilib Admin Console</title>
+<link rel="stylesheet" href="/Assets/Styles/common-admin.css?v={{appVersion}}">
+{{/section}}
+
+<section class="w-full space-y-5" id="materialsAdmin">
+  
+  <!-- Dashboard Page Header & Stats Summary -->
+  <div class="bg-white rounded-lg p-5 border border-stone-300 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div class="space-y-1">
+      <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[11px] font-semibold bg-[#f0f4f9] text-[#162e4a] border border-[#bad0e4]">
+        <i class="fas fa-archive text-[10px]"></i>
+        <span class="uppercase tracking-wider">Tasjeel Archive & Course Materials</span>
+      </div>
+      <h1 class="font-serif font-bold text-xl sm:text-2xl text-stone-900 tracking-normal">
+        Course Materials Management
+      </h1>
+      <p class="text-xs text-stone-600">
+        Manage course subjects, assign semesters, add or delete lecture materials, and trigger automatic portal sync.
+      </p>
+    </div>
+
+    <!-- Top Action Buttons -->
+    <div class="flex flex-wrap items-center gap-2">
+      <button type="button" id="syncTasjeelBtn" onclick="triggerTasjeelSync()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-300 text-xs font-semibold uppercase tracking-wider shadow-sm transition-colors">
+        <i class="fas fa-rotate text-stone-500" id="syncIcon"></i>
+        <span id="syncText">Sync Tasjeel</span>
+      </button>
+
+      <button type="button" onclick="openAddSubjectModal()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-[#162e4a] hover:bg-[#0f2035] text-white text-xs font-semibold uppercase tracking-wider shadow-sm transition-colors">
+        <i class="fas fa-plus text-amber-100"></i>
+        <span>New Subject</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Admin Sub-Navigation Tabs -->
+  <div class="flex items-center gap-2 border-b border-stone-200 pb-2">
+    <a href="/dashboard" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-colors flex items-center gap-1.5 uppercase tracking-wider">
+      <i class="fas fa-book-bookmark text-stone-400 text-[11px]"></i>
+      <span>Book Publications</span>
+    </a>
+    <a href="/dashboard/Materials" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-[#162e4a] text-white flex items-center gap-1.5 uppercase tracking-wider shadow-xs">
+      <i class="fas fa-archive text-amber-200 text-[11px]"></i>
+      <span>Course Materials</span>
+    </a>
+  </div>
+
+  {{#if error}}
+  <div class="p-3 rounded bg-rose-50 border border-rose-300 text-rose-900 text-xs flex items-center justify-between gap-2">
+    <div class="flex items-center gap-2">
+      <i class="fas fa-exclamation-triangle text-rose-600"></i>
+      <span>{{error}}</span>
+    </div>
+    <button class="close-error text-rose-500 hover:text-rose-800" onclick="this.parentElement.remove()">&times;</button>
+  </div>
+  {{/if}}
+
+  <!-- Top Semester 1-Click Tabstrip Partial -->
+  {{> semesterTabs tabContainerId="adminSemesterTabs" tabHandler="selectAdminSemesterTab"}}
+
+  <!-- Faceted Search & Counter Toolbar -->
+  <div class="bg-white rounded-lg p-3 border border-stone-300 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div class="relative w-full sm:max-w-md">
+      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
+        <i class="fas fa-search text-xs"></i>
+      </div>
+      <input type="text" id="adminSubjectSearch" placeholder="Search subjects by name or course code..." aria-label="Search subjects" class="input-classic w-full pl-9 pr-9 py-2 text-xs">
+      
+      <button type="button" id="adminSubjectSearchClear" aria-label="Clear search" class="absolute inset-y-0 right-0 pr-2.5 flex items-center text-stone-400 hover:text-stone-700" style="display:none;">
+        <i class="fas fa-times text-xs bg-stone-100 p-1 rounded-full"></i>
+      </button>
+    </div>
+
+    <div class="flex items-center gap-3 text-xs text-stone-600 font-medium self-end sm:self-auto">
+      <span class="px-2.5 py-1 rounded bg-stone-50 border border-stone-200">
+        Listed: <strong id="adminSubjectVisibleCount" class="text-stone-900">{{subjects.length}}</strong> of {{subjects.length}}
+      </span>
+      <button type="button" onclick="expandAllAdminMaterials()" class="text-stone-600 hover:text-[#162e4a] underline text-xs">
+        Expand All
+      </button>
+    </div>
+  </div>
+
+  <!-- Subjects Management Accordion List -->
+  {{#if subjects.length}}
+  <div class="space-y-3" id="adminSubjectsContainer">
+    {{#each subjects}}
+    <div class="subject-admin-card bg-white rounded-lg border border-stone-300 shadow-sm overflow-hidden transition-colors" data-courseid="{{courseId}}" data-semester="{{semester}}">
+      
+      <!-- Card Header -->
+      <div class="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer select-none card-header hover:bg-stone-50 transition-colors">
+        
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-9 h-9 rounded bg-[#f0f4f9] border border-[#bad0e4] flex items-center justify-center text-[#162e4a] flex-shrink-0">
+            <i class="fas fa-book-bookmark text-xs"></i>
+          </div>
+          
+          <div class="space-y-1 min-w-0">
+            <h3 class="subject-title font-serif font-bold text-sm text-stone-900 truncate">
+              {{subject}}
+            </h3>
+            <div class="flex flex-wrap items-center gap-2 text-xs text-stone-500">
+              <span>Code: <strong class="text-stone-800">{{courseId}}</strong></span>
+              <span>&bull;</span>
+              <span class="subject-semester-label text-[#162e4a] font-semibold">{{semester}}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card Actions Deck -->
+        <div class="flex flex-wrap items-center gap-2 flex-shrink-0 self-end sm:self-auto" onclick="event.stopPropagation()">
+          
+          <div class="relative" title="Assign Semester">
+            <label for="admin_sem_{{courseId}}" class="sr-only">Assign Semester</label>
+            <select id="admin_sem_{{courseId}}" onchange="changeAdminSubjectSemester('{{courseId}}', this.value)" class="input-classic text-xs py-1.5 pl-2.5 pr-6 bg-[#f0f4f9] hover:bg-[#dce5f0] text-[#162e4a] font-semibold border border-[#bad0e4] rounded cursor-pointer transition-colors shadow-xs appearance-none">
+              <option value="Semester 1" {{#if (eq semester 'Semester 1')}}selected{{/if}}>Semester 1</option>
+              <option value="Semester 2" {{#if (eq semester 'Semester 2')}}selected{{/if}}>Semester 2</option>
+              <option value="Semester 3" {{#if (eq semester 'Semester 3')}}selected{{/if}}>Semester 3</option>
+              <option value="Semester 4" {{#if (eq semester 'Semester 4')}}selected{{/if}}>Semester 4</option>
+              <option value="Semester 5" {{#if (eq semester 'Semester 5')}}selected{{/if}}>Semester 5</option>
+              <option value="Semester 6" {{#if (eq semester 'Semester 6')}}selected{{/if}}>Semester 6</option>
+              <option value="Semester 7" {{#if (eq semester 'Semester 7')}}selected{{/if}}>Semester 7</option>
+              <option value="Semester 8" {{#if (eq semester 'Semester 8')}}selected{{/if}}>Semester 8</option>
+            </select>
+            <div class="absolute inset-y-0 right-0 pr-1.5 flex items-center pointer-events-none text-[#162e4a]">
+              <i class="fas fa-chevron-down text-[8px]"></i>
+            </div>
+          </div>
+
+          <button type="button" onclick="openAddMaterialModal('{{courseId}}', '{{subject}}')" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded bg-emerald-50 hover:bg-emerald-700 text-emerald-700 hover:text-white border border-emerald-200 hover:border-emerald-700 text-xs font-medium transition-colors shadow-xs" title="Add Material">
+            <i class="fas fa-plus text-[9px]"></i>
+            <span>Add File</span>
+          </button>
+
+          <button type="button" onclick="confirmDeleteSubject('{{courseId}}', '{{subject}}')" class="inline-flex items-center justify-center p-2 rounded bg-stone-100 hover:bg-rose-700 text-rose-700 hover:text-white text-xs border border-stone-300 hover:border-rose-700 transition-colors shadow-xs" title="Delete Subject">
+            <i class="fas fa-trash-alt text-[10px]"></i>
+          </button>
+
+          <button type="button" onclick="toggleAdminMaterialsCard(this.closest('.subject-admin-card'))" class="load-materials-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-medium border border-stone-300 transition-colors shadow-xs">
+            <span>Files</span>
+            <span class="material-badge px-1.5 py-0.2 rounded text-[10px] font-bold bg-white text-stone-800 border border-stone-300">{{materialsCount}}</span>
+            <i class="fas fa-chevron-down text-[9px] text-stone-400 transition-transform duration-200 expand-icon"></i>
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- Collapsible Materials Content -->
+      <div class="materials-section hidden px-4 pb-4 pt-1 border-t border-stone-200 bg-stone-50/50">
+        <div class="loading-spinner py-4 flex items-center justify-center gap-2 text-xs text-[#162e4a]" style="display:none;">
+          <i class="fas fa-spinner fa-spin text-sm"></i>
+          <span>Loading course files...</span>
+        </div>
+        <div class="materials-content">
+          <ul class="materials-list divide-y divide-stone-200"></ul>
+        </div>
+      </div>
+
+    </div>
+    {{/each}}
+  </div>
+
+  <!-- Empty filtered state -->
+  <div id="noAdminSubjectsFiltered" class="bg-white rounded-lg p-10 text-center max-w-md mx-auto border border-stone-300 space-y-3" style="display: none;">
+    <div class="w-12 h-12 rounded-full bg-stone-100 flex items-center justify-center mx-auto text-stone-400 text-xl">
+      <i class="fas fa-folder-open"></i>
+    </div>
+    <div class="space-y-1">
+      <h3 class="font-serif font-bold text-base text-stone-900">No Subjects Found</h3>
+      <p class="text-xs text-stone-500">No subjects currently match the selected semester filter or search query.</p>
+    </div>
+    <button onclick="selectAdminSemesterTab('all')" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded bg-[#162e4a] text-white font-medium text-xs hover:bg-[#0f2035] transition-colors shadow-sm">
+      <i class="fas fa-layer-group"></i>
+      <span>Show All Semesters</span>
+    </button>
+  </div>
+
+  {{else}}
+  <div class="bg-white rounded-lg p-10 text-center max-w-md mx-auto border border-stone-300 space-y-3">
+    <div class="w-12 h-12 rounded-full bg-stone-100 flex items-center justify-center mx-auto text-stone-400 text-xl">
+      <i class="fas fa-archive"></i>
+    </div>
+    <div class="space-y-1">
+      <h3 class="font-serif font-bold text-base text-stone-900">No Materials in Archive</h3>
+      <p class="text-xs text-stone-500">Sync with Tasjeel portal or create custom course subjects.</p>
+    </div>
+    <div class="flex items-center justify-center gap-2 pt-2">
+      <button onclick="triggerTasjeelSync()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-semibold border border-stone-300 transition-colors shadow-sm">
+        <i class="fas fa-rotate"></i>
+        <span>Sync Tasjeel</span>
+      </button>
+      <button onclick="openAddSubjectModal()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-[#162e4a] hover:bg-[#0f2035] text-white text-xs font-semibold uppercase tracking-wider transition-colors shadow-sm">
+        <i class="fas fa-plus text-amber-100"></i>
+        <span>New Subject</span>
+      </button>
+    </div>
+  </div>
+  {{/if}}
+
+</section>
+
+<!-- Modal: Add New Subject -->
+<div id="addSubjectModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+  <div class="bg-white rounded-xl max-w-md w-full p-6 shadow-2xl border border-stone-200 space-y-4">
+    <div class="flex items-center justify-between pb-3 border-b border-stone-200">
+      <h3 class="font-serif font-bold text-base text-stone-900 flex items-center gap-2">
+        <i class="fas fa-plus text-[#162e4a]"></i>
+        <span>Add New Course Subject</span>
+      </h3>
+      <button type="button" onclick="closeAddSubjectModal()" class="text-stone-400 hover:text-stone-700 text-sm p-1">&times;</button>
+    </div>
+
+    <form id="addSubjectForm" onsubmit="submitAddSubject(event)" class="space-y-3.5">
+      <div>
+        <label for="newCourseId" class="block text-xs font-semibold text-stone-700 mb-1">Course Code / ID <span class="text-rose-600">*</span></label>
+        <input type="text" id="newCourseId" required placeholder="e.g. CS101 or CS-3213" class="input-classic w-full px-3 py-2 text-xs">
+      </div>
+
+      <div>
+        <label for="newSubjectName" class="block text-xs font-semibold text-stone-700 mb-1">Subject Title <span class="text-rose-600">*</span></label>
+        <input type="text" id="newSubjectName" required placeholder="e.g. Data Structures & Algorithms" class="input-classic w-full px-3 py-2 text-xs">
+      </div>
+
+      <div>
+        <label for="newSubjectSemester" class="block text-xs font-semibold text-stone-700 mb-1">Semester Assignment <span class="text-rose-600">*</span></label>
+        <select id="newSubjectSemester" required class="input-classic w-full px-3 py-2 text-xs">
+          <option value="Semester 1">Semester 1</option>
+          <option value="Semester 2">Semester 2</option>
+          <option value="Semester 3">Semester 3</option>
+          <option value="Semester 4">Semester 4</option>
+          <option value="Semester 5">Semester 5</option>
+          <option value="Semester 6">Semester 6</option>
+          <option value="Semester 7">Semester 7</option>
+          <option value="Semester 8">Semester 8</option>
+        </select>
+      </div>
+
+      <div class="pt-3 border-t border-stone-100 flex items-center justify-end gap-2">
+        <button type="button" onclick="closeAddSubjectModal()" class="px-3.5 py-1.5 rounded bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-medium border border-stone-300 transition-colors">
+          Cancel
+        </button>
+        <button type="submit" id="saveSubjectBtn" class="px-4 py-1.5 rounded bg-[#162e4a] hover:bg-[#0f2035] text-white text-xs font-semibold uppercase tracking-wider transition-colors shadow-sm">
+          Save Subject
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Add Material Resource -->
+<div id="addMaterialModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+  <div class="bg-white rounded-xl max-w-md w-full p-6 shadow-2xl border border-stone-200 space-y-4">
+    <div class="flex items-center justify-between pb-3 border-b border-stone-200">
+      <div>
+        <h3 class="font-serif font-bold text-base text-stone-900 flex items-center gap-2">
+          <i class="fas fa-file-circle-plus text-emerald-700"></i>
+          <span>Add Course Material</span>
+        </h3>
+        <p class="text-xs text-stone-500 mt-0.5" id="addMaterialSubjectTitle"></p>
+      </div>
+      <button type="button" onclick="closeAddMaterialModal()" class="text-stone-400 hover:text-stone-700 text-sm p-1">&times;</button>
+    </div>
+
+    <form id="addMaterialForm" onsubmit="submitAddMaterial(event)" class="space-y-3.5">
+      <input type="hidden" id="addMaterialCourseId">
+
+      <div>
+        <label for="materialNameInput" class="block text-xs font-semibold text-stone-700 mb-1">Document / Material Name <span class="text-rose-600">*</span></label>
+        <input type="text" id="materialNameInput" required placeholder="e.g. Lecture 01 - Introduction.pdf" class="input-classic w-full px-3 py-2 text-xs">
+      </div>
+
+      <div>
+        <label for="materialHrefInput" class="block text-xs font-semibold text-stone-700 mb-1">Download URL or Storage Path</label>
+        <input type="text" id="materialHrefInput" placeholder="e.g. /student/class/material/download/... or direct URL" class="input-classic w-full px-3 py-2 text-xs">
+      </div>
+
+      <div class="pt-3 border-t border-stone-100 flex items-center justify-end gap-2">
+        <button type="button" onclick="closeAddMaterialModal()" class="px-3.5 py-1.5 rounded bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-medium border border-stone-300 transition-colors">
+          Cancel
+        </button>
+        <button type="submit" id="saveMaterialBtn" class="px-4 py-1.5 rounded bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold uppercase tracking-wider transition-colors shadow-sm">
+          Add Material
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  let adminFilterEngine;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    adminFilterEngine = window.initSubjectFilterEngine({
+      containerSelector: '#adminSubjectsContainer',
+      cardSelector: '.subject-admin-card',
+      tabsContainerSelector: '#adminSemesterTabs',
+      searchInputId: 'adminSubjectSearch',
+      searchClearId: 'adminSubjectSearchClear',
+      counterId: 'adminSubjectVisibleCount',
+      noResultsId: 'noAdminSubjectsFiltered',
+      defaultSemester: window.DEFAULT_SEMESTER || 'Semester 1'
+    });
+
+    window.selectAdminSemesterTab = adminFilterEngine.setSemester;
+
+    document.querySelectorAll('.subject-admin-card .card-header').forEach(header => {
+      header.addEventListener('click', (e) => {
+        if (e.target.closest('select') || e.target.closest('button')) return;
+        toggleAdminMaterialsCard(header.closest('.subject-admin-card'));
+      });
+    });
+  });
+
+  window.triggerTasjeelSync = async function() {
+    const syncBtn = document.getElementById('syncTasjeelBtn');
+    const syncIcon = document.getElementById('syncIcon');
+    const syncText = document.getElementById('syncText');
+
+    if (syncBtn) syncBtn.disabled = true;
+    if (syncIcon) syncIcon.classList.add('fa-spin');
+    if (syncText) syncText.textContent = 'Syncing...';
+
+    try {
+      const resp = await fetch('/api/admin/sync/tasjeel', { credentials: 'same-origin' });
+      const result = await resp.json();
+
+      if (result.success) {
+        showToast(`Tasjeel sync completed: ${result.count || 0} subjects updated`, 'success');
+        setTimeout(() => location.reload(), 1000);
+      } else {
+        throw new Error(result.message || result.error || 'Sync failed');
+      }
+    } catch (err) {
+      console.error('Tasjeel sync error:', err);
+      showToast(err.message || 'Tasjeel sync failed. Verify session.', 'error');
+    } finally {
+      if (syncBtn) syncBtn.disabled = false;
+      if (syncIcon) syncIcon.classList.remove('fa-spin');
+      if (syncText) syncText.textContent = 'Sync Tasjeel';
+    }
+  };
+
+  window.changeAdminSubjectSemester = async function(courseId, newSemester) {
+    try {
+      const resp = await fetch(`/api/admin/subject/${encodeURIComponent(courseId)}/semester`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ semester: newSemester })
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err.message || 'Failed to update semester');
+      }
+
+      const card = document.querySelector(`.subject-admin-card[data-courseid="${courseId}"]`);
+      if (card) {
+        card.dataset.semester = newSemester;
+        const label = card.querySelector('.subject-semester-label');
+        if (label) label.textContent = newSemester;
+      }
+
+      showToast(`Assigned ${courseId} to ${newSemester}`, 'success');
+      if (adminFilterEngine) adminFilterEngine.filter();
+    } catch (error) {
+      console.error('Error assigning semester:', error);
+      showToast(error.message || 'Failed to assign semester', 'error');
+    }
+  };
+
+  window.confirmDeleteSubject = async function(courseId, subjectTitle) {
+    if (!confirm(`Are you sure you want to delete "${subjectTitle}" (${courseId}) and all of its materials?`)) return;
+
+    try {
+      const resp = await fetch(`/api/admin/subject/${encodeURIComponent(courseId)}/delete`, {
+        method: 'POST',
+        credentials: 'same-origin'
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err.message || 'Failed to delete subject');
+      }
+
+      const card = document.querySelector(`.subject-admin-card[data-courseid="${courseId}"]`);
+      if (card) card.remove();
+
+      showToast(`Deleted subject "${subjectTitle}"`, 'success');
+      if (adminFilterEngine) adminFilterEngine.filter();
+    } catch (err) {
+      console.error('Delete subject error:', err);
+      showToast(err.message || 'Failed to delete subject', 'error');
+    }
+  };
+
+  window.openAddSubjectModal = function() {
+    const modal = document.getElementById('addSubjectModal');
+    if (modal) {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.getElementById('newCourseId')?.focus();
+    }
+  };
+
+  window.closeAddSubjectModal = function() {
+    const modal = document.getElementById('addSubjectModal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.getElementById('addSubjectForm')?.reset();
+    }
+  };
+
+  window.submitAddSubject = async function(e) {
+    e.preventDefault();
+    const courseId = document.getElementById('newCourseId').value.trim();
+    const subject = document.getElementById('newSubjectName').value.trim();
+    const semester = document.getElementById('newSubjectSemester').value;
+    const saveBtn = document.getElementById('saveSubjectBtn');
+    if (saveBtn) saveBtn.disabled = true;
+
+    try {
+      const resp = await fetch('/api/admin/subject/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ courseId, subject, semester })
+      });
+
+      const res = await resp.json();
+      if (!resp.ok || !res.success) throw new Error(res.message || 'Failed to add subject');
+
+      showToast(`Subject "${subject}" created!`, 'success');
+      closeAddSubjectModal();
+      location.reload();
+    } catch (err) {
+      console.error('Error creating subject:', err);
+      showToast(err.message || 'Failed to create subject', 'error');
+    } finally {
+      if (saveBtn) saveBtn.disabled = false;
+    }
+  };
+
+  window.openAddMaterialModal = function(courseId, subjectTitle) {
+    document.getElementById('addMaterialCourseId').value = courseId;
+    document.getElementById('addMaterialSubjectTitle').textContent = `${subjectTitle} (${courseId})`;
+    const modal = document.getElementById('addMaterialModal');
+    if (modal) {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.getElementById('materialNameInput')?.focus();
+    }
+  };
+
+  window.closeAddMaterialModal = function() {
+    const modal = document.getElementById('addMaterialModal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.getElementById('addMaterialForm')?.reset();
+    }
+  };
+
+  window.submitAddMaterial = async function(e) {
+    e.preventDefault();
+    const courseId = document.getElementById('addMaterialCourseId').value;
+    const name = document.getElementById('materialNameInput').value.trim();
+    const href = document.getElementById('materialHrefInput').value.trim();
+    const saveBtn = document.getElementById('saveMaterialBtn');
+    if (saveBtn) saveBtn.disabled = true;
+
+    try {
+      const resp = await fetch(`/api/admin/subject/${encodeURIComponent(courseId)}/material/add`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ name, href })
+      });
+
+      const res = await resp.json();
+      if (!resp.ok || !res.success) throw new Error(res.message || 'Failed to add material');
+
+      showToast(`Material "${name}" added!`, 'success');
+      closeAddMaterialModal();
+
+      const card = document.querySelector(`.subject-admin-card[data-courseid="${courseId}"]`);
+      if (card) {
+        card._loaded = false;
+        await loadAdminMaterials(card);
+      }
+    } catch (err) {
+      console.error('Error adding material:', err);
+      showToast(err.message || 'Failed to add material', 'error');
+    } finally {
+      if (saveBtn) saveBtn.disabled = false;
+    }
+  };
+
+  window.deleteAdminMaterial = async function(materialId, materialName, courseId) {
+    if (!confirm(`Delete material "${materialName}"?`)) return;
+
+    try {
+      const resp = await fetch(`/api/admin/material/${encodeURIComponent(materialId)}/delete`, {
+        method: 'POST',
+        credentials: 'same-origin'
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err.message || 'Failed to delete material');
+      }
+
+      showToast(`Material deleted`, 'success');
+      const card = document.querySelector(`.subject-admin-card[data-courseid="${courseId}"]`);
+      if (card) {
+        card._loaded = false;
+        await loadAdminMaterials(card);
+      }
+    } catch (err) {
+      console.error('Delete material error:', err);
+      showToast(err.message || 'Failed to delete material', 'error');
+    }
+  };
+
+  window.toggleAdminMaterialsCard = async function(card) {
+    const materialsSection = card.querySelector('.materials-section');
+    const expandIcon = card.querySelector('.expand-icon');
+    const isHidden = materialsSection.classList.contains('hidden');
+
+    if (isHidden && !card._loaded) {
+      await loadAdminMaterials(card);
+    }
+
+    materialsSection.classList.toggle('hidden', !isHidden);
+    if (expandIcon) expandIcon.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+  };
+
+  window.expandAllAdminMaterials = function() {
+    document.querySelectorAll('.subject-admin-card').forEach(card => {
+      const materialsSection = card.querySelector('.materials-section');
+      if (materialsSection && materialsSection.classList.contains('hidden')) {
+        toggleAdminMaterialsCard(card);
+      }
+    });
+  };
+
+  async function loadAdminMaterials(card) {
+    const list = card.querySelector('.materials-list');
+    const spinner = card.querySelector('.loading-spinner');
+    const badge = card.querySelector('.material-badge');
+    const courseId = card.dataset.courseid;
+
+    spinner.style.display = 'flex';
+
+    try {
+      const resp = await fetch(`/api/get/all/materials/${encodeURIComponent(courseId)}`, { credentials: 'same-origin' });
+      if (!resp.ok) throw new Error('Failed to load materials');
+
+      const json = await resp.json();
+      const materials = json.materials || [];
+      if (badge) badge.textContent = materials.length;
+
+      if (materials.length) {
+        list.innerHTML = materials.map(m => `
+          <li class="py-2.5 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5 min-w-0 pr-2">
+              <span class="text-base flex-shrink-0">📄</span>
+              <div class="min-w-0">
+                <span class="text-xs font-semibold text-stone-900 block truncate" title="${m.name || 'File'}">${m.name || 'Unnamed File'}</span>
+                ${m.href ? `<span class="text-[10px] text-stone-400 truncate block font-mono">${m.href}</span>` : ''}
+              </div>
+            </div>
+            <div class="flex items-center gap-2 flex-shrink-0">
+              ${m.href ? `
+                <a href="${m.href}" target="_blank" class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-white hover:bg-[#162e4a] text-[#162e4a] hover:text-white text-xs font-semibold border border-stone-300 hover:border-[#162e4a] transition-colors">
+                  <i class="fas fa-arrow-up-right-from-square text-[9px]"></i>
+                  <span>Open</span>
+                </a>
+              ` : ''}
+              <button type="button" onclick="deleteAdminMaterial('${m.id}', '${(m.name || '').replace(/'/g, "\\'")}', '${courseId}')" class="p-1 rounded bg-stone-100 hover:bg-rose-700 text-rose-700 hover:text-white text-xs border border-stone-200 hover:border-rose-700 transition-colors" title="Delete Material">
+                <i class="fas fa-trash-alt text-[10px]"></i>
+              </button>
+            </div>
+          </li>
+        `).join('');
+      } else {
+        list.innerHTML = `<li class="py-4 text-center text-stone-500 text-xs">No materials uploaded for this subject yet.</li>`;
+      }
+
+      card._loaded = true;
+    } catch (err) {
+      console.error(err);
+      list.innerHTML = `<li class="py-3 text-rose-700 text-xs flex items-center justify-center gap-1.5"><i class="fas fa-exclamation-triangle"></i><span>Failed to load materials.</span></li>`;
+    } finally {
+      spinner.style.display = 'none';
+    }
+  }
+</script>

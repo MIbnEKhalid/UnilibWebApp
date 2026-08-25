@@ -1,0 +1,507 @@
+{{! Using main layout }}
+{{#section 'head'}}
+<title>Syllabus & Chapters - {{book.name}} | Unilib Admin Registry</title>
+<link rel="stylesheet" href="/Assets/Styles/common-admin.css?v={{appVersion}}">
+{{/section}}
+
+<section class="w-full space-y-5" id="books">
+  
+  <!-- Alert Notification Container -->
+  <div id="alertContainer"></div>
+
+  <!-- Breadcrumbs & Header -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-stone-200">
+    <div class="space-y-0.5">
+      <div class="flex items-center gap-2 text-xs text-stone-500">
+        <a href="/dashboard" class="hover:text-[#162e4a] transition-colors">Admin Registry</a>
+        <span>/</span>
+        <a href="/dashboard/Book/Edit/{{book.id}}" class="hover:text-[#162e4a] transition-colors">{{book.name}}</a>
+        <span>/</span>
+        <span class="text-stone-800">Syllabus Breakdown</span>
+      </div>
+      <h1 class="font-serif font-bold text-xl sm:text-2xl text-stone-900 tracking-normal">
+        Syllabus Breakdown: &ldquo;{{book.name}}&rdquo;
+      </h1>
+      <p class="text-xs text-stone-600">
+        Segment textbook chapters, index page intervals, and generate standalone section downloads.
+      </p>
+    </div>
+
+    <!-- Top Action Buttons -->
+    <div class="flex items-center gap-2">
+      <a href="/dashboard/Book/Edit/{{book.id}}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-white hover:bg-stone-50 text-stone-700 border border-stone-300 text-xs font-semibold uppercase tracking-wider shadow-sm transition-colors">
+        <i class="fas fa-edit text-stone-500"></i>
+        <span>Edit Publication</span>
+      </a>
+
+      <button onclick="showAddSectionModal()" class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded bg-[#162e4a] hover:bg-[#0f2035] text-white text-xs font-semibold uppercase tracking-wider shadow-sm transition-colors">
+        <i class="fas fa-plus text-amber-100"></i>
+        <span>New Chapter</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Chapter Statistics & Search Toolbar -->
+  <div class="bg-white rounded-lg p-3.5 border border-stone-300 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div class="flex items-center gap-3 text-xs text-stone-700">
+      <div class="px-3 py-1 rounded bg-stone-50 border border-stone-200">
+        <span class="text-stone-500">Chapters Indexed:</span> <strong id="statsTotalChapters" class="font-serif text-stone-900">{{sections.length}}</strong>
+      </div>
+      <div class="px-3 py-1 rounded bg-stone-50 border border-stone-200">
+        <span class="text-stone-500">Status:</span> <strong class="text-emerald-800 font-semibold">Active Syllabus</strong>
+      </div>
+    </div>
+
+    <!-- Chapter Search Filter -->
+    <div class="relative w-full sm:max-w-xs">
+      <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-stone-400">
+        <i class="fas fa-search text-xs"></i>
+      </div>
+      <input type="text" id="adminChapterSearch" placeholder="Search indexed chapters..." class="input-classic w-full pl-8 pr-3 py-1.5 text-xs">
+    </div>
+  </div>
+
+  <!-- Bulk Actions Toolbar -->
+  <div id="bulkActions" class="hidden items-center justify-between gap-3 p-3 rounded bg-stone-100 border border-stone-300 shadow-sm animate-fadeIn">
+    <span id="selectedCount" class="text-xs font-semibold text-[#162e4a]">0 items selected</span>
+    <button onclick="bulkDeleteSections()" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded bg-rose-100 hover:bg-rose-200 text-rose-900 border border-rose-300 text-xs font-semibold transition-colors">
+      <i class="fas fa-trash-alt text-[10px]"></i>
+      <span>Delete Selected</span>
+    </button>
+  </div>
+
+  <!-- Sections List Container -->
+  <div class="space-y-2.5" id="sectionsList">
+    <!-- Rendered dynamically via JavaScript -->
+  </div>
+
+  <!-- Empty state fallback -->
+  {{#if (eq sections.length 0)}}
+  <div class="empty-state" id="emptyStateDisplay">
+    <i class="fas fa-layer-group"></i>
+    <h3 class="font-serif">No Chapters Indexed</h3>
+    <p>Segment chapters or individual modules so students can download specific course sections.</p>
+    <button onclick="showAddSectionModal()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-[#162e4a] text-white font-medium text-xs hover:bg-[#0f2035] transition-colors shadow-sm">
+      <i class="fas fa-plus text-amber-100"></i>
+      <span>Index First Chapter</span>
+    </button>
+  </div>
+  {{/if}}
+
+  <!-- Add/Edit Section Modal -->
+  <div id="sectionModal" class="modal" style="display: none;">
+    <div class="modal-content border border-stone-300">
+      <span class="close" onclick="closeModal()">&times;</span>
+      
+      <div class="flex items-center gap-2 mb-4 pb-2 border-b border-stone-200">
+        <h2 id="modalTitle" class="font-serif font-bold text-base text-stone-900 mb-0 border-0 p-0">Index Chapter Section</h2>
+      </div>
+
+      <form id="sectionForm" class="space-y-3.5">
+        <input type="hidden" id="sectionId" value="">
+        <input type="hidden" id="sectionNumber" value="">
+        
+        <div class="form-group" id="sectionNumberDisplay" style="display: none;">
+          <label class="text-xs font-semibold text-stone-600 uppercase tracking-wider">Chapter Number</label>
+          <div class="px-3 py-2 rounded bg-stone-50 border border-stone-200 text-xs font-semibold text-[#162e4a]">
+            <span id="sectionNumberText"></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="sectionName" class="text-xs font-semibold text-stone-800 uppercase tracking-wider">
+            Chapter Title / Topic <span class="required">*</span>
+          </label>
+          <input type="text" id="sectionName" placeholder="e.g. Chapter 1: Introduction to Computer Architecture" required maxlength="200" class="input-classic w-full px-3 py-2 text-xs">
+          <span class="error-message" id="sectionNameError"></span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="form-group">
+            <label for="pageStart" class="text-xs font-semibold text-stone-800 uppercase tracking-wider">
+              Start Page <span class="required">*</span>
+            </label>
+            <input type="number" id="pageStart" placeholder="1" required min="1" class="input-classic w-full px-3 py-2 text-xs">
+            <span class="error-message" id="pageStartError"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="pageEnd" class="text-xs font-semibold text-stone-800 uppercase tracking-wider">
+              End Page <span class="required">*</span>
+            </label>
+            <input type="number" id="pageEnd" placeholder="30" required min="1" class="input-classic w-full px-3 py-2 text-xs">
+            <span class="error-message" id="pageEndError"></span>
+          </div>
+        </div>
+
+        <div id="pageCalcPreview" class="text-[11px] text-stone-600 bg-stone-50 p-2 rounded border border-stone-200">
+          <span>Total Indexed Pages: <strong id="pageCountCalc" class="text-stone-900">-</strong></span>
+        </div>
+
+        <div class="pt-3 border-t border-stone-200 flex items-center justify-end gap-2">
+          <button type="button" onclick="closeModal()" class="px-3 py-1.5 rounded bg-white hover:bg-stone-100 text-stone-700 border border-stone-300 text-xs font-medium transition-colors">
+            Cancel
+          </button>
+          
+          <button type="submit" id="submitBtn" class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded bg-[#162e4a] hover:bg-[#0f2035] text-white font-semibold text-xs uppercase tracking-wider shadow-sm transition-colors">
+            <span id="submitText">Save Chapter</span>
+            <span id="submitSpinner" style="display: none;"><i class="fas fa-spinner fa-spin"></i> Saving...</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-content border border-stone-300">
+      <div class="spinner"></div>
+      <p id="loadingText" class="text-xs font-medium text-stone-700">Processing request...</p>
+    </div>
+  </div>
+
+</section>
+
+<script>
+  let sections = {{{ json sections }}} || [];
+  let selectedSections = new Set();
+  let bookId = {{{ book.id }}};
+
+  let sectionsList;
+  let bulkActions;
+  let selectedCount;
+  let loadingOverlay;
+  let loadingText;
+
+  document.addEventListener('DOMContentLoaded', function () {
+    sectionsList = document.getElementById('sectionsList');
+    bulkActions = document.getElementById('bulkActions');
+    selectedCount = document.getElementById('selectedCount');
+    loadingOverlay = document.getElementById('loadingOverlay');
+    loadingText = document.getElementById('loadingText');
+
+    setupEventListeners();
+    renderSections();
+  });
+
+  function setupEventListeners() {
+    const sectionForm = document.getElementById('sectionForm');
+    if (sectionForm) sectionForm.addEventListener('submit', handleFormSubmit);
+
+    const pageStart = document.getElementById('pageStart');
+    const pageEnd = document.getElementById('pageEnd');
+    if (pageStart) pageStart.addEventListener('input', validatePageRange);
+    if (pageEnd) pageEnd.addEventListener('input', validatePageRange);
+
+    const searchInput = document.getElementById('adminChapterSearch');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        const q = e.target.value.toLowerCase().trim();
+        document.querySelectorAll('.section-item').forEach(el => {
+          const name = (el.dataset.name || '').toLowerCase();
+          el.style.display = name.includes(q) ? 'flex' : 'none';
+        });
+      });
+    }
+
+    window.addEventListener('click', function (event) {
+      const modal = document.getElementById('sectionModal');
+      if (event.target === modal) closeModal();
+    });
+  }
+
+  function showLoading(text = 'Processing...') {
+    if (loadingText) loadingText.textContent = text;
+    if (loadingOverlay) loadingOverlay.style.display = 'flex';
+  }
+
+  function hideLoading() {
+    if (loadingOverlay) loadingOverlay.style.display = 'none';
+  }
+
+  function validateForm() {
+    let isValid = true;
+    const errors = {};
+
+    document.querySelectorAll('.form-group').forEach(group => group.classList.remove('error'));
+    document.querySelectorAll('.error-message').forEach(msg => msg.style.display = 'none');
+
+    const sectionName = document.getElementById('sectionName').value.trim();
+    if (!sectionName) {
+      errors.sectionName = 'Chapter title is required';
+      isValid = false;
+    } else if (sectionName.length > 200) {
+      errors.sectionName = 'Title must be under 200 characters';
+      isValid = false;
+    }
+
+    const pageStart = parseInt(document.getElementById('pageStart').value);
+    const pageEnd = parseInt(document.getElementById('pageEnd').value);
+
+    if (!pageStart || pageStart < 1) {
+      errors.pageStart = 'Start page must be 1 or higher';
+      isValid = false;
+    }
+
+    if (!pageEnd || pageEnd < 1) {
+      errors.pageEnd = 'End page must be 1 or higher';
+      isValid = false;
+    }
+
+    if (pageStart && pageEnd && pageStart > pageEnd) {
+      errors.pageEnd = 'End page must be greater than or equal to start page';
+      isValid = false;
+    }
+
+    Object.keys(errors).forEach(field => {
+      const errorElement = document.getElementById(`${field}Error`);
+      if (errorElement) {
+        const formGroup = errorElement.closest('.form-group');
+        errorElement.textContent = errors[field];
+        errorElement.style.display = 'block';
+        if (formGroup) formGroup.classList.add('error');
+      }
+    });
+
+    return isValid;
+  }
+
+  function validatePageRange() {
+    const pageStart = parseInt(document.getElementById('pageStart').value) || 0;
+    const pageEnd = parseInt(document.getElementById('pageEnd').value) || 0;
+    const calcEl = document.getElementById('pageCountCalc');
+
+    if (pageStart > 0 && pageEnd >= pageStart) {
+      if (calcEl) calcEl.textContent = `${(pageEnd - pageStart) + 1} pages`;
+    } else {
+      if (calcEl) calcEl.textContent = 'Invalid range';
+    }
+  }
+
+  function showAddSectionModal() {
+    document.getElementById('modalTitle').textContent = 'Index Chapter Section';
+    document.getElementById('sectionId').value = '';
+    document.getElementById('sectionNumber').value = '';
+    document.getElementById('sectionNumberDisplay').style.display = 'none';
+
+    document.getElementById('sectionName').value = '';
+    document.getElementById('pageStart').value = '';
+    document.getElementById('pageEnd').value = '';
+    document.getElementById('pageCountCalc').textContent = '-';
+    document.getElementById('sectionModal').style.display = 'flex';
+
+    document.querySelectorAll('.form-group').forEach(group => group.classList.remove('error'));
+    document.querySelectorAll('.error-message').forEach(msg => msg.style.display = 'none');
+  }
+
+  function editSection(id, number, name, start, end) {
+    document.getElementById('modalTitle').textContent = 'Edit Chapter Section';
+    document.getElementById('sectionId').value = id;
+    document.getElementById('sectionNumber').value = number;
+
+    document.getElementById('sectionNumberDisplay').style.display = 'block';
+    document.getElementById('sectionNumberText').textContent = `Chapter ${number}`;
+
+    document.getElementById('sectionName').value = name;
+    document.getElementById('pageStart').value = start;
+    document.getElementById('pageEnd').value = end;
+    validatePageRange();
+    document.getElementById('sectionModal').style.display = 'flex';
+
+    document.querySelectorAll('.form-group').forEach(group => group.classList.remove('error'));
+    document.querySelectorAll('.error-message').forEach(msg => msg.style.display = 'none');
+  }
+
+  function closeModal() {
+    document.getElementById('sectionModal').style.display = 'none';
+  }
+
+  async function handleFormSubmit(e) {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    const submitBtn = document.getElementById('submitBtn');
+    const submitText = document.getElementById('submitText');
+    const submitSpinner = document.getElementById('submitSpinner');
+
+    submitBtn.disabled = true;
+    submitText.style.display = 'none';
+    submitSpinner.style.display = 'inline';
+
+    const sectionId = document.getElementById('sectionId').value;
+    const isEdit = sectionId !== '';
+    const url = isEdit ? `/api/admin/section/edit/${sectionId}` : `/api/admin/book/${bookId}/section/add`;
+
+    const formData = {
+      name: document.getElementById('sectionName').value.trim(),
+      page_start: parseInt(document.getElementById('pageStart').value),
+      page_end: parseInt(document.getElementById('pageEnd').value),
+    };
+
+    if (isEdit) {
+      formData.section_number = parseInt(document.getElementById('sectionNumber').value);
+    }
+
+    try {
+      showLoading(isEdit ? 'Updating chapter...' : 'Indexing chapter...');
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        showToast(result.message || 'Chapter saved successfully!', 'success');
+        closeModal();
+        setTimeout(() => window.location.reload(), 800);
+      } else {
+        showToast(result.error || 'Failed to save chapter', 'error');
+      }
+    } catch (error) {
+      console.error('Error saving section:', error);
+      showToast('Network error while saving chapter.', 'error');
+    } finally {
+      hideLoading();
+      submitBtn.disabled = false;
+      submitText.style.display = 'inline';
+      submitSpinner.style.display = 'none';
+    }
+  }
+
+  async function deleteSection(sectionId) {
+    if (!confirm('Are you sure you want to delete this chapter section?')) return;
+
+    try {
+      showLoading('Deleting chapter...');
+      const response = await fetch(`/api/admin/section/delete/${sectionId}`, { method: 'POST' });
+      const result = await response.json();
+
+      if (response.ok) {
+        showToast(result.message || 'Chapter deleted successfully!', 'success');
+        sections = sections.filter(s => s.id !== sectionId);
+        selectedSections.delete(sectionId);
+        renderSections();
+      } else {
+        showToast(result.error || 'Failed to delete chapter', 'error');
+      }
+    } catch (error) {
+      console.error('Error deleting section:', error);
+      showToast('Network error while deleting chapter.', 'error');
+    } finally {
+      hideLoading();
+    }
+  }
+
+  async function bulkDeleteSections() {
+    if (selectedSections.size === 0) return;
+    if (!confirm(`Delete ${selectedSections.size} selected chapter(s)?`)) return;
+
+    try {
+      showLoading('Deleting selected chapters...');
+      const response = await fetch(`/api/admin/book/${bookId}/sections/bulk-delete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sectionIds: Array.from(selectedSections) }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        showToast(result.message || 'Selected chapters deleted!', 'success');
+        sections = sections.filter(s => !selectedSections.has(s.id));
+        selectedSections.clear();
+        renderSections();
+      } else {
+        showToast(result.error || 'Failed to delete chapters', 'error');
+      }
+    } catch (error) {
+      console.error('Error in bulk delete:', error);
+      showToast('Network error during bulk delete', 'error');
+    } finally {
+      hideLoading();
+    }
+  }
+
+  function toggleBulkSelection() {
+    const checkboxes = document.querySelectorAll('.section-checkbox:checked');
+    selectedSections.clear();
+    checkboxes.forEach(checkbox => {
+      selectedSections.add(parseInt(checkbox.closest('.section-item').dataset.sectionId));
+    });
+    updateBulkActions();
+  }
+
+  function updateBulkActions() {
+    if (selectedSections.size > 0) {
+      bulkActions.classList.remove('hidden');
+      bulkActions.classList.add('flex');
+      selectedCount.textContent = `${selectedSections.size} item${selectedSections.size > 1 ? 's' : ''} selected`;
+    } else {
+      bulkActions.classList.add('hidden');
+      bulkActions.classList.remove('flex');
+    }
+  }
+
+  function renderSections() {
+    if (!sectionsList) return;
+    const emptyState = document.getElementById('emptyStateDisplay');
+    if (sections.length === 0) {
+      sectionsList.innerHTML = '';
+      if (emptyState) emptyState.style.display = 'block';
+      return;
+    }
+
+    if (emptyState) emptyState.style.display = 'none';
+
+    const sortedSections = [...sections].sort((a, b) => a.section_number - b.section_number);
+
+    sectionsList.innerHTML = sortedSections.map(section => {
+      const pageCount = (section.page_end - section.page_start) + 1;
+      const isValidRange = section.page_start <= section.page_end;
+      const statusBadge = isValidRange
+        ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-300">${pageCount} pages</span>`
+        : `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-50 text-rose-800 border border-rose-300">Invalid</span>`;
+
+      const checked = selectedSections.has(section.id) ? 'checked' : '';
+      const escapedName = section.name.replace(/'/g, "\\'");
+
+      return `
+        <div class="section-item bg-white rounded-lg p-3.5 border border-stone-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm hover:border-stone-400 transition-colors" data-section-id="${section.id}" data-section-number="${section.section_number}" data-name="${section.name}">
+          <div class="flex items-center gap-3 min-w-0 flex-1">
+            <input type="checkbox" class="section-checkbox w-4 h-4 rounded text-[#162e4a] bg-white border-stone-300 focus:ring-[#162e4a] cursor-pointer flex-shrink-0" onchange="toggleBulkSelection()" ${checked}>
+            <div class="w-7 h-7 rounded bg-[#f0f4f9] text-[#162e4a] border border-[#bad0e4] flex items-center justify-center text-xs font-bold font-serif flex-shrink-0">
+              ${section.section_number}
+            </div>
+            <div class="space-y-0.5 min-w-0">
+              <h3 class="font-serif font-bold text-xs sm:text-sm text-stone-900 truncate">
+                ${section.name}
+              </h3>
+              <div class="flex items-center gap-2 text-xs text-stone-500">
+                <span>Pages: <strong class="text-stone-800">${section.page_start} &ndash; ${section.page_end}</strong></span>
+                ${statusBadge}
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-1.5 flex-shrink-0 self-end sm:self-auto">
+            <a href="/book/${bookId}/section/${section.id}/download" target="_blank" class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-[#f0f4f9] hover:bg-[#162e4a] text-[#162e4a] hover:text-white border border-[#bad0e4] hover:border-[#162e4a] text-xs font-semibold transition-colors">
+              <i class="fas fa-download text-[10px]"></i>
+              <span>PDF</span>
+            </a>
+
+            <button onclick="editSection('${section.id}', ${section.section_number}, '${escapedName}', ${section.page_start}, ${section.page_end})" class="p-1.5 rounded bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs border border-stone-300 transition-colors" title="Edit Chapter">
+              <i class="fas fa-edit"></i>
+            </button>
+
+            <button onclick="deleteSection('${section.id}')" class="p-1.5 rounded bg-stone-100 hover:bg-rose-700 text-rose-700 hover:text-white border border-stone-300 hover:border-rose-700 text-xs transition-colors" title="Delete Chapter">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+</script>

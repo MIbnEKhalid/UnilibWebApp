@@ -1,0 +1,39 @@
+{{#unless singleBookView}}
+<div class="pt-3 flex flex-col items-center gap-2">
+  {{#if (gt pagination.pages 1)}}
+  <div class="flex items-center gap-1 p-1 rounded bg-white border border-stone-300 shadow-sm" id="pagination">
+    
+    <button {{#if (eq pagination.page 1)}}disabled class="opacity-40 cursor-not-allowed w-8 h-8 rounded flex items-center justify-center text-stone-400 text-xs"{{else}}onclick="goToPage({{subtract pagination.page 1}})" class="w-8 h-8 rounded flex items-center justify-center text-stone-600 hover:bg-stone-100 text-xs transition-colors"{{/if}} title="Previous page">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+
+    {{#if (gt pagination.page 2)}}
+    <button onclick="goToPage(1)" class="w-8 h-8 rounded flex items-center justify-center text-xs font-medium text-stone-700 hover:bg-stone-100 transition-colors">1</button>
+    {{#if (gt pagination.page 3)}}
+    <span class="px-1 text-stone-400 text-xs">&hellip;</span>
+    {{/if}}
+    {{/if}}
+
+    {{#each (range (max 1 (subtract pagination.page 2)) (min pagination.pages (add pagination.page 2)))}}
+    <button onclick="goToPage({{this}})" class="w-8 h-8 rounded flex items-center justify-center text-xs font-semibold transition-colors {{#if (eq this ../pagination.page)}}bg-[#162e4a] text-white{{else}}text-stone-700 hover:bg-stone-100{{/if}}">
+      {{this}}
+    </button>
+    {{/each}}
+
+    {{#if (lt pagination.page (subtract pagination.pages 1))}}
+    <span class="px-1 text-stone-400 text-xs">&hellip;</span>
+    <button onclick="goToPage({{pagination.pages}})" class="w-8 h-8 rounded flex items-center justify-center text-xs font-medium text-stone-700 hover:bg-stone-100 transition-colors">{{pagination.pages}}</button>
+    {{/if}}
+
+    <button {{#if (eq pagination.page pagination.pages)}}disabled class="opacity-40 cursor-not-allowed w-8 h-8 rounded flex items-center justify-center text-stone-400 text-xs"{{else}}onclick="goToPage({{add pagination.page 1}})" class="w-8 h-8 rounded flex items-center justify-center text-stone-600 hover:bg-stone-100 text-xs transition-colors"{{/if}} title="Next page">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+
+  </div>
+  {{/if}}
+
+  <div class="text-xs text-stone-500 font-serif italic" id="paginationInfo">
+    Showing {{add (multiply (subtract pagination.page 1) pagination.limit) 1}} &ndash; {{min (multiply pagination.page pagination.limit) pagination.total}} of {{pagination.total}} {{#if label}}{{label}}{{else}}catalog items{{/if}}
+  </div>
+</div>
+{{/unless}}
