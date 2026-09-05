@@ -9,11 +9,11 @@
 </p>
 
 <p align="center">
-  <img src="https://skillicons.dev/icons?i=nodejs,express,postgres,sqlite,tailwind,redis" />
+  <img src="https://skillicons.dev/icons?i=nodejs,express,postgres,sqlite,css,redis" />
   <img height="48px" src="https://handlebarsjs.com/handlebars-icon.svg" alt="Handlebars" />
 </p>
 
-A modern, high-performance web application for organizing, sharing, and archiving university course materials, lecture notes, lab guides, and textbooks. Features dual database support (PostgreSQL & SQLite), automated university portal synchronization (Tasjeel Sync), Upstash Redis caching, Tailwind CSS v4 classical library UI, and advanced administrative controls.
+A modern, high-performance web application for organizing, sharing, and archiving university course materials, lecture notes, lab guides, and textbooks. Features dual database support (PostgreSQL & SQLite), automated university portal synchronization (Tasjeel Sync), Upstash Redis caching, pure Vanilla CSS classical library UI, and advanced administrative controls.
 
 ---
 
@@ -25,7 +25,7 @@ A modern, high-performance web application for organizing, sharing, and archivin
 - **Book Catalog & Visibility Management**: Multi-semester tagging (`semester[]`), live search, category filtering, visibility toggles (hide/show), and batch bulk operations.
 - **Lab & Section Extraction**: Organize book sections and lab sheets by page range with UUID tracking and on-demand PDF extraction and downloads.
 - **Performance & Caching**: Fast page loads via Upstash Redis REST caching with transparent fallback to direct DB queries and automated version-based cache busting.
-- **Classical Academic Theme & Tailwind CSS v4**: Responsive, classical academic library interface built with Handlebars and Tailwind CSS v4.
+- **Classical Academic Theme & Vanilla CSS**: Responsive, classical academic library interface built with Handlebars and pure Vanilla CSS (zero build step).
 - **Authentication & Security**: Role-based access control with [mbkauthe](https://github.com/MIbnEKhalid/mbkauthe), cloud bucket integration with `mbkbucket`, rate limiting, and CORS security.
 - **Built-in Automated Testing**: Test suite for database abstractions, repository methods, and HTTP route integration.
 
@@ -36,7 +36,7 @@ A modern, high-performance web application for organizing, sharing, and archivin
 | Layer | Technologies |
 |---|---|
 | **Runtime & Backend** | Node.js (ES Modules), Express.js 5.x |
-| **Frontend & Templating** | Handlebars (express-handlebars), Tailwind CSS v4 (`@tailwindcss/cli`), Vanilla JS |
+| **Frontend & Templating** | Handlebars (express-handlebars), Vanilla CSS, Vanilla JS |
 | **Databases** | PostgreSQL (`pg`), SQLite (`node:sqlite` / synchronous SQLite pool) |
 | **Caching** | Upstash Redis (`@upstash/redis`) |
 | **Authentication & Storage** | [mbkauthe](https://github.com/MIbnEKhalid/mbkauthe), `mbkbucket` |
@@ -54,7 +54,7 @@ UnilibWebApp/
 ├── public/                # Static assets, styles, scripts, and book covers
 │   └── Assets/
 │       ├── Scripts/       # Client-side JavaScript
-│       └── Styles/        # Compiled Tailwind CSS & custom themes
+│       └── Styles/        # Vanilla CSS stylesheets & design system
 ├── scripts/               # CLI utility scripts (db init, image/PDF conversion)
 │   ├── convertPageImages.js
 │   ├── convertToWebp.js
@@ -74,7 +74,6 @@ UnilibWebApp/
 │   ├── middlewares/       # Rate limiter and error handling middlewares
 │   ├── routes/            # Express route modules
 │   ├── services/          # Cache (Redis) and Tasjeel sync services
-│   ├── styles/            # Tailwind CSS source files (input.css)
 │   └── views/             # Handlebars layouts and views
 ├── tests/                 # Database abstraction and HTTP integration tests
 ├── env.md                 # Detailed environment variables guide
@@ -153,8 +152,6 @@ UnilibWebApp/
 |---|---|
 | `npm start` | Runs the production server (`node src/server.js`) |
 | `npm run dev` | Runs the development server with `nodemon` live-reloading |
-| `npm run build:css` | Compiles and minifies Tailwind CSS v4 into `public/Assets/Styles/tailwind.css` |
-| `npm run watch:css` | Watches `src/styles/input.css` and rebuilds Tailwind styles on changes |
 | `npm run db:init` | Automatically initializes schemas for configured database engine |
 | `npm run db:init:sqlite` | Creates SQLite tables, schema, and indexes (`unilib.sqlite`) |
 | `npm run db:init:postgres` | Creates PostgreSQL tables, schema, and indexes |
@@ -220,7 +217,7 @@ npm run convertToWebp --delete-old     # Converts and removes original source fi
 - **Modular `src/` Architecture**: Fully refactored codebase adhering to ES Modules, clean repository design pattern, separated route controllers, services, and middlewares.
 - **Dual Database Engine (PostgreSQL & SQLite)**: Native support for both SQLite (zero-config, local dev, testing) and PostgreSQL (Neon serverless production) with unified query adapters.
 - **Tasjeel Portal Sync Service**: Automated background sync via cron job (`TASJEEL_SYNC_CRON`) with authenticated scraping and manual sync console.
-- **Tailwind CSS v4 Integration**: Upgraded CSS pipeline with `@tailwindcss/cli` and custom themes.
+- **Modern Vanilla CSS Architecture**: Clean, zero-build-step Vanilla CSS styling with custom theme tokens, modern flex/grid layouts, and responsive glassmorphism.
 - **Comprehensive Testing Suite**: Added automated tests covering repository queries, dialect translators, and HTTP endpoints (`npm test`).
 - **UUID Section Management**: Enhanced book section management using standardized UUID identifiers and batch deletion capabilities.
 - **Multi-Semester Array Tagging**: Support for assigning books and subjects across multiple semesters seamlessly.

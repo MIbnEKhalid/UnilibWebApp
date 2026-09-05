@@ -1,13 +1,11 @@
 {
   "name": "unilibwebapp",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "main": "src/server.js",
   "type": "module",
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon -e js,mjs,cjs,json,handlebars src/server.js",
-    "build:css": "tailwindcss -i src/styles/input.css -o public/Assets/Styles/tailwind.css --minify",
-    "watch:css": "tailwindcss -i src/styles/input.css -o public/Assets/Styles/tailwind.css --watch",
     "convertToWebp": "node scripts/convertToWebp.js",
     "convertPageImages": "node scripts/convertPageImages.js",
     "db:init": "node scripts/initDb.js",
@@ -37,11 +35,7 @@
     "sharp": "^0.35.3"
   },
   "devDependencies": {
-    "@tailwindcss/cli": "^4.3.3",
-    "autoprefixer": "^10.5.4",
-    "nodemon": "^3.1.14",
-    "postcss": "^8.5.26",
-    "tailwindcss": "^4.3.3"
+    "nodemon": "^3.1.14"
   },
   "overrides": {
     "csurf": {
