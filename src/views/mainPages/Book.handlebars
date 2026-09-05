@@ -3,271 +3,368 @@
 <link rel="stylesheet" href="/Assets/Styles/common-admin.css?v={{appVersion}}">
 {{/section}}
 
-<section class="w-full space-y-5" id="books">
-  
-  <!-- Dashboard Page Header & Stats Summary -->
-  <div class="bg-white rounded-lg p-5 border border-stone-300 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-    <div class="space-y-1">
-      <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[11px] font-semibold bg-[#f0f4f9] text-[#162e4a] border border-[#bad0e4]">
-        <i class="fas fa-compass text-[10px]"></i>
-        <span class="uppercase tracking-wider">Academic Catalog Registry</span>
+<section style="width:100%;display:flex;flex-direction:column;gap:1.25rem;" id="books">
+
+  <!-- ================================================================ -->
+  <!-- Page Header                                                        -->
+  <!-- ================================================================ -->
+  <div style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:14px;padding:1.25rem 1.5rem;box-shadow:0 4px 12px rgba(0,0,0,0.04);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;">
+    <div style="display:flex;flex-direction:column;gap:0.4rem;">
+      <div style="display:inline-flex;align-items:center;gap:0.4rem;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:var(--primary-lt);color:var(--primary-dk);border:1px solid rgba(15,118,110,0.22);text-transform:uppercase;letter-spacing:0.06em;width:fit-content;">
+        <i class="fas fa-compass" style="font-size:10px;"></i>
+        <span>Academic Catalog Registry</span>
       </div>
-      <h1 class="font-serif font-bold text-xl sm:text-2xl text-stone-900 tracking-normal">
+      <h1 style="font-family:var(--font-headings);font-weight:800;font-size:1.5rem;color:var(--text);letter-spacing:-0.02em;line-height:1.25;">
         Curriculum Material Registry
       </h1>
-      <p class="text-xs text-stone-600">
+      <p style="font-size:13px;color:var(--text-muted);">
         Catalog, configure, inspect consults, manage chapter syllabi, or export digital records.
       </p>
     </div>
 
-    <!-- Top Action Buttons -->
-    <div class="flex flex-wrap items-center gap-2">
-      <button onclick="exportBooks()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded bg-white hover:bg-stone-50 text-stone-700 border border-stone-300 text-xs font-semibold uppercase tracking-wider shadow-sm transition-colors">
-        <i class="fas fa-file-export text-stone-500"></i>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0.5rem;">
+      <button onclick="exportBooks()" id="export-btn"
+        style="display:inline-flex;align-items:center;gap:0.45rem;padding:8px 14px;border-radius:8px;background:rgba(255,255,255,0.85);color:var(--text-2);border:1px solid var(--border);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;cursor:pointer;transition:all 0.15s ease;"
+        onmouseenter="this.style.background='var(--primary-lt)';this.style.borderColor='var(--primary)'"
+        onmouseleave="this.style.background='rgba(255,255,255,0.85)';this.style.borderColor='var(--border)'">
+        <i class="fas fa-file-export" style="color:var(--text-muted);font-size:11px;"></i>
         <span>Export JSON</span>
       </button>
 
-      <a href="/dashboard/Book/Add" class="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-[#162e4a] hover:bg-[#0f2035] text-white text-xs font-semibold uppercase tracking-wider shadow-sm transition-colors">
-        <i class="fas fa-plus text-amber-100"></i>
+      <a href="/dashboard/Book/Add" id="new-publication-btn"
+        style="display:inline-flex;align-items:center;gap:0.45rem;padding:8px 16px;border-radius:8px;background:var(--primary);color:#fff;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;text-decoration:none;box-shadow:0 2px 8px rgba(15,118,110,0.24);transition:all 0.15s ease;"
+        onmouseenter="this.style.background='var(--primary-dk)';this.style.transform='translateY(-1px)'"
+        onmouseleave="this.style.background='var(--primary)';this.style.transform='translateY(0)'">
+        <i class="fas fa-plus" style="color:#d7f4ee;"></i>
         <span>New Publication</span>
       </a>
     </div>
   </div>
 
-  <!-- Admin Sub-Navigation Tabs -->
-  <div class="flex items-center gap-2 border-b border-stone-200 pb-2">
-    <a href="/dashboard" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-[#162e4a] text-white flex items-center gap-1.5 uppercase tracking-wider shadow-xs">
-      <i class="fas fa-book-bookmark text-amber-200 text-[11px]"></i>
+  <!-- ================================================================ -->
+  <!-- Stats Dashboard Row                                               -->
+  <!-- ================================================================ -->
+  <div id="stats-row" style="display:grid;grid-template-columns:repeat(2,1fr);gap:0.85rem;">
+    <div class="stat-card" id="stat-card-total" title="Click to show all books" style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:12px;padding:1rem 1.25rem;box-shadow:0 2px 8px rgba(0,0,0,0.03);display:flex;align-items:center;gap:0.9rem;cursor:pointer;transition:all 0.15s ease;">
+      <div style="width:42px;height:42px;border-radius:10px;background:var(--primary-lt);border:1px solid rgba(15,118,110,0.22);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i class="fas fa-book-open" style="font-size:16px;color:var(--primary);"></i>
+      </div>
+      <div>
+        <div style="font-family:var(--font-headings);font-weight:800;font-size:1.5rem;color:var(--text);line-height:1;" id="stat-total">{{#if stats}}{{stats.total}}{{else}}{{pagination.total}}{{/if}}</div>
+        <div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-top:2px;">Total Publications</div>
+      </div>
+    </div>
+
+    <div class="stat-card" id="stat-card-views" title="Click to sort by views (highest first)" style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:12px;padding:1rem 1.25rem;box-shadow:0 2px 8px rgba(0,0,0,0.03);display:flex;align-items:center;gap:0.9rem;cursor:pointer;transition:all 0.15s ease;">
+      <div style="width:42px;height:42px;border-radius:10px;background:rgba(22,163,74,0.12);border:1px solid rgba(22,163,74,0.24);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i class="fas fa-eye" style="font-size:16px;color:#16a34a;"></i>
+      </div>
+      <div>
+        <div style="font-family:var(--font-headings);font-weight:800;font-size:1.5rem;color:var(--text);line-height:1;" id="stat-views">{{#if stats}}{{formatNumber stats.views}}{{else}}0{{/if}}</div>
+        <div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-top:2px;">Total Views (Sort)</div>
+      </div>
+    </div>
+
+    <div class="stat-card" id="stat-card-hidden" title="Click to filter hidden books only" style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:12px;padding:1rem 1.25rem;box-shadow:0 2px 8px rgba(0,0,0,0.03);display:flex;align-items:center;gap:0.9rem;cursor:pointer;transition:all 0.15s ease;">
+      <div style="width:42px;height:42px;border-radius:10px;background:rgba(220,38,38,0.08);border:1px solid rgba(220,38,38,0.22);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i class="fas fa-eye-slash" style="font-size:16px;color:#dc2626;"></i>
+      </div>
+      <div>
+        <div style="font-family:var(--font-headings);font-weight:800;font-size:1.5rem;color:var(--text);line-height:1;" id="stat-hidden">{{#if stats}}{{stats.hidden}}{{else}}0{{/if}}</div>
+        <div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-top:2px;">Hidden Books</div>
+      </div>
+    </div>
+
+    <div class="stat-card" id="stat-card-main" title="Click to filter main books only" style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:12px;padding:1rem 1.25rem;box-shadow:0 2px 8px rgba(0,0,0,0.03);display:flex;align-items:center;gap:0.9rem;cursor:pointer;transition:all 0.15s ease;">
+      <div style="width:42px;height:42px;border-radius:10px;background:rgba(217,119,6,0.10);border:1px solid rgba(217,119,6,0.24);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i class="fas fa-star" style="font-size:16px;color:#d97706;"></i>
+      </div>
+      <div>
+        <div style="font-family:var(--font-headings);font-weight:800;font-size:1.5rem;color:var(--text);line-height:1;" id="stat-main">{{#if stats}}{{stats.main}}{{else}}0{{/if}}</div>
+        <div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-top:2px;">Main Books</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats grid responsive -->
+  <style>
+    @media (min-width: 640px) { #stats-row { grid-template-columns: repeat(4,1fr) !important; } }
+  </style>
+
+  <!-- ================================================================ -->
+  <!-- Admin Sub-Navigation                                              -->
+  <!-- ================================================================ -->
+  <div style="display:flex;align-items:center;gap:0.5rem;border-bottom:1px solid rgba(15,118,110,0.12);padding-bottom:0.65rem;">
+    <a href="/dashboard" id="nav-tab-books"
+      style="display:inline-flex;align-items:center;gap:0.45rem;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;text-decoration:none;background:var(--primary);color:#fff;box-shadow:0 2px 6px rgba(15,118,110,0.22);">
+      <i class="fas fa-book-bookmark" style="color:#d7f4ee;font-size:11px;"></i>
       <span>Book Publications</span>
     </a>
-    <a href="/dashboard/Materials" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-colors flex items-center gap-1.5 uppercase tracking-wider">
-      <i class="fas fa-archive text-stone-400 text-[11px]"></i>
+    <a href="/dashboard/Materials" id="nav-tab-materials"
+      style="display:inline-flex;align-items:center;gap:0.45rem;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;text-decoration:none;color:var(--text-2);transition:all 0.15s ease;"
+      onmouseenter="this.style.background='var(--primary-lt)';this.style.color='var(--primary-dk)'"
+      onmouseleave="this.style.background='transparent';this.style.color='var(--text-2)'">
+      <i class="fas fa-archive" style="color:var(--text-muted);font-size:11px;"></i>
       <span>Course Materials</span>
     </a>
   </div>
 
-  <!-- Top Semester 1-Click Tabstrip Partial -->
+  <!-- Semester Tabs -->
   {{> semesterTabs}}
 
-  <!-- Faceted Search & Layout Switcher Toolbar -->
-  <div class="bg-white rounded-lg p-3 border border-stone-300 shadow-sm">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
-      
-      <!-- Search & Category Filters -->
-      <div class="flex flex-1 flex-col sm:flex-row items-center gap-2.5">
-        <div class="relative w-full sm:max-w-md">
-          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
-            <i class="fas fa-search text-xs"></i>
+  <!-- ================================================================ -->
+  <!-- Search & Filter Toolbar                                           -->
+  <!-- ================================================================ -->
+  <div style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:12px;padding:0.85rem 1rem;box-shadow:0 2px 8px rgba(0,0,0,0.03);">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.75rem;">
+
+      <!-- Search -->
+      <div style="display:flex;flex:1;flex-wrap:wrap;align-items:center;gap:0.65rem;min-width:0;">
+        <div style="position:relative;width:100%;max-width:380px;">
+          <div style="position:absolute;inset-y:0;left:0;padding-left:10px;display:flex;align-items:center;pointer-events:none;">
+            <i class="fas fa-search" style="font-size:11px;color:var(--text-muted);"></i>
           </div>
-          <input type="text" id="searchProduct" value="{{filters.search}}" placeholder="Search catalog by title, author... (Press '/')" aria-label="Search books" class="input-classic w-full pl-8 pr-8 py-1.5 text-xs">
-          
-          <button type="button" id="clearSearch" aria-label="Clear search" class="absolute inset-y-0 right-0 pr-2.5 flex items-center text-stone-400 hover:text-stone-700" style="display: {{#if filters.search}}flex{{else}}none{{/if}};">
-            <i class="fas fa-times text-xs bg-stone-100 p-0.5 rounded-full"></i>
+          <input type="text" id="searchProduct" value="{{filters.search}}" placeholder="Search catalog by title, author... (Press '/')" aria-label="Search books" class="input-classic" style="width:100%;padding:8px 32px 8px 30px;font-size:12px;">
+          <button type="button" id="clearSearch" aria-label="Clear search"
+            style="position:absolute;inset-y:0;right:0;padding-right:10px;display:{{#if filters.search}}flex{{else}}none{{/if}};align-items:center;background:none;border:none;cursor:pointer;color:var(--text-muted);">
+            <i class="fas fa-times" style="font-size:11px;"></i>
           </button>
         </div>
 
-        <!-- Category Dropdown -->
-        <div class="relative w-full sm:w-44">
-          <select id="categoryFilter" onchange="filterProducts()" aria-label="Filter by Category" class="input-classic w-full px-2.5 py-1.5 text-xs appearance-none cursor-pointer">
+        <!-- Category -->
+        <div style="position:relative;width:160px;flex-shrink:0;">
+          <select id="categoryFilter" onchange="filterProducts()" aria-label="Filter by Category" class="input-classic" style="width:100%;padding:8px 28px 8px 10px;font-size:12px;appearance:none;cursor:pointer;">
             <option value="all" {{#if (or (eq filters.category 'all') (not filters.category))}}selected{{/if}}>All Categories</option>
             <option value="CourseBooks" {{#if (eq filters.category 'CourseBooks')}}selected{{/if}}>Course Books</option>
             <option value="Softwares" {{#if (eq filters.category 'Softwares')}}selected{{/if}}>Softwares</option>
             <option value="LabManuals" {{#if (eq filters.category 'LabManuals')}}selected{{/if}}>Lab Manuals</option>
             <option value="Other" {{#if (or (eq filters.category 'Other') (eq filters.category 'other'))}}selected{{/if}}>Other</option>
           </select>
-          <div class="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none text-stone-400">
-            <i class="fas fa-chevron-down text-[8px]"></i>
+          <div style="position:absolute;inset-y:0;right:0;padding-right:10px;display:flex;align-items:center;pointer-events:none;">
+            <i class="fas fa-chevron-down" style="font-size:9px;color:var(--text-muted);"></i>
           </div>
         </div>
       </div>
 
-      <!-- View Mode & Results Counter -->
-      <div class="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-stone-100">
-        <span class="text-xs text-stone-600">
-          <strong>{{pagination.total}}</strong> publications listed
+      <!-- Count & View Toggle -->
+      <div style="display:flex;align-items:center;gap:0.75rem;flex-shrink:0;">
+        <span style="font-size:12px;color:var(--text-muted);">
+          <strong style="color:var(--text);">{{pagination.total}}</strong> publications
         </span>
-
-        <!-- Grid vs List View Toggle -->
-        <div class="flex items-center p-0.5 rounded border border-stone-300 bg-stone-50">
-          <button type="button" id="viewGridBtn" onclick="setViewMode('grid')" title="Grid View" class="p-1.5 rounded text-xs font-semibold transition-colors bg-[#f0f4f9] text-[#162e4a] border border-[#bad0e4]">
+        <div style="display:flex;align-items:center;padding:3px;border-radius:8px;border:1px solid rgba(15,118,110,0.18);background:rgba(255,255,255,0.70);">
+          <button type="button" id="viewGridBtn" onclick="setViewMode('grid')" title="Grid View"
+            style="padding:5px 9px;border-radius:6px;font-size:12px;border:none;cursor:pointer;background:var(--primary);color:#fff;transition:all 0.15s ease;">
             <i class="fas fa-th-large"></i>
           </button>
-          <button type="button" id="viewListBtn" onclick="setViewMode('list')" title="List View" class="p-1.5 rounded text-xs font-semibold transition-colors text-stone-500 border border-transparent">
+          <button type="button" id="viewListBtn" onclick="setViewMode('list')" title="List View"
+            style="padding:5px 9px;border-radius:6px;font-size:12px;border:none;cursor:pointer;background:transparent;color:var(--text-muted);transition:all 0.15s ease;">
             <i class="fas fa-list"></i>
           </button>
         </div>
       </div>
-
     </div>
   </div>
 
-  <!-- Bulk Actions Toolbar -->
-  <div id="bulkActionsBar" class="hidden items-center justify-between gap-3 p-3 rounded bg-stone-100 border border-stone-300 shadow-sm animate-fadeIn">
-    <div class="flex items-center gap-2">
-      <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-stone-800 select-none">
-        <input type="checkbox" id="selectAllBooks" onchange="toggleSelectAll(this)" class="w-4 h-4 rounded text-[#162e4a] bg-white border-stone-300 focus:ring-[#162e4a]">
-        <span id="selectedCount" class="text-[#162e4a]">0 selected</span>
-      </label>
-    </div>
+  <!-- ================================================================ -->
+  <!-- Bulk Actions Bar                                                  -->
+  <!-- ================================================================ -->
+  <div id="bulkActionsBar" style="display:none;align-items:center;justify-content:space-between;gap:0.75rem;padding:0.75rem 1rem;border-radius:10px;background:rgba(215,244,238,0.60);backdrop-filter:blur(10px);border:1px solid rgba(15,118,110,0.22);box-shadow:0 2px 8px rgba(15,118,110,0.10);">
+    <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:12px;font-weight:700;color:var(--primary-dk);user-select:none;">
+      <input type="checkbox" id="selectAllBooks" onchange="toggleSelectAll(this)" style="width:16px;height:16px;border-radius:4px;accent-color:var(--primary);cursor:pointer;">
+      <span id="selectedCount" style="color:var(--primary);">0 selected</span>
+    </label>
 
-    <div class="flex items-center gap-2">
-      <button onclick="bulkHideBooks()" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 text-xs font-semibold transition-colors">
-        <i class="fas fa-eye-slash text-[10px]"></i>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <button onclick="bulkHideBooks()" id="bulk-hide-btn"
+        style="display:inline-flex;align-items:center;gap:0.35rem;padding:6px 12px;border-radius:7px;background:rgba(217,119,6,0.12);color:#92400e;border:1px solid rgba(217,119,6,0.28);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s ease;"
+        onmouseenter="this.style.background='#d97706';this.style.color='#fff'"
+        onmouseleave="this.style.background='rgba(217,119,6,0.12)';this.style.color='#92400e'">
+        <i class="fas fa-eye-slash" style="font-size:10px;"></i>
         <span>Hide Selected</span>
       </button>
 
-      <button onclick="bulkShowBooks()" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded bg-emerald-100 hover:bg-emerald-200 text-emerald-900 border border-emerald-300 text-xs font-semibold transition-colors">
-        <i class="fas fa-eye text-[10px]"></i>
+      <button onclick="bulkShowBooks()" id="bulk-show-btn"
+        style="display:inline-flex;align-items:center;gap:0.35rem;padding:6px 12px;border-radius:7px;background:rgba(22,163,74,0.12);color:#14532d;border:1px solid rgba(22,163,74,0.28);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s ease;"
+        onmouseenter="this.style.background='#16a34a';this.style.color='#fff'"
+        onmouseleave="this.style.background='rgba(22,163,74,0.12)';this.style.color='#14532d'">
+        <i class="fas fa-eye" style="font-size:10px;"></i>
         <span>Show Selected</span>
       </button>
 
-      <button onclick="clearSelection()" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded bg-white hover:bg-stone-200 text-stone-700 border border-stone-300 text-xs font-semibold transition-colors">
-        <i class="fas fa-times text-[10px]"></i>
+      <button onclick="clearSelection()" id="bulk-clear-btn"
+        style="display:inline-flex;align-items:center;gap:0.35rem;padding:6px 10px;border-radius:7px;background:rgba(255,255,255,0.85);color:var(--text-2);border:1px solid var(--border);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s ease;"
+        onmouseenter="this.style.background='var(--primary-lt)'"
+        onmouseleave="this.style.background='rgba(255,255,255,0.85)'">
+        <i class="fas fa-times" style="font-size:10px;"></i>
         <span>Clear</span>
       </button>
     </div>
   </div>
 
-  <!-- Books Management Catalog (Supports both Grid and List View dynamically) -->
+  <!-- ================================================================ -->
+  <!-- Books Catalog (Grid + List)                                       -->
+  <!-- ================================================================ -->
   {{#if books}}
   <div id="catalogContainer" class="view-grid">
     {{#each books}}
-    
-    <!-- 1. Visual Admin Card (Grid Mode) -->
-    <article class="item-grid-card bg-white rounded-lg border border-stone-300 overflow-hidden flex flex-col hover:border-stone-400 hover:shadow-md transition-all duration-200 relative" id="grid_admin_{{this.id}}">
-      
-      <!-- Selection Checkbox -->
-      <div class="absolute top-2.5 left-2.5 z-30">
-        <input type="checkbox" class="book-select-checkbox w-4 h-4 rounded text-[#162e4a] bg-white border-stone-300 focus:ring-[#162e4a] cursor-pointer shadow-sm" data-book-id="{{this.id}}" onchange="updateBulkActions()" aria-label="Select {{this.name}}">
+
+    <!-- Grid Card -->
+    <article class="item-grid-card"
+      style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.14);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:all 0.2s ease;box-shadow:0 2px 8px rgba(0,0,0,0.04);position:relative;"
+      id="grid_admin_{{this.id}}"
+      onmouseenter="this.style.borderColor='rgba(15,118,110,0.32)';this.style.boxShadow='0 8px 24px rgba(15,118,110,0.12)'"
+      onmouseleave="this.style.borderColor='rgba(15,118,110,0.14)';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.04)'">
+
+      <!-- Checkbox -->
+      <div style="position:absolute;top:10px;left:10px;z-index:30;">
+        <input type="checkbox" class="book-select-checkbox" data-book-id="{{this.id}}" onchange="updateBulkActions()" aria-label="Select {{this.name}}"
+          style="width:16px;height:16px;border-radius:4px;accent-color:var(--primary);cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.15);">
       </div>
 
-      <!-- Book Cover Image with Ambient Stage & Contained Cover -->
-      <div class="relative aspect-[3/4] bg-[#f2f0ec] overflow-hidden border-b border-stone-200 flex items-center justify-center p-3 group/cover">
-        <div class="absolute inset-0 bg-cover bg-center opacity-15 blur-md scale-110 pointer-events-none" style="background-image: url('{{this.imageURL}}');"></div>
+      <!-- Cover -->
+      <div style="position:relative;aspect-ratio:3/4;background:rgba(215,244,238,0.22);overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0.75rem;border-bottom:1px solid rgba(15,118,110,0.10);">
+        <div style="position:absolute;inset:0;background-size:cover;background-position:center;opacity:0.14;filter:blur(14px);transform:scale(1.1);pointer-events:none;background-image:url('{{this.imageURL}}');"></div>
 
-        <!-- Badges Overlay -->
-        <div class="absolute top-2 right-2 z-20 flex flex-col items-end gap-1 pointer-events-none">
+        <!-- Badges -->
+        <div style="position:absolute;top:8px;right:8px;z-index:2;display:flex;flex-direction:column;align-items:flex-end;gap:4px;pointer-events:none;">
           {{#if this.main}}
             {{#unless (eq this.category 'LabManuals')}}
-            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-600 text-white shadow-sm flex items-center gap-1">
-              <i class="fas fa-star text-[8px]"></i> Main
+            <span style="padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;background:var(--warning);color:#fff;box-shadow:0 2px 4px rgba(0,0,0,0.15);display:flex;align-items:center;gap:3px;">
+              <i class="fas fa-star" style="font-size:8px;"></i> Main
             </span>
             {{/unless}}
           {{/if}}
 
           {{#unless this.visible}}
-          <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-rose-100 text-rose-800 border border-rose-300 shadow-sm flex items-center gap-1">
-            <i class="fas fa-eye-slash text-[8px]"></i> Hidden
+          <span style="padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;background:rgba(220,38,38,0.12);color:#dc2626;border:1px solid rgba(220,38,38,0.30);display:flex;align-items:center;gap:3px;">
+            <i class="fas fa-eye-slash" style="font-size:8px;"></i> Hidden
           </span>
           {{else}}
-          <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-sm flex items-center gap-1">
-            <i class="fas fa-check text-[8px]"></i> Visible
+          <span style="padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;background:rgba(22,163,74,0.12);color:#16a34a;border:1px solid rgba(22,163,74,0.30);display:flex;align-items:center;gap:3px;">
+            <i class="fas fa-check" style="font-size:8px;"></i> Visible
           </span>
           {{/unless}}
 
           {{#if this.semester}}
-          <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-white/95 text-stone-800 border border-stone-300 shadow-sm">
+          <span style="padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;background:rgba(255,255,255,0.92);color:var(--text-2);border:1px solid var(--border);">
             {{formatSemesterBadge this.semester}}
           </span>
           {{/if}}
         </div>
 
-        <!-- Centered Contained Cover -->
-        <a href="/dashboard/Book/Edit/{{this.id}}" class="relative z-10 w-full h-full flex items-center justify-center" aria-label="Edit {{this.name}}">
-          <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" class="max-h-full max-w-full object-contain rounded-sm shadow-md transition-transform duration-300 group-hover/cover:scale-105" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'">
+        <a href="/dashboard/Book/Edit/{{this.id}}" aria-label="Edit {{this.name}}" style="position:relative;z-index:1;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+          <img src="{{this.imageURL}}" alt="Cover of {{this.name}}"
+            style="max-height:100%;max-width:100%;object-fit:contain;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,0.14);transition:transform 0.3s ease;"
+            loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'"
+            onmouseenter="this.style.transform='scale(1.04)'" onmouseleave="this.style.transform='scale(1)'">
         </a>
       </div>
 
-      <!-- Book Info & Actions -->
-      <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
-        <div class="space-y-1">
-          <h3 class="font-serif font-bold text-sm text-stone-900 hover:text-[#162e4a] transition-colors line-clamp-1">
-            <a href="/dashboard/Book/Edit/{{this.id}}" title="{{this.name}}">{{this.name}}</a>
+      <!-- Card Body -->
+      <div style="padding:1rem;flex:1;display:flex;flex-direction:column;gap:0.65rem;">
+        <div>
+          <h3 style="font-family:var(--font-headings);font-weight:700;font-size:14px;color:var(--text);line-height:1.35;margin-bottom:0.25rem;">
+            <a href="/dashboard/Book/Edit/{{this.id}}" title="{{this.name}}" style="text-decoration:none;color:inherit;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
+              onmouseenter="this.style.color='var(--primary)'" onmouseleave="this.style.color='inherit'">{{this.name}}</a>
           </h3>
-          <p class="text-xs text-stone-600 line-clamp-2 leading-relaxed" title="{{this.description}}">
-            {{this.description}}
-          </p>
+          <p style="font-size:12px;color:var(--text-muted);line-height:1.55;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;" title="{{this.description}}">{{this.description}}</p>
           {{#if this.UserName}}
-          <p class="text-[11px] text-stone-400 flex items-center gap-1 pt-0.5">
-            <i class="fas fa-user-edit text-stone-300"></i>
-            <span>Curated by: {{this.UserName}}</span>
+          <p style="font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:4px;margin-top:0.3rem;">
+            <i class="fas fa-user-edit" style="font-size:10px;color:var(--primary);"></i>
+            <span>{{this.UserName}}</span>
           </p>
           {{/if}}
         </div>
 
-        <!-- Action Buttons -->
-        <div class="pt-2.5 border-t border-stone-100 flex items-center justify-between gap-2">
-          <a href="/dashboard/Book/Edit/{{this.id}}" class="flex-1 inline-flex items-center justify-center gap-1 py-1.5 px-3 rounded bg-[#f0f4f9] hover:bg-[#162e4a] text-[#162e4a] hover:text-white text-xs font-semibold uppercase tracking-wider border border-[#bad0e4] hover:border-[#162e4a] transition-colors">
-            <i class="fas fa-edit text-[10px]"></i>
+        <!-- Stats row -->
+        <div style="display:flex;align-items:center;gap:0.5rem;font-size:11px;color:var(--text-muted);">
+          <span style="display:flex;align-items:center;gap:3px;"><i class="fas fa-eye" style="font-size:9px;"></i> {{formatNumber this.views}}</span>
+          <span style="color:var(--border-solid);">·</span>
+          <span style="padding:2px 8px;border-radius:20px;background:var(--primary-lt);color:var(--primary-dk);font-weight:700;font-size:10px;">{{this.category}}</span>
+        </div>
+
+        <!-- Actions -->
+        <div style="padding-top:0.65rem;border-top:1px solid rgba(15,118,110,0.10);display:flex;align-items:center;gap:0.4rem;">
+          <a href="/dashboard/Book/Edit/{{this.id}}"
+            style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:0.35rem;padding:7px 10px;border-radius:7px;background:var(--primary-lt);color:var(--primary-dk);border:1px solid rgba(15,118,110,0.22);font-size:12px;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:0.04em;transition:all 0.15s ease;"
+            onmouseenter="this.style.background='var(--primary)';this.style.color='#fff'" onmouseleave="this.style.background='var(--primary-lt)';this.style.color='var(--primary-dk)'">
+            <i class="fas fa-edit" style="font-size:10px;"></i>
             <span>Edit</span>
           </a>
 
-          <a href="/dashboard/Book/{{this.id}}/Sections" class="inline-flex items-center justify-center p-1.5 rounded bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs border border-stone-300 transition-colors" title="Manage Chapters">
+          <a href="/dashboard/Book/{{this.id}}/Sections" title="Manage Chapters"
+            style="padding:7px 9px;border-radius:7px;background:rgba(255,255,255,0.80);color:var(--text-2);border:1px solid var(--border);font-size:12px;text-decoration:none;display:flex;align-items:center;justify-content:center;transition:all 0.15s ease;"
+            onmouseenter="this.style.background='var(--primary-lt)';this.style.color='var(--primary)'" onmouseleave="this.style.background='rgba(255,255,255,0.80)';this.style.color='var(--text-2)'">
             <i class="fas fa-list-ul"></i>
           </a>
 
-          <button onclick="deleteProduct('{{this.id}}')" class="inline-flex items-center justify-center p-1.5 rounded bg-stone-100 hover:bg-rose-700 text-rose-700 hover:text-white text-xs border border-stone-300 hover:border-rose-700 transition-colors" title="Delete Entry">
+          <button onclick="deleteProduct('{{this.id}}', '{{this.name}}')" title="Delete"
+            style="padding:7px 9px;border-radius:7px;background:rgba(220,38,38,0.08);color:#dc2626;border:1px solid rgba(220,38,38,0.22);font-size:12px;cursor:pointer;transition:all 0.15s ease;"
+            onmouseenter="this.style.background='#dc2626';this.style.color='#fff'" onmouseleave="this.style.background='rgba(220,38,38,0.08)';this.style.color='#dc2626'">
             <i class="fas fa-trash-alt"></i>
           </button>
         </div>
-
       </div>
-
     </article>
 
-    <!-- 2. Compact Admin Row (List Mode) -->
-    <article class="item-list-row bg-white rounded-lg border border-stone-300 p-3 sm:p-4 hover:border-stone-400 hover:shadow-sm transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4" id="list_admin_{{this.id}}">
-      
-      <div class="flex items-center gap-3 min-w-0 flex-1">
-        <input type="checkbox" class="book-select-checkbox w-4 h-4 rounded text-[#162e4a] bg-white border-stone-300 focus:ring-[#162e4a] cursor-pointer shadow-sm flex-shrink-0" data-book-id="{{this.id}}" onchange="updateBulkActions()" aria-label="Select {{this.name}}">
-        
-        <div class="w-12 h-16 rounded bg-[#f2f0ec] border border-stone-300 p-0.5 flex items-center justify-center overflow-hidden flex-shrink-0">
-          <img src="{{this.imageURL}}" alt="Cover" class="max-h-full max-w-full object-contain rounded-xs" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'">
+    <!-- List Row -->
+    <article class="item-list-row"
+      style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.14);border-radius:12px;padding:0.85rem 1rem;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.75rem;transition:all 0.15s ease;"
+      id="list_admin_{{this.id}}"
+      onmouseenter="this.style.borderColor='rgba(15,118,110,0.30)';this.style.boxShadow='0 4px 12px rgba(15,118,110,0.08)'"
+      onmouseleave="this.style.borderColor='rgba(15,118,110,0.14)';this.style.boxShadow='none'">
+
+      <div style="display:flex;align-items:center;gap:0.75rem;min-width:0;flex:1;">
+        <input type="checkbox" class="book-select-checkbox" data-book-id="{{this.id}}" onchange="updateBulkActions()" aria-label="Select {{this.name}}"
+          style="width:16px;height:16px;border-radius:4px;accent-color:var(--primary);cursor:pointer;flex-shrink:0;">
+
+        <div style="width:44px;height:60px;border-radius:7px;background:rgba(215,244,238,0.25);border:1px solid rgba(15,118,110,0.16);padding:3px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
+          <img src="{{this.imageURL}}" alt="Cover" style="max-height:100%;max-width:100%;object-fit:contain;border-radius:3px;" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'">
         </div>
 
-        <div class="min-w-0 space-y-1">
-          <div class="flex flex-wrap items-center gap-1.5">
+        <div style="min-width:0;">
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0.35rem;margin-bottom:0.3rem;">
             {{#if this.main}}
-            <span class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-amber-600 text-white">Main</span>
+            <span style="padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700;background:var(--warning);color:#fff;">Main</span>
             {{/if}}
-
             {{#unless this.visible}}
-            <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-100 text-rose-800 border border-rose-300">Hidden</span>
+            <span style="padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(220,38,38,0.12);color:#dc2626;border:1px solid rgba(220,38,38,0.28);">Hidden</span>
             {{else}}
-            <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">Visible</span>
+            <span style="padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(22,163,74,0.12);color:#16a34a;border:1px solid rgba(22,163,74,0.28);">Visible</span>
             {{/unless}}
-
-            <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-[#f0f4f9] text-[#162e4a] border border-[#bad0e4]">{{formatSemesterBadge this.semester}}</span>
-            <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-stone-100 text-stone-700 border border-stone-200">{{this.category}}</span>
-            <span class="text-[11px] text-stone-500"><i class="fas fa-eye text-[9px] mr-0.5"></i> {{formatNumber this.views}}</span>
+            <span style="padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;background:var(--primary-lt);color:var(--primary-dk);border:1px solid rgba(15,118,110,0.22);">{{formatSemesterBadge this.semester}}</span>
+            <span style="padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(255,255,255,0.80);color:var(--text-2);border:1px solid var(--border);">{{this.category}}</span>
+            <span style="font-size:11px;color:var(--text-muted);"><i class="fas fa-eye" style="font-size:9px;margin-right:2px;"></i>{{formatNumber this.views}}</span>
           </div>
-
-          <h3 class="font-serif font-bold text-sm text-stone-900 hover:text-[#162e4a] transition-colors truncate">
-            <a href="/dashboard/Book/Edit/{{this.id}}" title="{{this.name}}">{{this.name}}</a>
+          <h3 style="font-family:var(--font-headings);font-weight:700;font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:0.2rem;">
+            <a href="/dashboard/Book/Edit/{{this.id}}" style="text-decoration:none;color:inherit;" title="{{this.name}}"
+              onmouseenter="this.style.color='var(--primary)'" onmouseleave="this.style.color='inherit'">{{this.name}}</a>
           </h3>
-          <p class="text-xs text-stone-600 truncate" title="{{this.description}}">
-            {{this.description}}
-          </p>
+          <p style="font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="{{this.description}}">{{this.description}}</p>
         </div>
       </div>
 
-      <!-- Actions -->
-      <div class="flex items-center gap-2 flex-shrink-0 self-end sm:self-auto">
-        <a href="/dashboard/Book/Edit/{{this.id}}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded bg-[#f0f4f9] hover:bg-[#162e4a] text-[#162e4a] hover:text-white border border-[#bad0e4] hover:border-[#162e4a] text-xs font-semibold uppercase tracking-wider transition-colors">
-          <i class="fas fa-edit text-[10px]"></i>
+      <div style="display:flex;align-items:center;gap:0.4rem;flex-shrink:0;">
+        <a href="/dashboard/Book/Edit/{{this.id}}"
+          style="display:inline-flex;align-items:center;gap:0.35rem;padding:7px 12px;border-radius:7px;background:var(--primary-lt);color:var(--primary-dk);border:1px solid rgba(15,118,110,0.22);font-size:12px;font-weight:700;text-decoration:none;transition:all 0.15s ease;"
+          onmouseenter="this.style.background='var(--primary)';this.style.color='#fff'" onmouseleave="this.style.background='var(--primary-lt)';this.style.color='var(--primary-dk)'">
+          <i class="fas fa-edit" style="font-size:10px;"></i>
           <span>Edit</span>
         </a>
 
-        <a href="/dashboard/Book/{{this.id}}/Sections" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-medium border border-stone-300 transition-colors" title="Manage Chapters">
-          <i class="fas fa-list-ul text-[10px]"></i>
+        <a href="/dashboard/Book/{{this.id}}/Sections"
+          style="display:inline-flex;align-items:center;gap:0.35rem;padding:7px 11px;border-radius:7px;background:rgba(255,255,255,0.85);color:var(--text-2);border:1px solid var(--border);font-size:12px;font-weight:600;text-decoration:none;transition:all 0.15s ease;"
+          onmouseenter="this.style.background='var(--primary-lt)';this.style.color='var(--primary)'" onmouseleave="this.style.background='rgba(255,255,255,0.85)';this.style.color='var(--text-2)'">
+          <i class="fas fa-list-ul" style="font-size:10px;"></i>
           <span>Chapters</span>
         </a>
 
-        <button onclick="deleteProduct('{{this.id}}')" class="inline-flex items-center justify-center p-1.5 rounded bg-stone-100 hover:bg-rose-700 text-rose-700 hover:text-white text-xs border border-stone-300 hover:border-rose-700 transition-colors" title="Delete Entry">
+        <button onclick="deleteProduct('{{this.id}}', '{{this.name}}')"
+          style="padding:7px 9px;border-radius:7px;background:rgba(220,38,38,0.08);color:#dc2626;border:1px solid rgba(220,38,38,0.22);font-size:12px;cursor:pointer;transition:all 0.15s ease;"
+          onmouseenter="this.style.background='#dc2626';this.style.color='#fff'" onmouseleave="this.style.background='rgba(220,38,38,0.08)';this.style.color='#dc2626'">
           <i class="fas fa-trash-alt"></i>
         </button>
       </div>
-
     </article>
 
     {{/each}}
@@ -275,27 +372,119 @@
 
   {{else}}
   <!-- Empty State -->
-  <div class="bg-white rounded-lg p-10 text-center max-w-md mx-auto border border-stone-300 space-y-3">
-    <div class="w-12 h-12 rounded-full bg-stone-100 flex items-center justify-center mx-auto text-stone-400 text-xl">
-      <i class="fas fa-book-open"></i>
+  <div style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:14px;padding:3rem 1.5rem;text-align:center;max-width:440px;margin:0 auto;">
+    <div style="width:56px;height:56px;border-radius:14px;background:var(--primary-lt);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;border:1px solid rgba(15,118,110,0.22);">
+      <i class="fas fa-book-open" style="font-size:22px;color:var(--primary);"></i>
     </div>
-    <div class="space-y-1">
-      <h3 class="font-serif font-bold text-base text-stone-900">No registry publications found</h3>
-      <p class="text-xs text-stone-500">Try modifying filters or catalog a new textbook entry.</p>
-    </div>
-    <button onclick="resetFilters()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded bg-[#162e4a] text-white font-medium text-xs hover:bg-[#0f2035] transition-colors">
+    <h3 style="font-family:var(--font-headings);font-weight:700;font-size:1.1rem;color:var(--text);margin-bottom:0.4rem;">No registry publications found</h3>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:1.25rem;">Try modifying filters or catalog a new textbook entry.</p>
+    <button onclick="resetFilters()"
+      style="display:inline-flex;align-items:center;gap:0.5rem;padding:9px 20px;border-radius:8px;background:var(--primary);color:#fff;font-weight:700;font-size:13px;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(15,118,110,0.24);transition:all 0.15s ease;"
+      onmouseenter="this.style.background='var(--primary-dk)'" onmouseleave="this.style.background='var(--primary)'">
       <i class="fas fa-filter"></i>
       <span>Reset Filters</span>
     </button>
   </div>
   {{/if}}
 
-  <!-- Pagination Component Partial -->
+  <!-- Pagination -->
   {{> pagination label="registry publications"}}
 
 </section>
 
+<!-- ================================================================ -->
+<!-- Glassmorphic Confirm Modal                                         -->
+<!-- ================================================================ -->
+<div id="confirmModal" style="display:none;position:fixed;inset:0;background:rgba(15,42,42,0.50);backdrop-filter:blur(6px);z-index:1000;align-items:center;justify-content:center;padding:1rem;">
+  <div style="background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border:1px solid rgba(15,118,110,0.18);border-radius:16px;padding:1.75rem;max-width:440px;width:100%;box-shadow:0 20px 40px rgba(15,42,42,0.18);" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+      <div id="confirm-icon-wrap" style="width:40px;height:40px;border-radius:10px;background:rgba(220,38,38,0.10);border:1px solid rgba(220,38,38,0.24);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i id="confirm-icon" class="fas fa-exclamation-triangle" style="font-size:16px;color:#dc2626;"></i>
+      </div>
+      <div>
+        <h3 id="confirm-title" style="font-family:var(--font-headings);font-weight:700;font-size:1rem;color:var(--text);margin:0;">Confirm Action</h3>
+        <p id="confirm-subtitle" style="font-size:11px;color:var(--text-muted);margin:2px 0 0;"></p>
+      </div>
+    </div>
+    <p id="confirm-message" style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:1.25rem;padding:0.75rem;background:rgba(220,38,38,0.05);border:1px solid rgba(220,38,38,0.12);border-radius:8px;"></p>
+    <div style="display:flex;gap:0.5rem;justify-content:flex-end;">
+      <button id="confirm-cancel-btn" onclick="closeConfirmModal()"
+        style="padding:8px 18px;border-radius:8px;background:rgba(255,255,255,0.85);color:var(--text-2);border:1px solid var(--border);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s ease;"
+        onmouseenter="this.style.background='var(--primary-lt)'" onmouseleave="this.style.background='rgba(255,255,255,0.85)'">
+        Cancel
+      </button>
+      <button id="confirm-ok-btn"
+        style="padding:8px 20px;border-radius:8px;background:#dc2626;color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.15s ease;box-shadow:0 2px 6px rgba(220,38,38,0.28);"
+        onmouseenter="this.style.background='#b91c1c'" onmouseleave="this.style.background='#dc2626'">
+        Confirm
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
+  // ================================================================
+  // Quick Stat Filtering & Sorting
+  // ================================================================
+  let currentQuickFilter = 'all';
+
+  // ================================================================
+  // Global Keyboard Shortcuts
+  // ================================================================
+  document.addEventListener('keydown', e => {
+    // Focus search on '/' or 'Ctrl+K' / 'Cmd+K'
+    if ((e.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) || ((e.ctrlKey || e.metaKey) && e.key === 'k')) {
+      e.preventDefault();
+      const s = document.getElementById('searchProduct');
+      if (s) { s.focus(); s.select(); }
+    }
+    // Escape to close open modals
+    if (e.key === 'Escape') {
+      closeConfirmModal();
+    }
+  });
+
+  // ================================================================
+  // Styled Confirm Modal
+  // ================================================================
+  let _confirmCallback = null;
+
+  function showConfirm({ title, subtitle = '', message, icon = 'fa-exclamation-triangle', iconColor = '#dc2626', confirmText = 'Confirm', confirmColor = '#dc2626', onConfirm }) {
+    document.getElementById('confirm-title').textContent = title;
+    document.getElementById('confirm-subtitle').textContent = subtitle;
+    document.getElementById('confirm-message').textContent = message;
+    document.getElementById('confirm-icon').className = `fas ${icon}`;
+    document.getElementById('confirm-icon').style.color = iconColor;
+    document.getElementById('confirm-icon-wrap').style.background = `${iconColor}18`;
+    document.getElementById('confirm-icon-wrap').style.borderColor = `${iconColor}40`;
+    const okBtn = document.getElementById('confirm-ok-btn');
+    okBtn.textContent = confirmText;
+    okBtn.style.background = confirmColor;
+    okBtn.style.boxShadow = `0 2px 8px ${confirmColor}40`;
+    okBtn.onmouseenter = () => okBtn.style.filter = 'brightness(0.88)';
+    okBtn.onmouseleave = () => okBtn.style.filter = '';
+    _confirmCallback = onConfirm;
+    const modal = document.getElementById('confirmModal');
+    modal.style.display = 'flex';
+  }
+
+  function closeConfirmModal() {
+    document.getElementById('confirmModal').style.display = 'none';
+    _confirmCallback = null;
+  }
+
+  document.getElementById('confirm-ok-btn').onclick = function () {
+    if (_confirmCallback) _confirmCallback();
+    closeConfirmModal();
+  };
+
+  document.getElementById('confirmModal').addEventListener('click', function (e) {
+    if (e.target === this) closeConfirmModal();
+  });
+
+  // ================================================================
+  // Export
+  // ================================================================
   function exportBooks() {
     fetch('/api/admin/Unilib/Book/Export', { credentials: 'include' })
       .then(r => { if (!r.ok) throw new Error('Export failed'); return r.json(); })
@@ -308,45 +497,54 @@
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
         showToast('Catalog exported successfully!', 'success');
       })
-      .catch(err => { 
-        console.error(err); 
-        showToast('Failed to export catalog.', 'error'); 
-      });
+      .catch(() => showToast('Failed to export catalog.', 'error'));
   }
 
-  async function deleteProduct(productId) {
-    if (!confirm('Are you sure you want to delete this publication from the registry?')) return;
-    try {
-      const response = await fetch(`/api/admin/Unilib/Book/Delete/${productId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-      });
-      if (response.ok) {
-        showToast('Publication deleted successfully!', 'success');
-        setTimeout(() => window.location.reload(), 800);
-      } else {
-        showToast('Failed to delete publication.', 'error');
+  // ================================================================
+  // Delete (uses Confirm Modal)
+  // ================================================================
+  function deleteProduct(productId, productName) {
+    showConfirm({
+      title: 'Delete Publication',
+      subtitle: 'This action cannot be undone',
+      message: `Are you sure you want to permanently delete "${productName}" from the registry? All associated chapter sections will also be removed.`,
+      icon: 'fa-trash-alt',
+      iconColor: '#dc2626',
+      confirmText: 'Delete Publication',
+      confirmColor: '#dc2626',
+      onConfirm: async () => {
+        try {
+          const response = await fetch(`/api/admin/Unilib/Book/Delete/${productId}`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }
+          });
+          if (response.ok) {
+            showToast('Publication deleted successfully!', 'success');
+            setTimeout(() => window.location.reload(), 800);
+          } else {
+            showToast('Failed to delete publication.', 'error');
+          }
+        } catch (err) {
+          console.error(err);
+          showToast('An error occurred while deleting.', 'error');
+        }
       }
-    } catch (error) {
-      console.error('Error deleting product:', error);
-      showToast('An error occurred while deleting the book.', 'error');
-    }
+    });
   }
 
+  // ================================================================
+  // Bulk Selection
+  // ================================================================
   function updateBulkActions() {
     const checked = Array.from(document.querySelectorAll('.book-select-checkbox:checked'));
     const uniqueBookIds = new Set(checked.map(cb => cb.dataset.bookId));
     const count = uniqueBookIds.size;
     const bulkBar = document.getElementById('bulkActionsBar');
     const countSpan = document.getElementById('selectedCount');
-
     if (count > 0) {
       countSpan.textContent = `${count} item${count > 1 ? 's' : ''} selected`;
-      bulkBar.classList.remove('hidden');
-      bulkBar.classList.add('flex');
+      bulkBar.style.display = 'flex';
     } else {
-      bulkBar.classList.add('hidden');
-      bulkBar.classList.remove('flex');
+      bulkBar.style.display = 'none';
     }
   }
 
@@ -368,25 +566,34 @@
     const bookIds = getSelectedBookIds();
     if (bookIds.length === 0) return;
     const action = visible ? 'show' : 'hide';
-    if (!confirm(`Are you sure you want to ${action} ${bookIds.length} selected publication(s)?`)) return;
-
-    try {
-      const response = await fetch('/api/admin/Unilib/Book/BulkVisibility', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ bookIds, visible })
-      });
-      const data = await response.json();
-      if (response.ok) {
-        showToast(data.message || `Publications ${action}n successfully`, 'success');
-        setTimeout(() => window.location.reload(), 800);
-      } else {
-        showToast(data.error || `Failed to ${action} publications`, 'error');
+    showConfirm({
+      title: visible ? 'Show Publications' : 'Hide Publications',
+      subtitle: `${bookIds.length} publication${bookIds.length > 1 ? 's' : ''} selected`,
+      message: `Are you sure you want to ${action} ${bookIds.length} selected publication${bookIds.length > 1 ? 's' : ''}? ${visible ? 'They will appear in the public catalog.' : 'They will be hidden from the public catalog.'}`,
+      icon: visible ? 'fa-eye' : 'fa-eye-slash',
+      iconColor: visible ? '#16a34a' : '#d97706',
+      confirmText: visible ? 'Show Selected' : 'Hide Selected',
+      confirmColor: visible ? '#16a34a' : '#d97706',
+      onConfirm: async () => {
+        try {
+          const response = await fetch('/api/admin/Unilib/Book/BulkVisibility', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ bookIds, visible })
+          });
+          const data = await response.json();
+          if (response.ok) {
+            showToast(data.message || `Publications ${action}n successfully`, 'success');
+            setTimeout(() => window.location.reload(), 800);
+          } else {
+            showToast(data.error || `Failed to ${action} publications`, 'error');
+          }
+        } catch (err) {
+          console.error(err);
+          showToast('An error occurred while updating visibility.', 'error');
+        }
       }
-    } catch (error) {
-      console.error('Error updating visibility:', error);
-      showToast('An error occurred while updating visibility.', 'error');
-    }
+    });
   }
 
   const bulkHideBooks = () => setBulkVisibility(false);

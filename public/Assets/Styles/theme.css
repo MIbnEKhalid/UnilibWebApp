@@ -1,176 +1,243 @@
 /* ==========================================================================
-   Unilib Classical Academic Design System
-   Traditional University Press & Academic Library Aesthetics
+   Unilib — Modern Academic Design System
+   Inspired by mbkbucket's glassmorphism design language
    ========================================================================== */
 
+/* --------------------------------------------------------------------------
+   CSS Custom Properties / Design Tokens
+   -------------------------------------------------------------------------- */
 :root {
-  --font-serif: 'Lora', 'Georgia', 'Cambria', 'Times New Roman', serif;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  
-  --bg-page: #faf9f6;
-  --bg-surface: #ffffff;
-  --bg-subtle: #f4f2ee;
-  
-  --border-color: #e7e5e0;
-  --border-dark: #d6d3cc;
-  
-  --oxford-blue: #162e4a;
-  --oxford-dark: #0f2035;
-  --oxford-light: #f0f4f9;
-  
-  --antique-gold: #b45309;
-  --antique-gold-light: #fef3c7;
-  
-  --text-main: #1c1917;
-  --text-secondary: #44403c;
-  --text-muted: #78716c;
-  --text-light: #a8a29e;
+  /* Primary teal palette */
+  --primary:         #0f766e;
+  --primary-lt:      #d7f4ee;
+  --primary-dk:      #0b4f4a;
+  --primary-hover:   #0d635c;
+  --secondary:       #1f8f84;
+
+  /* Semantic surfaces */
+  --body-bg:         #f4f7f3;
+  --bg-surface:      rgba(255, 255, 255, 0.88);
+  --bg-surface-2:    rgba(244, 247, 243, 0.80);
+  --bg-surface-3:    #e2ede8;
+
+  /* Borders */
+  --border:          rgba(15, 118, 110, 0.18);
+  --border-lt:       rgba(15, 118, 110, 0.10);
+  --border-solid:    #c0d9ce;
+
+  /* Text */
+  --text:            #1f2a2a;
+  --text-2:          #425855;
+  --text-muted:      #667c79;
+  --text-disabled:   #a0b2af;
+
+  /* Status */
+  --danger:  #dc2626;
+  --warning: #d97706;
+  --success: #16a34a;
+  --info:    #3b82f6;
+  --danger-lt:  rgba(220, 38, 38, 0.10);
+  --warning-lt: rgba(217, 119, 6, 0.12);
+  --success-lt: rgba(22, 163, 74, 0.12);
+
+  /* Typography */
+  --font:          "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-headings: "Sora", "Segoe UI", system-ui, sans-serif;
+  --font-mono:     "JetBrains Mono", "SF Mono", Consolas, monospace;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius:    8px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.04);
+  --shadow:    0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+  --shadow-md: 0 10px 15px -3px rgba(15,118,110,0.08), 0 4px 6px -2px rgba(0,0,0,0.04);
+  --shadow-lg: 0 20px 25px -5px rgba(15,118,110,0.10), 0 10px 10px -5px rgba(0,0,0,0.04);
+
+  /* Transitions */
+  --transition: all 0.18s ease;
+}
+
+/* --------------------------------------------------------------------------
+   Global Reset & Base
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
 html {
-  font-family: var(--font-sans);
-  background-color: var(--bg-page);
-  color: var(--text-main);
+  font-family: var(--font);
+  background-color: var(--body-bg);
+  color: var(--text);
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* --------------------------------------------------------------------------
+   Body — Animated Gradient Background (mbkbucket-style)
+   -------------------------------------------------------------------------- */
 body {
-  background-color: #faf9f6;
-  color: #1c1917;
+  font-family: var(--font);
+  background:
+    radial-gradient(circle at 12% 14%, rgba(16, 185, 129, 0.13), transparent 46%),
+    radial-gradient(circle at 86% 8%,  rgba(244, 114, 38, 0.11), transparent 42%),
+    linear-gradient(160deg, #eef7f2 0%, #f8fbf7 52%, #eaf2ef 100%);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+  position: relative;
+  isolation: isolate;
 }
 
-/* Classical Headings */
-h1, h2, h3, .font-serif {
-  font-family: var(--font-serif);
+/* Floating orb glow effects */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  border-radius: 999px;
+  pointer-events: none;
+  z-index: -1;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+body::before {
+  width: 320px;
+  height: 320px;
+  left: -100px;
+  top: 15vh;
+  background: radial-gradient(circle, rgba(15, 118, 110, 0.16) 0%, rgba(15, 118, 110, 0) 70%);
 }
 
-::-webkit-scrollbar-track {
-  background: #f4f2ee;
+body::after {
+  width: 360px;
+  height: 360px;
+  right: -140px;
+  bottom: 8vh;
+  background: radial-gradient(circle, rgba(251, 146, 60, 0.16) 0%, rgba(251, 146, 60, 0) 72%);
 }
 
-::-webkit-scrollbar-thumb {
-  background: #d6d3cc;
-  border-radius: 2px;
+/* --------------------------------------------------------------------------
+   Typography — Sora for headings
+   -------------------------------------------------------------------------- */
+h1, h2, h3, h4, h5, h6,
+.font-headings, .font-serif {
+  font-family: var(--font-headings);
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #a8a29e;
-}
+/* --------------------------------------------------------------------------
+   Custom Scrollbar
+   -------------------------------------------------------------------------- */
+::-webkit-scrollbar { width: 7px; height: 7px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-solid); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
-/* Classical Library Card */
+/* --------------------------------------------------------------------------
+   Glass Surface Card (mbkbucket-style)
+   -------------------------------------------------------------------------- */
 .classic-card {
-  background: #ffffff;
-  border: 1px solid #e7e5e0;
-  border-radius: 0.5rem;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
-  transition: all 0.2s ease;
+  background: var(--bg-surface);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  transition: var(--transition);
 }
 
 .classic-card:hover {
-  border-color: #d6d3cc;
-  box-shadow: 0 4px 10px -2px rgba(22, 46, 74, 0.06);
+  border-color: rgba(15, 118, 110, 0.32);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
-/* Classical Form Inputs */
+/* --------------------------------------------------------------------------
+   Form Inputs
+   -------------------------------------------------------------------------- */
 .input-classic {
-  background: #ffffff;
-  border: 1px solid #d6d3cc;
-  color: #1c1917;
-  border-radius: 0.375rem;
+  background: rgba(255, 255, 255, 0.90);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: var(--radius);
+  font-family: var(--font);
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .input-classic:focus {
-  border-color: #162e4a;
-  box-shadow: 0 0 0 2px rgba(22, 46, 74, 0.12);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
   outline: none;
+  background: #ffffff;
 }
 
-.input-classic::placeholder {
-  color: #a8a29e;
-}
+.input-classic::placeholder { color: var(--text-disabled); }
 
-/* Semester Tabstrip (Classical Library Index Tabs) */
+/* --------------------------------------------------------------------------
+   Semester Tab Strip
+   -------------------------------------------------------------------------- */
 .semester-tab {
-  padding: 0.45rem 0.85rem;
-  border-radius: 0.375rem;
+  padding: 0.42rem 0.9rem;
+  border-radius: var(--radius);
   font-size: 0.78rem;
   font-weight: 600;
-  color: #57534e;
-  background: #ffffff;
-  border: 1px solid #e7e5e0;
+  color: var(--text-2);
+  background: rgba(255, 255, 255, 0.80);
+  border: 1px solid var(--border);
   white-space: nowrap;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: var(--transition);
   user-select: none;
-  font-family: var(--font-sans);
+  font-family: var(--font);
+  backdrop-filter: blur(6px);
 }
 
 .semester-tab:hover {
-  color: #162e4a;
-  border-color: #bad0e4;
-  background: #f0f4f9;
+  color: var(--primary-dk);
+  border-color: var(--primary);
+  background: var(--primary-lt);
 }
 
 .semester-tab.active {
   color: #ffffff;
-  background: #162e4a;
-  border-color: #162e4a;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  background: var(--primary);
+  border-color: var(--primary);
+  box-shadow: 0 2px 8px rgba(15, 118, 110, 0.28);
 }
 
-/* Layout Engine for Grid vs List View */
+/* --------------------------------------------------------------------------
+   Catalog Layout Engine (Grid / List View)
+   -------------------------------------------------------------------------- */
 #catalogContainer.view-grid {
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
   gap: 1.25rem;
 }
 
-@media (min-width: 640px) {
-  #catalogContainer.view-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (min-width: 1024px) {
-  #catalogContainer.view-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-}
-@media (min-width: 1280px) {
-  #catalogContainer.view-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-}
+@media (min-width: 640px)  { #catalogContainer.view-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { #catalogContainer.view-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1280px) { #catalogContainer.view-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
-#catalogContainer.view-grid .item-list-row {
-  display: none !important;
-}
+#catalogContainer.view-grid  .item-list-row  { display: none   !important; }
+#catalogContainer.view-grid  .item-grid-card { display: flex   !important; }
+#catalogContainer.view-list { display: flex; flex-direction: column; gap: 0.75rem; }
+#catalogContainer.view-list .item-grid-card  { display: none   !important; }
+#catalogContainer.view-list .item-list-row   { display: flex   !important; }
 
-#catalogContainer.view-grid .item-grid-card {
-  display: flex !important;
-}
-
-#catalogContainer.view-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-#catalogContainer.view-list .item-grid-card {
-  display: none !important;
-}
-
-#catalogContainer.view-list .item-list-row {
-  display: flex !important;
-}
-
-/* Quick View Slide-over & Modal */
+/* --------------------------------------------------------------------------
+   Quick View Modal (Glassmorphic)
+   -------------------------------------------------------------------------- */
 .quick-view-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(28, 25, 23, 0.55);
-  backdrop-filter: blur(3px);
+  background: rgba(15, 42, 42, 0.52);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   z-index: 100;
   display: none;
   align-items: center;
@@ -179,43 +246,122 @@ h1, h2, h3, .font-serif {
 }
 
 .quick-view-modal {
-  background: #ffffff;
-  border-radius: 0.5rem;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  max-width: 720px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  max-width: 740px;
   width: 100%;
-  max-height: 90vh;
+  max-height: 92vh;
   overflow-y: auto;
   position: relative;
 }
 
-/* Semester Chips Selector (Creator Studio) */
+/* --------------------------------------------------------------------------
+   Semester Chip Buttons (Admin form)
+   -------------------------------------------------------------------------- */
 .semester-chip-btn {
   padding: 0.35rem 0.75rem;
-  border-radius: 0.375rem;
+  border-radius: var(--radius);
   font-size: 0.75rem;
   font-weight: 500;
-  border: 1px solid #d6d3cc;
-  background: #ffffff;
-  color: #44403c;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.80);
+  color: var(--text-2);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: var(--transition);
 }
 
 .semester-chip-btn:hover {
-  border-color: #162e4a;
-  color: #162e4a;
-  background: #f0f4f9;
+  border-color: var(--primary);
+  color: var(--primary-dk);
+  background: var(--primary-lt);
 }
 
 .semester-chip-btn.selected {
-  background: #f0f4f9;
-  border-color: #162e4a;
-  color: #162e4a;
+  background: var(--primary-lt);
+  border-color: var(--primary);
+  color: var(--primary-dk);
   font-weight: 600;
+  box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.12);
 }
 
-/* Lazy Load */
+/* --------------------------------------------------------------------------
+   Button Utilities
+   -------------------------------------------------------------------------- */
+.btn-teal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 7px 16px;
+  border-radius: var(--radius);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--primary);
+  color: #ffffff;
+  border: 1px solid var(--primary);
+  cursor: pointer;
+  text-decoration: none;
+  transition: var(--transition);
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(15, 118, 110, 0.22);
+}
+
+.btn-teal:hover {
+  background: var(--primary-dk);
+  border-color: var(--primary-dk);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(15, 118, 110, 0.30);
+}
+
+.btn-outline-teal {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 7px 16px;
+  border-radius: var(--radius);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--text);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  text-decoration: none;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.btn-outline-teal:hover {
+  background: var(--primary-lt);
+  color: var(--primary-dk);
+  border-color: var(--primary);
+}
+
+/* --------------------------------------------------------------------------
+   Page Header Component
+   -------------------------------------------------------------------------- */
+.page-header-glass {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.3rem;
+  border: 1px solid rgba(255, 255, 255, 0.88);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 12px 34px rgba(15, 23, 42, 0.05);
+  margin-bottom: 1.25rem;
+}
+
+/* --------------------------------------------------------------------------
+   Lazy Load Fade-in
+   -------------------------------------------------------------------------- */
 img.lazy-load {
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -223,4 +369,17 @@ img.lazy-load {
 
 img.lazy-load.loaded {
   opacity: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Toast / Alert (shared)
+   -------------------------------------------------------------------------- */
+.toast-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
 }

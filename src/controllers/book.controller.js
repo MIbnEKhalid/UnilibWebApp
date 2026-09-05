@@ -103,7 +103,13 @@ export async function renderIndex(req, res) {
 
 // Admin dashboard view
 export async function renderDashboard(req, res) {
-  await renderUnilibBooks(req, res, "mainPages/Book.handlebars");
+  try {
+    const stats = await bookRepository.getDashboardStats();
+    await renderUnilibBooks(req, res, "mainPages/Book.handlebars", { stats });
+  } catch (err) {
+    console.error("Error building dashboard stats:", err);
+    await renderUnilibBooks(req, res, "mainPages/Book.handlebars");
+  }
 }
 
 // Admin edit book page
@@ -126,9 +132,20 @@ export async function renderEditBookPage(req, res) {
 // Admin update book API
 export async function editBook(req, res) {
   const bookId = req.params.id;
-  const { name, category, description, imageURL, link, semester, main, visible } = req.body;
 
   try {
+    const existing = await bookRepository.findById(bookId);
+    if (!existing) return res.status(404).json({ error: "Book not found" });
+
+    const name = req.body.name !== undefined ? req.body.name : existing.name;
+    const category = req.body.category !== undefined ? req.body.category : existing.category;
+    const description = req.body.description !== undefined ? req.body.description : existing.description;
+    const imageURL = req.body.imageURL !== undefined ? req.body.imageURL : existing.imageURL;
+    const link = req.body.link !== undefined ? req.body.link : existing.link;
+    const semester = req.body.semester !== undefined ? req.body.semester : existing.semester;
+    const main = req.body.main !== undefined ? req.body.main : existing.main;
+    const visible = req.body.visible !== undefined ? req.body.visible : existing.visible;
+
     await bookRepository.update(bookId, {
       name,
       category,

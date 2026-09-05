@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" class="scroll-smooth">
+<html lang="en" dir="ltr">
 
 <head>
   <meta charset="UTF-8" />
@@ -26,11 +26,11 @@
   </script>
 
   <link rel="icon" type="image/svg+xml" href="/Assets/icon.svg">
-  
-  <!-- Google Fonts: Lora (Classic Serif) + Inter (Sans) -->
+
+  <!-- Google Fonts: Sora (Headings) + IBM Plex Sans (Body) + JetBrains Mono (Code) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <!-- FontAwesome 6 Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -45,140 +45,228 @@
     window.DEFAULT_SEMESTER = "{{defaultSemester}}";
   </script>
   <script src="/Assets/Scripts/unilib.js?v={{appVersion}}" defer></script>
-  
+
   {{{_sections.head}}}
 
   <title>{{#if singleBookView}}{{#each books}}{{this.name}} - {{/each}}{{/if}}Unilib | Academic University Library</title>
 </head>
 
-<body class="bg-[#faf9f6] text-[#1c1917] min-h-screen flex flex-col antialiased selection:bg-amber-100 selection:text-amber-900">
+<body>
 
-  <!-- Classic Header Navigation -->
-  <header class="sticky top-0 z-50 w-full bg-white border-b border-stone-200 shadow-sm" id="mainHeader">
-    <div class="h-1 bg-[#162e4a] w-full"></div>
+  <!-- ================================================================ -->
+  <!-- Modern Glassmorphic Header Navigation                            -->
+  <!-- ================================================================ -->
+  <header style="position:sticky;top:0;z-index:50;width:100%;background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(15,118,110,0.12);box-shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -1px rgba(0,0,0,0.03);" id="mainHeader">
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      
-      <!-- Brand Crest & Classical Logo -->
-      <a href="/" class="flex items-center gap-3 group focus:outline-none">
-        <div class="w-10 h-10 rounded bg-[#162e4a] flex items-center justify-center text-white shadow-sm border border-[#0f2035]">
-          <i class="fas fa-book-open text-base text-amber-100"></i>
+    <!-- Teal accent top bar -->
+    <div style="height:3px;background:linear-gradient(90deg,#0f766e,#1f8f84,#0f766e);width:100%;"></div>
+
+    <div style="max-width:1400px;margin:0 auto;padding:0 1.25rem;height:60px;display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+
+      <!-- Brand Logo -->
+      <a href="/" style="display:flex;align-items:center;gap:0.6rem;text-decoration:none;flex-shrink:0;" id="brand-logo">
+        <div style="width:36px;height:36px;border-radius:8px;background:var(--primary);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(15,118,110,0.28);border:1px solid var(--primary-dk);">
+          <i class="fas fa-book-open" style="color:#d7f4ee;font-size:14px;"></i>
         </div>
-        <div class="flex flex-col">
-          <span class="font-serif font-bold text-xl tracking-tight text-[#162e4a] leading-none">
-            Uni<span class="text-amber-700 italic">lib</span>
+        <div style="display:flex;flex-direction:column;line-height:1.15;">
+          <span style="font-family:'Sora',sans-serif;font-weight:800;font-size:1.15rem;color:#0b4f4a;letter-spacing:-0.02em;">
+            Uni<span style="color:var(--primary);">lib</span>
           </span>
-          <span class="text-[10px] font-semibold text-stone-500 uppercase tracking-widest mt-0.5">MBKTech.org</span>
+          <span style="font-size:9px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;">MBKTech.org</span>
         </div>
       </a>
 
-      <!-- Desktop Navigation Menu -->
-      <nav class="hidden md:flex items-center gap-1">
-        <a href="/" class="px-3.5 py-2 rounded text-xs font-semibold text-stone-700 hover:text-[#162e4a] hover:bg-stone-100 transition-colors flex items-center gap-1.5 uppercase tracking-wider">
-          <i class="fas fa-book-bookmark text-stone-400 text-[11px]"></i>
+      <!-- Desktop Navigation -->
+      <nav style="display:none;" id="desktopNav" class="md-nav">
+        <a href="/" class="nav-link" id="nav-catalog">
+          <i class="fas fa-book-bookmark nav-icon"></i>
           <span>Catalog</span>
         </a>
-        <a href="/materials" class="px-3.5 py-2 rounded text-xs font-semibold text-stone-700 hover:text-[#162e4a] hover:bg-stone-100 transition-colors flex items-center gap-1.5 uppercase tracking-wider">
-          <i class="fas fa-archive text-stone-400 text-[11px]"></i>
+        <a href="/materials" class="nav-link" id="nav-materials">
+          <i class="fas fa-archive nav-icon"></i>
           <span>Materials</span>
         </a>
-        <a href="https://mbktech.org/" target="_blank" class="px-3.5 py-2 rounded text-xs font-semibold text-stone-700 hover:text-[#162e4a] hover:bg-stone-100 transition-colors flex items-center gap-1.5 uppercase tracking-wider">
-          <i class="fas fa-arrow-up-right-from-square text-stone-400 text-[11px]"></i>
+        <a href="https://mbktech.org/" target="_blank" class="nav-link" id="nav-mbktech">
+          <i class="fas fa-arrow-up-right-from-square nav-icon"></i>
           <span>MBK Tech</span>
         </a>
-        <a href="/dashboard" class="px-3.5 py-2 rounded text-xs font-semibold text-stone-700 hover:text-[#162e4a] hover:bg-stone-100 transition-colors flex items-center gap-1.5 uppercase tracking-wider">
-          <i class="fas fa-compass text-stone-400 text-[11px]"></i>
+        <a href="/dashboard" class="nav-link" id="nav-admin">
+          <i class="fas fa-compass nav-icon"></i>
           <span>Admin</span>
         </a>
 
-        <div class="ml-3 pl-3 border-l border-stone-200 flex items-center">
+        <div style="margin-left:0.75rem;padding-left:0.75rem;border-left:1px solid rgba(15,118,110,0.15);display:flex;align-items:center;">
           {{> profilemenu}}
         </div>
       </nav>
 
-      <!-- Mobile Menu Toggle Button -->
-      <div class="flex items-center gap-2 md:hidden">
-        <button id="mobileMenuToggle" type="button" aria-label="Toggle Navigation Menu" class="w-9 h-9 rounded bg-stone-100 border border-stone-300 text-stone-700 flex items-center justify-center hover:bg-stone-200 transition-colors focus:outline-none focus:ring-2 focus:ring-[#162e4a]">
-          <i class="fas fa-bars text-sm" id="menuIcon"></i>
+      <!-- Mobile Toggle -->
+      <div style="display:flex;align-items:center;gap:0.5rem;" id="mobileToggleWrap">
+        <button id="mobileMenuToggle" type="button" aria-label="Toggle Navigation Menu"
+          style="width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,0.85);border:1px solid rgba(15,118,110,0.20);color:var(--text-2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s ease;"
+          onmouseenter="this.style.background='var(--primary-lt)';this.style.borderColor='var(--primary)'"
+          onmouseleave="this.style.background='rgba(255,255,255,0.85)';this.style.borderColor='rgba(15,118,110,0.20)'">
+          <i class="fas fa-bars" style="font-size:13px;" id="menuIcon"></i>
         </button>
       </div>
 
     </div>
 
-    <!-- Mobile Drawer Menu -->
-    <div id="mobileDrawer" class="hidden md:hidden border-t border-stone-200 bg-white px-5 py-4 transition-all">
-      <div class="flex flex-col gap-1.5">
-        <a href="/" class="flex items-center gap-2.5 px-3 py-2 rounded text-stone-700 hover:bg-stone-100 hover:text-[#162e4a] text-xs font-semibold uppercase tracking-wider transition-colors">
-          <i class="fas fa-book-bookmark text-stone-400 w-4"></i>
+    <!-- Mobile Drawer -->
+    <div id="mobileDrawer" style="display:none;border-top:1px solid rgba(15,118,110,0.12);background:rgba(255,255,255,0.96);backdrop-filter:blur(12px);padding:1rem 1.25rem;">
+      <div style="display:flex;flex-direction:column;gap:0.35rem;">
+        <a href="/" class="mobile-nav-link" id="mobile-nav-catalog">
+          <i class="fas fa-book-bookmark" style="width:16px;color:var(--text-muted);"></i>
           <span>Course Catalog</span>
         </a>
-        <a href="/materials" class="flex items-center gap-2.5 px-3 py-2 rounded text-stone-700 hover:bg-stone-100 hover:text-[#162e4a] text-xs font-semibold uppercase tracking-wider transition-colors">
-          <i class="fas fa-archive text-stone-400 w-4"></i>
-          <span>Materials</span>
+        <a href="/materials" class="mobile-nav-link" id="mobile-nav-materials">
+          <i class="fas fa-archive" style="width:16px;color:var(--text-muted);"></i>
+          <span>Materials Archive</span>
         </a>
-        <a href="https://mbktech.org/" target="_blank" class="flex items-center gap-2.5 px-3 py-2 rounded text-stone-700 hover:bg-stone-100 hover:text-[#162e4a] text-xs font-semibold uppercase tracking-wider transition-colors">
-          <i class="fas fa-globe text-stone-400 w-4"></i>
+        <a href="https://mbktech.org/" target="_blank" class="mobile-nav-link" id="mobile-nav-mbktech">
+          <i class="fas fa-globe" style="width:16px;color:var(--text-muted);"></i>
           <span>MBK Tech</span>
         </a>
-        <a href="/dashboard" class="flex items-center gap-2.5 px-3 py-2 rounded text-stone-700 hover:bg-stone-100 hover:text-[#162e4a] text-xs font-semibold uppercase tracking-wider transition-colors">
-          <i class="fas fa-compass text-stone-400 w-4"></i>
+        <a href="/dashboard" class="mobile-nav-link" id="mobile-nav-admin">
+          <i class="fas fa-compass" style="width:16px;color:var(--text-muted);"></i>
           <span>Admin Dashboard</span>
         </a>
       </div>
     </div>
   </header>
 
-  <!-- Main Body Content -->
-  <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+  <!-- Inline nav styles (avoids Tailwind purge issues with dynamic classes) -->
+  <style>
+    @media (min-width: 768px) {
+      #desktopNav { display: flex !important; align-items: center; gap: 0.25rem; }
+      #mobileToggleWrap { display: none !important; }
+    }
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.42rem 0.9rem;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-2);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .nav-link:hover {
+      color: var(--primary-dk);
+      background: var(--primary-lt);
+    }
+    .nav-icon { font-size: 11px; color: var(--text-muted); }
+    .mobile-nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.55rem 0.75rem;
+      border-radius: 8px;
+      color: var(--text-2);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .mobile-nav-link:hover {
+      background: var(--primary-lt);
+      color: var(--primary-dk);
+    }
+  </style>
+
+  <!-- ================================================================ -->
+  <!-- Main Body Content                                                 -->
+  <!-- ================================================================ -->
+  {{#if isAdminPage}}
+  <!-- Admin Layout Shell with Sidebar -->
+  <div id="adminSidebarBackdrop" onclick="toggleAdminSidebar(false)"></div>
+  <div class="admin-shell" style="flex:1;width:100%;max-width:1600px;margin:0 auto;padding:1.25rem 1.25rem 3rem;" id="admin-shell-container">
+    {{> adminsidebar}}
+    <main class="admin-main-pane" id="main-content">
+      <!-- Mobile Bar to open Admin Sidebar on smaller screens -->
+      <div class="admin-mobile-bar">
+        <button type="button" onclick="toggleAdminSidebar(true)" class="admin-mobile-toggle-btn" id="mobileAdminMenuBtn">
+          <i class="fas fa-sliders text-xs"></i>
+          <span>Admin Menu</span>
+        </button>
+        <span class="text-xs font-semibold text-teal-900/80 flex items-center gap-1.5 font-headings">
+          <i class="fas fa-shield-halved text-teal-600"></i>
+          Admin Portal
+        </span>
+      </div>
+      {{{body}}}
+    </main>
+  </div>
+  {{else}}
+  <main style="flex:1;width:100%;max-width:1400px;margin:0 auto;padding:1.5rem 1.25rem 2.5rem;" id="main-content">
     {{{body}}}
   </main>
+  {{/if}}
 
-  <!-- Interactive Quick-View Book Modal Container -->
+  <!-- ================================================================ -->
+  <!-- Quick-View Book Modal                                             -->
+  <!-- ================================================================ -->
   <div id="quickViewBackdrop" class="quick-view-backdrop">
-    <div class="quick-view-modal p-6 sm:p-7 relative border border-stone-300">
-      <button onclick="closeQuickView()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-700 p-1.5 rounded hover:bg-stone-100 transition-colors text-base" aria-label="Close modal">
+    <div class="quick-view-modal" style="padding:1.75rem;">
+      <button onclick="closeQuickView()" id="qv-close-btn"
+        style="position:absolute;top:1rem;right:1rem;width:32px;height:32px;border-radius:8px;background:rgba(15,118,110,0.08);border:1px solid rgba(15,118,110,0.16);color:var(--text-muted);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s ease;font-size:13px;"
+        aria-label="Close modal"
+        onmouseenter="this.style.background='var(--primary)';this.style.color='#fff'"
+        onmouseleave="this.style.background='rgba(15,118,110,0.08)';this.style.color='var(--text-muted)'">
         <i class="fas fa-times"></i>
       </button>
 
-      <div class="grid grid-cols-1 sm:grid-cols-12 gap-6 items-start">
-        
-        <!-- Quick View Cover -->
-        <div class="sm:col-span-4 flex flex-col items-center">
-          <div class="w-full max-w-[190px] aspect-[3/4] rounded-lg overflow-hidden border border-stone-300 shadow-sm bg-[#f2f0ec] relative flex items-center justify-center p-2.5">
-            <div id="qvCoverBlur" class="absolute inset-0 bg-cover bg-center opacity-15 blur-md scale-110 pointer-events-none"></div>
-            <img id="qvCover" src="/BookCovers/BookCover_Template.webp" alt="Book Cover" class="relative z-10 max-h-full max-w-full object-contain rounded-sm shadow-md">
+      <div style="display:grid;grid-template-columns:1fr;gap:1.5rem;">
+
+        <!-- Cover -->
+        <div id="qv-cover-col" style="display:flex;flex-direction:column;align-items:center;">
+          <div style="width:100%;max-width:180px;aspect-ratio:3/4;border-radius:10px;overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow-md);background:rgba(215,244,238,0.30);position:relative;display:flex;align-items:center;justify-content:center;padding:0.65rem;">
+            <div id="qvCoverBlur" style="position:absolute;inset:0;background-size:cover;background-position:center;opacity:0.15;filter:blur(12px);transform:scale(1.1);pointer-events:none;"></div>
+            <img id="qvCover" src="/BookCovers/BookCover_Template.webp" alt="Book Cover" style="position:relative;z-index:1;max-height:100%;max-width:100%;object-fit:contain;border-radius:4px;box-shadow:var(--shadow);"/>
           </div>
-          <div class="mt-3 text-center">
-            <span id="qvViews" class="text-xs text-stone-600 font-medium bg-stone-100 px-2.5 py-0.5 rounded border border-stone-200">0 views</span>
+          <div style="margin-top:0.65rem;text-align:center;">
+            <span id="qvViews" style="font-size:11px;color:var(--text-muted);background:rgba(255,255,255,0.80);padding:2px 10px;border-radius:20px;border:1px solid var(--border);font-family:var(--font);">0 views</span>
           </div>
         </div>
 
-        <!-- Quick View Metadata & Actions -->
-        <div class="sm:col-span-8 space-y-4">
-          <div class="space-y-1.5 pr-6">
-            <div class="flex flex-wrap items-center gap-1.5">
-              <span id="qvSemester" class="px-2 py-0.5 rounded text-[11px] font-semibold bg-[#f0f4f9] text-[#1b3f68] border border-[#dce5f0]">Semester</span>
-              <span id="qvCategory" class="px-2 py-0.5 rounded text-[11px] font-semibold bg-stone-100 text-stone-700 border border-stone-200">Category</span>
-            </div>
-            <h2 id="qvTitle" class="font-serif font-bold text-xl text-stone-900 leading-snug">Book Title</h2>
-            <p id="qvDescription" class="text-xs sm:text-sm text-stone-600 leading-relaxed max-h-36 overflow-y-auto whitespace-pre-line pr-1">Book description...</p>
+        <!-- Metadata -->
+        <div style="space-y:1rem;">
+          <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.6rem;">
+            <span id="qvSemester" style="padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700;background:var(--primary-lt);color:var(--primary-dk);border:1px solid rgba(15,118,110,0.22);">Semester</span>
+            <span id="qvCategory" style="padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(255,255,255,0.80);color:var(--text-2);border:1px solid var(--border);">Category</span>
           </div>
+          <h2 id="qvTitle" style="font-family:var(--font-headings);font-weight:700;font-size:1.35rem;color:var(--text);line-height:1.3;margin-bottom:0.5rem;">Book Title</h2>
+          <p id="qvDescription" style="font-size:13px;color:var(--text-2);line-height:1.65;max-height:140px;overflow-y:auto;white-space:pre-line;margin-bottom:1rem;">Book description...</p>
 
-          <!-- Quick Actions -->
-          <div class="pt-3 border-t border-stone-100 flex flex-wrap items-center gap-2">
-            <button id="qvReadLink" class="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-[#162e4a] hover:bg-[#0f2035] text-white font-medium text-xs shadow-sm transition-colors">
+          <!-- Actions -->
+          <div style="padding-top:1rem;border-top:1px solid var(--border-lt);display:flex;flex-wrap:wrap;gap:0.5rem;">
+            <button id="qvReadLink"
+              style="display:inline-flex;align-items:center;gap:0.45rem;padding:8px 18px;border-radius:8px;background:var(--primary);color:#fff;font-weight:600;font-size:13px;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(15,118,110,0.24);transition:all 0.15s ease;"
+              onmouseenter="this.style.background='var(--primary-dk)';this.style.transform='translateY(-1px)'"
+              onmouseleave="this.style.background='var(--primary)';this.style.transform='translateY(0)'">
               <i class="fas fa-book-reader"></i>
               <span>Read Online</span>
             </button>
 
-            <button id="qvDownloadBtn" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded bg-emerald-700 hover:bg-emerald-800 text-white font-medium text-xs shadow-sm transition-colors">
+            <button id="qvDownloadBtn"
+              style="display:inline-flex;align-items:center;gap:0.45rem;padding:8px 16px;border-radius:8px;background:rgba(22,163,74,0.90);color:#fff;font-weight:600;font-size:13px;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(22,163,74,0.20);transition:all 0.15s ease;"
+              onmouseenter="this.style.background='#15803d'"
+              onmouseleave="this.style.background='rgba(22,163,74,0.90)'">
               <i class="fas fa-download"></i>
               <span>Download</span>
             </button>
 
-            <a id="qvFullPageLink" href="#" class="inline-flex items-center gap-1 px-3 py-2 rounded bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-300 text-xs font-semibold transition-colors">
+            <a id="qvFullPageLink" href="#"
+              style="display:inline-flex;align-items:center;gap:0.35rem;padding:8px 14px;border-radius:8px;background:rgba(255,255,255,0.85);color:var(--text-2);border:1px solid var(--border);font-size:12px;font-weight:600;text-decoration:none;transition:all 0.15s ease;"
+              onmouseenter="this.style.background='var(--primary-lt)';this.style.color='var(--primary-dk)';this.style.borderColor='var(--primary)'"
+              onmouseleave="this.style.background='rgba(255,255,255,0.85)';this.style.color='var(--text-2)';this.style.borderColor='var(--border)'">
               <span>View Full Entry</span>
-              <i class="fas fa-arrow-right text-[10px]"></i>
+              <i class="fas fa-arrow-right" style="font-size:10px;"></i>
             </a>
           </div>
         </div>
@@ -187,69 +275,90 @@
     </div>
   </div>
 
-  <!-- Classic Academic Footer -->
-  <footer class="w-full bg-[#f4f2ee] border-t border-stone-300 text-stone-600 mt-16 pt-12 pb-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-10 border-b border-stone-300">
-        
-        <!-- Brand Summary -->
-        <div class="lg:col-span-2 flex flex-col gap-3">
-          <div class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded bg-[#162e4a] flex items-center justify-center text-white text-xs border border-[#0f2035]">
-              <i class="fas fa-book-open text-amber-100"></i>
+  <!-- Quick View grid fix for larger screens -->
+  <style>
+    @media (min-width: 480px) {
+      #quickViewBackdrop .quick-view-modal > div {
+        grid-template-columns: auto 1fr !important;
+      }
+    }
+  </style>
+
+  <!-- ================================================================ -->
+  <!-- Modern Footer                                                     -->
+  <!-- ================================================================ -->
+  <footer style="width:100%;background:rgba(255,255,255,0.82);backdrop-filter:blur(14px);border-top:1px solid rgba(15,118,110,0.14);margin-top:4rem;padding:3rem 1.25rem 1.75rem;" id="main-footer">
+    <div style="max-width:1400px;margin:0 auto;">
+
+      <div style="display:grid;grid-template-columns:1fr;gap:2rem;padding-bottom:2rem;border-bottom:1px solid rgba(15,118,110,0.12);" id="footer-grid">
+
+        <!-- Brand -->
+        <div style="display:flex;flex-direction:column;gap:0.85rem;">
+          <div style="display:flex;align-items:center;gap:0.6rem;">
+            <div style="width:32px;height:32px;border-radius:8px;background:var(--primary);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(15,118,110,0.22);">
+              <i class="fas fa-book-open" style="color:#d7f4ee;font-size:12px;"></i>
             </div>
-            <span class="font-serif font-bold text-lg text-[#162e4a]">
-              Uni<span class="text-amber-700 italic">lib</span>
+            <span style="font-family:var(--font-headings);font-weight:800;font-size:1.1rem;color:var(--primary-dk);">
+              Uni<span style="color:var(--primary);">lib</span>
             </span>
           </div>
-          <p class="text-xs text-stone-600 leading-relaxed max-w-sm">
-            An open-source academic repository of curriculum textbooks, laboratory manuals, and educational resources.
+          <p style="font-size:12px;color:var(--text-muted);line-height:1.7;max-width:300px;">
+            An open-source academic repository of curriculum textbooks, laboratory manuals, and educational resources for university students.
           </p>
-          <div class="flex items-center gap-2 pt-1">
-            <a href="https://github.com/MIbnEKhalid" target="_blank" aria-label="GitHub Profile" class="w-8 h-8 rounded border border-stone-300 bg-white flex items-center justify-center text-stone-600 hover:text-[#162e4a] hover:border-stone-400 transition-colors">
-              <i class="fab fa-github text-sm"></i>
+          <div style="display:flex;gap:0.5rem;padding-top:0.25rem;">
+            <a href="https://github.com/MIbnEKhalid" target="_blank" aria-label="GitHub Profile"
+              style="width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:rgba(255,255,255,0.85);display:flex;align-items:center;justify-content:center;color:var(--text-muted);text-decoration:none;transition:all 0.15s ease;"
+              onmouseenter="this.style.background='var(--primary-lt)';this.style.color='var(--primary)';this.style.borderColor='var(--primary)'"
+              onmouseleave="this.style.background='rgba(255,255,255,0.85)';this.style.color='var(--text-muted)';this.style.borderColor='var(--border)'">
+              <i class="fab fa-github" style="font-size:13px;"></i>
             </a>
-            <a href="https://x.com/ibnekhalid28" target="_blank" aria-label="Twitter X Profile" class="w-8 h-8 rounded border border-stone-300 bg-white flex items-center justify-center text-stone-600 hover:text-[#162e4a] hover:border-stone-400 transition-colors">
-              <i class="fab fa-x-twitter text-sm"></i>
+            <a href="https://x.com/ibnekhalid28" target="_blank" aria-label="X Profile"
+              style="width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:rgba(255,255,255,0.85);display:flex;align-items:center;justify-content:center;color:var(--text-muted);text-decoration:none;transition:all 0.15s ease;"
+              onmouseenter="this.style.background='var(--primary-lt)';this.style.color='var(--primary)';this.style.borderColor='var(--primary)'"
+              onmouseleave="this.style.background='rgba(255,255,255,0.85)';this.style.color='var(--text-muted)';this.style.borderColor='var(--border)'">
+              <i class="fab fa-x-twitter" style="font-size:13px;"></i>
             </a>
-            <a href="https://youtube.com/@mibnekhalid" target="_blank" aria-label="YouTube Channel" class="w-8 h-8 rounded border border-stone-300 bg-white flex items-center justify-center text-stone-600 hover:text-rose-700 hover:border-rose-300 transition-colors">
-              <i class="fab fa-youtube text-sm"></i>
+            <a href="https://youtube.com/@mibnekhalid" target="_blank" aria-label="YouTube Channel"
+              style="width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:rgba(255,255,255,0.85);display:flex;align-items:center;justify-content:center;color:var(--text-muted);text-decoration:none;transition:all 0.15s ease;"
+              onmouseenter="this.style.background='rgba(220,38,38,0.10)';this.style.color='#dc2626';this.style.borderColor='rgba(220,38,38,0.30)'"
+              onmouseleave="this.style.background='rgba(255,255,255,0.85)';this.style.color='var(--text-muted)';this.style.borderColor='var(--border)'">
+              <i class="fab fa-youtube" style="font-size:13px;"></i>
             </a>
           </div>
         </div>
 
-        <!-- Quick Links -->
-        <div class="flex flex-col gap-2.5">
-          <h4 class="font-serif font-bold text-xs text-stone-900 uppercase tracking-wider">Navigation</h4>
-          <ul class="space-y-1.5 text-xs">
-            <li><a href="/" class="hover:text-[#162e4a] transition-colors">Course Catalog</a></li>
-            <li><a href="/materials" class="hover:text-[#162e4a] transition-colors">Materials Archive</a></li>
-            <li><a href="/dashboard" class="hover:text-[#162e4a] transition-colors">Admin Console</a></li>
-            <li><a href="https://mbktech.org/#about" target="_blank" class="hover:text-[#162e4a] transition-colors">About the Project</a></li>
+        <!-- Nav links -->
+        <div style="display:flex;flex-direction:column;gap:0.6rem;">
+          <h4 style="font-family:var(--font-headings);font-size:11px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.3rem;">Navigation</h4>
+          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.4rem;">
+            <li><a href="/" style="font-size:12px;color:var(--text-muted);text-decoration:none;transition:color 0.15s;" onmouseenter="this.style.color='var(--primary)'" onmouseleave="this.style.color='var(--text-muted)'">Course Catalog</a></li>
+            <li><a href="/materials" style="font-size:12px;color:var(--text-muted);text-decoration:none;transition:color 0.15s;" onmouseenter="this.style.color='var(--primary)'" onmouseleave="this.style.color='var(--text-muted)'">Materials Archive</a></li>
+            <li><a href="/dashboard" style="font-size:12px;color:var(--text-muted);text-decoration:none;transition:color 0.15s;" onmouseenter="this.style.color='var(--primary)'" onmouseleave="this.style.color='var(--text-muted)'">Admin Console</a></li>
+            <li><a href="https://mbktech.org/#about" target="_blank" style="font-size:12px;color:var(--text-muted);text-decoration:none;transition:color 0.15s;" onmouseenter="this.style.color='var(--primary)'" onmouseleave="this.style.color='var(--text-muted)'">About the Project</a></li>
           </ul>
         </div>
 
         <!-- Resources -->
-        <div class="flex flex-col gap-2.5">
-          <h4 class="font-serif font-bold text-xs text-stone-900 uppercase tracking-wider">Publications</h4>
-          <ul class="space-y-1.5 text-xs">
-            <li><a href="https://blog.mbktech.org" target="_blank" class="hover:text-[#162e4a] transition-colors">Academic Blog</a></li>
-            <li><a href="https://privacy.mbktech.org" target="_blank" class="hover:text-[#162e4a] transition-colors">Privacy Policy</a></li>
-            <li><a href="https://github.com/MIbnEKhalid/UnilibWebApp" target="_blank" class="hover:text-[#162e4a] transition-colors">GitHub Repository</a></li>
+        <div style="display:flex;flex-direction:column;gap:0.6rem;">
+          <h4 style="font-family:var(--font-headings);font-size:11px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.3rem;">Publications</h4>
+          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.4rem;">
+            <li><a href="https://blog.mbktech.org" target="_blank" style="font-size:12px;color:var(--text-muted);text-decoration:none;transition:color 0.15s;" onmouseenter="this.style.color='var(--primary)'" onmouseleave="this.style.color='var(--text-muted)'">Academic Blog</a></li>
+            <li><a href="https://privacy.mbktech.org" target="_blank" style="font-size:12px;color:var(--text-muted);text-decoration:none;transition:color 0.15s;" onmouseenter="this.style.color='var(--primary)'" onmouseleave="this.style.color='var(--text-muted)'">Privacy Policy</a></li>
+            <li><a href="https://github.com/MIbnEKhalid/UnilibWebApp" target="_blank" style="font-size:12px;color:var(--text-muted);text-decoration:none;transition:color 0.15s;" onmouseenter="this.style.color='var(--primary)'" onmouseleave="this.style.color='var(--text-muted)'">GitHub Repository</a></li>
           </ul>
         </div>
 
-        <!-- Support -->
-        <div class="flex flex-col gap-2.5">
-          <h4 class="font-serif font-bold text-xs text-stone-900 uppercase tracking-wider">Inquiries</h4>
-          <ul class="space-y-2 text-xs">
-            <li class="flex items-center gap-1.5">
-              <i class="fas fa-envelope text-stone-400"></i>
-              <a href="mailto:support@mbktech.org" class="hover:text-[#162e4a] transition-colors">support@mbktech.org</a>
+        <!-- Inquiries -->
+        <div style="display:flex;flex-direction:column;gap:0.6rem;">
+          <h4 style="font-family:var(--font-headings);font-size:11px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.3rem;">Inquiries</h4>
+          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.5rem;">
+            <li style="display:flex;align-items:center;gap:0.45rem;">
+              <i class="fas fa-envelope" style="font-size:11px;color:var(--text-muted);"></i>
+              <a href="mailto:support@mbktech.org" style="font-size:12px;color:var(--text-muted);text-decoration:none;transition:color 0.15s;" onmouseenter="this.style.color='var(--primary)'" onmouseleave="this.style.color='var(--text-muted)'">support@mbktech.org</a>
             </li>
-            <li class="flex items-center gap-1.5">
-              <i class="fas fa-life-ring text-stone-400"></i>
-              <a href="https://mbktech.org/Support" target="_blank" class="hover:text-[#162e4a] transition-colors">Help Center</a>
+            <li style="display:flex;align-items:center;gap:0.45rem;">
+              <i class="fas fa-life-ring" style="font-size:11px;color:var(--text-muted);"></i>
+              <a href="https://mbktech.org/Support" target="_blank" style="font-size:12px;color:var(--text-muted);text-decoration:none;transition:color 0.15s;" onmouseenter="this.style.color='var(--primary)'" onmouseleave="this.style.color='var(--text-muted)'">Help Center</a>
             </li>
           </ul>
         </div>
@@ -257,21 +366,37 @@
       </div>
 
       <!-- Footer Bottom -->
-      <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-stone-500">
+      <div style="padding-top:1.25rem;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.75rem;font-size:11px;color:var(--text-muted);">
         <p>&copy; <script>document.write(new Date().getFullYear())</script> mbktech.org. All rights reserved.</p>
-        <p class="flex items-center gap-3">
-          <a href="https://privacy.mbktech.org" target="_blank" class="hover:text-stone-800 transition-colors">Privacy Policy</a>
+        <p style="display:flex;align-items:center;gap:0.75rem;">
+          <a href="https://privacy.mbktech.org" target="_blank" style="color:var(--text-muted);text-decoration:none;transition:color 0.15s;" onmouseenter="this.style.color='var(--primary)'" onmouseleave="this.style.color='var(--text-muted)'">Privacy Policy</a>
           <span>&bull;</span>
-          <a href="https://github.com/MIbnEKhalid/UnilibWebApp" target="_blank" class="hover:text-stone-800 transition-colors">MIT Open Source</a>
+          <a href="https://github.com/MIbnEKhalid/UnilibWebApp" target="_blank" style="color:var(--text-muted);text-decoration:none;transition:color 0.15s;" onmouseenter="this.style.color='var(--primary)'" onmouseleave="this.style.color='var(--text-muted)'">MIT Open Source</a>
         </p>
       </div>
     </div>
   </footer>
 
-  <!-- Scroll to Top Button -->
-  <button id="scrollToTopBtn" aria-label="Scroll to top" class="fixed bottom-6 right-6 z-40 w-10 h-10 rounded bg-[#162e4a] hover:bg-[#0f2035] text-white shadow-md flex items-center justify-center text-sm opacity-0 pointer-events-none translate-y-3 transition-all duration-200">
-    <i class="fas fa-arrow-up text-amber-100"></i>
+  <!-- Footer responsive grid -->
+  <style>
+    @media (min-width: 640px) {
+      #footer-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    }
+    @media (min-width: 1024px) {
+      #footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr !important; }
+    }
+  </style>
+
+  <!-- ================================================================ -->
+  <!-- Scroll to Top Button                                              -->
+  <!-- ================================================================ -->
+  <button id="scrollToTopBtn" aria-label="Scroll to top"
+    style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:40;width:40px;height:40px;border-radius:10px;background:var(--primary);color:#d7f4ee;border:none;box-shadow:0 4px 12px rgba(15,118,110,0.30);display:flex;align-items:center;justify-content:center;font-size:13px;opacity:0;pointer-events:none;transform:translateY(8px);transition:all 0.2s ease;cursor:pointer;"
+    onmouseenter="this.style.background='var(--primary-dk)';this.style.transform='translateY(-2px)'"
+    onmouseleave="this.style.background='var(--primary)';this.style.transform='translateY(0)'">
+    <i class="fas fa-arrow-up"></i>
   </button>
+
 </body>
 
 </html>

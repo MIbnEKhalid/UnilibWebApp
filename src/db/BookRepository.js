@@ -156,6 +156,37 @@ export class BookRepository extends BaseRepository {
     const result = await this.query(query, [id]);
     return (result.rows || []).length > 0;
   }
+
+  async getDashboardStats() {
+    const isSqlite = this.dialect.name === "sqlite";
+    const query = isSqlite
+      ? `SELECT
+          COUNT(*) AS total_books,
+          COALESCE(SUM(views), 0) AS total_views,
+          COALESCE(SUM(CASE WHEN visible = 0 OR visible = false THEN 1 ELSE 0 END), 0) AS hidden_books,
+          COALESCE(SUM(CASE WHEN main = 1 OR main = true THEN 1 ELSE 0 END), 0) AS main_books
+        FROM unilibbook`
+      : `SELECT
+          COUNT(*) AS total_books,
+          COALESCE(SUM(views), 0) AS total_views,
+          COALESCE(SUM(CASE WHEN visible = false THEN 1 ELSE 0 END), 0) AS hidden_books,
+          COALESCE(SUM(CASE WHEN main = true THEN 1 ELSE 0 END), 0) AS main_books
+        FROM unilibbook`;
+
+    try {
+      const result = await this.query(query);
+      const row = result.rows?.[0] || {};
+      return {
+        total: Number(row.total_books || 0),
+        views: Number(row.total_views || 0),
+        hidden: Number(row.hidden_books || 0),
+        main: Number(row.main_books || 0),
+      };
+    } catch (err) {
+      console.error("Error calculating dashboard stats:", err);
+      return { total: 0, views: 0, hidden: 0, main: 0 };
+    }
+  }
 }
 
 export default BookRepository;

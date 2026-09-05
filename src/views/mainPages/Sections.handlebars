@@ -10,51 +10,51 @@
   <div id="alertContainer"></div>
 
   <!-- Breadcrumbs & Header -->
-  <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-stone-200">
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-teal-100">
     <div class="space-y-0.5">
-      <div class="flex items-center gap-2 text-xs text-stone-500">
-        <a href="/dashboard" class="hover:text-[#162e4a] transition-colors">Admin Registry</a>
+      <div class="flex items-center gap-2 text-xs text-teal-700/70">
+        <a href="/dashboard" class="hover:text-[#0f766e] transition-colors">Admin Registry</a>
         <span>/</span>
-        <a href="/dashboard/Book/Edit/{{book.id}}" class="hover:text-[#162e4a] transition-colors">{{book.name}}</a>
+        <a href="/dashboard/Book/Edit/{{book.id}}" class="hover:text-[#0f766e] transition-colors">{{book.name}}</a>
         <span>/</span>
-        <span class="text-stone-800">Syllabus Breakdown</span>
+        <span class="text-teal-900">Syllabus Breakdown</span>
       </div>
-      <h1 class="font-serif font-bold text-xl sm:text-2xl text-stone-900 tracking-normal">
+      <h1 class="font-headings font-bold text-xl sm:text-2xl text-teal-950 tracking-normal">
         Syllabus Breakdown: &ldquo;{{book.name}}&rdquo;
       </h1>
-      <p class="text-xs text-stone-600">
+      <p class="text-xs text-teal-800/80">
         Segment textbook chapters, index page intervals, and generate standalone section downloads.
       </p>
     </div>
 
     <!-- Top Action Buttons -->
     <div class="flex items-center gap-2">
-      <a href="/dashboard/Book/Edit/{{book.id}}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-white hover:bg-stone-50 text-stone-700 border border-stone-300 text-xs font-semibold uppercase tracking-wider shadow-sm transition-colors">
-        <i class="fas fa-edit text-stone-500"></i>
+      <a href="/dashboard/Book/Edit/{{book.id}}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-white hover:bg-teal-50 text-teal-900/80 border border-teal-200 text-xs font-semibold uppercase tracking-wider shadow-sm transition-colors">
+        <i class="fas fa-edit text-teal-700/70"></i>
         <span>Edit Publication</span>
       </a>
 
-      <button onclick="showAddSectionModal()" class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded bg-[#162e4a] hover:bg-[#0f2035] text-white text-xs font-semibold uppercase tracking-wider shadow-sm transition-colors">
-        <i class="fas fa-plus text-amber-100"></i>
+      <button onclick="showAddSectionModal()" class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded bg-[#0f766e] hover:bg-[#0b4f4a] text-white text-xs font-semibold uppercase tracking-wider shadow-sm transition-colors">
+        <i class="fas fa-plus text-teal-100"></i>
         <span>New Chapter</span>
       </button>
     </div>
   </div>
 
   <!-- Chapter Statistics & Search Toolbar -->
-  <div class="bg-white rounded-lg p-3.5 border border-stone-300 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-    <div class="flex items-center gap-3 text-xs text-stone-700">
-      <div class="px-3 py-1 rounded bg-stone-50 border border-stone-200">
-        <span class="text-stone-500">Chapters Indexed:</span> <strong id="statsTotalChapters" class="font-serif text-stone-900">{{sections.length}}</strong>
+  <div class="bg-white rounded-lg p-3.5 border border-teal-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div class="flex items-center gap-3 text-xs text-teal-900/80">
+      <div class="px-3 py-1 rounded bg-teal-50 border border-teal-100">
+        <span class="text-teal-700/70">Chapters Indexed:</span> <strong id="statsTotalChapters" class="font-headings text-teal-950">{{sections.length}}</strong>
       </div>
-      <div class="px-3 py-1 rounded bg-stone-50 border border-stone-200">
-        <span class="text-stone-500">Status:</span> <strong class="text-emerald-800 font-semibold">Active Syllabus</strong>
+      <div class="px-3 py-1 rounded bg-teal-50 border border-teal-100">
+        <span class="text-teal-700/70">Status:</span> <strong class="text-emerald-800 font-semibold">Active Syllabus</strong>
       </div>
     </div>
 
     <!-- Chapter Search Filter -->
     <div class="relative w-full sm:max-w-xs">
-      <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-stone-400">
+      <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-teal-600/60">
         <i class="fas fa-search text-xs"></i>
       </div>
       <input type="text" id="adminChapterSearch" placeholder="Search indexed chapters..." class="input-classic w-full pl-8 pr-3 py-1.5 text-xs">
@@ -62,8 +62,8 @@
   </div>
 
   <!-- Bulk Actions Toolbar -->
-  <div id="bulkActions" class="hidden items-center justify-between gap-3 p-3 rounded bg-stone-100 border border-stone-300 shadow-sm animate-fadeIn">
-    <span id="selectedCount" class="text-xs font-semibold text-[#162e4a]">0 items selected</span>
+  <div id="bulkActions" class="hidden items-center justify-between gap-3 p-3 rounded bg-teal-50 border border-teal-200 shadow-sm animate-fadeIn">
+    <span id="selectedCount" class="text-xs font-semibold text-[#0f766e]">0 items selected</span>
     <button onclick="bulkDeleteSections()" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded bg-rose-100 hover:bg-rose-200 text-rose-900 border border-rose-300 text-xs font-semibold transition-colors">
       <i class="fas fa-trash-alt text-[10px]"></i>
       <span>Delete Selected</span>
@@ -79,10 +79,10 @@
   {{#if (eq sections.length 0)}}
   <div class="empty-state" id="emptyStateDisplay">
     <i class="fas fa-layer-group"></i>
-    <h3 class="font-serif">No Chapters Indexed</h3>
+    <h3 class="font-headings">No Chapters Indexed</h3>
     <p>Segment chapters or individual modules so students can download specific course sections.</p>
-    <button onclick="showAddSectionModal()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-[#162e4a] text-white font-medium text-xs hover:bg-[#0f2035] transition-colors shadow-sm">
-      <i class="fas fa-plus text-amber-100"></i>
+    <button onclick="showAddSectionModal()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-[#0f766e] text-white font-medium text-xs hover:bg-[#0b4f4a] transition-colors shadow-sm">
+      <i class="fas fa-plus text-teal-100"></i>
       <span>Index First Chapter</span>
     </button>
   </div>
@@ -90,11 +90,11 @@
 
   <!-- Add/Edit Section Modal -->
   <div id="sectionModal" class="modal" style="display: none;">
-    <div class="modal-content border border-stone-300">
+    <div class="modal-content border border-teal-200">
       <span class="close" onclick="closeModal()">&times;</span>
       
-      <div class="flex items-center gap-2 mb-4 pb-2 border-b border-stone-200">
-        <h2 id="modalTitle" class="font-serif font-bold text-base text-stone-900 mb-0 border-0 p-0">Index Chapter Section</h2>
+      <div class="flex items-center gap-2 mb-4 pb-2 border-b border-teal-100">
+        <h2 id="modalTitle" class="font-headings font-bold text-base text-teal-950 mb-0 border-0 p-0">Index Chapter Section</h2>
       </div>
 
       <form id="sectionForm" class="space-y-3.5">
@@ -102,14 +102,14 @@
         <input type="hidden" id="sectionNumber" value="">
         
         <div class="form-group" id="sectionNumberDisplay" style="display: none;">
-          <label class="text-xs font-semibold text-stone-600 uppercase tracking-wider">Chapter Number</label>
-          <div class="px-3 py-2 rounded bg-stone-50 border border-stone-200 text-xs font-semibold text-[#162e4a]">
+          <label class="text-xs font-semibold text-teal-800/80 uppercase tracking-wider">Chapter Number</label>
+          <div class="px-3 py-2 rounded bg-teal-50 border border-teal-100 text-xs font-semibold text-[#0f766e]">
             <span id="sectionNumberText"></span>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="sectionName" class="text-xs font-semibold text-stone-800 uppercase tracking-wider">
+          <label for="sectionName" class="text-xs font-semibold text-teal-900 uppercase tracking-wider">
             Chapter Title / Topic <span class="required">*</span>
           </label>
           <input type="text" id="sectionName" placeholder="e.g. Chapter 1: Introduction to Computer Architecture" required maxlength="200" class="input-classic w-full px-3 py-2 text-xs">
@@ -118,7 +118,7 @@
 
         <div class="grid grid-cols-2 gap-3">
           <div class="form-group">
-            <label for="pageStart" class="text-xs font-semibold text-stone-800 uppercase tracking-wider">
+            <label for="pageStart" class="text-xs font-semibold text-teal-900 uppercase tracking-wider">
               Start Page <span class="required">*</span>
             </label>
             <input type="number" id="pageStart" placeholder="1" required min="1" class="input-classic w-full px-3 py-2 text-xs">
@@ -126,7 +126,7 @@
           </div>
 
           <div class="form-group">
-            <label for="pageEnd" class="text-xs font-semibold text-stone-800 uppercase tracking-wider">
+            <label for="pageEnd" class="text-xs font-semibold text-teal-900 uppercase tracking-wider">
               End Page <span class="required">*</span>
             </label>
             <input type="number" id="pageEnd" placeholder="30" required min="1" class="input-classic w-full px-3 py-2 text-xs">
@@ -134,16 +134,16 @@
           </div>
         </div>
 
-        <div id="pageCalcPreview" class="text-[11px] text-stone-600 bg-stone-50 p-2 rounded border border-stone-200">
-          <span>Total Indexed Pages: <strong id="pageCountCalc" class="text-stone-900">-</strong></span>
+        <div id="pageCalcPreview" class="text-[11px] text-teal-800/80 bg-teal-50 p-2 rounded border border-teal-100">
+          <span>Total Indexed Pages: <strong id="pageCountCalc" class="text-teal-950">-</strong></span>
         </div>
 
-        <div class="pt-3 border-t border-stone-200 flex items-center justify-end gap-2">
-          <button type="button" onclick="closeModal()" class="px-3 py-1.5 rounded bg-white hover:bg-stone-100 text-stone-700 border border-stone-300 text-xs font-medium transition-colors">
+        <div class="pt-3 border-t border-teal-100 flex items-center justify-end gap-2">
+          <button type="button" onclick="closeModal()" class="px-3 py-1.5 rounded bg-white hover:bg-teal-50 text-teal-900/80 border border-teal-200 text-xs font-medium transition-colors">
             Cancel
           </button>
           
-          <button type="submit" id="submitBtn" class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded bg-[#162e4a] hover:bg-[#0f2035] text-white font-semibold text-xs uppercase tracking-wider shadow-sm transition-colors">
+          <button type="submit" id="submitBtn" class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded bg-[#0f766e] hover:bg-[#0b4f4a] text-white font-semibold text-xs uppercase tracking-wider shadow-sm transition-colors">
             <span id="submitText">Save Chapter</span>
             <span id="submitSpinner" style="display: none;"><i class="fas fa-spinner fa-spin"></i> Saving...</span>
           </button>
@@ -155,9 +155,9 @@
 
   <!-- Loading Overlay -->
   <div id="loadingOverlay" class="loading-overlay">
-    <div class="loading-content border border-stone-300">
+    <div class="loading-content border border-teal-200">
       <div class="spinner"></div>
-      <p id="loadingText" class="text-xs font-medium text-stone-700">Processing request...</p>
+      <p id="loadingText" class="text-xs font-medium text-teal-900/80">Processing request...</p>
     </div>
   </div>
 
@@ -372,57 +372,74 @@
   }
 
   async function deleteSection(sectionId) {
-    if (!confirm('Are you sure you want to delete this chapter section?')) return;
-
-    try {
-      showLoading('Deleting chapter...');
-      const response = await fetch(`/api/admin/section/delete/${sectionId}`, { method: 'POST' });
-      const result = await response.json();
-
-      if (response.ok) {
-        showToast(result.message || 'Chapter deleted successfully!', 'success');
-        sections = sections.filter(s => s.id !== sectionId);
-        selectedSections.delete(sectionId);
-        renderSections();
-      } else {
-        showToast(result.error || 'Failed to delete chapter', 'error');
+    const sectionName = document.querySelector(`[data-section-id="${sectionId}"] h3`)?.textContent?.trim() || 'this chapter';
+    showConfirm({
+      title: 'Delete Chapter',
+      subtitle: 'This cannot be undone',
+      message: `Are you sure you want to permanently delete "${sectionName}" from the syllabus breakdown?`,
+      icon: 'fa-trash-alt',
+      iconColor: '#dc2626',
+      confirmText: 'Delete Chapter',
+      confirmColor: '#dc2626',
+      onConfirm: async () => {
+        try {
+          showLoading('Deleting chapter...');
+          const response = await fetch(`/api/admin/section/delete/${sectionId}`, { method: 'POST' });
+          const result = await response.json();
+          if (response.ok) {
+            showToast(result.message || 'Chapter deleted successfully!', 'success');
+            sections = sections.filter(s => s.id !== sectionId);
+            selectedSections.delete(sectionId);
+            renderSections();
+          } else {
+            showToast(result.error || 'Failed to delete chapter', 'error');
+          }
+        } catch (error) {
+          console.error('Error deleting section:', error);
+          showToast('Network error while deleting chapter.', 'error');
+        } finally {
+          hideLoading();
+        }
       }
-    } catch (error) {
-      console.error('Error deleting section:', error);
-      showToast('Network error while deleting chapter.', 'error');
-    } finally {
-      hideLoading();
-    }
+    });
   }
 
   async function bulkDeleteSections() {
     if (selectedSections.size === 0) return;
-    if (!confirm(`Delete ${selectedSections.size} selected chapter(s)?`)) return;
-
-    try {
-      showLoading('Deleting selected chapters...');
-      const response = await fetch(`/api/admin/book/${bookId}/sections/bulk-delete`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sectionIds: Array.from(selectedSections) }),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        showToast(result.message || 'Selected chapters deleted!', 'success');
-        sections = sections.filter(s => !selectedSections.has(s.id));
-        selectedSections.clear();
-        renderSections();
-      } else {
-        showToast(result.error || 'Failed to delete chapters', 'error');
+    const count = selectedSections.size;
+    showConfirm({
+      title: 'Bulk Delete Chapters',
+      subtitle: `${count} chapter${count > 1 ? 's' : ''} selected`,
+      message: `Are you sure you want to permanently delete ${count} selected chapter${count > 1 ? 's' : ''} from the syllabus? This cannot be undone.`,
+      icon: 'fa-trash-alt',
+      iconColor: '#dc2626',
+      confirmText: `Delete ${count} Chapter${count > 1 ? 's' : ''}`,
+      confirmColor: '#dc2626',
+      onConfirm: async () => {
+        try {
+          showLoading('Deleting selected chapters...');
+          const response = await fetch(`/api/admin/book/${bookId}/sections/bulk-delete`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ sectionIds: Array.from(selectedSections) }),
+          });
+          const result = await response.json();
+          if (response.ok) {
+            showToast(result.message || 'Selected chapters deleted!', 'success');
+            sections = sections.filter(s => !selectedSections.has(s.id));
+            selectedSections.clear();
+            renderSections();
+          } else {
+            showToast(result.error || 'Failed to delete chapters', 'error');
+          }
+        } catch (error) {
+          console.error('Error in bulk delete:', error);
+          showToast('Network error during bulk delete', 'error');
+        } finally {
+          hideLoading();
+        }
       }
-    } catch (error) {
-      console.error('Error in bulk delete:', error);
-      showToast('Network error during bulk delete', 'error');
-    } finally {
-      hideLoading();
-    }
+    });
   }
 
   function toggleBulkSelection() {
@@ -469,34 +486,34 @@
       const escapedName = section.name.replace(/'/g, "\\'");
 
       return `
-        <div class="section-item bg-white rounded-lg p-3.5 border border-stone-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm hover:border-stone-400 transition-colors" data-section-id="${section.id}" data-section-number="${section.section_number}" data-name="${section.name}">
+        <div class="section-item bg-white rounded-lg p-3.5 border border-teal-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm hover:border-stone-400 transition-colors" data-section-id="${section.id}" data-section-number="${section.section_number}" data-name="${section.name}">
           <div class="flex items-center gap-3 min-w-0 flex-1">
-            <input type="checkbox" class="section-checkbox w-4 h-4 rounded text-[#162e4a] bg-white border-stone-300 focus:ring-[#162e4a] cursor-pointer flex-shrink-0" onchange="toggleBulkSelection()" ${checked}>
-            <div class="w-7 h-7 rounded bg-[#f0f4f9] text-[#162e4a] border border-[#bad0e4] flex items-center justify-center text-xs font-bold font-serif flex-shrink-0">
+            <input type="checkbox" class="section-checkbox w-4 h-4 rounded text-[#0f766e] bg-white border-teal-200 focus:ring-[#162e4a] cursor-pointer flex-shrink-0" onchange="toggleBulkSelection()" ${checked}>
+            <div class="w-7 h-7 rounded bg-teal-50 text-[#0f766e] border border-teal-200 flex items-center justify-center text-xs font-bold font-headings flex-shrink-0">
               ${section.section_number}
             </div>
             <div class="space-y-0.5 min-w-0">
-              <h3 class="font-serif font-bold text-xs sm:text-sm text-stone-900 truncate">
+              <h3 class="font-headings font-bold text-xs sm:text-sm text-teal-950 truncate">
                 ${section.name}
               </h3>
-              <div class="flex items-center gap-2 text-xs text-stone-500">
-                <span>Pages: <strong class="text-stone-800">${section.page_start} &ndash; ${section.page_end}</strong></span>
+              <div class="flex items-center gap-2 text-xs text-teal-700/70">
+                <span>Pages: <strong class="text-teal-900">${section.page_start} &ndash; ${section.page_end}</strong></span>
                 ${statusBadge}
               </div>
             </div>
           </div>
 
           <div class="flex items-center gap-1.5 flex-shrink-0 self-end sm:self-auto">
-            <a href="/book/${bookId}/section/${section.id}/download" target="_blank" class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-[#f0f4f9] hover:bg-[#162e4a] text-[#162e4a] hover:text-white border border-[#bad0e4] hover:border-[#162e4a] text-xs font-semibold transition-colors">
+            <a href="/book/${bookId}/section/${section.id}/download" target="_blank" class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-teal-50 hover:bg-[#0f766e] text-[#0f766e] hover:text-white border border-teal-200 hover:border-[#0f766e] text-xs font-semibold transition-colors">
               <i class="fas fa-download text-[10px]"></i>
               <span>PDF</span>
             </a>
 
-            <button onclick="editSection('${section.id}', ${section.section_number}, '${escapedName}', ${section.page_start}, ${section.page_end})" class="p-1.5 rounded bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs border border-stone-300 transition-colors" title="Edit Chapter">
+            <button onclick="editSection('${section.id}', ${section.section_number}, '${escapedName}', ${section.page_start}, ${section.page_end})" class="p-1.5 rounded bg-teal-50 hover:bg-teal-100 text-teal-900/80 text-xs border border-teal-200 transition-colors" title="Edit Chapter">
               <i class="fas fa-edit"></i>
             </button>
 
-            <button onclick="deleteSection('${section.id}')" class="p-1.5 rounded bg-stone-100 hover:bg-rose-700 text-rose-700 hover:text-white border border-stone-300 hover:border-rose-700 text-xs transition-colors" title="Delete Chapter">
+            <button onclick="deleteSection('${section.id}')" class="p-1.5 rounded bg-teal-50 hover:bg-rose-700 text-rose-700 hover:text-white border border-teal-200 hover:border-rose-700 text-xs transition-colors" title="Delete Chapter">
               <i class="fas fa-trash-alt"></i>
             </button>
           </div>
@@ -504,4 +521,54 @@
       `;
     }).join('');
   }
+
+  // ================================================================
+  // Confirm Modal (shared helper)
+  // ================================================================
+  let _confirmCallback = null;
+  function showConfirm({ title, subtitle = '', message, icon = 'fa-exclamation-triangle', iconColor = '#dc2626', confirmText = 'Confirm', confirmColor = '#dc2626', onConfirm }) {
+    document.getElementById('sc-title').textContent = title;
+    document.getElementById('sc-subtitle').textContent = subtitle;
+    document.getElementById('sc-message').textContent = message;
+    document.getElementById('sc-icon').className = `fas ${icon}`;
+    document.getElementById('sc-icon').style.color = iconColor;
+    document.getElementById('sc-icon-wrap').style.background = `${iconColor}18`;
+    document.getElementById('sc-icon-wrap').style.borderColor = `${iconColor}40`;
+    const okBtn = document.getElementById('sc-ok-btn');
+    okBtn.textContent = confirmText;
+    okBtn.style.background = confirmColor;
+    _confirmCallback = onConfirm;
+    document.getElementById('sectionConfirmModal').style.display = 'flex';
+  }
+  function closeConfirmModal() {
+    document.getElementById('sectionConfirmModal').style.display = 'none';
+    _confirmCallback = null;
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('sectionConfirmModal');
+    if (modal) {
+      modal.addEventListener('click', e => { if (e.target === modal) closeConfirmModal(); });
+      document.getElementById('sc-ok-btn').addEventListener('click', () => { if (_confirmCallback) _confirmCallback(); closeConfirmModal(); });
+    }
+  });
 </script>
+
+<!-- Glassmorphic Confirm Modal -->
+<div id="sectionConfirmModal" style="display:none;position:fixed;inset:0;background:rgba(15,42,42,0.50);backdrop-filter:blur(6px);z-index:1000;align-items:center;justify-content:center;padding:1rem;">
+  <div style="background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border:1px solid rgba(15,118,110,0.18);border-radius:16px;padding:1.75rem;max-width:440px;width:100%;box-shadow:0 20px 40px rgba(15,42,42,0.18);">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+      <div id="sc-icon-wrap" style="width:40px;height:40px;border-radius:10px;background:rgba(220,38,38,0.10);border:1px solid rgba(220,38,38,0.24);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i id="sc-icon" class="fas fa-exclamation-triangle" style="font-size:16px;color:#dc2626;"></i>
+      </div>
+      <div>
+        <h3 id="sc-title" style="font-family:var(--font-headings);font-weight:700;font-size:1rem;color:var(--text);margin:0;">Confirm Action</h3>
+        <p id="sc-subtitle" style="font-size:11px;color:var(--text-muted);margin:2px 0 0;"></p>
+      </div>
+    </div>
+    <p id="sc-message" style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:1.25rem;padding:0.75rem;background:rgba(220,38,38,0.05);border:1px solid rgba(220,38,38,0.12);border-radius:8px;"></p>
+    <div style="display:flex;gap:0.5rem;justify-content:flex-end;">
+      <button onclick="closeConfirmModal()" style="padding:8px 18px;border-radius:8px;background:rgba(255,255,255,0.85);color:var(--text-2);border:1px solid var(--border);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s ease;">Cancel</button>
+      <button id="sc-ok-btn" style="padding:8px 20px;border-radius:8px;background:#dc2626;color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 2px 6px rgba(220,38,38,0.28);">Confirm</button>
+    </div>
+  </div>
+</div>

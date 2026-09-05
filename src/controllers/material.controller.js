@@ -143,9 +143,13 @@ export async function renderAdminMaterialsPage(req, res) {
       materialsCount: counts[r.course_id] || 0,
     }));
 
+    const totalMaterialsFiles = Object.values(counts).reduce((acc, c) => acc + (Number(c) || 0), 0);
+
     renderPage(req, res, "mainPages/MaterialsAdmin.handlebars", true, {
       page: "Materials Management",
       subjects,
+      totalSubjects: subjects.length,
+      totalMaterialsFiles,
       sessionExists: Boolean(session),
       defaultSemester: config.defaultSemester,
       selectedSemester: req.query.semester || config.defaultSemester,

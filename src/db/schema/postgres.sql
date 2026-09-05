@@ -30,6 +30,7 @@ END $$;
 CREATE TABLE IF NOT EXISTS unilibbook (
   id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   UserName TEXT,
+  -- UserName TEXT REFERENCES "Users"("UserName") ON DELETE CASCADE,
   name TEXT NOT NULL,
   category bookcategories NOT NULL,
   description TEXT,

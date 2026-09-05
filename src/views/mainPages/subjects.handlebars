@@ -1,133 +1,135 @@
-<section class="w-full space-y-5">
-  
+<section style="width:100%;display:flex;flex-direction:column;gap:1.25rem;">
+
   <!-- Breadcrumbs -->
-  <nav class="flex items-center gap-2 text-xs text-stone-500" aria-label="Breadcrumb">
-    <a href="/" class="hover:text-[#162e4a] transition-colors">Library Catalog</a>
+  <nav style="display:flex;align-items:center;gap:0.5rem;font-size:12px;color:var(--text-muted);" aria-label="Breadcrumb">
+    <a href="/" style="color:var(--text-muted);text-decoration:none;transition:color 0.15s;" onmouseenter="this.style.color='var(--primary)'" onmouseleave="this.style.color='var(--text-muted)'">Library Catalog</a>
     <span>/</span>
-    <span class="text-stone-800">Materials Archive</span>
+    <span style="color:var(--text);">Materials Archive</span>
   </nav>
 
   <!-- Page Header -->
-  <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-stone-200">
-    <div class="space-y-0.5">
-      <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[11px] font-semibold bg-[#f0f4f9] text-[#162e4a] border border-[#bad0e4]">
-        <i class="fas fa-landmark text-[10px]"></i>
-        <span class="uppercase tracking-wider">Tasjeel Archive Sync</span>
+  <div style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:14px;padding:1.25rem 1.5rem;box-shadow:0 4px 12px rgba(0,0,0,0.04);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;">
+    <div style="display:flex;flex-direction:column;gap:0.4rem;">
+      <div style="display:inline-flex;align-items:center;gap:0.4rem;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:var(--primary-lt);color:var(--primary-dk);border:1px solid rgba(15,118,110,0.22);text-transform:uppercase;letter-spacing:0.06em;width:fit-content;">
+        <i class="fas fa-landmark" style="font-size:10px;"></i>
+        <span>Tasjeel Archive Sync</span>
       </div>
-      <h1 class="font-serif font-bold text-xl sm:text-2xl text-stone-900 tracking-normal">
+      <h1 style="font-family:var(--font-headings);font-weight:800;font-size:1.5rem;color:var(--text);letter-spacing:-0.02em;line-height:1.25;">
         Course Subjects & Materials Archive
       </h1>
-      <p class="text-xs text-stone-600">
+      <p style="font-size:13px;color:var(--text-muted);">
         Access official lecture materials, syllabi, software documentation, and laboratory guides by subject and semester.
       </p>
     </div>
 
-    <div class="flex items-center gap-2">
-      <button id="load-all-materials" class="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-[#162e4a] hover:bg-[#0f2035] text-white font-medium text-xs uppercase tracking-wider shadow-sm transition-colors">
-        <i class="fas fa-cloud-download-alt text-amber-100"></i>
-        <span>Load All Materials</span>
-      </button>
-    </div>
+    <button id="load-all-materials"
+      style="display:inline-flex;align-items:center;gap:0.5rem;padding:9px 18px;border-radius:8px;background:var(--primary);color:#fff;font-weight:700;font-size:13px;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(15,118,110,0.24);transition:all 0.15s ease;text-transform:uppercase;letter-spacing:0.05em;flex-shrink:0;"
+      onmouseenter="this.style.background='var(--primary-dk)';this.style.transform='translateY(-1px)'"
+      onmouseleave="this.style.background='var(--primary)';this.style.transform='translateY(0)'">
+      <i class="fas fa-cloud-download-alt" style="color:#d7f4ee;"></i>
+      <span>Load All Materials</span>
+    </button>
   </div>
 
   {{#if error}}
-  <div class="p-3 rounded bg-rose-50 border border-rose-300 text-rose-900 text-xs flex items-center justify-between gap-2">
-    <div class="flex items-center gap-2">
-      <i class="fas fa-exclamation-triangle text-rose-600"></i>
+  <div style="padding:0.65rem 1rem;border-radius:8px;background:rgba(220,38,38,0.08);border:1px solid rgba(220,38,38,0.26);color:#7f1d1d;font-size:12px;display:flex;align-items:center;justify-content:space-between;gap:0.5rem;">
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <i class="fas fa-exclamation-triangle" style="color:#dc2626;"></i>
       <span>{{error}}</span>
     </div>
-    <button class="close-error text-rose-500 hover:text-rose-800" onclick="this.parentElement.remove()">&times;</button>
+    <button style="color:#dc2626;background:none;border:none;cursor:pointer;font-size:15px;" onclick="this.parentElement.remove()">&times;</button>
   </div>
   {{/if}}
 
-  <!-- Top Semester 1-Click Tabstrip Partial -->
+  <!-- Semester Tabs -->
   {{> semesterTabs tabContainerId="subjectSemesterTabs"}}
 
-  <!-- Search Filter Toolbar -->
-  <div class="bg-white rounded-lg p-3 border border-stone-300 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-    <div class="relative w-full sm:max-w-md">
-      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
-        <i class="fas fa-search text-xs"></i>
+  <!-- Search Toolbar -->
+  <div style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:12px;padding:0.85rem 1rem;box-shadow:0 2px 8px rgba(0,0,0,0.03);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.75rem;">
+    <div style="position:relative;width:100%;max-width:420px;">
+      <div style="position:absolute;inset-y:0;left:0;padding-left:10px;display:flex;align-items:center;pointer-events:none;">
+        <i class="fas fa-search" style="font-size:11px;color:var(--text-muted);"></i>
       </div>
-      <input type="text" id="subjectSearch" placeholder="Search subjects by name or course code..." aria-label="Search subjects" class="input-classic w-full pl-9 pr-9 py-2 text-xs">
-      
-      <button type="button" id="subjectSearchClear" aria-label="Clear search" class="absolute inset-y-0 right-0 pr-2.5 flex items-center text-stone-400 hover:text-stone-700" style="display:none;">
-        <i class="fas fa-times text-xs bg-stone-100 p-1 rounded-full"></i>
+      <input type="text" id="subjectSearch" placeholder="Search subjects by name or course code..." aria-label="Search subjects" class="input-classic" style="width:100%;padding:8px 32px 8px 30px;font-size:12px;">
+      <button type="button" id="subjectSearchClear" aria-label="Clear search"
+        style="position:absolute;inset-y:0;right:0;padding-right:10px;display:none;align-items:center;background:none;border:none;cursor:pointer;color:var(--text-muted);">
+        <i class="fas fa-times" style="font-size:11px;"></i>
       </button>
     </div>
-
-    <div class="text-xs text-stone-600 font-medium self-end sm:self-auto">
-      Showing <strong id="subjectVisibleCount">{{subjects.length}}</strong> of {{subjects.length}} subjects
+    <div style="font-size:12px;color:var(--text-muted);font-weight:600;white-space:nowrap;">
+      Showing <strong id="subjectVisibleCount" style="color:var(--text);">{{subjects.length}}</strong> of {{subjects.length}} subjects
     </div>
   </div>
 
-  <!-- Subjects Accordion / List -->
+  <!-- Subjects List -->
   {{#if subjects.length}}
-  <div class="space-y-3" id="subjects-view">
+  <div style="display:flex;flex-direction:column;gap:0.75rem;" id="subjects-view">
     {{#each subjects}}
-    <div class="subject-card bg-white rounded-lg border border-stone-300 shadow-sm overflow-hidden transition-colors" data-courseid="{{courseId}}" data-semester="{{semester}}">
-      
+    <div class="subject-card" style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.14);border-radius:12px;overflow:hidden;transition:all 0.2s ease;box-shadow:0 2px 6px rgba(0,0,0,0.03);"
+      data-courseid="{{courseId}}" data-semester="{{semester}}"
+      onmouseenter="this.style.borderColor='rgba(15,118,110,0.30)';this.style.boxShadow='0 4px 16px rgba(15,118,110,0.10)'"
+      onmouseleave="this.style.borderColor='rgba(15,118,110,0.14)';this.style.boxShadow='0 2px 6px rgba(0,0,0,0.03)'">
+
       <!-- Card Header -->
-      <div class="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer select-none card-header hover:bg-stone-50 transition-colors">
-        
-        <div class="flex items-center gap-3 min-w-0">
-          <div class="w-8 h-8 rounded bg-[#f0f4f9] border border-[#bad0e4] flex items-center justify-center text-[#162e4a] flex-shrink-0">
-            <i class="fas fa-book-bookmark text-xs"></i>
+      <div class="card-header" style="padding:1rem 1.25rem;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.75rem;cursor:pointer;user-select:none;transition:background 0.15s ease;"
+        onmouseenter="this.style.background='rgba(215,244,238,0.22)'" onmouseleave="this.style.background='transparent'">
+
+        <div style="display:flex;align-items:center;gap:0.75rem;min-width:0;">
+          <div style="width:36px;height:36px;border-radius:9px;background:var(--primary-lt);border:1px solid rgba(15,118,110,0.22);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-book-bookmark" style="font-size:13px;color:var(--primary);"></i>
           </div>
-          
-          <div class="space-y-1 min-w-0">
-            <h3 class="subject-title font-serif font-bold text-sm text-stone-900 truncate">
+          <div style="min-width:0;">
+            <h3 class="subject-title" style="font-family:var(--font-headings);font-weight:700;font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:0.2rem;">
               {{subject}}
             </h3>
-            <div class="flex flex-wrap items-center gap-2 text-xs text-stone-500">
-              <span>Code: <strong class="text-stone-800">{{courseId}}</strong></span>
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0.4rem;font-size:12px;color:var(--text-muted);">
+              <span>Code: <strong style="color:var(--text);">{{courseId}}</strong></span>
               <span>&bull;</span>
-              <span class="subject-semester-label text-[#162e4a] font-semibold">{{semester}}</span>
+              <span class="subject-semester-label" style="color:var(--primary);font-weight:700;">{{semester}}</span>
             </div>
           </div>
         </div>
 
-        <div class="flex items-center gap-2 self-end sm:self-auto flex-shrink-0">
-          <span class="material-badge inline-flex items-center justify-center px-2 py-0.5 rounded text-[11px] font-semibold bg-[#f0f4f9] text-[#162e4a] border border-[#bad0e4]">0</span>
+        <div style="display:flex;align-items:center;gap:0.5rem;flex-shrink:0;">
+          <span class="material-badge" style="display:inline-flex;align-items:center;justify-content:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:var(--primary-lt);color:var(--primary-dk);border:1px solid rgba(15,118,110,0.22);">0</span>
 
-          <button type="button" class="download-all-btn hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded bg-stone-100 hover:bg-[#162e4a] text-stone-700 hover:text-white border border-stone-300 text-xs font-semibold transition-colors" style="display: none;">
-            <i class="fas fa-download text-[10px]"></i>
+          <button type="button" class="download-all-btn"
+            style="display:none;align-items:center;gap:0.35rem;padding:6px 12px;border-radius:7px;background:rgba(255,255,255,0.85);color:var(--text-2);border:1px solid rgba(15,118,110,0.18);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s ease;"
+            onmouseenter="this.style.background='var(--primary)';this.style.color='#fff';this.style.borderColor='var(--primary)'"
+            onmouseleave="this.style.background='rgba(255,255,255,0.85)';this.style.color='var(--text-2)';this.style.borderColor='rgba(15,118,110,0.18)'">
+            <i class="fas fa-download" style="font-size:10px;"></i>
             <span>All</span>
           </button>
 
-          <div class="w-7 h-7 rounded border border-stone-200 flex items-center justify-center text-stone-400 expand-icon transition-transform">
-            <i class="fas fa-chevron-down text-xs"></i>
+          <div class="expand-icon" style="width:30px;height:30px;border-radius:8px;border:1px solid rgba(15,118,110,0.18);background:rgba(255,255,255,0.80);display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:transform 0.2s ease;">
+            <i class="fas fa-chevron-down" style="font-size:12px;"></i>
           </div>
         </div>
-
       </div>
 
-      <!-- Materials List Section -->
-      <div class="materials-section border-t border-stone-200 p-4 bg-stone-50/50 hidden">
-        
-        <div class="loading-spinner py-6 flex flex-col items-center justify-center gap-2 text-stone-500 text-xs" style="display: none;">
-          <i class="fas fa-circle-notch fa-spin text-[#162e4a] text-base"></i>
+      <!-- Materials Section -->
+      <div class="materials-section hidden" style="border-top:1px solid rgba(15,118,110,0.10);padding:1rem 1.25rem;background:rgba(215,244,238,0.10);">
+        <div class="loading-spinner" style="display:none;padding:1.5rem;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;color:var(--text-muted);font-size:12px;">
+          <i class="fas fa-circle-notch fa-spin" style="color:var(--primary);font-size:18px;"></i>
           <span>Retrieving archived course materials...</span>
         </div>
-
-        <ul class="materials-list divide-y divide-stone-200 text-xs"></ul>
-
+        <ul class="materials-list" style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;"></ul>
       </div>
 
     </div>
     {{/each}}
   </div>
 
-  <!-- Empty filtered state -->
-  <div id="noSubjectsFiltered" class="bg-white rounded-lg p-10 text-center max-w-md mx-auto border border-stone-300 space-y-3" style="display: none;">
-    <div class="w-12 h-12 rounded-full bg-stone-100 flex items-center justify-center mx-auto text-stone-400 text-xl">
-      <i class="fas fa-folder-open"></i>
+  <!-- No filtered results -->
+  <div id="noSubjectsFiltered" style="display:none;background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:14px;padding:3rem 1.5rem;text-align:center;max-width:440px;margin:0 auto;">
+    <div style="width:52px;height:52px;border-radius:13px;background:var(--primary-lt);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;border:1px solid rgba(15,118,110,0.22);">
+      <i class="fas fa-folder-open" style="font-size:20px;color:var(--primary);"></i>
     </div>
-    <div class="space-y-1">
-      <h3 class="font-serif font-bold text-base text-stone-900">No Subjects in this Semester</h3>
-      <p class="text-xs text-stone-500">No subjects currently match the selected semester filter or search query.</p>
-    </div>
-    <button onclick="selectSemesterTab('all')" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded bg-[#162e4a] text-white font-medium text-xs hover:bg-[#0f2035] transition-colors shadow-sm">
+    <h3 style="font-family:var(--font-headings);font-weight:700;font-size:1.1rem;color:var(--text);margin-bottom:0.4rem;">No Subjects in this Semester</h3>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:1.25rem;">No subjects currently match the selected semester filter or search query.</p>
+    <button onclick="selectSemesterTab('all')"
+      style="display:inline-flex;align-items:center;gap:0.5rem;padding:9px 20px;border-radius:8px;background:var(--primary);color:#fff;font-weight:700;font-size:13px;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(15,118,110,0.24);transition:all 0.15s ease;"
+      onmouseenter="this.style.background='var(--primary-dk)'" onmouseleave="this.style.background='var(--primary)'">
       <i class="fas fa-layer-group"></i>
       <span>Show All Semesters</span>
     </button>
@@ -153,23 +155,42 @@
           const resp = await fetch(href, { credentials: 'same-origin' });
           if (resp.status === 401) return showToast('Authentication required. Please log in.', 'error');
           if (!resp.ok) return showToast('Download failed. Please try again.', 'error');
-          
           const blob = await resp.blob();
           const disposition = resp.headers.get('content-disposition') || '';
           const match = /filename="?([^";]+)"?/.exec(disposition);
           const filename = match ? match[1] : (suggestedName || 'course-material.bin');
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
+          a.href = url; a.download = filename;
+          document.body.appendChild(a); a.click(); a.remove();
           URL.revokeObjectURL(url);
           showToast(`Downloaded: ${filename}`, 'success');
         } catch (err) {
           console.error('Download error', err);
           showToast('Failed to download material.', 'error');
+        }
+      }
+
+      function getFileIcon(name = '') {
+        const ext = (name.split('.').pop() || '').toLowerCase();
+        switch (ext) {
+          case 'pdf': return '<i class="fas fa-file-pdf" style="color:#ef4444;font-size:14px;" title="PDF"></i>';
+          case 'ppt':
+          case 'pptx': return '<i class="fas fa-file-powerpoint" style="color:#ea580c;font-size:14px;" title="PPT"></i>';
+          case 'doc':
+          case 'docx': return '<i class="fas fa-file-word" style="color:#2563eb;font-size:14px;" title="Word"></i>';
+          case 'xls':
+          case 'xlsx':
+          case 'csv': return '<i class="fas fa-file-excel" style="color:#16a34a;font-size:14px;" title="Spreadsheet"></i>';
+          case 'zip':
+          case 'rar':
+          case '7z': return '<i class="fas fa-file-zipper" style="color:#8b5cf6;font-size:14px;" title="Archive"></i>';
+          case 'mp4':
+          case 'mov': return '<i class="fas fa-file-video" style="color:#ec4899;font-size:14px;" title="Video"></i>';
+          case 'png':
+          case 'jpg':
+          case 'webp': return '<i class="fas fa-file-image" style="color:#06b6d4;font-size:14px;" title="Image"></i>';
+          default: return '<i class="fas fa-file-lines" style="color:var(--primary);font-size:14px;" title="Document"></i>';
         }
       }
 
@@ -187,11 +208,7 @@
         const toggleMaterials = async (e) => {
           if (e.target.closest('.download-all-btn') || e.target.closest('select')) return;
           const isHidden = materialsSection.classList.contains('hidden');
-
-          if (isHidden && !loaded) {
-            await loadMaterials();
-          }
-
+          if (isHidden && !loaded) { await loadMaterials(); }
           materialsSection.classList.toggle('hidden', !isHidden);
           if (expandIcon) expandIcon.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
         };
@@ -202,58 +219,50 @@
           if (loaded) return;
           spinner.style.display = 'flex';
           const courseId = card.dataset.courseid;
-
           try {
             const resp = await fetch(`/api/get/all/materials/${encodeURIComponent(courseId)}`, { credentials: 'same-origin' });
             if (!resp.ok) throw new Error('Failed to load materials');
             const json = await resp.json();
             materials = json.materials || [];
-
             if (materialBadge) materialBadge.textContent = materials.length;
-            
             if (materials.length) {
               list.innerHTML = materials.map(m => `
-                <li class="py-2.5 flex items-center justify-between gap-3">
-                  <div class="flex items-center gap-2.5 min-w-0 pr-2">
-                    <span class="text-base flex-shrink-0">📄</span>
-                    <div class="min-w-0">
-                      <span class="text-xs font-semibold text-stone-900 block truncate" title="${m.name || 'File'}">${m.name || 'Unnamed File'}</span>
+                <li style="padding:0.65rem 0;display:flex;align-items:center;justify-content:space-between;gap:0.75rem;border-bottom:1px solid rgba(15,118,110,0.08);">
+                  <div style="display:flex;align-items:center;gap:0.6rem;min-width:0;padding-right:0.5rem;">
+                    <span style="width:28px;height:28px;border-radius:6px;background:var(--primary-lt);border:1px solid rgba(15,118,110,0.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;">${getFileIcon(m.name)}</span>
+                    <div style="min-width:0;">
+                      <span style="font-size:13px;font-weight:600;color:var(--text);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${m.name || 'File'}">${m.name || 'Unnamed File'}</span>
                     </div>
                   </div>
                   ${m.href ? `
-                    <button type="button" data-href="${m.href}" data-name="${m.name || ''}" class="file-download-btn inline-flex items-center gap-1 px-2.5 py-1 rounded bg-white hover:bg-[#162e4a] text-[#162e4a] hover:text-white text-xs font-semibold border border-stone-300 hover:border-[#162e4a] transition-colors flex-shrink-0">
-                      <i class="fas fa-download text-[9px]"></i>
+                    <button type="button" data-href="${m.href}" data-name="${m.name || ''}" class="file-download-btn"
+                      style="display:inline-flex;align-items:center;gap:0.35rem;padding:6px 12px;border-radius:7px;background:rgba(255,255,255,0.88);color:var(--primary);border:1px solid rgba(15,118,110,0.20);font-size:12px;font-weight:700;cursor:pointer;transition:all 0.15s ease;flex-shrink:0;white-space:nowrap;"
+                      onmouseenter="this.style.background='var(--primary)';this.style.color='#fff';this.style.borderColor='var(--primary)'"
+                      onmouseleave="this.style.background='rgba(255,255,255,0.88)';this.style.color='var(--primary)';this.style.borderColor='rgba(15,118,110,0.20)'">
+                      <i class="fas fa-download" style="font-size:10px;"></i>
                       <span>Download</span>
                     </button>
                   ` : ''}
                 </li>
               `).join('');
-
               list.querySelectorAll('.file-download-btn').forEach(btn => {
-                btn.addEventListener('click', (ev) => {
-                  ev.stopPropagation();
-                  fetchAndDownload(btn.dataset.href, btn.dataset.name);
-                });
+                btn.addEventListener('click', (ev) => { ev.stopPropagation(); fetchAndDownload(btn.dataset.href, btn.dataset.name); });
               });
-              
               if (downloadAllBtn) {
                 downloadAllBtn.style.display = 'inline-flex';
                 downloadAllBtn.onclick = async (ev) => {
                   ev.stopPropagation();
                   showToast('Starting batch download...', 'info');
-                  for (const mm of materials) {
-                    if (mm.href) await fetchAndDownload(mm.href, mm.name);
-                  }
+                  for (const mm of materials) { if (mm.href) await fetchAndDownload(mm.href, mm.name); }
                 };
               }
             } else {
-              list.innerHTML = `<li class="py-4 text-center text-stone-500 text-xs">No materials found for this subject.</li>`;
+              list.innerHTML = `<li style="padding:1rem;text-align:center;color:var(--text-muted);font-size:12px;">No materials found for this subject.</li>`;
               if (downloadAllBtn) downloadAllBtn.style.display = 'none';
             }
-
             loaded = true;
           } catch (err) {
-            list.innerHTML = `<li class="py-3 text-rose-700 text-xs flex items-center justify-center gap-1.5"><i class="fas fa-exclamation-triangle"></i><span>Failed to load materials.</span></li>`;
+            list.innerHTML = `<li style="padding:0.75rem;color:#dc2626;font-size:12px;display:flex;align-items:center;justify-content:center;gap:0.5rem;"><i class="fas fa-exclamation-triangle"></i><span>Failed to load materials.</span></li>`;
             console.error(err);
           } finally {
             spinner.style.display = 'none';
@@ -267,9 +276,7 @@
           document.querySelectorAll('.subject-card').forEach(card => {
             const header = card.querySelector('.card-header');
             const materialsSection = card.querySelector('.materials-section');
-            if (materialsSection && materialsSection.classList.contains('hidden') && header) {
-              header.click();
-            }
+            if (materialsSection && materialsSection.classList.contains('hidden') && header) { header.click(); }
           });
         });
       }
@@ -291,15 +298,15 @@
   </script>
 
   {{else}}
-  <div class="bg-white rounded-lg p-10 text-center max-w-md mx-auto border border-stone-300 space-y-3">
-    <div class="w-12 h-12 rounded-full bg-stone-100 flex items-center justify-center mx-auto text-stone-400 text-xl">
-      <i class="fas fa-folder-open"></i>
+  <div style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:14px;padding:3rem 1.5rem;text-align:center;max-width:440px;margin:0 auto;">
+    <div style="width:52px;height:52px;border-radius:13px;background:var(--primary-lt);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;border:1px solid rgba(15,118,110,0.22);">
+      <i class="fas fa-folder-open" style="font-size:20px;color:var(--primary);"></i>
     </div>
-    <div class="space-y-1">
-      <h3 class="font-serif font-bold text-base text-stone-900">No Subjects in Archive</h3>
-      <p class="text-xs text-stone-500">There are currently no course materials synced in the archive.</p>
-    </div>
-    <button onclick="location.reload()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded bg-[#162e4a] text-white font-medium text-xs hover:bg-[#0f2035] transition-colors shadow-sm">
+    <h3 style="font-family:var(--font-headings);font-weight:700;font-size:1.1rem;color:var(--text);margin-bottom:0.4rem;">No Subjects in Archive</h3>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:1.25rem;">There are currently no course materials synced in the archive.</p>
+    <button onclick="location.reload()"
+      style="display:inline-flex;align-items:center;gap:0.5rem;padding:9px 20px;border-radius:8px;background:var(--primary);color:#fff;font-weight:700;font-size:13px;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(15,118,110,0.24);transition:all 0.15s ease;"
+      onmouseenter="this.style.background='var(--primary-dk)'" onmouseleave="this.style.background='var(--primary)'">
       <i class="fas fa-redo"></i>
       <span>Refresh Registry</span>
     </button>

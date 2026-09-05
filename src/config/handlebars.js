@@ -54,7 +54,8 @@ export const handlebarsHelpers = {
     return null;
   },
   json: (c) => JSON.stringify(c),
-  eq: (a, b) => a === b,
+  eq: (a, b) => a === b || (a != null && b != null && String(a) === String(b)),
+  startsWith: (str, prefix) => typeof str === "string" && str.startsWith(prefix),
   includes: (arr, val) => (Array.isArray(arr) ? arr.includes(val) : arr === val),
   join: (arr, sep = ", ") => (Array.isArray(arr) ? arr.join(sep) : arr || ""),
   or: (a, b) => a || b,
@@ -101,6 +102,16 @@ export const handlebarsHelpers = {
     if (!nums) return "";
     if (nums === "ALL") return chipHtml("All Semesters");
     return nums.map((n) => chipHtml(`Sem ${n}`)).join(" ");
+  },
+  hasSemester: (bookSemester, target) => {
+    if (!bookSemester) return false;
+    const targetNums = parseSemesterNumbers(target);
+    const bookNums = parseSemesterNumbers(bookSemester);
+    if (!bookNums) return false;
+    if (targetNums === "ALL") return bookNums === "ALL";
+    if (bookNums === "ALL") return true;
+    if (!targetNums || !targetNums.length) return false;
+    return targetNums.some((n) => bookNums.includes(n));
   },
 };
 

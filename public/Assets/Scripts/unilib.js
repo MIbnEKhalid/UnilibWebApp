@@ -85,16 +85,16 @@ window.setViewMode = function(mode, save = true) {
   const listBtn = document.getElementById("viewListBtn");
   if (gridBtn && listBtn) {
     const isList = mode === 'list';
-    listBtn.classList.toggle('bg-[#f0f4f9]', isList);
-    listBtn.classList.toggle('text-[#162e4a]', isList);
-    listBtn.classList.toggle('border-[#bad0e4]', isList);
-    listBtn.classList.toggle('text-stone-500', !isList);
+    listBtn.classList.toggle('bg-teal-50', isList);
+    listBtn.classList.toggle('text-[#0f766e]', isList);
+    listBtn.classList.toggle('border-teal-200', isList);
+    listBtn.classList.toggle('text-teal-700/60', !isList);
     listBtn.classList.toggle('border-transparent', !isList);
 
-    gridBtn.classList.toggle('bg-[#f0f4f9]', !isList);
-    gridBtn.classList.toggle('text-[#162e4a]', !isList);
-    gridBtn.classList.toggle('border-[#bad0e4]', !isList);
-    gridBtn.classList.toggle('text-stone-500', isList);
+    gridBtn.classList.toggle('bg-teal-50', !isList);
+    gridBtn.classList.toggle('text-[#0f766e]', !isList);
+    gridBtn.classList.toggle('border-teal-200', !isList);
+    gridBtn.classList.toggle('text-teal-700/60', isList);
     gridBtn.classList.toggle('border-transparent', isList);
   }
 };

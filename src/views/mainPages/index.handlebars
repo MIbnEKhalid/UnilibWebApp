@@ -1,28 +1,37 @@
-<section class="w-full" id="books">
-  <div class="w-full space-y-6">
+<section style="width:100%;" id="books">
+  <div style="width:100%;display:flex;flex-direction:column;gap:1.5rem;">
 
     {{#if singleBookView}}
-    <!-- ========================================== -->
-    <!-- Academic Study Hub (Single Book View)      -->
-    <!-- ========================================== -->
-    <div class="max-w-5xl mx-auto space-y-6">
-      
+    {{!-- ================================================== --}}
+    {{!-- Single Book View (Study Hub)                       --}}
+    {{!-- ================================================== --}}
+    <div style="max-width:960px;margin:0 auto;width:100%;display:flex;flex-direction:column;gap:1.5rem;">
+
       <!-- Back to Catalog & Admin Shortcuts -->
-      <div class="flex items-center justify-between">
-        <a href="/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-white border border-stone-300 text-stone-700 hover:text-[#162e4a] hover:border-stone-400 hover:bg-stone-50 transition-colors text-xs font-semibold uppercase tracking-wider shadow-sm">
-          <i class="fas fa-arrow-left text-stone-400"></i>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem;">
+        <a href="/" id="back-to-catalog-btn"
+          style="display:inline-flex;align-items:center;gap:0.45rem;padding:7px 14px;border-radius:8px;background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);border:1px solid rgba(15,118,110,0.18);color:var(--text-2);font-size:12px;font-weight:600;text-decoration:none;text-transform:uppercase;letter-spacing:0.05em;transition:all 0.15s ease;"
+          onmouseenter="this.style.background='var(--primary-lt)';this.style.color='var(--primary-dk)';this.style.borderColor='var(--primary)'"
+          onmouseleave="this.style.background='rgba(255,255,255,0.85)';this.style.color='var(--text-2)';this.style.borderColor='rgba(15,118,110,0.18)'">
+          <i class="fas fa-arrow-left" style="font-size:10px;color:var(--text-muted);"></i>
           <span>Library Catalog</span>
         </a>
 
         {{#if ../userLoggedIn}}
         {{#each books}}
-        <div class="flex items-center gap-2">
-          <a href="/dashboard/Book/Edit/{{this.id}}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded bg-white hover:bg-stone-50 text-stone-700 border border-stone-300 text-xs font-medium shadow-sm transition-colors">
-            <i class="fas fa-edit text-stone-500"></i>
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+          <a href="/dashboard/Book/Edit/{{this.id}}" id="edit-book-btn-{{this.id}}"
+            style="display:inline-flex;align-items:center;gap:0.4rem;padding:7px 12px;border-radius:8px;background:rgba(255,255,255,0.85);border:1px solid rgba(15,118,110,0.18);color:var(--text-2);font-size:12px;font-weight:600;text-decoration:none;transition:all 0.15s ease;"
+            onmouseenter="this.style.background='var(--primary-lt)';this.style.borderColor='var(--primary)'"
+            onmouseleave="this.style.background='rgba(255,255,255,0.85)';this.style.borderColor='rgba(15,118,110,0.18)'">
+            <i class="fas fa-edit" style="font-size:11px;color:var(--text-muted);"></i>
             <span>Edit Entry</span>
           </a>
-          <a href="/dashboard/Book/{{this.id}}/Sections" class="inline-flex items-center gap-1 px-3 py-1.5 rounded bg-white hover:bg-stone-50 text-stone-700 border border-stone-300 text-xs font-medium shadow-sm transition-colors">
-            <i class="fas fa-list-ul text-stone-500"></i>
+          <a href="/dashboard/Book/{{this.id}}/Sections" id="chapters-btn-{{this.id}}"
+            style="display:inline-flex;align-items:center;gap:0.4rem;padding:7px 12px;border-radius:8px;background:rgba(255,255,255,0.85);border:1px solid rgba(15,118,110,0.18);color:var(--text-2);font-size:12px;font-weight:600;text-decoration:none;transition:all 0.15s ease;"
+            onmouseenter="this.style.background='var(--primary-lt)';this.style.borderColor='var(--primary)'"
+            onmouseleave="this.style.background='rgba(255,255,255,0.85)';this.style.borderColor='rgba(15,118,110,0.18)'">
+            <i class="fas fa-list-ul" style="font-size:11px;color:var(--text-muted);"></i>
             <span>Chapters</span>
           </a>
         </div>
@@ -31,140 +40,154 @@
       </div>
 
       {{#each books}}
-      <!-- Main Study Hub Card -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        
-        <!-- Left: Cover & Specifications Deck -->
-        <div class="lg:col-span-4 space-y-4">
-          <div class="bg-white rounded-lg p-5 border border-stone-300 shadow-sm space-y-4 text-center">
-            
-            <!-- Book Cover Framed Stage -->
-            <div class="w-full max-w-[220px] aspect-[3/4] rounded-lg overflow-hidden border border-stone-300 shadow-sm relative bg-[#f2f0ec] mx-auto flex items-center justify-center p-3">
-              <div class="absolute inset-0 bg-cover bg-center opacity-20 blur-md scale-110 pointer-events-none" style="background-image: url('{{this.imageURL}}');"></div>
+      <!-- Main Study Hub Layout -->
+      <div style="display:grid;grid-template-columns:1fr;gap:1.5rem;align-items:start;" id="study-hub-grid">
+
+        <!-- Left: Cover & Specs -->
+        <div style="display:flex;flex-direction:column;gap:1rem;">
+          <div style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:14px;padding:1.5rem;box-shadow:0 4px 12px rgba(0,0,0,0.04);display:flex;flex-direction:column;align-items:center;gap:1rem;">
+
+            <!-- Book Cover -->
+            <div style="width:100%;max-width:200px;aspect-ratio:3/4;border-radius:10px;overflow:hidden;border:1px solid rgba(15,118,110,0.16);box-shadow:0 8px 24px rgba(15,118,110,0.12);background:rgba(215,244,238,0.25);position:relative;display:flex;align-items:center;justify-content:center;padding:0.75rem;">
+              <div style="position:absolute;inset:0;background-size:cover;background-position:center;opacity:0.18;filter:blur(14px);transform:scale(1.1);pointer-events:none;background-image:url('{{this.imageURL}}');"></div>
 
               {{#if this.main}}
                 {{#unless (eq this.category 'LabManuals')}}
-                <div class="absolute top-2 left-2 z-20 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-600 text-white shadow-sm flex items-center gap-1">
-                  <i class="fas fa-star text-[8px]"></i> Main
+                <div style="position:absolute;top:8px;left:8px;z-index:2;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;background:var(--warning);color:#fff;box-shadow:0 2px 6px rgba(217,119,6,0.30);display:flex;align-items:center;gap:4px;">
+                  <i class="fas fa-star" style="font-size:8px;"></i> Main
                 </div>
                 {{/unless}}
               {{/if}}
 
-              <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" class="relative z-10 max-h-full max-w-full object-contain rounded-sm shadow-lg" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'">
+              <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" style="position:relative;z-index:1;max-height:100%;max-width:100%;object-fit:contain;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,0.14);" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'">
             </div>
 
-            <!-- Primary CTAs -->
-            <div class="space-y-2 pt-2">
-              <button onclick="trackView('{{this.id}}', '{{this.link}}')" class="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded bg-[#162e4a] hover:bg-[#0f2035] text-white text-xs font-semibold uppercase tracking-wider shadow-sm transition-colors">
-                <i class="fas fa-book-reader text-amber-100"></i>
+            <!-- CTAs -->
+            <div style="width:100%;display:flex;flex-direction:column;gap:0.5rem;padding-top:0.25rem;">
+              <button onclick="trackView('{{this.id}}', '{{this.link}}')" id="read-online-btn-{{this.id}}"
+                style="width:100%;display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:10px 16px;border-radius:8px;background:var(--primary);color:#fff;font-weight:700;font-size:13px;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(15,118,110,0.28);transition:all 0.15s ease;text-transform:uppercase;letter-spacing:0.05em;"
+                onmouseenter="this.style.background='var(--primary-dk)';this.style.transform='translateY(-1px)'"
+                onmouseleave="this.style.background='var(--primary)';this.style.transform='translateY(0)'">
+                <i class="fas fa-book-reader" style="color:#d7f4ee;"></i>
                 <span>Read Online</span>
               </button>
 
-              <button onclick="downloadResource('{{this.link}}', '{{this.id}}')" class="w-full inline-flex items-center justify-center gap-2 py-2 px-4 rounded bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold uppercase tracking-wider shadow-sm transition-colors">
+              <button onclick="downloadResource('{{this.link}}', '{{this.id}}')" id="download-btn-{{this.id}}"
+                style="width:100%;display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:9px 16px;border-radius:8px;background:rgba(22,163,74,0.90);color:#fff;font-weight:700;font-size:13px;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(22,163,74,0.22);transition:all 0.15s ease;text-transform:uppercase;letter-spacing:0.05em;"
+                onmouseenter="this.style.background='#15803d'"
+                onmouseleave="this.style.background='rgba(22,163,74,0.90)'">
                 <i class="fas fa-download"></i>
                 <span>Download PDF</span>
               </button>
 
-              <div class="grid grid-cols-2 gap-2 pt-1">
-                <button onclick="shareBook('{{this.id}}', '{{this.name}}')" class="inline-flex items-center justify-center gap-1 py-1.5 px-2 rounded bg-stone-50 hover:bg-stone-100 text-stone-700 border border-stone-300 text-xs font-medium transition-colors">
-                  <i class="fas fa-share-alt text-stone-400"></i>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;padding-top:0.25rem;">
+                <button onclick="shareBook('{{this.id}}', '{{this.name}}')" id="share-btn-{{this.id}}"
+                  style="display:inline-flex;align-items:center;justify-content:center;gap:0.4rem;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.85);border:1px solid rgba(15,118,110,0.18);color:var(--text-2);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s ease;"
+                  onmouseenter="this.style.background='var(--primary-lt)';this.style.borderColor='var(--primary)'"
+                  onmouseleave="this.style.background='rgba(255,255,255,0.85)';this.style.borderColor='rgba(15,118,110,0.18)'">
+                  <i class="fas fa-share-alt" style="font-size:11px;color:var(--text-muted);"></i>
                   <span>Share</span>
                 </button>
 
-                <button onclick="copyCitation('{{this.name}}', '{{this.description}}', '{{this.id}}')" class="inline-flex items-center justify-center gap-1 py-1.5 px-2 rounded bg-stone-50 hover:bg-stone-100 text-stone-700 border border-stone-300 text-xs font-medium transition-colors">
-                  <i class="fas fa-quote-right text-stone-400"></i>
+                <button onclick="copyCitation('{{this.name}}', '{{this.description}}', '{{this.id}}')" id="citation-btn-{{this.id}}"
+                  style="display:inline-flex;align-items:center;justify-content:center;gap:0.4rem;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.85);border:1px solid rgba(15,118,110,0.18);color:var(--text-2);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s ease;"
+                  onmouseenter="this.style.background='var(--primary-lt)';this.style.borderColor='var(--primary)'"
+                  onmouseleave="this.style.background='rgba(255,255,255,0.85)';this.style.borderColor='rgba(15,118,110,0.18)'">
+                  <i class="fas fa-quote-right" style="font-size:11px;color:var(--text-muted);"></i>
                   <span>Citation</span>
                 </button>
               </div>
             </div>
 
-            <!-- Technical Specifications Box -->
-            <div class="pt-3 border-t border-stone-200 text-left space-y-2 text-xs">
-              <div class="flex items-center justify-between py-1 border-b border-stone-100">
-                <span class="text-stone-500">Classification:</span>
-                <span class="font-semibold text-stone-800">{{this.category}}</span>
+            <!-- Specs Table -->
+            <div style="width:100%;padding-top:1rem;border-top:1px solid rgba(15,118,110,0.12);display:flex;flex-direction:column;gap:0.25rem;font-size:12px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(15,118,110,0.08);">
+                <span style="color:var(--text-muted);">Classification:</span>
+                <span style="font-weight:700;color:var(--text);">{{this.category}}</span>
               </div>
-              <div class="flex items-center justify-between py-1 border-b border-stone-100">
-                <span class="text-stone-500">Semesters:</span>
-                <span class="font-semibold text-[#162e4a]">{{formatSemesterBadge this.semester}}</span>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(15,118,110,0.08);">
+                <span style="color:var(--text-muted);">Semesters:</span>
+                <span style="font-weight:700;color:var(--primary);">{{formatSemesterBadge this.semester}}</span>
               </div>
-              <div class="flex items-center justify-between py-1 border-b border-stone-100">
-                <span class="text-stone-500">Consultations:</span>
-                <span class="font-semibold text-stone-800">{{formatNumber this.views}} views</span>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(15,118,110,0.08);">
+                <span style="color:var(--text-muted);">Consultations:</span>
+                <span style="font-weight:700;color:var(--text);">{{formatNumber this.views}} views</span>
               </div>
-              <div class="flex items-center justify-between py-1">
-                <span class="text-stone-500">Format:</span>
-                <span class="font-semibold text-stone-800">Digital Document (PDF)</span>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:5px 0;">
+                <span style="color:var(--text-muted);">Format:</span>
+                <span style="font-weight:700;color:var(--text);">PDF</span>
               </div>
             </div>
-
           </div>
         </div>
 
-        <!-- Right: Overview & Interactive Syllabus Chapters -->
-        <div class="lg:col-span-8 space-y-5">
-          
-          <!-- Book Overview Card -->
-          <div class="bg-white rounded-lg p-6 border border-stone-300 shadow-sm space-y-3">
-            <div class="flex flex-wrap items-center gap-1.5">
+        <!-- Right: Overview & Chapters -->
+        <div style="display:flex;flex-direction:column;gap:1.25rem;">
+
+          <!-- Overview Card -->
+          <div style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:14px;padding:1.5rem;box-shadow:0 4px 12px rgba(0,0,0,0.04);">
+            <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.75rem;">
               {{{formatSemesterChips this.semester}}}
-              <span class="px-2.5 py-0.5 rounded text-xs font-semibold bg-stone-100 text-stone-700 border border-stone-200">
-                {{this.category}}
-              </span>
+              <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(255,255,255,0.85);color:var(--text-2);border:1px solid rgba(15,118,110,0.18);">{{this.category}}</span>
             </div>
 
-            <h1 class="font-serif font-bold text-2xl sm:text-3xl text-stone-900 leading-snug tracking-normal">
+            <h1 style="font-family:var(--font-headings);font-weight:800;font-size:1.6rem;color:var(--text);line-height:1.25;letter-spacing:-0.02em;margin-bottom:0.75rem;">
               {{this.name}}
             </h1>
 
-            <div class="text-xs text-stone-600 leading-relaxed pt-2 whitespace-pre-line border-t border-stone-200 mt-3">
-              <h4 class="font-serif font-bold text-stone-900 uppercase tracking-wider text-[11px] mb-1.5">Curriculum & Bibliographic Summary</h4>
-              <p class="text-stone-700 text-sm leading-relaxed">{{this.description}}</p>
+            <div style="padding-top:0.75rem;border-top:1px solid rgba(15,118,110,0.10);">
+              <h4 style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;font-family:var(--font);">Curriculum & Bibliographic Summary</h4>
+              <p style="font-size:14px;color:var(--text-2);line-height:1.7;">{{this.description}}</p>
             </div>
           </div>
 
-          <!-- Interactive Chapter & Syllabus Breakdown -->
+          <!-- Chapters Card -->
           {{#if ../sections}}
-          <div class="bg-white rounded-lg p-5 sm:p-6 border border-stone-300 shadow-sm space-y-4">
-            
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-stone-200">
+          <div style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:14px;padding:1.5rem;box-shadow:0 4px 12px rgba(0,0,0,0.04);">
+
+            <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.75rem;padding-bottom:1rem;border-bottom:1px solid rgba(15,118,110,0.12);margin-bottom:1rem;">
               <div>
-                <h3 class="font-serif font-bold text-base text-stone-900 flex items-center gap-2">
-                  <i class="fas fa-list-ol text-[#162e4a]"></i>
+                <h3 style="font-family:var(--font-headings);font-weight:700;font-size:1rem;color:var(--text);display:flex;align-items:center;gap:0.5rem;margin-bottom:0.2rem;">
+                  <i class="fas fa-list-ol" style="color:var(--primary);font-size:14px;"></i>
                   <span>Syllabus Breakdown & Chapter Excerpts</span>
                 </h3>
-                <p class="text-xs text-stone-500 mt-0.5">Download standalone section files or navigate by page references</p>
+                <p style="font-size:11px;color:var(--text-muted);">Download standalone section files or navigate by page references</p>
               </div>
 
-              <!-- In-book chapter search -->
-              <div class="relative max-w-xs w-full">
-                <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-stone-400">
-                  <i class="fas fa-search text-xs"></i>
+              <!-- Chapter search -->
+              <div style="position:relative;max-width:240px;width:100%;">
+                <div style="position:absolute;inset-y:0;left:0;padding-left:10px;display:flex;align-items:center;pointer-events:none;">
+                  <i class="fas fa-search" style="font-size:11px;color:var(--text-muted);"></i>
                 </div>
-                <input type="text" id="chapterSearchInput" placeholder="Search chapters..." class="input-classic w-full pl-8 pr-3 py-1.5 text-xs">
+                <input type="text" id="chapterSearchInput" placeholder="Search chapters..." class="input-classic" style="width:100%;padding:7px 12px 7px 30px;font-size:12px;">
               </div>
             </div>
 
             <!-- Chapter Rows -->
-            <div class="space-y-2" id="chapterListContainer">
+            <div style="display:flex;flex-direction:column;gap:0.5rem;" id="chapterListContainer">
               {{#each ../sections}}
-              <div class="chapter-row-item flex items-center justify-between p-3 rounded bg-stone-50 border border-stone-200 hover:border-stone-300 transition-colors">
-                <div class="flex items-center gap-3 min-w-0 pr-2">
-                  <span class="w-7 h-7 rounded bg-[#f0f4f9] text-[#162e4a] border border-[#bad0e4] flex items-center justify-center text-xs font-bold font-serif flex-shrink-0">
+              <div class="chapter-row-item" style="display:flex;align-items:center;justify-content:space-between;padding:0.65rem 0.75rem;border-radius:8px;background:rgba(215,244,238,0.22);border:1px solid rgba(15,118,110,0.12);transition:all 0.15s ease;" id="chapter-{{this.id}}"
+                onmouseenter="this.style.background='rgba(215,244,238,0.42)';this.style.borderColor='rgba(15,118,110,0.26)'"
+                onmouseleave="this.style.background='rgba(215,244,238,0.22)';this.style.borderColor='rgba(15,118,110,0.12)'">
+                <div style="display:flex;align-items:center;gap:0.65rem;min-width:0;padding-right:0.5rem;">
+                  <span style="width:28px;height:28px;border-radius:7px;background:var(--primary-lt);color:var(--primary-dk);border:1px solid rgba(15,118,110,0.22);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;font-family:var(--font-headings);flex-shrink:0;">
                     {{this.section_number}}
                   </span>
-                  <div class="min-w-0">
-                    <span class="chapter-title text-xs sm:text-sm font-semibold text-stone-900 block truncate" title="{{this.name}}">
+                  <div style="min-width:0;">
+                    <span class="chapter-title" style="font-size:13px;font-weight:600;color:var(--text);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="{{this.name}}">
                       {{this.name}}
                     </span>
-                    <span class="text-[11px] text-stone-500">
-                      Pages: <strong class="text-stone-800">{{this.page_start}} &ndash; {{this.page_end}}</strong> ({{add (subtract this.page_end this.page_start) 1}} pages)
+                    <span style="font-size:11px;color:var(--text-muted);">
+                      Pages: <strong style="color:var(--text-2);">{{this.page_start}} &ndash; {{this.page_end}}</strong> ({{add (subtract this.page_end this.page_start) 1}} pages)
                     </span>
                   </div>
                 </div>
 
-                <a href="/book/{{../this.id}}/section/{{this.id}}/download" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-white hover:bg-[#162e4a] text-[#162e4a] hover:text-white border border-stone-300 hover:border-[#162e4a] text-xs font-semibold transition-colors flex-shrink-0 shadow-sm">
-                  <i class="fas fa-download text-[10px]"></i>
+                <a href="/book/{{../this.id}}/section/{{this.id}}/download" target="_blank" id="section-download-{{this.id}}"
+                  style="display:inline-flex;align-items:center;gap:0.4rem;padding:6px 12px;border-radius:7px;background:rgba(255,255,255,0.88);color:var(--primary);border:1px solid rgba(15,118,110,0.20);font-size:12px;font-weight:700;text-decoration:none;flex-shrink:0;transition:all 0.15s ease;"
+                  onmouseenter="this.style.background='var(--primary)';this.style.color='#fff';this.style.borderColor='var(--primary)'"
+                  onmouseleave="this.style.background='rgba(255,255,255,0.88)';this.style.color='var(--primary)';this.style.borderColor='rgba(15,118,110,0.20)'">
+                  <i class="fas fa-download" style="font-size:10px;"></i>
                   <span>PDF</span>
                 </a>
               </div>
@@ -175,94 +198,100 @@
           {{/if}}
 
         </div>
-
       </div>
-      {{/each}}
 
+      <!-- Responsive study hub grid -->
+      <style>
+        @media (min-width: 1024px) {
+          #study-hub-grid { grid-template-columns: 320px 1fr !important; }
+        }
+      </style>
+
+      {{/each}}
     </div>
 
     {{else}}
-    <!-- ========================================== -->
-    <!-- Classical Catalog Hub (Grid & List View)   -->
-    <!-- ========================================== -->
+    {{!-- ================================================== --}}
+    {{!-- Classical Catalog (Grid & List View)              --}}
+    {{!-- ================================================== --}}
+    <div style="display:flex;flex-direction:column;gap:1.25rem;">
 
-    <div class="space-y-5">
-      
-      <!-- Academic Welcome & Overview Header -->
-      <div class="bg-white rounded-lg p-5 border border-stone-300 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div class="space-y-1">
-          <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[11px] font-semibold bg-[#f0f4f9] text-[#162e4a] border border-[#bad0e4]">
-            <i class="fas fa-landmark text-[10px]"></i>
-            <span class="uppercase tracking-wider">Academic Course Repository</span>
+      <!-- Welcome Header -->
+      <div style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:14px;padding:1.25rem 1.5rem;box-shadow:0 4px 12px rgba(0,0,0,0.04);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;">
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <div style="display:inline-flex;align-items:center;gap:0.4rem;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:var(--primary-lt);color:var(--primary-dk);border:1px solid rgba(15,118,110,0.22);text-transform:uppercase;letter-spacing:0.06em;width:fit-content;">
+            <i class="fas fa-landmark" style="font-size:10px;"></i>
+            <span>Academic Course Repository</span>
           </div>
-          <h1 class="font-serif font-bold text-xl sm:text-2xl text-stone-900 tracking-normal">
+          <h1 style="font-family:var(--font-headings);font-weight:800;font-size:1.5rem;color:var(--text);letter-spacing:-0.02em;line-height:1.2;">
             University Course Textbooks & Materials
           </h1>
-          <p class="text-xs text-stone-600">
+          <p style="font-size:13px;color:var(--text-muted);">
             Curated curriculum textbooks, reference guides, software toolkits, and lab publications.
           </p>
         </div>
 
-        <!-- Catalog Stats Summary -->
-        <div class="flex items-center gap-3 self-start md:self-auto text-xs text-stone-600">
-          <div class="px-3 py-1.5 rounded bg-stone-50 border border-stone-200 text-center">
-            <span class="block font-serif font-bold text-stone-900 text-sm">{{pagination.total}}</span>
-            <span class="text-[10px] text-stone-500 uppercase tracking-wider">Resources</span>
+        <!-- Catalog Stats -->
+        <div style="display:flex;align-items:center;gap:0.75rem;flex-shrink:0;">
+          <div style="padding:10px 18px;border-radius:10px;background:rgba(215,244,238,0.40);border:1px solid rgba(15,118,110,0.18);text-align:center;">
+            <span style="display:block;font-family:var(--font-headings);font-weight:800;font-size:1.2rem;color:var(--text);">{{pagination.total}}</span>
+            <span style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Resources</span>
           </div>
-          <div class="px-3 py-1.5 rounded bg-stone-50 border border-stone-200 text-center">
-            <span class="block font-serif font-bold text-[#162e4a] text-sm">8</span>
-            <span class="text-[10px] text-stone-500 uppercase tracking-wider">Semesters</span>
+          <div style="padding:10px 18px;border-radius:10px;background:rgba(215,244,238,0.40);border:1px solid rgba(15,118,110,0.18);text-align:center;">
+            <span style="display:block;font-family:var(--font-headings);font-weight:800;font-size:1.2rem;color:var(--primary);">8</span>
+            <span style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Semesters</span>
           </div>
         </div>
       </div>
 
-      <!-- Top Semester 1-Click Tabstrip Partial -->
+      <!-- Semester Tabs -->
       {{> semesterTabs}}
 
-      <!-- Faceted Search & Layout Switcher Toolbar -->
-      <div class="bg-white rounded-lg p-3 border border-stone-300 shadow-sm">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
-          
-          <!-- Search & Category Filters -->
-          <div class="flex flex-1 flex-col sm:flex-row items-center gap-2.5">
-            <div class="relative w-full sm:max-w-md">
-              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
-                <i class="fas fa-search text-xs"></i>
+      <!-- Toolbar -->
+      <div style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:12px;padding:0.85rem 1rem;box-shadow:0 2px 8px rgba(0,0,0,0.03);">
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.75rem;">
+
+          <!-- Search & Filter -->
+          <div style="display:flex;flex:1;flex-wrap:wrap;align-items:center;gap:0.65rem;min-width:0;">
+            <div style="position:relative;width:100%;max-width:380px;">
+              <div style="position:absolute;inset-y:0;left:0;padding-left:10px;display:flex;align-items:center;pointer-events:none;">
+                <i class="fas fa-search" style="font-size:11px;color:var(--text-muted);"></i>
               </div>
-              <input type="text" id="searchProduct" value="{{filters.search}}" placeholder="Search by title, author, topic... (Press '/')" aria-label="Search books" class="input-classic w-full pl-8 pr-8 py-1.5 text-xs">
-              
-              <button type="button" id="clearSearch" aria-label="Clear search" class="absolute inset-y-0 right-0 pr-2.5 flex items-center text-stone-400 hover:text-stone-700" style="display: {{#if filters.search}}flex{{else}}none{{/if}};">
-                <i class="fas fa-times text-xs bg-stone-100 p-0.5 rounded-full"></i>
+              <input type="text" id="searchProduct" value="{{filters.search}}" placeholder="Search by title, author, topic... (Press '/')" aria-label="Search books" class="input-classic" style="width:100%;padding:8px 32px 8px 30px;font-size:12px;">
+              <button type="button" id="clearSearch" aria-label="Clear search"
+                style="position:absolute;inset-y:0;right:0;padding-right:10px;display:{{#if filters.search}}flex{{else}}none{{/if}};align-items:center;background:none;border:none;cursor:pointer;color:var(--text-muted);">
+                <i class="fas fa-times" style="font-size:11px;"></i>
               </button>
             </div>
 
-            <!-- Category Filter Dropdown -->
-            <div class="relative w-full sm:w-44">
-              <select id="categoryFilter" onchange="filterProducts()" aria-label="Filter by Category" class="input-classic w-full px-2.5 py-1.5 text-xs appearance-none cursor-pointer">
+            <!-- Category Filter -->
+            <div style="position:relative;width:160px;flex-shrink:0;">
+              <select id="categoryFilter" onchange="filterProducts()" aria-label="Filter by Category" class="input-classic" style="width:100%;padding:8px 28px 8px 10px;font-size:12px;appearance:none;cursor:pointer;">
                 <option value="all" {{#if (or (eq filters.category 'all') (not filters.category))}}selected{{/if}}>All Categories</option>
                 <option value="CourseBooks" {{#if (eq filters.category 'CourseBooks')}}selected{{/if}}>Course Books</option>
                 <option value="Softwares" {{#if (eq filters.category 'Softwares')}}selected{{/if}}>Softwares</option>
                 <option value="LabManuals" {{#if (eq filters.category 'LabManuals')}}selected{{/if}}>Lab Manuals</option>
                 <option value="Other" {{#if (or (eq filters.category 'Other') (eq filters.category 'other'))}}selected{{/if}}>Other</option>
               </select>
-              <div class="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none text-stone-400">
-                <i class="fas fa-chevron-down text-[8px]"></i>
+              <div style="position:absolute;inset-y:0;right:0;padding-right:10px;display:flex;align-items:center;pointer-events:none;">
+                <i class="fas fa-chevron-down" style="font-size:9px;color:var(--text-muted);"></i>
               </div>
             </div>
           </div>
 
-          <!-- View Mode & Results Counter -->
-          <div class="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-stone-100">
-            <span class="text-xs text-stone-600">
-              <strong>{{pagination.total}}</strong> materials listed
+          <!-- Count & View Toggle -->
+          <div style="display:flex;align-items:center;gap:0.75rem;flex-shrink:0;">
+            <span style="font-size:12px;color:var(--text-muted);">
+              <strong style="color:var(--text);">{{pagination.total}}</strong> materials
             </span>
 
-            <!-- Grid vs List View Toggle -->
-            <div class="flex items-center p-0.5 rounded border border-stone-300 bg-stone-50">
-              <button type="button" id="viewGridBtn" onclick="setViewMode('grid')" title="Grid View" class="p-1.5 rounded text-xs font-semibold transition-colors bg-[#f0f4f9] text-[#162e4a] border border-[#bad0e4]">
+            <div style="display:flex;align-items:center;padding:3px;border-radius:8px;border:1px solid rgba(15,118,110,0.18);background:rgba(255,255,255,0.70);">
+              <button type="button" id="viewGridBtn" onclick="setViewMode('grid')" title="Grid View"
+                style="padding:5px 9px;border-radius:6px;font-size:12px;border:none;cursor:pointer;background:var(--primary);color:#fff;transition:all 0.15s ease;">
                 <i class="fas fa-th-large"></i>
               </button>
-              <button type="button" id="viewListBtn" onclick="setViewMode('list')" title="List View" class="p-1.5 rounded text-xs font-semibold transition-colors text-stone-500 border border-transparent">
+              <button type="button" id="viewListBtn" onclick="setViewMode('list')" title="List View"
+                style="padding:5px 9px;border-radius:6px;font-size:12px;border:none;cursor:pointer;background:transparent;color:var(--text-muted);transition:all 0.15s ease;">
                 <i class="fas fa-list"></i>
               </button>
             </div>
@@ -271,149 +300,180 @@
         </div>
       </div>
 
-      <!-- Books Catalog Engine (Supports both Grid and List View dynamically) -->
+      <!-- Books Catalog -->
       {{#if books}}
       <div id="catalogContainer" class="view-grid">
         {{#each books}}
-        
-        <!-- 1. Visual Grid Card (Rendered when in Grid Mode) -->
-        <article class="item-grid-card bg-white rounded-lg border border-stone-300 overflow-hidden flex flex-col hover:border-stone-400 hover:shadow-md transition-all duration-200 group" id="grid_{{this.id}}">
-          
-          <div class="relative aspect-[3/4] bg-[#f2f0ec] overflow-hidden border-b border-stone-200 flex items-center justify-center p-3 group/cover">
-            <div class="absolute inset-0 bg-cover bg-center opacity-15 blur-md scale-110 pointer-events-none" style="background-image: url('{{this.imageURL}}');"></div>
+
+        <!-- Grid Card -->
+        <article class="item-grid-card"
+          style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.14);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:all 0.2s ease;box-shadow:0 2px 8px rgba(0,0,0,0.04);"
+          id="grid_{{this.id}}"
+          onmouseenter="this.style.borderColor='rgba(15,118,110,0.32)';this.style.boxShadow='0 8px 24px rgba(15,118,110,0.12)';this.style.transform='translateY(-2px)'"
+          onmouseleave="this.style.borderColor='rgba(15,118,110,0.14)';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.04)';this.style.transform='translateY(0)'">
+
+          <div style="position:relative;aspect-ratio:3/4;background:rgba(215,244,238,0.25);overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0.75rem;border-bottom:1px solid rgba(15,118,110,0.10);">
+            <div style="position:absolute;inset:0;background-size:cover;background-position:center;opacity:0.14;filter:blur(14px);transform:scale(1.1);pointer-events:none;background-image:url('{{this.imageURL}}');"></div>
 
             <!-- Badges -->
-            <div class="absolute top-2 left-2 right-2 z-20 flex flex-wrap gap-1 pointer-events-none">
+            <div style="position:absolute;top:8px;left:8px;right:8px;z-index:2;display:flex;flex-wrap:wrap;gap:4px;pointer-events:none;">
               {{#if this.main}}
                 {{#unless (eq this.category 'LabManuals')}}
-                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-600 text-white shadow-sm flex items-center gap-1">
-                  <i class="fas fa-star text-[8px]"></i> Main
+                <span style="padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;background:var(--warning);color:#fff;box-shadow:0 2px 4px rgba(0,0,0,0.15);display:flex;align-items:center;gap:3px;">
+                  <i class="fas fa-star" style="font-size:8px;"></i> Main
                 </span>
                 {{/unless}}
               {{/if}}
 
-              <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-stone-900/85 text-white backdrop-blur-sm shadow-sm">
+              <span style="padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(31,42,42,0.78);color:#fff;backdrop-filter:blur(4px);">
                 {{formatSemesterBadge this.semester}}
               </span>
 
-              <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-white/95 text-stone-700 border border-stone-300 shadow-sm ml-auto backdrop-blur-sm">
+              <span style="padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;background:rgba(255,255,255,0.92);color:var(--text-2);border:1px solid rgba(15,118,110,0.18);margin-left:auto;backdrop-filter:blur(4px);">
                 {{this.category}}
               </span>
             </div>
 
-            <!-- Centered Contained Book with Depth Shadow -->
-            <a href="/book/{{this.id}}" class="relative z-10 w-full h-full flex items-center justify-center" aria-label="View {{this.name}}">
-              <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" class="max-h-full max-w-full object-contain rounded-sm shadow-md transition-transform duration-300 group-hover/cover:scale-105" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'">
+            <!-- Cover Image -->
+            <a href="/book/{{this.id}}" style="position:relative;z-index:1;width:100%;height:100%;display:flex;align-items:center;justify-content:center;" aria-label="View {{this.name}}">
+              <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" style="max-height:100%;max-width:100%;object-fit:contain;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,0.14);transition:transform 0.3s ease;" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'"
+                onmouseenter="this.style.transform='scale(1.04)'" onmouseleave="this.style.transform='scale(1)'">
             </a>
 
-            <!-- Quick View Preview Trigger Overlay Button -->
-            <button type="button" onclick="openQuickView('{{this.id}}', '{{this.name}}', '{{this.description}}', '{{this.imageURL}}', '{{this.link}}', '{{this.category}}', '{{this.semester}}', {{this.views}})" class="absolute bottom-2 left-2 z-20 px-2 py-1 rounded bg-white/95 hover:bg-[#162e4a] text-stone-800 hover:text-white border border-stone-300 hover:border-[#162e4a] shadow-sm text-[11px] font-semibold transition-colors flex items-center gap-1 backdrop-blur-sm">
-              <i class="fas fa-search-plus text-[10px]"></i>
+            <!-- Quick View -->
+            <button type="button" onclick="openQuickView('{{this.id}}', '{{this.name}}', '{{this.description}}', '{{this.imageURL}}', '{{this.link}}', '{{this.category}}', '{{this.semester}}', {{this.views}})" id="qv-btn-{{this.id}}"
+              style="position:absolute;bottom:8px;left:8px;z-index:2;padding:5px 10px;border-radius:7px;background:rgba(255,255,255,0.92);color:var(--text);border:1px solid rgba(15,118,110,0.18);font-size:11px;font-weight:700;cursor:pointer;transition:all 0.15s ease;display:flex;align-items:center;gap:4px;backdrop-filter:blur(6px);"
+              onmouseenter="this.style.background='var(--primary)';this.style.color='#fff';this.style.borderColor='var(--primary)'"
+              onmouseleave="this.style.background='rgba(255,255,255,0.92)';this.style.color='var(--text)';this.style.borderColor='rgba(15,118,110,0.18)'">
+              <i class="fas fa-search-plus" style="font-size:10px;"></i>
               <span>Quick View</span>
             </button>
 
-            <!-- Views Counter -->
-            <div class="absolute bottom-2 right-2 z-20 px-1.5 py-0.5 rounded text-[10px] font-medium bg-white/95 text-stone-600 border border-stone-300 shadow-sm flex items-center gap-1">
-              <i class="fas fa-eye text-[8px] text-stone-400"></i>
+            <!-- Views -->
+            <div style="position:absolute;bottom:8px;right:8px;z-index:2;padding:3px 7px;border-radius:20px;font-size:10px;font-weight:600;background:rgba(255,255,255,0.92);color:var(--text-muted);border:1px solid rgba(15,118,110,0.16);display:flex;align-items:center;gap:3px;backdrop-filter:blur(4px);">
+              <i class="fas fa-eye" style="font-size:9px;"></i>
               <span>{{formatNumber this.views}}</span>
             </div>
           </div>
 
-          <!-- Card Content -->
-          <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
-            <div class="space-y-1">
-              <h3 class="font-serif font-bold text-sm text-stone-900 hover:text-[#162e4a] transition-colors line-clamp-1">
-                <a href="/book/{{this.id}}" title="{{this.name}}">{{this.name}}</a>
+          <!-- Card Body -->
+          <div style="padding:1rem;flex:1;display:flex;flex-direction:column;justify-content:space-between;gap:0.75rem;">
+            <div>
+              <h3 style="font-family:var(--font-headings);font-weight:700;font-size:14px;color:var(--text);line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;margin-bottom:0.3rem;">
+                <a href="/book/{{this.id}}" style="text-decoration:none;color:inherit;transition:color 0.15s;" title="{{this.name}}"
+                  onmouseenter="this.style.color='var(--primary)'" onmouseleave="this.style.color='inherit'">{{this.name}}</a>
               </h3>
-              <p class="text-xs text-stone-600 line-clamp-2 leading-relaxed" title="{{this.description}}">
+              <p style="font-size:12px;color:var(--text-muted);line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;" title="{{this.description}}">
                 {{this.description}}
               </p>
             </div>
 
-            <div class="pt-2.5 border-t border-stone-100 flex items-center gap-2">
-              <a href="/book/{{this.id}}" class="flex-1 inline-flex items-center justify-center gap-1 py-1.5 px-3 rounded bg-[#f0f4f9] hover:bg-[#162e4a] text-[#162e4a] hover:text-white text-xs font-semibold uppercase tracking-wider border border-[#bad0e4] hover:border-[#162e4a] transition-colors">
+            <div style="padding-top:0.65rem;border-top:1px solid rgba(15,118,110,0.10);display:flex;align-items:center;gap:0.4rem;">
+              <a href="/book/{{this.id}}" id="view-book-btn-{{this.id}}"
+                style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:0.35rem;padding:7px 10px;border-radius:7px;background:var(--primary-lt);color:var(--primary-dk);border:1px solid rgba(15,118,110,0.22);font-size:12px;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:0.04em;transition:all 0.15s ease;"
+                onmouseenter="this.style.background='var(--primary)';this.style.color='#fff';this.style.borderColor='var(--primary)'"
+                onmouseleave="this.style.background='var(--primary-lt)';this.style.color='var(--primary-dk)';this.style.borderColor='rgba(15,118,110,0.22)'">
                 <span>View Book</span>
-                <i class="fas fa-arrow-right text-[9px]"></i>
+                <i class="fas fa-arrow-right" style="font-size:9px;"></i>
               </a>
 
-              <button onclick="downloadResource('{{this.link}}', '{{this.id}}')" class="p-1.5 rounded bg-emerald-50 hover:bg-emerald-700 text-emerald-700 hover:text-white text-xs border border-emerald-200 hover:border-emerald-700 transition-colors" title="Download">
+              <button onclick="downloadResource('{{this.link}}', '{{this.id}}')" id="dl-btn-grid-{{this.id}}"
+                style="padding:7px 9px;border-radius:7px;background:rgba(22,163,74,0.10);color:#16a34a;border:1px solid rgba(22,163,74,0.22);font-size:12px;cursor:pointer;transition:all 0.15s ease;"
+                title="Download"
+                onmouseenter="this.style.background='#16a34a';this.style.color='#fff';this.style.borderColor='#16a34a'"
+                onmouseleave="this.style.background='rgba(22,163,74,0.10)';this.style.color='#16a34a';this.style.borderColor='rgba(22,163,74,0.22)'">
                 <i class="fas fa-download"></i>
               </button>
 
-              <button onclick="shareBook('{{this.id}}', '{{this.name}}')" class="p-1.5 rounded bg-stone-100 hover:bg-stone-200 text-stone-600 text-xs border border-stone-300 transition-colors" title="Share">
+              <button onclick="shareBook('{{this.id}}', '{{this.name}}')" id="share-btn-grid-{{this.id}}"
+                style="padding:7px 9px;border-radius:7px;background:rgba(255,255,255,0.80);color:var(--text-muted);border:1px solid rgba(15,118,110,0.16);font-size:12px;cursor:pointer;transition:all 0.15s ease;"
+                title="Share"
+                onmouseenter="this.style.background='var(--primary-lt)';this.style.color='var(--primary)'"
+                onmouseleave="this.style.background='rgba(255,255,255,0.80)';this.style.color='var(--text-muted)'">
                 <i class="fas fa-share-alt"></i>
               </button>
             </div>
           </div>
-
         </article>
 
-        <!-- 2. Compact List/Table Row (Rendered when in List Mode) -->
-        <article class="item-list-row bg-white rounded-lg border border-stone-300 p-3 sm:p-4 hover:border-stone-400 hover:shadow-sm transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4" id="list_{{this.id}}">
-          
-          <div class="flex items-center gap-3 min-w-0 flex-1">
-            <div class="w-12 h-16 rounded bg-[#f2f0ec] border border-stone-300 p-0.5 flex items-center justify-center overflow-hidden flex-shrink-0">
-              <img src="{{this.imageURL}}" alt="Cover" class="max-h-full max-w-full object-contain rounded-xs" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'">
+        <!-- List Row -->
+        <article class="item-list-row"
+          style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.14);border-radius:12px;padding:0.85rem 1rem;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.75rem;transition:all 0.15s ease;"
+          id="list_{{this.id}}"
+          onmouseenter="this.style.borderColor='rgba(15,118,110,0.30)';this.style.boxShadow='0 4px 12px rgba(15,118,110,0.08)'"
+          onmouseleave="this.style.borderColor='rgba(15,118,110,0.14)';this.style.boxShadow='none'">
+
+          <div style="display:flex;align-items:center;gap:0.75rem;min-width:0;flex:1;">
+            <div style="width:48px;height:64px;border-radius:8px;background:rgba(215,244,238,0.30);border:1px solid rgba(15,118,110,0.16);padding:3px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
+              <img src="{{this.imageURL}}" alt="Cover" style="max-height:100%;max-width:100%;object-fit:contain;border-radius:4px;" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'">
             </div>
 
-            <div class="min-w-0 space-y-1">
-              <div class="flex flex-wrap items-center gap-1.5">
+            <div style="min-width:0;">
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0.35rem;margin-bottom:0.3rem;">
                 {{#if this.main}}
-                <span class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-amber-600 text-white">Main</span>
+                <span style="padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700;background:var(--warning);color:#fff;">Main</span>
                 {{/if}}
-                <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-[#f0f4f9] text-[#162e4a] border border-[#bad0e4]">{{formatSemesterBadge this.semester}}</span>
-                <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-stone-100 text-stone-700 border border-stone-200">{{this.category}}</span>
-                <span class="text-[11px] text-stone-500"><i class="fas fa-eye text-[9px] mr-0.5"></i> {{formatNumber this.views}}</span>
+                <span style="padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;background:var(--primary-lt);color:var(--primary-dk);border:1px solid rgba(15,118,110,0.22);">{{formatSemesterBadge this.semester}}</span>
+                <span style="padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(255,255,255,0.80);color:var(--text-2);border:1px solid rgba(15,118,110,0.16);">{{this.category}}</span>
+                <span style="font-size:11px;color:var(--text-muted);"><i class="fas fa-eye" style="font-size:9px;margin-right:2px;"></i>{{formatNumber this.views}}</span>
               </div>
-              <h3 class="font-serif font-bold text-sm text-stone-900 hover:text-[#162e4a] transition-colors truncate">
-                <a href="/book/{{this.id}}" title="{{this.name}}">{{this.name}}</a>
+              <h3 style="font-family:var(--font-headings);font-weight:700;font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:0.2rem;">
+                <a href="/book/{{this.id}}" style="text-decoration:none;color:inherit;" title="{{this.name}}"
+                  onmouseenter="this.style.color='var(--primary)'" onmouseleave="this.style.color='inherit'">{{this.name}}</a>
               </h3>
-              <p class="text-xs text-stone-600 truncate" title="{{this.description}}">
-                {{this.description}}
-              </p>
+              <p style="font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="{{this.description}}">{{this.description}}</p>
             </div>
           </div>
 
-          <div class="flex items-center gap-2 flex-shrink-0 self-end sm:self-auto">
-            <button type="button" onclick="openQuickView('{{this.id}}', '{{this.name}}', '{{this.description}}', '{{this.imageURL}}', '{{this.link}}', '{{this.category}}', '{{this.semester}}', {{this.views}})" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-medium border border-stone-300 transition-colors">
-              <i class="fas fa-search-plus text-[10px]"></i>
+          <div style="display:flex;align-items:center;gap:0.4rem;flex-shrink:0;">
+            <button type="button" onclick="openQuickView('{{this.id}}', '{{this.name}}', '{{this.description}}', '{{this.imageURL}}', '{{this.link}}', '{{this.category}}', '{{this.semester}}', {{this.views}})"
+              style="display:inline-flex;align-items:center;gap:0.35rem;padding:7px 11px;border-radius:7px;background:rgba(255,255,255,0.85);color:var(--text-2);border:1px solid rgba(15,118,110,0.18);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s ease;"
+              onmouseenter="this.style.background='var(--primary-lt)';this.style.color='var(--primary)'"
+              onmouseleave="this.style.background='rgba(255,255,255,0.85)';this.style.color='var(--text-2)'">
+              <i class="fas fa-search-plus" style="font-size:10px;"></i>
               <span>Quick View</span>
             </button>
 
-            <button onclick="downloadResource('{{this.link}}', '{{this.id}}')" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded bg-emerald-50 hover:bg-emerald-700 text-emerald-700 hover:text-white border border-emerald-200 hover:border-emerald-700 text-xs font-medium transition-colors">
-              <i class="fas fa-download text-[10px]"></i>
+            <button onclick="downloadResource('{{this.link}}', '{{this.id}}')"
+              style="display:inline-flex;align-items:center;gap:0.35rem;padding:7px 11px;border-radius:7px;background:rgba(22,163,74,0.10);color:#16a34a;border:1px solid rgba(22,163,74,0.22);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s ease;"
+              onmouseenter="this.style.background='#16a34a';this.style.color='#fff'"
+              onmouseleave="this.style.background='rgba(22,163,74,0.10)';this.style.color='#16a34a'">
+              <i class="fas fa-download" style="font-size:10px;"></i>
               <span>Download</span>
             </button>
 
-            <a href="/book/{{this.id}}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded bg-[#162e4a] hover:bg-[#0f2035] text-white text-xs font-semibold uppercase tracking-wider transition-colors shadow-sm">
+            <a href="/book/{{this.id}}"
+              style="display:inline-flex;align-items:center;gap:0.35rem;padding:7px 13px;border-radius:7px;background:var(--primary);color:#fff;font-size:12px;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:0.04em;transition:all 0.15s ease;box-shadow:0 2px 6px rgba(15,118,110,0.22);"
+              onmouseenter="this.style.background='var(--primary-dk)'"
+              onmouseleave="this.style.background='var(--primary)'">
               <span>View Book</span>
-              <i class="fas fa-arrow-right text-[9px]"></i>
+              <i class="fas fa-arrow-right" style="font-size:9px;"></i>
             </a>
           </div>
-
         </article>
 
         {{/each}}
       </div>
 
       {{else}}
-      <!-- Empty Catalog State -->
-      <div class="bg-white rounded-lg p-10 text-center max-w-md mx-auto border border-stone-300 space-y-3">
-        <div class="w-12 h-12 rounded-full bg-stone-100 flex items-center justify-center mx-auto text-stone-400 text-xl">
-          <i class="fas fa-book-open"></i>
+      <!-- Empty State -->
+      <div style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:14px;padding:3rem 1.5rem;text-align:center;max-width:440px;margin:0 auto;">
+        <div style="width:56px;height:56px;border-radius:14px;background:var(--primary-lt);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;border:1px solid rgba(15,118,110,0.22);">
+          <i class="fas fa-book-open" style="font-size:22px;color:var(--primary);"></i>
         </div>
-        <div class="space-y-1">
-          <h3 class="font-serif font-bold text-base text-stone-900">No resources found</h3>
-          <p class="text-xs text-stone-500">Try adjusting your filters or search keywords.</p>
-        </div>
-        <button onclick="resetFilters()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded bg-[#162e4a] text-white font-medium text-xs hover:bg-[#0f2035] transition-colors shadow-sm">
+        <h3 style="font-family:var(--font-headings);font-weight:700;font-size:1.1rem;color:var(--text);margin-bottom:0.4rem;">No resources found</h3>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:1.25rem;">Try adjusting your filters or search keywords.</p>
+        <button onclick="resetFilters()" id="reset-filters-btn"
+          style="display:inline-flex;align-items:center;gap:0.5rem;padding:9px 20px;border-radius:8px;background:var(--primary);color:#fff;font-weight:700;font-size:13px;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(15,118,110,0.24);transition:all 0.15s ease;"
+          onmouseenter="this.style.background='var(--primary-dk)'"
+          onmouseleave="this.style.background='var(--primary)'">
           <i class="fas fa-filter"></i>
           <span>Reset Filters</span>
         </button>
       </div>
       {{/if}}
 
-      <!-- Pagination Component Partial -->
+      <!-- Pagination -->
       {{> pagination label="catalog items"}}
 
     </div>

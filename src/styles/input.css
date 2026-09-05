@@ -1,20 +1,36 @@
 @import "tailwindcss";
 
 @theme {
-  --font-serif: 'Lora', 'Georgia', 'Cambria', 'Times New Roman', serif;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  
-  --color-oxford-50: #f0f4f9;
-  --color-oxford-100: #dce5f0;
-  --color-oxford-200: #bad0e4;
-  --color-oxford-700: #1b3f68;
-  --color-oxford-800: #162e4a;
-  --color-oxford-900: #0f2035;
-  
-  --color-antique-50: #faf8f5;
-  --color-antique-100: #f3efe8;
-  --color-antique-200: #e7ded0;
-  --color-antique-700: #8c6d3f;
-  --color-antique-800: #6e532b;
-  --color-antique-900: #4a3618;
+  /* Fonts */
+  --font-sans:     "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-headings: "Sora", "Segoe UI", system-ui, sans-serif;
+  --font-mono:     "JetBrains Mono", "SF Mono", Consolas, monospace;
+
+  /* Teal Primary Palette (mbkbucket-inspired) */
+  --color-teal-50:  #f0faf8;
+  --color-teal-100: #d7f4ee;
+  --color-teal-200: #aee8dc;
+  --color-teal-300: #79d4c5;
+  --color-teal-400: #3fb9aa;
+  --color-teal-500: #1f8f84;
+  --color-teal-600: #0f766e;
+  --color-teal-700: #0b4f4a;
+  --color-teal-800: #083d38;
+  --color-teal-900: #052b27;
+  --color-teal-950: #021a17;
+
+  /* Green accent */
+  --color-green-50:  #f4f7f3;
+  --color-green-100: #e2ede8;
+  --color-green-200: #c0d9ce;
+
+  /* Warm dark (used for body text) */
+  --color-dark-50:   #f4f7f3;
+  --color-dark-900:  #1f2a2a;
+
+  /* Status colors */
+  --color-danger:  #dc2626;
+  --color-warning: #d97706;
+  --color-success: #16a34a;
+  --color-info:    #3b82f6;
 }

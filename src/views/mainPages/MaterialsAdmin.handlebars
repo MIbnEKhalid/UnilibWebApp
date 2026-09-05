@@ -6,42 +6,81 @@
 <section class="w-full space-y-5" id="materialsAdmin">
   
   <!-- Dashboard Page Header & Stats Summary -->
-  <div class="bg-white rounded-lg p-5 border border-stone-300 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+  <div class="bg-white rounded-lg p-5 border border-teal-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
     <div class="space-y-1">
-      <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[11px] font-semibold bg-[#f0f4f9] text-[#162e4a] border border-[#bad0e4]">
+      <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[11px] font-semibold bg-teal-50 text-[#0f766e] border border-teal-200">
         <i class="fas fa-archive text-[10px]"></i>
         <span class="uppercase tracking-wider">Tasjeel Archive & Course Materials</span>
       </div>
-      <h1 class="font-serif font-bold text-xl sm:text-2xl text-stone-900 tracking-normal">
+      <h1 class="font-headings font-bold text-xl sm:text-2xl text-teal-950 tracking-normal">
         Course Materials Management
       </h1>
-      <p class="text-xs text-stone-600">
+      <p class="text-xs text-teal-800/80">
         Manage course subjects, assign semesters, add or delete lecture materials, and trigger automatic portal sync.
       </p>
     </div>
 
     <!-- Top Action Buttons -->
     <div class="flex flex-wrap items-center gap-2">
-      <button type="button" id="syncTasjeelBtn" onclick="triggerTasjeelSync()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-300 text-xs font-semibold uppercase tracking-wider shadow-sm transition-colors">
-        <i class="fas fa-rotate text-stone-500" id="syncIcon"></i>
+      <button type="button" id="syncTasjeelBtn" onclick="triggerTasjeelSync()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded bg-teal-50 hover:bg-teal-100 text-teal-900/80 border border-teal-200 text-xs font-semibold uppercase tracking-wider shadow-sm transition-colors">
+        <i class="fas fa-rotate text-teal-700/70" id="syncIcon"></i>
         <span id="syncText">Sync Tasjeel</span>
       </button>
 
-      <button type="button" onclick="openAddSubjectModal()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-[#162e4a] hover:bg-[#0f2035] text-white text-xs font-semibold uppercase tracking-wider shadow-sm transition-colors">
-        <i class="fas fa-plus text-amber-100"></i>
+      <button type="button" onclick="openAddSubjectModal()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-[#0f766e] hover:bg-[#0b4f4a] text-white text-xs font-semibold uppercase tracking-wider shadow-sm transition-colors">
+        <i class="fas fa-plus text-teal-100"></i>
         <span>New Subject</span>
       </button>
     </div>
   </div>
 
+  <!-- ================================================================ -->
+  <!-- Stats Row                                                          -->
+  <!-- ================================================================ -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.85rem;" id="mat-stats-row">
+    <div style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:12px;padding:1rem 1.25rem;box-shadow:0 2px 8px rgba(0,0,0,0.03);display:flex;align-items:center;gap:0.85rem;">
+      <div style="width:40px;height:40px;border-radius:10px;background:var(--primary-lt);border:1px solid rgba(15,118,110,0.22);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i class="fas fa-book-bookmark" style="font-size:15px;color:var(--primary);"></i>
+      </div>
+      <div>
+        <div style="font-family:var(--font-headings);font-weight:800;font-size:1.4rem;color:var(--text);line-height:1;">{{subjects.length}}</div>
+        <div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-top:2px;">Subjects</div>
+      </div>
+    </div>
+
+    <div style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:12px;padding:1rem 1.25rem;box-shadow:0 2px 8px rgba(0,0,0,0.03);display:flex;align-items:center;gap:0.85rem;">
+      <div style="width:40px;height:40px;border-radius:10px;background:rgba(22,163,74,0.10);border:1px solid rgba(22,163,74,0.24);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i class="fas fa-file-alt" style="font-size:15px;color:#16a34a;"></i>
+      </div>
+      <div>
+        <div style="font-family:var(--font-headings);font-weight:800;font-size:1.4rem;color:var(--text);line-height:1;" id="mat-stat-files">{{#if totalMaterialsFiles}}{{totalMaterialsFiles}}{{else}}0{{/if}}</div>
+        <div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-top:2px;">Total Files</div>
+      </div>
+    </div>
+
+    <div style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:12px;padding:1rem 1.25rem;box-shadow:0 2px 8px rgba(0,0,0,0.03);display:flex;align-items:center;gap:0.85rem;">
+      <div style="width:40px;height:40px;border-radius:10px;background:rgba(59,130,246,0.10);border:1px solid rgba(59,130,246,0.24);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i class="fas fa-rotate" style="font-size:15px;color:#3b82f6;"></i>
+      </div>
+      <div>
+        <div style="font-family:var(--font-headings);font-weight:700;font-size:0.95rem;color:var(--text);line-height:1;" id="mat-stat-sync">Not yet synced</div>
+        <div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-top:2px;">Last Sync</div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    @media (max-width: 640px) { #mat-stats-row { grid-template-columns: 1fr !important; } }
+  </style>
+
   <!-- Admin Sub-Navigation Tabs -->
-  <div class="flex items-center gap-2 border-b border-stone-200 pb-2">
-    <a href="/dashboard" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-colors flex items-center gap-1.5 uppercase tracking-wider">
-      <i class="fas fa-book-bookmark text-stone-400 text-[11px]"></i>
+  <div class="flex items-center gap-2 border-b border-teal-100 pb-2">
+    <a href="/dashboard" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-teal-800/80 hover:text-teal-950 hover:bg-teal-50 transition-colors flex items-center gap-1.5 uppercase tracking-wider">
+      <i class="fas fa-book-bookmark text-teal-600/60 text-[11px]"></i>
       <span>Book Publications</span>
     </a>
-    <a href="/dashboard/Materials" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-[#162e4a] text-white flex items-center gap-1.5 uppercase tracking-wider shadow-xs">
-      <i class="fas fa-archive text-amber-200 text-[11px]"></i>
+    <a href="/dashboard/Materials" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-[#0f766e] text-white flex items-center gap-1.5 uppercase tracking-wider shadow-xs">
+      <i class="fas fa-archive text-teal-100 text-[11px]"></i>
       <span>Course Materials</span>
     </a>
   </div>
@@ -60,23 +99,23 @@
   {{> semesterTabs tabContainerId="adminSemesterTabs" tabHandler="selectAdminSemesterTab"}}
 
   <!-- Faceted Search & Counter Toolbar -->
-  <div class="bg-white rounded-lg p-3 border border-stone-300 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+  <div class="bg-white rounded-lg p-3 border border-teal-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
     <div class="relative w-full sm:max-w-md">
-      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
+      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-teal-600/60">
         <i class="fas fa-search text-xs"></i>
       </div>
       <input type="text" id="adminSubjectSearch" placeholder="Search subjects by name or course code..." aria-label="Search subjects" class="input-classic w-full pl-9 pr-9 py-2 text-xs">
       
-      <button type="button" id="adminSubjectSearchClear" aria-label="Clear search" class="absolute inset-y-0 right-0 pr-2.5 flex items-center text-stone-400 hover:text-stone-700" style="display:none;">
-        <i class="fas fa-times text-xs bg-stone-100 p-1 rounded-full"></i>
+      <button type="button" id="adminSubjectSearchClear" aria-label="Clear search" class="absolute inset-y-0 right-0 pr-2.5 flex items-center text-teal-600/60 hover:text-teal-900/80" style="display:none;">
+        <i class="fas fa-times text-xs bg-teal-50 p-1 rounded-full"></i>
       </button>
     </div>
 
-    <div class="flex items-center gap-3 text-xs text-stone-600 font-medium self-end sm:self-auto">
-      <span class="px-2.5 py-1 rounded bg-stone-50 border border-stone-200">
-        Listed: <strong id="adminSubjectVisibleCount" class="text-stone-900">{{subjects.length}}</strong> of {{subjects.length}}
+    <div class="flex items-center gap-3 text-xs text-teal-800/80 font-medium self-end sm:self-auto">
+      <span class="px-2.5 py-1 rounded bg-teal-50 border border-teal-100">
+        Listed: <strong id="adminSubjectVisibleCount" class="text-teal-950">{{subjects.length}}</strong> of {{subjects.length}}
       </span>
-      <button type="button" onclick="expandAllAdminMaterials()" class="text-stone-600 hover:text-[#162e4a] underline text-xs">
+      <button type="button" onclick="expandAllAdminMaterials()" class="text-teal-800/80 hover:text-[#0f766e] underline text-xs">
         Expand All
       </button>
     </div>
@@ -86,24 +125,24 @@
   {{#if subjects.length}}
   <div class="space-y-3" id="adminSubjectsContainer">
     {{#each subjects}}
-    <div class="subject-admin-card bg-white rounded-lg border border-stone-300 shadow-sm overflow-hidden transition-colors" data-courseid="{{courseId}}" data-semester="{{semester}}">
+    <div class="subject-admin-card bg-white rounded-lg border border-teal-200 shadow-sm overflow-hidden transition-colors" data-courseid="{{courseId}}" data-semester="{{semester}}">
       
       <!-- Card Header -->
-      <div class="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer select-none card-header hover:bg-stone-50 transition-colors">
+      <div class="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer select-none card-header hover:bg-teal-50 transition-colors">
         
         <div class="flex items-center gap-3 min-w-0">
-          <div class="w-9 h-9 rounded bg-[#f0f4f9] border border-[#bad0e4] flex items-center justify-center text-[#162e4a] flex-shrink-0">
+          <div class="w-9 h-9 rounded bg-teal-50 border border-teal-200 flex items-center justify-center text-[#0f766e] flex-shrink-0">
             <i class="fas fa-book-bookmark text-xs"></i>
           </div>
           
           <div class="space-y-1 min-w-0">
-            <h3 class="subject-title font-serif font-bold text-sm text-stone-900 truncate">
+            <h3 class="subject-title font-headings font-bold text-sm text-teal-950 truncate">
               {{subject}}
             </h3>
-            <div class="flex flex-wrap items-center gap-2 text-xs text-stone-500">
-              <span>Code: <strong class="text-stone-800">{{courseId}}</strong></span>
+            <div class="flex flex-wrap items-center gap-2 text-xs text-teal-700/70">
+              <span>Code: <strong class="text-teal-900">{{courseId}}</strong></span>
               <span>&bull;</span>
-              <span class="subject-semester-label text-[#162e4a] font-semibold">{{semester}}</span>
+              <span class="subject-semester-label text-[#0f766e] font-semibold">{{semester}}</span>
             </div>
           </div>
         </div>
@@ -113,7 +152,7 @@
           
           <div class="relative" title="Assign Semester">
             <label for="admin_sem_{{courseId}}" class="sr-only">Assign Semester</label>
-            <select id="admin_sem_{{courseId}}" onchange="changeAdminSubjectSemester('{{courseId}}', this.value)" class="input-classic text-xs py-1.5 pl-2.5 pr-6 bg-[#f0f4f9] hover:bg-[#dce5f0] text-[#162e4a] font-semibold border border-[#bad0e4] rounded cursor-pointer transition-colors shadow-xs appearance-none">
+            <select id="admin_sem_{{courseId}}" onchange="changeAdminSubjectSemester('{{courseId}}', this.value)" class="input-classic text-xs py-1.5 pl-2.5 pr-6 bg-teal-50 hover:bg-[#dce5f0] text-[#0f766e] font-semibold border border-teal-200 rounded cursor-pointer transition-colors shadow-xs appearance-none">
               <option value="Semester 1" {{#if (eq semester 'Semester 1')}}selected{{/if}}>Semester 1</option>
               <option value="Semester 2" {{#if (eq semester 'Semester 2')}}selected{{/if}}>Semester 2</option>
               <option value="Semester 3" {{#if (eq semester 'Semester 3')}}selected{{/if}}>Semester 3</option>
@@ -123,24 +162,24 @@
               <option value="Semester 7" {{#if (eq semester 'Semester 7')}}selected{{/if}}>Semester 7</option>
               <option value="Semester 8" {{#if (eq semester 'Semester 8')}}selected{{/if}}>Semester 8</option>
             </select>
-            <div class="absolute inset-y-0 right-0 pr-1.5 flex items-center pointer-events-none text-[#162e4a]">
+            <div class="absolute inset-y-0 right-0 pr-1.5 flex items-center pointer-events-none text-[#0f766e]">
               <i class="fas fa-chevron-down text-[8px]"></i>
             </div>
           </div>
 
-          <button type="button" onclick="openAddMaterialModal('{{courseId}}', '{{subject}}')" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded bg-emerald-50 hover:bg-emerald-700 text-emerald-700 hover:text-white border border-emerald-200 hover:border-emerald-700 text-xs font-medium transition-colors shadow-xs" title="Add Material">
+          <button type="button" onclick="openAddMaterialModal(this)" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded bg-emerald-50 hover:bg-emerald-700 text-emerald-700 hover:text-white border border-emerald-200 hover:border-emerald-700 text-xs font-medium transition-colors shadow-xs" title="Add Material">
             <i class="fas fa-plus text-[9px]"></i>
             <span>Add File</span>
           </button>
 
-          <button type="button" onclick="confirmDeleteSubject('{{courseId}}', '{{subject}}')" class="inline-flex items-center justify-center p-2 rounded bg-stone-100 hover:bg-rose-700 text-rose-700 hover:text-white text-xs border border-stone-300 hover:border-rose-700 transition-colors shadow-xs" title="Delete Subject">
+          <button type="button" onclick="confirmDeleteSubject(this)" class="inline-flex items-center justify-center p-2 rounded bg-teal-50 hover:bg-rose-700 text-rose-700 hover:text-white text-xs border border-teal-200 hover:border-rose-700 transition-colors shadow-xs" title="Delete Subject">
             <i class="fas fa-trash-alt text-[10px]"></i>
           </button>
 
-          <button type="button" onclick="toggleAdminMaterialsCard(this.closest('.subject-admin-card'))" class="load-materials-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-medium border border-stone-300 transition-colors shadow-xs">
+          <button type="button" onclick="toggleAdminMaterialsCard(this.closest('.subject-admin-card'))" class="load-materials-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-teal-50 hover:bg-teal-100 text-teal-900/80 text-xs font-medium border border-teal-200 transition-colors shadow-xs">
             <span>Files</span>
-            <span class="material-badge px-1.5 py-0.2 rounded text-[10px] font-bold bg-white text-stone-800 border border-stone-300">{{materialsCount}}</span>
-            <i class="fas fa-chevron-down text-[9px] text-stone-400 transition-transform duration-200 expand-icon"></i>
+            <span class="material-badge px-1.5 py-0.2 rounded text-[10px] font-bold bg-white text-teal-900 border border-teal-200">{{materialsCount}}</span>
+            <i class="fas fa-chevron-down text-[9px] text-teal-600/60 transition-transform duration-200 expand-icon"></i>
           </button>
 
         </div>
@@ -148,8 +187,8 @@
       </div>
 
       <!-- Collapsible Materials Content -->
-      <div class="materials-section hidden px-4 pb-4 pt-1 border-t border-stone-200 bg-stone-50/50">
-        <div class="loading-spinner py-4 flex items-center justify-center gap-2 text-xs text-[#162e4a]" style="display:none;">
+      <div class="materials-section hidden px-4 pb-4 pt-1 border-t border-teal-100 bg-teal-50/50">
+        <div class="loading-spinner py-4 flex items-center justify-center gap-2 text-xs text-[#0f766e]" style="display:none;">
           <i class="fas fa-spinner fa-spin text-sm"></i>
           <span>Loading course files...</span>
         </div>
@@ -163,36 +202,36 @@
   </div>
 
   <!-- Empty filtered state -->
-  <div id="noAdminSubjectsFiltered" class="bg-white rounded-lg p-10 text-center max-w-md mx-auto border border-stone-300 space-y-3" style="display: none;">
-    <div class="w-12 h-12 rounded-full bg-stone-100 flex items-center justify-center mx-auto text-stone-400 text-xl">
+  <div id="noAdminSubjectsFiltered" class="bg-white rounded-lg p-10 text-center max-w-md mx-auto border border-teal-200 space-y-3" style="display: none;">
+    <div class="w-12 h-12 rounded-full bg-teal-50 flex items-center justify-center mx-auto text-teal-600/60 text-xl">
       <i class="fas fa-folder-open"></i>
     </div>
     <div class="space-y-1">
-      <h3 class="font-serif font-bold text-base text-stone-900">No Subjects Found</h3>
-      <p class="text-xs text-stone-500">No subjects currently match the selected semester filter or search query.</p>
+      <h3 class="font-headings font-bold text-base text-teal-950">No Subjects Found</h3>
+      <p class="text-xs text-teal-700/70">No subjects currently match the selected semester filter or search query.</p>
     </div>
-    <button onclick="selectAdminSemesterTab('all')" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded bg-[#162e4a] text-white font-medium text-xs hover:bg-[#0f2035] transition-colors shadow-sm">
+    <button onclick="selectAdminSemesterTab('all')" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded bg-[#0f766e] text-white font-medium text-xs hover:bg-[#0b4f4a] transition-colors shadow-sm">
       <i class="fas fa-layer-group"></i>
       <span>Show All Semesters</span>
     </button>
   </div>
 
   {{else}}
-  <div class="bg-white rounded-lg p-10 text-center max-w-md mx-auto border border-stone-300 space-y-3">
-    <div class="w-12 h-12 rounded-full bg-stone-100 flex items-center justify-center mx-auto text-stone-400 text-xl">
+  <div class="bg-white rounded-lg p-10 text-center max-w-md mx-auto border border-teal-200 space-y-3">
+    <div class="w-12 h-12 rounded-full bg-teal-50 flex items-center justify-center mx-auto text-teal-600/60 text-xl">
       <i class="fas fa-archive"></i>
     </div>
     <div class="space-y-1">
-      <h3 class="font-serif font-bold text-base text-stone-900">No Materials in Archive</h3>
-      <p class="text-xs text-stone-500">Sync with Tasjeel portal or create custom course subjects.</p>
+      <h3 class="font-headings font-bold text-base text-teal-950">No Materials in Archive</h3>
+      <p class="text-xs text-teal-700/70">Sync with Tasjeel portal or create custom course subjects.</p>
     </div>
     <div class="flex items-center justify-center gap-2 pt-2">
-      <button onclick="triggerTasjeelSync()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-semibold border border-stone-300 transition-colors shadow-sm">
+      <button onclick="triggerTasjeelSync()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded bg-teal-50 hover:bg-teal-100 text-teal-900/80 text-xs font-semibold border border-teal-200 transition-colors shadow-sm">
         <i class="fas fa-rotate"></i>
         <span>Sync Tasjeel</span>
       </button>
-      <button onclick="openAddSubjectModal()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-[#162e4a] hover:bg-[#0f2035] text-white text-xs font-semibold uppercase tracking-wider transition-colors shadow-sm">
-        <i class="fas fa-plus text-amber-100"></i>
+      <button onclick="openAddSubjectModal()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-[#0f766e] hover:bg-[#0b4f4a] text-white text-xs font-semibold uppercase tracking-wider transition-colors shadow-sm">
+        <i class="fas fa-plus text-teal-100"></i>
         <span>New Subject</span>
       </button>
     </div>
@@ -203,28 +242,28 @@
 
 <!-- Modal: Add New Subject -->
 <div id="addSubjectModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-  <div class="bg-white rounded-xl max-w-md w-full p-6 shadow-2xl border border-stone-200 space-y-4">
-    <div class="flex items-center justify-between pb-3 border-b border-stone-200">
-      <h3 class="font-serif font-bold text-base text-stone-900 flex items-center gap-2">
-        <i class="fas fa-plus text-[#162e4a]"></i>
+  <div class="bg-white rounded-xl max-w-md w-full p-6 shadow-2xl border border-teal-100 space-y-4">
+    <div class="flex items-center justify-between pb-3 border-b border-teal-100">
+      <h3 class="font-headings font-bold text-base text-teal-950 flex items-center gap-2">
+        <i class="fas fa-plus text-[#0f766e]"></i>
         <span>Add New Course Subject</span>
       </h3>
-      <button type="button" onclick="closeAddSubjectModal()" class="text-stone-400 hover:text-stone-700 text-sm p-1">&times;</button>
+      <button type="button" onclick="closeAddSubjectModal()" class="text-teal-600/60 hover:text-teal-900/80 text-sm p-1">&times;</button>
     </div>
 
     <form id="addSubjectForm" onsubmit="submitAddSubject(event)" class="space-y-3.5">
       <div>
-        <label for="newCourseId" class="block text-xs font-semibold text-stone-700 mb-1">Course Code / ID <span class="text-rose-600">*</span></label>
+        <label for="newCourseId" class="block text-xs font-semibold text-teal-900/80 mb-1">Course Code / ID <span class="text-rose-600">*</span></label>
         <input type="text" id="newCourseId" required placeholder="e.g. CS101 or CS-3213" class="input-classic w-full px-3 py-2 text-xs">
       </div>
 
       <div>
-        <label for="newSubjectName" class="block text-xs font-semibold text-stone-700 mb-1">Subject Title <span class="text-rose-600">*</span></label>
+        <label for="newSubjectName" class="block text-xs font-semibold text-teal-900/80 mb-1">Subject Title <span class="text-rose-600">*</span></label>
         <input type="text" id="newSubjectName" required placeholder="e.g. Data Structures & Algorithms" class="input-classic w-full px-3 py-2 text-xs">
       </div>
 
       <div>
-        <label for="newSubjectSemester" class="block text-xs font-semibold text-stone-700 mb-1">Semester Assignment <span class="text-rose-600">*</span></label>
+        <label for="newSubjectSemester" class="block text-xs font-semibold text-teal-900/80 mb-1">Semester Assignment <span class="text-rose-600">*</span></label>
         <select id="newSubjectSemester" required class="input-classic w-full px-3 py-2 text-xs">
           <option value="Semester 1">Semester 1</option>
           <option value="Semester 2">Semester 2</option>
@@ -237,11 +276,11 @@
         </select>
       </div>
 
-      <div class="pt-3 border-t border-stone-100 flex items-center justify-end gap-2">
-        <button type="button" onclick="closeAddSubjectModal()" class="px-3.5 py-1.5 rounded bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-medium border border-stone-300 transition-colors">
+      <div class="pt-3 border-t border-teal-100 flex items-center justify-end gap-2">
+        <button type="button" onclick="closeAddSubjectModal()" class="px-3.5 py-1.5 rounded bg-teal-50 hover:bg-teal-100 text-teal-900/80 text-xs font-medium border border-teal-200 transition-colors">
           Cancel
         </button>
-        <button type="submit" id="saveSubjectBtn" class="px-4 py-1.5 rounded bg-[#162e4a] hover:bg-[#0f2035] text-white text-xs font-semibold uppercase tracking-wider transition-colors shadow-sm">
+        <button type="submit" id="saveSubjectBtn" class="px-4 py-1.5 rounded bg-[#0f766e] hover:bg-[#0b4f4a] text-white text-xs font-semibold uppercase tracking-wider transition-colors shadow-sm">
           Save Subject
         </button>
       </div>
@@ -251,33 +290,33 @@
 
 <!-- Modal: Add Material Resource -->
 <div id="addMaterialModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-  <div class="bg-white rounded-xl max-w-md w-full p-6 shadow-2xl border border-stone-200 space-y-4">
-    <div class="flex items-center justify-between pb-3 border-b border-stone-200">
+  <div class="bg-white rounded-xl max-w-md w-full p-6 shadow-2xl border border-teal-100 space-y-4">
+    <div class="flex items-center justify-between pb-3 border-b border-teal-100">
       <div>
-        <h3 class="font-serif font-bold text-base text-stone-900 flex items-center gap-2">
+        <h3 class="font-headings font-bold text-base text-teal-950 flex items-center gap-2">
           <i class="fas fa-file-circle-plus text-emerald-700"></i>
           <span>Add Course Material</span>
         </h3>
-        <p class="text-xs text-stone-500 mt-0.5" id="addMaterialSubjectTitle"></p>
+        <p class="text-xs text-teal-700/70 mt-0.5" id="addMaterialSubjectTitle"></p>
       </div>
-      <button type="button" onclick="closeAddMaterialModal()" class="text-stone-400 hover:text-stone-700 text-sm p-1">&times;</button>
+      <button type="button" onclick="closeAddMaterialModal()" class="text-teal-600/60 hover:text-teal-900/80 text-sm p-1">&times;</button>
     </div>
 
     <form id="addMaterialForm" onsubmit="submitAddMaterial(event)" class="space-y-3.5">
       <input type="hidden" id="addMaterialCourseId">
 
       <div>
-        <label for="materialNameInput" class="block text-xs font-semibold text-stone-700 mb-1">Document / Material Name <span class="text-rose-600">*</span></label>
+        <label for="materialNameInput" class="block text-xs font-semibold text-teal-900/80 mb-1">Document / Material Name <span class="text-rose-600">*</span></label>
         <input type="text" id="materialNameInput" required placeholder="e.g. Lecture 01 - Introduction.pdf" class="input-classic w-full px-3 py-2 text-xs">
       </div>
 
       <div>
-        <label for="materialHrefInput" class="block text-xs font-semibold text-stone-700 mb-1">Download URL or Storage Path</label>
+        <label for="materialHrefInput" class="block text-xs font-semibold text-teal-900/80 mb-1">Download URL or Storage Path</label>
         <input type="text" id="materialHrefInput" placeholder="e.g. /student/class/material/download/... or direct URL" class="input-classic w-full px-3 py-2 text-xs">
       </div>
 
-      <div class="pt-3 border-t border-stone-100 flex items-center justify-end gap-2">
-        <button type="button" onclick="closeAddMaterialModal()" class="px-3.5 py-1.5 rounded bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-medium border border-stone-300 transition-colors">
+      <div class="pt-3 border-t border-teal-100 flex items-center justify-end gap-2">
+        <button type="button" onclick="closeAddMaterialModal()" class="px-3.5 py-1.5 rounded bg-teal-50 hover:bg-teal-100 text-teal-900/80 text-xs font-medium border border-teal-200 transition-colors">
           Cancel
         </button>
         <button type="submit" id="saveMaterialBtn" class="px-4 py-1.5 rounded bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold uppercase tracking-wider transition-colors shadow-sm">
@@ -311,7 +350,53 @@
         toggleAdminMaterialsCard(header.closest('.subject-admin-card'));
       });
     });
+
+    // Last sync time from localStorage
+    const syncEl = document.getElementById('mat-stat-sync');
+    if (syncEl) {
+      const lastSync = localStorage.getItem('unilib_last_tasjeel_sync');
+      if (lastSync) {
+        try {
+          const d = new Date(lastSync);
+          syncEl.textContent = d.toLocaleString('en-GB', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        } catch { syncEl.textContent = 'Unknown'; }
+      }
+    }
+
+    // Confirm modal event listeners
+    const confirmModal = document.getElementById('materialsConfirmModal');
+    if (confirmModal) {
+      confirmModal.addEventListener('click', e => { if (e.target === confirmModal) closeConfirmModal(); });
+      document.getElementById('mc-ok-btn').addEventListener('click', () => {
+        if (_confirmCallback) _confirmCallback();
+        closeConfirmModal();
+      });
+    }
   });
+
+  // ================================================================
+  // Confirm Modal (shared helper)
+  // ================================================================
+  let _confirmCallback = null;
+  function showConfirm({ title, subtitle = '', message, icon = 'fa-exclamation-triangle', iconColor = '#dc2626', confirmText = 'Confirm', confirmColor = '#dc2626', onConfirm }) {
+    document.getElementById('mc-title').textContent = title;
+    document.getElementById('mc-subtitle').textContent = subtitle;
+    document.getElementById('mc-message').textContent = message;
+    document.getElementById('mc-icon').className = `fas ${icon}`;
+    document.getElementById('mc-icon').style.color = iconColor;
+    document.getElementById('mc-icon-wrap').style.background = `${iconColor}18`;
+    document.getElementById('mc-icon-wrap').style.borderColor = `${iconColor}40`;
+    const okBtn = document.getElementById('mc-ok-btn');
+    okBtn.textContent = confirmText;
+    okBtn.style.background = confirmColor;
+    _confirmCallback = onConfirm;
+    document.getElementById('materialsConfirmModal').style.display = 'flex';
+  }
+  function closeConfirmModal() {
+    document.getElementById('materialsConfirmModal').style.display = 'none';
+    _confirmCallback = null;
+  }
+
 
   window.triggerTasjeelSync = async function() {
     const syncBtn = document.getElementById('syncTasjeelBtn');
@@ -327,6 +412,7 @@
       const result = await resp.json();
 
       if (result.success) {
+        localStorage.setItem('unilib_last_tasjeel_sync', new Date().toISOString());
         showToast(`Tasjeel sync completed: ${result.count || 0} subjects updated`, 'success');
         setTimeout(() => location.reload(), 1000);
       } else {
@@ -371,29 +457,43 @@
     }
   };
 
-  window.confirmDeleteSubject = async function(courseId, subjectTitle) {
-    if (!confirm(`Are you sure you want to delete "${subjectTitle}" (${courseId}) and all of its materials?`)) return;
-
-    try {
-      const resp = await fetch(`/api/admin/subject/${encodeURIComponent(courseId)}/delete`, {
-        method: 'POST',
-        credentials: 'same-origin'
-      });
-
-      if (!resp.ok) {
-        const err = await resp.json().catch(() => ({}));
-        throw new Error(err.message || 'Failed to delete subject');
-      }
-
-      const card = document.querySelector(`.subject-admin-card[data-courseid="${courseId}"]`);
-      if (card) card.remove();
-
-      showToast(`Deleted subject "${subjectTitle}"`, 'success');
-      if (adminFilterEngine) adminFilterEngine.filter();
-    } catch (err) {
-      console.error('Delete subject error:', err);
-      showToast(err.message || 'Failed to delete subject', 'error');
+  window.confirmDeleteSubject = function(courseId, subjectTitle) {
+    if (courseId instanceof HTMLElement) {
+      const card = courseId.closest('.subject-admin-card');
+      subjectTitle = card?.querySelector('.subject-title')?.textContent?.trim() || '';
+      courseId = card?.dataset?.courseid || '';
     }
+    showConfirm({
+      title: 'Delete Subject & Materials',
+      subtitle: `${subjectTitle} (${courseId})`,
+      message: `Are you sure you want to delete "${subjectTitle}" (${courseId}) and all associated materials? This action cannot be reversed.`,
+      icon: 'fa-trash-alt',
+      iconColor: '#dc2626',
+      confirmText: 'Delete Subject',
+      confirmColor: '#dc2626',
+      onConfirm: async () => {
+        try {
+          const resp = await fetch(`/api/admin/subject/${encodeURIComponent(courseId)}/delete`, {
+            method: 'POST',
+            credentials: 'same-origin'
+          });
+
+          if (!resp.ok) {
+            const err = await resp.json().catch(() => ({}));
+            throw new Error(err.message || 'Failed to delete subject');
+          }
+
+          const card = document.querySelector(`.subject-admin-card[data-courseid="${courseId}"]`);
+          if (card) card.remove();
+
+          showToast(`Deleted subject "${subjectTitle}"`, 'success');
+          if (adminFilterEngine) adminFilterEngine.filter();
+        } catch (err) {
+          console.error('Delete subject error:', err);
+          showToast(err.message || 'Failed to delete subject', 'error');
+        }
+      }
+    });
   };
 
   window.openAddSubjectModal = function() {
@@ -445,6 +545,11 @@
   };
 
   window.openAddMaterialModal = function(courseId, subjectTitle) {
+    if (courseId instanceof HTMLElement) {
+      const card = courseId.closest('.subject-admin-card');
+      subjectTitle = card?.querySelector('.subject-title')?.textContent?.trim() || '';
+      courseId = card?.dataset?.courseid || '';
+    }
     document.getElementById('addMaterialCourseId').value = courseId;
     document.getElementById('addMaterialSubjectTitle').textContent = `${subjectTitle} (${courseId})`;
     const modal = document.getElementById('addMaterialModal');
@@ -499,30 +604,39 @@
     }
   };
 
-  window.deleteAdminMaterial = async function(materialId, materialName, courseId) {
-    if (!confirm(`Delete material "${materialName}"?`)) return;
+  window.deleteAdminMaterial = function(materialId, materialName, courseId) {
+    showConfirm({
+      title: 'Delete Material',
+      subtitle: materialName || 'Selected Material',
+      message: `Are you sure you want to delete the file "${materialName}"? This action cannot be reversed.`,
+      icon: 'fa-trash-alt',
+      iconColor: '#dc2626',
+      confirmText: 'Delete Material',
+      confirmColor: '#dc2626',
+      onConfirm: async () => {
+        try {
+          const resp = await fetch(`/api/admin/material/${encodeURIComponent(materialId)}/delete`, {
+            method: 'POST',
+            credentials: 'same-origin'
+          });
 
-    try {
-      const resp = await fetch(`/api/admin/material/${encodeURIComponent(materialId)}/delete`, {
-        method: 'POST',
-        credentials: 'same-origin'
-      });
+          if (!resp.ok) {
+            const err = await resp.json().catch(() => ({}));
+            throw new Error(err.message || 'Failed to delete material');
+          }
 
-      if (!resp.ok) {
-        const err = await resp.json().catch(() => ({}));
-        throw new Error(err.message || 'Failed to delete material');
+          showToast(`Material deleted`, 'success');
+          const card = document.querySelector(`.subject-admin-card[data-courseid="${courseId}"]`);
+          if (card) {
+            card._loaded = false;
+            await loadAdminMaterials(card);
+          }
+        } catch (err) {
+          console.error('Delete material error:', err);
+          showToast(err.message || 'Failed to delete material', 'error');
+        }
       }
-
-      showToast(`Material deleted`, 'success');
-      const card = document.querySelector(`.subject-admin-card[data-courseid="${courseId}"]`);
-      if (card) {
-        card._loaded = false;
-        await loadAdminMaterials(card);
-      }
-    } catch (err) {
-      console.error('Delete material error:', err);
-      showToast(err.message || 'Failed to delete material', 'error');
-    }
+    });
   };
 
   window.toggleAdminMaterialsCard = async function(card) {
@@ -547,6 +661,43 @@
     });
   };
 
+  function getFileIcon(name = '') {
+    const ext = (name.split('.').pop() || '').toLowerCase();
+    switch (ext) {
+      case 'pdf':
+        return '<i class="fas fa-file-pdf text-rose-600 text-sm" title="PDF Document"></i>';
+      case 'ppt':
+      case 'pptx':
+        return '<i class="fas fa-file-powerpoint text-amber-600 text-sm" title="PowerPoint Presentation"></i>';
+      case 'doc':
+      case 'docx':
+        return '<i class="fas fa-file-word text-blue-600 text-sm" title="Word Document"></i>';
+      case 'xls':
+      case 'xlsx':
+      case 'csv':
+        return '<i class="fas fa-file-excel text-emerald-600 text-sm" title="Spreadsheet"></i>';
+      case 'zip':
+      case 'rar':
+      case '7z':
+      case 'tar':
+      case 'gz':
+        return '<i class="fas fa-file-zipper text-purple-600 text-sm" title="Archive"></i>';
+      case 'mp4':
+      case 'mov':
+      case 'avi':
+      case 'mkv':
+        return '<i class="fas fa-file-video text-pink-600 text-sm" title="Video"></i>';
+      case 'png':
+      case 'jpg':
+      case 'jpeg':
+      case 'webp':
+      case 'svg':
+        return '<i class="fas fa-file-image text-cyan-600 text-sm" title="Image"></i>';
+      default:
+        return '<i class="fas fa-file-lines text-[#0f766e] text-sm" title="Document"></i>';
+    }
+  }
+
   async function loadAdminMaterials(card) {
     const list = card.querySelector('.materials-list');
     const spinner = card.querySelector('.loading-spinner');
@@ -567,27 +718,27 @@
         list.innerHTML = materials.map(m => `
           <li class="py-2.5 flex items-center justify-between gap-3">
             <div class="flex items-center gap-2.5 min-w-0 pr-2">
-              <span class="text-base flex-shrink-0">📄</span>
+              <span class="w-7 h-7 rounded-md bg-teal-50 border border-teal-100 flex items-center justify-center flex-shrink-0">${getFileIcon(m.name)}</span>
               <div class="min-w-0">
-                <span class="text-xs font-semibold text-stone-900 block truncate" title="${m.name || 'File'}">${m.name || 'Unnamed File'}</span>
-                ${m.href ? `<span class="text-[10px] text-stone-400 truncate block font-mono">${m.href}</span>` : ''}
+                <span class="text-xs font-semibold text-teal-950 block truncate" title="${m.name || 'File'}">${m.name || 'Unnamed File'}</span>
+                ${m.href ? `<span class="text-[10px] text-teal-600/60 truncate block font-mono">${m.href}</span>` : ''}
               </div>
             </div>
             <div class="flex items-center gap-2 flex-shrink-0">
               ${m.href ? `
-                <a href="${m.href}" target="_blank" class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-white hover:bg-[#162e4a] text-[#162e4a] hover:text-white text-xs font-semibold border border-stone-300 hover:border-[#162e4a] transition-colors">
+                <a href="${m.href}" target="_blank" class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-white hover:bg-[#0f766e] text-[#0f766e] hover:text-white text-xs font-semibold border border-teal-200 hover:border-[#0f766e] transition-colors">
                   <i class="fas fa-arrow-up-right-from-square text-[9px]"></i>
                   <span>Open</span>
                 </a>
               ` : ''}
-              <button type="button" onclick="deleteAdminMaterial('${m.id}', '${(m.name || '').replace(/'/g, "\\'")}', '${courseId}')" class="p-1 rounded bg-stone-100 hover:bg-rose-700 text-rose-700 hover:text-white text-xs border border-stone-200 hover:border-rose-700 transition-colors" title="Delete Material">
+              <button type="button" onclick="deleteAdminMaterial('${m.id}', '${(m.name || '').replace(/'/g, "\\'")}', '${courseId}')" class="p-1 rounded bg-teal-50 hover:bg-rose-700 text-rose-700 hover:text-white text-xs border border-teal-100 hover:border-rose-700 transition-colors" title="Delete Material">
                 <i class="fas fa-trash-alt text-[10px]"></i>
               </button>
             </div>
           </li>
         `).join('');
       } else {
-        list.innerHTML = `<li class="py-4 text-center text-stone-500 text-xs">No materials uploaded for this subject yet.</li>`;
+        list.innerHTML = `<li class="py-4 text-center text-teal-700/70 text-xs">No materials uploaded for this subject yet.</li>`;
       }
 
       card._loaded = true;
@@ -599,3 +750,24 @@
     }
   }
 </script>
+
+<!-- Glassmorphic Confirm Modal -->
+<div id="materialsConfirmModal" style="display:none;position:fixed;inset:0;background:rgba(15,42,42,0.50);backdrop-filter:blur(6px);z-index:1000;align-items:center;justify-content:center;padding:1rem;">
+  <div style="background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border:1px solid rgba(15,118,110,0.18);border-radius:16px;padding:1.75rem;max-width:440px;width:100%;box-shadow:0 20px 40px rgba(15,42,42,0.18);">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+      <div id="mc-icon-wrap" style="width:40px;height:40px;border-radius:10px;background:rgba(220,38,38,0.10);border:1px solid rgba(220,38,38,0.24);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i id="mc-icon" class="fas fa-exclamation-triangle" style="font-size:16px;color:#dc2626;"></i>
+      </div>
+      <div>
+        <h3 id="mc-title" style="font-family:var(--font-headings);font-weight:700;font-size:1rem;color:var(--text);margin:0;">Confirm Action</h3>
+        <p id="mc-subtitle" style="font-size:11px;color:var(--text-muted);margin:2px 0 0;"></p>
+      </div>
+    </div>
+    <p id="mc-message" style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:1.25rem;padding:0.75rem;background:rgba(220,38,38,0.05);border:1px solid rgba(220,38,38,0.12);border-radius:8px;"></p>
+    <div style="display:flex;gap:0.5rem;justify-content:flex-end;">
+      <button onclick="closeConfirmModal()" style="padding:8px 18px;border-radius:8px;background:rgba(255,255,255,0.85);color:var(--text-2);border:1px solid var(--border);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s ease;">Cancel</button>
+      <button id="mc-ok-btn" style="padding:8px 20px;border-radius:8px;background:#dc2626;color:white;border:none;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(220,38,38,0.28);transition:all 0.15s ease;">Delete</button>
+    </div>
+  </div>
+</div>
+

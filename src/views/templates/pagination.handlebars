@@ -1,38 +1,43 @@
 {{#unless singleBookView}}
-<div class="pt-3 flex flex-col items-center gap-2">
+<div style="padding-top:0.75rem;display:flex;flex-direction:column;align-items:center;gap:0.6rem;">
   {{#if (gt pagination.pages 1)}}
-  <div class="flex items-center gap-1 p-1 rounded bg-white border border-stone-300 shadow-sm" id="pagination">
-    
-    <button {{#if (eq pagination.page 1)}}disabled class="opacity-40 cursor-not-allowed w-8 h-8 rounded flex items-center justify-center text-stone-400 text-xs"{{else}}onclick="goToPage({{subtract pagination.page 1}})" class="w-8 h-8 rounded flex items-center justify-center text-stone-600 hover:bg-stone-100 text-xs transition-colors"{{/if}} title="Previous page">
+  <div style="display:flex;align-items:center;gap:0.25rem;padding:4px;border-radius:10px;background:rgba(255,255,255,0.88);backdrop-filter:blur(10px);border:1px solid rgba(15,118,110,0.16);box-shadow:0 2px 8px rgba(0,0,0,0.04);" id="pagination">
+
+    <button {{#if (eq pagination.page 1)}}disabled style="opacity:0.4;cursor:not-allowed;width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#a0b2af;border:none;background:none;"{{else}}onclick="goToPage({{subtract pagination.page 1}})" style="width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-2);border:none;background:none;cursor:pointer;transition:all 0.15s ease;" onmouseenter="this.style.background='var(--primary-lt)';this.style.color='var(--primary)'" onmouseleave="this.style.background='none';this.style.color='var(--text-2)'"{{/if}} title="Previous page">
       <i class="fas fa-chevron-left"></i>
     </button>
 
     {{#if (gt pagination.page 2)}}
-    <button onclick="goToPage(1)" class="w-8 h-8 rounded flex items-center justify-center text-xs font-medium text-stone-700 hover:bg-stone-100 transition-colors">1</button>
+    <button onclick="goToPage(1)" style="width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--text-2);border:none;background:none;cursor:pointer;transition:all 0.15s ease;" onmouseenter="this.style.background='var(--primary-lt)';this.style.color='var(--primary)'" onmouseleave="this.style.background='none';this.style.color='var(--text-2)'">1</button>
     {{#if (gt pagination.page 3)}}
-    <span class="px-1 text-stone-400 text-xs">&hellip;</span>
+    <span style="padding:0 2px;color:var(--text-muted);font-size:11px;">&hellip;</span>
     {{/if}}
     {{/if}}
 
     {{#each (range (max 1 (subtract pagination.page 2)) (min pagination.pages (add pagination.page 2)))}}
-    <button onclick="goToPage({{this}})" class="w-8 h-8 rounded flex items-center justify-center text-xs font-semibold transition-colors {{#if (eq this ../pagination.page)}}bg-[#162e4a] text-white{{else}}text-stone-700 hover:bg-stone-100{{/if}}">
+    <button onclick="goToPage({{this}})"
+      {{#if (eq this ../pagination.page)}}
+      style="width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:var(--primary);color:#ffffff;border:none;cursor:pointer;box-shadow:0 2px 6px rgba(15,118,110,0.28);"
+      {{else}}
+      style="width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--text-2);border:none;background:none;cursor:pointer;transition:all 0.15s ease;" onmouseenter="this.style.background='var(--primary-lt)';this.style.color='var(--primary)'" onmouseleave="this.style.background='none';this.style.color='var(--text-2)'"
+      {{/if}}>
       {{this}}
     </button>
     {{/each}}
 
     {{#if (lt pagination.page (subtract pagination.pages 1))}}
-    <span class="px-1 text-stone-400 text-xs">&hellip;</span>
-    <button onclick="goToPage({{pagination.pages}})" class="w-8 h-8 rounded flex items-center justify-center text-xs font-medium text-stone-700 hover:bg-stone-100 transition-colors">{{pagination.pages}}</button>
+    <span style="padding:0 2px;color:var(--text-muted);font-size:11px;">&hellip;</span>
+    <button onclick="goToPage({{pagination.pages}})" style="width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--text-2);border:none;background:none;cursor:pointer;transition:all 0.15s ease;" onmouseenter="this.style.background='var(--primary-lt)';this.style.color='var(--primary)'" onmouseleave="this.style.background='none';this.style.color='var(--text-2)'">{{pagination.pages}}</button>
     {{/if}}
 
-    <button {{#if (eq pagination.page pagination.pages)}}disabled class="opacity-40 cursor-not-allowed w-8 h-8 rounded flex items-center justify-center text-stone-400 text-xs"{{else}}onclick="goToPage({{add pagination.page 1}})" class="w-8 h-8 rounded flex items-center justify-center text-stone-600 hover:bg-stone-100 text-xs transition-colors"{{/if}} title="Next page">
+    <button {{#if (eq pagination.page pagination.pages)}}disabled style="opacity:0.4;cursor:not-allowed;width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#a0b2af;border:none;background:none;"{{else}}onclick="goToPage({{add pagination.page 1}})" style="width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-2);border:none;background:none;cursor:pointer;transition:all 0.15s ease;" onmouseenter="this.style.background='var(--primary-lt)';this.style.color='var(--primary)'" onmouseleave="this.style.background='none';this.style.color='var(--text-2)'"{{/if}} title="Next page">
       <i class="fas fa-chevron-right"></i>
     </button>
 
   </div>
   {{/if}}
 
-  <div class="text-xs text-stone-500 font-serif italic" id="paginationInfo">
+  <div style="font-size:11px;color:var(--text-muted);font-family:var(--font);" id="paginationInfo">
     Showing {{add (multiply (subtract pagination.page 1) pagination.limit) 1}} &ndash; {{min (multiply pagination.page pagination.limit) pagination.total}} of {{pagination.total}} {{#if label}}{{label}}{{else}}catalog items{{/if}}
   </div>
 </div>

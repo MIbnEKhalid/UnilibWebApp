@@ -18,11 +18,17 @@ export const postgresDialect = {
   semesterOverlap: (col, param) => `${col}::text[] && ${param}::text[]`,
   findBookBySectionId: (col, param) => `${col} @> ${param}::jsonb`,
   serializeSemester: (val) => {
-    if (Array.isArray(val)) return val;
+    const toEnum = (s) => {
+      if (!s) return "Semester3";
+      const str = String(s).trim();
+      const match = str.match(/^Semester\s*(\d+)$/i);
+      return match ? `Semester${match[1]}` : str;
+    };
+    if (Array.isArray(val)) return val.map(toEnum);
     if (typeof val === "string" && val.includes(",")) {
-      return val.split(",").map((s) => s.trim()).filter(Boolean);
+      return val.split(",").map((s) => toEnum(s.trim())).filter(Boolean);
     }
-    return [val || "Semester 3"];
+    return [toEnum(val || "Semester3")];
   },
   serializeSections: (val) => JSON.stringify(val || []),
 };

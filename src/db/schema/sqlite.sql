@@ -3,6 +3,7 @@
 CREATE TABLE IF NOT EXISTS unilibbook (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   UserName TEXT,
+  -- UserName TEXT REFERENCES "Users"("UserName") ON DELETE CASCADE,
   name TEXT NOT NULL,
   category TEXT NOT NULL,
   description TEXT,

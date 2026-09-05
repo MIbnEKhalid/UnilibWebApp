@@ -1,0 +1,255 @@
+<!-- ================================================================ -->
+<!-- Admin Panel Sidebar — mbkbucket-inspired Glassmorphism           -->
+<!-- ================================================================ -->
+<aside id="adminSidebar" class="admin-sidebar" aria-label="Admin Navigation">
+
+  <!-- Sidebar Header -->
+  <div class="admin-sidebar-header">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-teal-700 text-white flex items-center justify-center shadow-sm">
+          <i class="fas fa-sliders text-xs"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-teal-800 bg-teal-50 px-1.5 py-0.5 rounded border border-teal-200/80">Console</span>
+            <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" title="System Operational"></span>
+          </div>
+          <h2 class="text-xs font-bold text-teal-950 font-headings tracking-tight leading-tight mt-0.5">Admin Panel</h2>
+        </div>
+      </div>
+
+      <!-- Mobile Close Button -->
+      <button type="button" onclick="toggleAdminSidebar(false)" class="lg:hidden p-1.5 rounded-lg text-teal-700 hover:text-teal-950 hover:bg-teal-100/60 transition-colors" aria-label="Close sidebar">
+        <i class="fas fa-times text-sm"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Scrollable Nav Section -->
+  <div class="admin-sidebar-nav custom-scrollbar">
+
+    <!-- Group 1: Core Registries -->
+    <div class="admin-nav-group">
+      <span class="admin-nav-group-title">Core Registries</span>
+
+      <!-- Publications Registry -->
+      <a href="/dashboard" class="admin-nav-item {{#if isBooksAdmin}}{{#unless isAddBookPage}}active{{/unless}}{{/if}}" id="sidebar-link-publications">
+        <div class="admin-nav-icon">
+          <i class="fas fa-book-bookmark"></i>
+        </div>
+        <div class="admin-nav-content">
+          <span class="admin-nav-label">Publications</span>
+          <span class="admin-nav-sub">Books & Catalog</span>
+        </div>
+        {{#if dashboardStats.total}}
+        <span class="admin-nav-badge">{{dashboardStats.total}}</span>
+        {{/if}}
+      </a>
+
+      <!-- Course Materials -->
+      <a href="/dashboard/Materials" class="admin-nav-item {{#if isMaterialsAdmin}}active{{/if}}" id="sidebar-link-materials">
+        <div class="admin-nav-icon">
+          <i class="fas fa-folder-tree"></i>
+        </div>
+        <div class="admin-nav-content">
+          <span class="admin-nav-label">Course Materials</span>
+          <span class="admin-nav-sub">Subjects & Files</span>
+        </div>
+        {{#if totalMaterialsFiles}}
+        <span class="admin-nav-badge">{{totalMaterialsFiles}}</span>
+        {{/if}}
+      </a>
+
+      <!-- Add Publication -->
+      <a href="/dashboard/Book/Add" class="admin-nav-item {{#if isAddBookPage}}active{{/if}}" id="sidebar-link-add-book">
+        <div class="admin-nav-icon">
+          <i class="fas fa-circle-plus"></i>
+        </div>
+        <div class="admin-nav-content">
+          <span class="admin-nav-label">New Publication</span>
+          <span class="admin-nav-sub">Register Entry</span>
+        </div>
+      </a>
+
+      <!-- SQLite AdminDB -->
+      <a href="/dashboard/db" target="_blank" rel="noopener noreferrer" class="admin-nav-item {{#if isDbAdmin}}active{{/if}}" id="sidebar-link-db">
+        <div class="admin-nav-icon">
+          <i class="fas fa-database"></i>
+        </div>
+        <div class="admin-nav-content">
+          <span class="admin-nav-label">Database Console</span>
+          <span class="admin-nav-sub">SQLite UI (AdminDB)</span>
+        </div>
+        <i class="fas fa-arrow-up-right-from-square text-[9px] text-teal-600/60 ml-auto"></i>
+      </a>
+    </div>
+
+    <!-- Group 2: Curriculum Fast Jumps -->
+    <div class="admin-nav-group">
+      <span class="admin-nav-group-title">Curriculum Filters</span>
+      <div class="grid grid-cols-3 gap-1 px-1 py-0.5">
+        <a href="/dashboard?semester=all" class="admin-sem-jump-pill" title="View All Semesters">All</a>
+        <a href="/dashboard?semester=Semester+1" class="admin-sem-jump-pill" title="Semester 1">Sem 1</a>
+        <a href="/dashboard?semester=Semester+2" class="admin-sem-jump-pill" title="Semester 2">Sem 2</a>
+        <a href="/dashboard?semester=Semester+3" class="admin-sem-jump-pill" title="Semester 3">Sem 3</a>
+        <a href="/dashboard?semester=Semester+4" class="admin-sem-jump-pill" title="Semester 4">Sem 4</a>
+        <a href="/dashboard?semester=Semester+5" class="admin-sem-jump-pill" title="Semester 5">Sem 5</a>
+        <a href="/dashboard?semester=Semester+6" class="admin-sem-jump-pill" title="Semester 6">Sem 6</a>
+        <a href="/dashboard?semester=Semester+7" class="admin-sem-jump-pill" title="Semester 7">Sem 7</a>
+        <a href="/dashboard?semester=Semester+8" class="admin-sem-jump-pill" title="Semester 8">Sem 8</a>
+      </div>
+    </div>
+
+    <!-- Group 3: Quick Admin Actions -->
+    <div class="admin-nav-group">
+      <span class="admin-nav-group-title">Quick Actions</span>
+
+      <!-- Export Catalog -->
+      <button type="button" onclick="adminSidebarExportCatalog()" class="admin-nav-item w-full text-left" id="sidebar-btn-export">
+        <div class="admin-nav-icon text-amber-600 bg-amber-50 border-amber-200">
+          <i class="fas fa-file-export"></i>
+        </div>
+        <div class="admin-nav-content">
+          <span class="admin-nav-label">Export Catalog</span>
+          <span class="admin-nav-sub">Download JSON Backup</span>
+        </div>
+      </button>
+
+      <!-- Sync Tasjeel -->
+      <button type="button" onclick="adminSidebarSyncTasjeel()" class="admin-nav-item w-full text-left" id="sidebar-btn-sync">
+        <div class="admin-nav-icon text-teal-600 bg-teal-50 border-teal-200">
+          <i class="fas fa-rotate" id="sidebarSyncIcon"></i>
+        </div>
+        <div class="admin-nav-content">
+          <span class="admin-nav-label">Sync Tasjeel</span>
+          <span class="admin-nav-sub">Update Materials Crawler</span>
+        </div>
+      </button>
+    </div>
+
+    <!-- Group 4: Public Views -->
+    <div class="admin-nav-group">
+      <span class="admin-nav-group-title">Public Views</span>
+
+      <a href="/" target="_blank" rel="noopener noreferrer" class="admin-nav-item" id="sidebar-link-public-catalog">
+        <div class="admin-nav-icon">
+          <i class="fas fa-compass"></i>
+        </div>
+        <div class="admin-nav-content">
+          <span class="admin-nav-label">Public Catalog</span>
+          <span class="admin-nav-sub">Student Books View</span>
+        </div>
+        <i class="fas fa-arrow-up-right-from-square text-[9px] text-teal-600/60 ml-auto"></i>
+      </a>
+
+      <a href="/materials" target="_blank" rel="noopener noreferrer" class="admin-nav-item" id="sidebar-link-public-materials">
+        <div class="admin-nav-icon">
+          <i class="fas fa-graduation-cap"></i>
+        </div>
+        <div class="admin-nav-content">
+          <span class="admin-nav-label">Public Materials</span>
+          <span class="admin-nav-sub">Student Archives</span>
+        </div>
+        <i class="fas fa-arrow-up-right-from-square text-[9px] text-teal-600/60 ml-auto"></i>
+      </a>
+
+      <a href="https://mbktech.org/" target="_blank" rel="noopener noreferrer" class="admin-nav-item" id="sidebar-link-mbktech">
+        <div class="admin-nav-icon">
+          <i class="fas fa-globe"></i>
+        </div>
+        <div class="admin-nav-content">
+          <span class="admin-nav-label">MBK Tech Hub</span>
+          <span class="admin-nav-sub">Main Ecosystem</span>
+        </div>
+        <i class="fas fa-arrow-up-right-from-square text-[9px] text-teal-600/60 ml-auto"></i>
+      </a>
+    </div>
+
+  </div>
+
+  <!-- Sidebar Footer / System Badge -->
+  <div class="admin-sidebar-footer">
+    <div class="p-2 rounded-lg bg-teal-50/70 border border-teal-200/60 text-xs">
+      <div class="flex items-center justify-between text-[11px] font-semibold text-teal-950">
+        <span class="flex items-center gap-1.5">
+          <i class="fas fa-server text-[10px] text-teal-600"></i>
+          Unilib Core
+        </span>
+        <span class="text-teal-700/70 font-mono text-[10px]">v{{appVersion}}</span>
+      </div>
+      <div class="flex items-center justify-between mt-1 text-[10px] text-teal-800/70">
+        <span>Session Active</span>
+        <button class="text-rose-600 hover:text-rose-800 font-bold ml-1 transition-colors" onclick="logout()" title="Log Out">Logout</button>
+      </div>
+    </div>
+  </div>
+
+</aside>
+
+<!-- Global Action Handlers for Sidebar Buttons -->
+<script>
+  function toggleAdminSidebar(show) {
+    const sidebar = document.getElementById('adminSidebar');
+    const backdrop = document.getElementById('adminSidebarBackdrop');
+    if (!sidebar) return;
+    const isCurrentlyOpen = sidebar.classList.contains('open');
+    const targetState = typeof show === 'boolean' ? show : !isCurrentlyOpen;
+    if (targetState) {
+      sidebar.classList.add('open');
+      if (backdrop) backdrop.classList.add('open');
+      document.body.style.overflow = window.innerWidth < 1024 ? 'hidden' : '';
+    } else {
+      sidebar.classList.remove('open');
+      if (backdrop) backdrop.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  }
+
+  async function adminSidebarExportCatalog() {
+    try {
+      showToast('Preparing catalog export...', 'info');
+      const r = await fetch('/api/admin/Unilib/Book/Export', { credentials: 'include' });
+      if (!r.ok) throw new Error('Export failed');
+      const data = await r.json();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `unilib_catalog_${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('Catalog exported successfully!', 'success');
+    } catch (err) {
+      console.error(err);
+      showToast('Failed to export catalog.', 'error');
+    }
+  }
+
+  async function adminSidebarSyncTasjeel() {
+    const icon = document.getElementById('sidebarSyncIcon');
+    if (icon) icon.classList.add('fa-spin');
+    showToast('Starting Tasjeel materials crawler sync...', 'info');
+
+    try {
+      const resp = await fetch('/api/admin/materials/sync-tasjeel', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data = await resp.json();
+      if (!resp.ok || !data.success) {
+        throw new Error(data.message || 'Sync failed');
+      }
+      showToast(data.message || 'Tasjeel sync completed successfully!', 'success');
+      setTimeout(() => window.location.reload(), 1200);
+    } catch (err) {
+      console.error('Tasjeel sync error:', err);
+      showToast(err.message || 'Failed to sync with Tasjeel.', 'error');
+    } finally {
+      if (icon) icon.classList.remove('fa-spin');
+    }
+  }
+</script>
