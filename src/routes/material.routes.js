@@ -1,19 +1,6 @@
 import express from "express";
 import { validateSessionAndRole } from "mbkauthe";
-import {
-  getAllSubjects,
-  getAllMaterialsCounts,
-  getMaterialsBySubject,
-  updateSubjectSemester,
-  downloadMaterialProxy,
-  renderMaterialsPage,
-  renderAdminMaterialsPage,
-  addSubject,
-  deleteSubject,
-  addMaterialToSubject,
-  deleteMaterial,
-  manualSyncTasjeel,
-} from "../controllers/material.controller.js";
+import { getAllSubjects, getAllMaterialsCounts, getMaterialsBySubject, updateSubjectSemester, downloadMaterialProxy, renderMaterialsPage, renderAdminMaterialsPage, addSubject, deleteSubject, addMaterialToSubject, deleteMaterial, manualSyncTasjeel } from "../controllers/material.controller.js";
 
 const router = express.Router();
 
@@ -29,10 +16,10 @@ router.post("/api/admin/subject/:id/semester", validateSessionAndRole("Any"), up
 router.get("/api/admin/sync/tasjeel", validateSessionAndRole("Any"), manualSyncTasjeel);
 
 // Public / Archive Material APIs
-router.get("/api/get/all/subjects", validateSessionAndRole("SuperAdmin"), getAllSubjects);
-router.get("/api/get/all/materials-counts", validateSessionAndRole("SuperAdmin"), getAllMaterialsCounts);
-router.get("/api/get/all/materials/:id", validateSessionAndRole("SuperAdmin"), getMaterialsBySubject);
-router.get("/student/class/material/download/:id", validateSessionAndRole("SuperAdmin"), downloadMaterialProxy);
-router.get("/materials", validateSessionAndRole("SuperAdmin"), renderMaterialsPage);
+router.get("/api/get/all/subjects", validateSessionAndRole("superadmin"), getAllSubjects);
+router.get("/api/get/all/materials-counts", validateSessionAndRole("superadmin"), getAllMaterialsCounts);
+router.get("/api/get/all/materials/:id", validateSessionAndRole("superadmin"), getMaterialsBySubject);
+router.get("/student/class/material/download/:id", validateSessionAndRole("superadmin"), downloadMaterialProxy);
+router.get("/materials", validateSessionAndRole("superadmin"), renderMaterialsPage);
 
 export default router;

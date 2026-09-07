@@ -1,13 +1,12 @@
 -- SQLite Schema for UnilibWebApp
 
-CREATE TABLE IF NOT EXISTS unilibbook (
+CREATE TABLE IF NOT EXISTS unilib_books (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  UserName TEXT,
-  -- UserName TEXT REFERENCES "Users"("UserName") ON DELETE CASCADE,
+    username VARCHAR(50),
   name TEXT NOT NULL,
   category TEXT NOT NULL,
   description TEXT,
-  imageURL TEXT NOT NULL DEFAULT 'BookCover_Template.webp',
+  image_url TEXT NOT NULL DEFAULT 'BookCover_Template.webp',
   link TEXT NOT NULL,
   semester TEXT NOT NULL DEFAULT '["Semester 3"]',
   main INTEGER NOT NULL DEFAULT 0,
@@ -17,15 +16,15 @@ CREATE TABLE IF NOT EXISTS unilibbook (
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_unilibbook_category ON unilibbook(category);
-CREATE INDEX IF NOT EXISTS idx_unilibbook_main ON unilibbook(main);
-CREATE INDEX IF NOT EXISTS idx_unilibbook_visible ON unilibbook(visible);
-CREATE INDEX IF NOT EXISTS idx_unilibbook_category_main ON unilibbook(category, main);
-CREATE INDEX IF NOT EXISTS idx_unilibbook_visible_category ON unilibbook(visible, category);
-CREATE INDEX IF NOT EXISTS idx_unilibbook_created_at ON unilibbook(created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_unilibbook_views ON unilibbook(views DESC);
+CREATE INDEX IF NOT EXISTS idx_unilib_books_category ON unilib_books(category);
+CREATE INDEX IF NOT EXISTS idx_unilib_books_main ON unilib_books(main);
+CREATE INDEX IF NOT EXISTS idx_unilib_books_visible ON unilib_books(visible);
+CREATE INDEX IF NOT EXISTS idx_unilib_books_category_main ON unilib_books(category, main);
+CREATE INDEX IF NOT EXISTS idx_unilib_books_visible_category ON unilib_books(visible, category);
+CREATE INDEX IF NOT EXISTS idx_unilib_books_created_at ON unilib_books(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_unilib_books_views ON unilib_books(views DESC);
 
-CREATE TABLE IF NOT EXISTS subjects (
+CREATE TABLE IF NOT EXISTS unilib_subjects (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   course_id TEXT UNIQUE NOT NULL,
   subject TEXT NOT NULL,
@@ -34,21 +33,21 @@ CREATE TABLE IF NOT EXISTS subjects (
   last_synced TEXT DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_subjects_course_id ON subjects(course_id);
-CREATE INDEX IF NOT EXISTS idx_subjects_semester ON subjects(semester);
+CREATE INDEX IF NOT EXISTS idx_unilib_subjects_course_id ON unilib_subjects(course_id);
+CREATE INDEX IF NOT EXISTS idx_unilib_subjects_semester ON unilib_subjects(semester);
 
-CREATE TABLE IF NOT EXISTS materials (
+CREATE TABLE IF NOT EXISTS unilib_materials (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   subject_id INTEGER NOT NULL,
   name TEXT NOT NULL,
   href TEXT NOT NULL,
   last_synced TEXT DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE
+  FOREIGN KEY (subject_id) REFERENCES unilib_subjects(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_materials_subject_id ON materials(subject_id);
+CREATE INDEX IF NOT EXISTS idx_unilib_materials_subject_id ON unilib_materials(subject_id);
 
-CREATE TABLE IF NOT EXISTS custlogin (
+CREATE TABLE IF NOT EXISTS unilib_custlogin (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   session TEXT,
   last_synced TEXT DEFAULT CURRENT_TIMESTAMP

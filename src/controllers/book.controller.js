@@ -1,12 +1,8 @@
 import { bookRepository } from "../db/index.js";
 import config from "../config/index.js";
 import { renderPage, renderCachedPage } from "../utils/render.util.js";
-import { renderError } from "mbkauthe";
-import {
-  invalidateIndexCaches,
-  invalidateBookCache,
-  invalidateBookCaches,
-} from "../services/cache.service.js";
+import { renderError, sendSuccess, sendError } from "mbkauthe";
+import { invalidateIndexCaches, invalidateBookCache, invalidateBookCaches } from "../services/cache.service.js";
 
 function normalizeSemesterFilter(semester) {
   if (!semester || semester === "all") return "all";
@@ -140,7 +136,7 @@ export async function editBook(req, res) {
     const name = req.body.name !== undefined ? req.body.name : existing.name;
     const category = req.body.category !== undefined ? req.body.category : existing.category;
     const description = req.body.description !== undefined ? req.body.description : existing.description;
-    const imageURL = req.body.imageURL !== undefined ? req.body.imageURL : existing.imageURL;
+    const image_url = req.body.image_url !== undefined ? req.body.image_url : existing.image_url;
     const link = req.body.link !== undefined ? req.body.link : existing.link;
     const semester = req.body.semester !== undefined ? req.body.semester : existing.semester;
     const main = req.body.main !== undefined ? req.body.main : existing.main;
@@ -150,7 +146,7 @@ export async function editBook(req, res) {
       name,
       category,
       description,
-      imageURL,
+      image_url,
       link,
       semester,
       main,
@@ -220,19 +216,19 @@ export async function renderAddBookPage(req, res) {
 
 // Admin add book API
 export async function addBook(req, res) {
-  const { name, category, description, imageURL, link, semester, main, visible } = req.body;
+  const { name, category, description, image_url, link, semester, main, visible } = req.body;
 
   try {
     await bookRepository.create({
       name,
       category,
       description,
-      imageURL,
+      image_url,
       link,
       semester,
       main,
       visible: visible ?? true,
-      userName: req.session?.user?.username || null,
+      username: req.session?.user?.username || null,
     });
 
     invalidateIndexCaches().catch((e) => console.error("Cache invalidation error after add:", e));
@@ -306,9 +302,9 @@ async function handleTrackAction(req, res, actionType) {
   const bookId = req.params.id;
   try {
     const exists = await bookRepository.exists(bookId, { mustBeVisible: true });
-    if (!exists) return res.status(404).json({ error: "Book not found" });
+    if (!exists) return sendError(res, "Book not found", { statusCode: 404, code: "BOOK_NOT_FOUND" });
 
-    res.json({ success: true });
+    sendSuccess(res, null, { message: "Action tracked successfully" });
 
     setImmediate(async () => {
       try {
@@ -320,7 +316,7 @@ async function handleTrackAction(req, res, actionType) {
     });
   } catch (error) {
     console.error(`Error in ${actionType} tracking API:`, error);
-    res.status(500).json({ error: "Internal Server Error" });
+    return sendError(res, "Internal Server Error", { statusCode: 500, details: error.message });
   }
 }
 

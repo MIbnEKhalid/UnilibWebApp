@@ -1,6 +1,6 @@
 {
   "name": "unilibwebapp",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "main": "src/server.js",
   "type": "module",
   "scripts": {
@@ -11,13 +11,14 @@
     "db:init": "node scripts/initDb.js",
     "db:init:sqlite": "node scripts/initDb.js --type=sqlite",
     "db:init:postgres": "node scripts/initDb.js --type=postgres",
-    "test": "node tests/db.test.js && node tests/app.test.js"
+    "test": "vitest run"
   },
   "author": "Muhammad Bin Khalid",
   "license": "MIT",
   "dependencies": {
     "@upstash/redis": "^1.19.0",
     "admindb": "^2.2.1",
+    "better-sqlite3": "^11.10.0",
     "cheerio": "^1.1.2",
     "compression": "^1.8.0",
     "cors": "^2.8.5",
@@ -35,7 +36,10 @@
     "sharp": "^0.35.3"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "@types/supertest": "^7.2.1",
+    "nodemon": "^3.1.14",
+    "supertest": "^7.2.2",
+    "vitest": "^4.1.11"
   },
   "overrides": {
     "csurf": {

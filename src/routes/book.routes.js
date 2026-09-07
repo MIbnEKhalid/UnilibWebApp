@@ -1,19 +1,6 @@
 import express from "express";
 import { validateSessionAndRole } from "mbkauthe";
-import {
-  renderIndex,
-  renderDashboard,
-  renderEditBookPage,
-  editBook,
-  deleteBook,
-  bulkVisibility,
-  renderAddBookPage,
-  addBook,
-  exportBooks,
-  renderSingleBook,
-  trackBookView,
-  trackBookDownload,
-} from "../controllers/book.controller.js";
+import { renderIndex, renderDashboard, renderEditBookPage, editBook, deleteBook, bulkVisibility, renderAddBookPage, addBook, exportBooks, renderSingleBook, trackBookView, trackBookDownload } from "../controllers/book.controller.js";
 
 const router = express.Router();
 

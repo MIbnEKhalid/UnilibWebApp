@@ -1,8 +1,5 @@
-import {
-  BaseRepository,
-  normalizeBook,
-  expandSemesterValues,
-} from "./BaseRepository.js";
+import { BaseRepository } from "mbkauthe";
+import { normalizeBook, expandSemesterValues, serializeSemester } from "../utils/normalizers.js";
 
 export class BookRepository extends BaseRepository {
   async findBooks({ page = 1, limit = 12, semester = "all", category = "all", search = "", isAdminView = false }) {
@@ -21,7 +18,7 @@ export class BookRepository extends BaseRepository {
       const expanded = expandSemesterValues(semester);
       if (this.dialect.name === "sqlite") {
         const placeholders = expanded.map((_, idx) => `$${params.length + idx + 1}`).join(", ");
-        conditions.push(`EXISTS (SELECT 1 FROM json_each(unilibbook.semester) WHERE value IN (${placeholders}))`);
+        conditions.push(`EXISTS (SELECT 1 FROM json_each(unilib_books.semester) WHERE value IN (${placeholders}))`);
         params.push(...expanded);
       } else {
         conditions.push(`semester::text[] && $${params.length + 1}::text[]`);
@@ -39,15 +36,15 @@ export class BookRepository extends BaseRepository {
     }
 
     if (search && search.trim()) {
-      conditions.push(this.dialect.ilike("name", `$${params.length + 1}`));
+      conditions.push(`name ILIKE $${params.length + 1}`);
       params.push(`%${search.trim()}%`);
     }
 
     const whereClause = conditions.length ? " WHERE " + conditions.join(" AND ") : "";
-    const countQuery = `SELECT COUNT(*) AS total FROM unilibbook${whereClause}`;
+    const countQuery = `SELECT COUNT(*) AS total FROM unilib_books${whereClause}`;
     const countParams = [...params];
 
-    const selectQuery = `SELECT id, name, category, description, "imageURL", link, semester, main, visible, views FROM unilibbook${whereClause} ORDER BY main DESC, name ASC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+    const selectQuery = `SELECT id, name, category, description, image_url, link, semester, main, visible, views FROM unilib_books${whereClause} ORDER BY main DESC, name ASC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
     params.push(limitNum, offset);
 
     const [result, countResult] = await Promise.all([
@@ -70,7 +67,7 @@ export class BookRepository extends BaseRepository {
 
   async findById(id, { mustBeVisible = false } = {}) {
     let query =
-      'SELECT id, "UserName", name, category, description, "imageURL", link, semester, main, visible, views, sections, created_at FROM "unilibbook" WHERE id = $1';
+      'SELECT id, username, name, category, description, image_url, link, semester, main, visible, views, sections, created_at FROM unilib_books WHERE id = $1';
     if (mustBeVisible) {
       query += this.dialect.name === "sqlite" ? " AND visible = 1" : " AND visible = true";
     }
@@ -78,41 +75,41 @@ export class BookRepository extends BaseRepository {
     return normalizeBook(result.rows?.[0]);
   }
 
-  async create({ name, category, description, imageURL, link, semester, main, visible, userName }) {
+  async create({ name, category, description, image_url, link, semester, main, visible, username }) {
     const query = `
-      INSERT INTO "unilibbook" (name, category, description, "imageURL", link, semester, main, visible, "UserName")
+      INSERT INTO unilib_books (name, category, description, image_url, link, semester, main, visible, username)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-      RETURNING id, name, category, description, "imageURL", link, semester, main, visible, "UserName", created_at;
+      RETURNING id, name, category, description, image_url, link, semester, main, visible, username, created_at;
     `;
     const values = [
       name,
       category,
       description || null,
-      imageURL || "BookCover_Template.webp",
+      image_url || "BookCover_Template.webp",
       link,
-      this.dialect.serializeSemester(semester),
+      serializeSemester(semester, this.dialect.name === "sqlite"),
       Boolean(main && main !== "false"),
       visible !== false && visible !== "false" && visible !== 0 && visible !== "0",
-      userName || null,
+      username || null,
     ];
 
     const result = await this.query(query, values);
     return normalizeBook(result.rows?.[0]);
   }
 
-  async update(id, { name, category, description, imageURL, link, semester, main, visible }) {
+  async update(id, { name, category, description, image_url, link, semester, main, visible }) {
     const query = `
-      UPDATE "unilibbook"
-      SET name = $1, category = $2, description = $3, "imageURL" = $4, link = $5, semester = $6, main = $7, visible = $8
+      UPDATE unilib_books
+      SET name = $1, category = $2, description = $3, image_url = $4, link = $5, semester = $6, main = $7, visible = $8
       WHERE id = $9;
     `;
     const values = [
       name,
       category,
       description || null,
-      imageURL || "BookCover_Template.webp",
+      image_url || "BookCover_Template.webp",
       link,
-      this.dialect.serializeSemester(semester),
+      serializeSemester(semester, this.dialect.name === "sqlite"),
       Boolean(main && main !== "false"),
       visible !== false && visible !== "false" && visible !== 0 && visible !== "0",
       id,
@@ -123,13 +120,13 @@ export class BookRepository extends BaseRepository {
   }
 
   async delete(id) {
-    const result = await this.query('DELETE FROM "unilibbook" WHERE id = $1', [id]);
+    const result = await this.query('DELETE FROM unilib_books WHERE id = $1', [id]);
     return result.rowCount > 0;
   }
 
   async bulkUpdateVisibility(bookIds, visible) {
     if (!bookIds || bookIds.length === 0) return 0;
-    const result = await this.query('UPDATE "unilibbook" SET visible = $1 WHERE id = ANY($2)', [
+    const result = await this.query('UPDATE unilib_books SET visible = $1 WHERE id = ANY($2)', [
       Boolean(visible),
       bookIds,
     ]);
@@ -138,18 +135,18 @@ export class BookRepository extends BaseRepository {
 
   async getAllForExport() {
     const query =
-      'SELECT id, name, category, description, "imageURL", link, semester, main, visible, views, sections FROM unilibbook ORDER BY main DESC, name ASC';
+      'SELECT id, name, category, description, image_url, link, semester, main, visible, views, sections FROM unilib_books ORDER BY main DESC, name ASC';
     const result = await this.query(query);
     return (result.rows || []).map(normalizeBook);
   }
 
   async incrementViews(id) {
     const visibilityCheck = this.dialect.name === "sqlite" ? " AND visible = 1" : " AND visible = true";
-    await this.query(`UPDATE unilibbook SET views = views + 1 WHERE id = $1${visibilityCheck}`, [id]);
+    await this.query(`UPDATE unilib_books SET views = views + 1 WHERE id = $1${visibilityCheck}`, [id]);
   }
 
   async exists(id, { mustBeVisible = false } = {}) {
-    let query = "SELECT id FROM unilibbook WHERE id = $1";
+    let query = "SELECT id FROM unilib_books WHERE id = $1";
     if (mustBeVisible) {
       query += this.dialect.name === "sqlite" ? " AND visible = 1" : " AND visible = true";
     }
@@ -165,13 +162,13 @@ export class BookRepository extends BaseRepository {
           COALESCE(SUM(views), 0) AS total_views,
           COALESCE(SUM(CASE WHEN visible = 0 OR visible = false THEN 1 ELSE 0 END), 0) AS hidden_books,
           COALESCE(SUM(CASE WHEN main = 1 OR main = true THEN 1 ELSE 0 END), 0) AS main_books
-        FROM unilibbook`
+        FROM unilib_books`
       : `SELECT
           COUNT(*) AS total_books,
           COALESCE(SUM(views), 0) AS total_views,
           COALESCE(SUM(CASE WHEN visible = false THEN 1 ELSE 0 END), 0) AS hidden_books,
           COALESCE(SUM(CASE WHEN main = true THEN 1 ELSE 0 END), 0) AS main_books
-        FROM unilibbook`;
+        FROM unilib_books`;
 
     try {
       const result = await this.query(query);

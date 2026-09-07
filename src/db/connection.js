@@ -1,9 +1,7 @@
 import fs from "fs";
 import path from "path";
 import config from "../config/index.js";
-import { SqlitePool } from "./sqlitePool.js";
-import { postgresDialect } from "./dialects/postgres.js";
-import { sqliteDialect } from "./dialects/sqlite.js";
+import { SqliteAdapter, postgresDialect, sqliteDialect, registerGracefulShutdown, closeAllConnections } from "mbkauthe";
 
 let sqliteDb = null;
 let sqlitePool = null;
@@ -16,7 +14,7 @@ let postgresPool2 = null;
 export async function getSqliteConnection(customPath = null) {
   if (sqliteDb) return sqliteDb;
 
-  const { DatabaseSync } = await import("node:sqlite");
+  const Database = (await import("better-sqlite3")).default;
   const dbPath = customPath || config.sqlitePath || "./data/unilib.sqlite";
 
   if (dbPath !== ":memory:") {
@@ -25,16 +23,19 @@ export async function getSqliteConnection(customPath = null) {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
-    sqliteDb = new DatabaseSync(resolvedPath);
+    sqliteDb = new Database(resolvedPath);
+    sqliteDb.pragma("journal_mode = WAL");
+    sqliteDb.pragma("foreign_keys = ON");
     console.log(`Connected to SQLite database at: ${resolvedPath}`);
   } else {
-    sqliteDb = new DatabaseSync(":memory:");
+    sqliteDb = new Database(":memory:");
+    sqliteDb.pragma("foreign_keys = ON");
     console.log("Connected to in-memory SQLite database!");
   }
 
   try {
     const { initSqliteSchema } = await import("./schema/init.js");
-    initSqliteSchema(sqliteDb);
+    await initSqliteSchema(sqliteDb);
   } catch (schemaErr) {
     console.warn("Notice during SQLite schema initialization:", schemaErr.message);
   }
@@ -48,7 +49,12 @@ export async function getSqliteConnection(customPath = null) {
 export async function getSqlitePool(customPath = null) {
   if (sqlitePool) return { pool: sqlitePool, pool2: sqlitePool, dialect: sqliteDialect };
   const db = await getSqliteConnection(customPath);
-  sqlitePool = new SqlitePool(db);
+  sqlitePool = new SqliteAdapter(db, {
+    dialect: sqliteDialect,
+    jsonColumns: ["sections", "semester"],
+    booleanColumns: ["main", "visible"],
+  });
+  registerGracefulShutdown(sqlitePool);
   return { pool: sqlitePool, pool2: sqlitePool, dialect: sqliteDialect };
 }
 
@@ -111,6 +117,8 @@ export async function getPostgresConnection() {
     console.warn("Notice during PostgreSQL schema initialization:", schemaErr.message);
   }
 
+  registerGracefulShutdown([postgresPool, postgresPool2].filter(Boolean));
+
   return { pool: postgresPool, pool2: postgresPool2, dialect: postgresDialect };
 }
 
@@ -130,32 +138,11 @@ export async function getActiveDatabase(options = {}) {
 }
 
 export async function closeConnections() {
-  if (sqlitePool) {
-    await sqlitePool.end();
-    sqlitePool = null;
-  }
-  if (sqliteDb) {
-    try {
-      sqliteDb.close();
-    } catch {}
-    sqliteDb = null;
-  }
-  if (postgresPool) {
-    try {
-      await postgresPool.end();
-    } catch (e) {
-      console.error("Error closing PostgreSQL pool:", e);
-    }
-    postgresPool = null;
-  }
-  if (postgresPool2 && postgresPool2 !== postgresPool) {
-    try {
-      await postgresPool2.end();
-    } catch (e) {
-      console.error("Error closing PostgreSQL pool2:", e);
-    }
-    postgresPool2 = null;
-  }
+  await closeAllConnections();
+  sqlitePool = null;
+  sqliteDb = null;
+  postgresPool = null;
+  postgresPool2 = null;
 }
 
 export default {

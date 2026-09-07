@@ -4,7 +4,7 @@ import { cacheGet, cacheSet } from "../services/cache.service.js";
 export function getSessionLocals(req) {
   const user = req.session?.user;
   return {
-    username: user?.UserName || user?.username || "NotLoggedIn",
+    username: user?.username || "NotLoggedIn",
     role: user?.role || "NotLoggedIn",
     userLoggedIn: Boolean(user),
   };
@@ -36,9 +36,9 @@ export async function renderCachedPage(req, res, {
     ...headers,
   });
 
-  const isGuest = !req.session?.user;
+  const isguest = !req.session?.user;
 
-  if (isGuest && redis && cacheKey) {
+  if (isguest && redis && cacheKey) {
     const cached = await cacheGet(cacheKey);
     if (cached) return res.send(cached);
   }
@@ -53,7 +53,7 @@ export async function renderCachedPage(req, res, {
       console.error(`Render error for ${view}:`, err);
       return res.status(500).send("Render error");
     }
-    if (isGuest && redis && cacheKey) {
+    if (isguest && redis && cacheKey) {
       cacheSet(cacheKey, html, ttl).catch((e) => console.error("Cache set error:", e));
     }
     res.send(html);

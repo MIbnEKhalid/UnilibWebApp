@@ -51,7 +51,7 @@
       <article id="previewCardBox" class="bg-white rounded-lg border border-teal-200 overflow-hidden flex flex-col shadow-sm max-w-sm mx-auto w-full transition-all">
         <div class="relative aspect-[3/4] bg-[#f2f0ec] overflow-hidden border-b border-teal-100 flex items-center justify-center p-3 group/cover">
           
-          <div id="ambientPreviewBlur" class="absolute inset-0 bg-cover bg-center opacity-15 blur-md scale-110 pointer-events-none" style="background-image: url('{{#if book}}{{book.imageURL}}{{else}}/BookCovers/BookCover_Template.webp{{/if}}');"></div>
+          <div id="ambientPreviewBlur" class="absolute inset-0 bg-cover bg-center opacity-15 blur-md scale-110 pointer-events-none" style="background-image: url('{{#if book}}{{book.image_url}}{{else}}/BookCovers/BookCover_Template.webp{{/if}}');"></div>
 
           <!-- Badges -->
           <div class="badges absolute top-2 left-2 right-2 z-20 flex flex-wrap gap-1 pointer-events-none">
@@ -78,7 +78,7 @@
 
           <!-- Centered Contained Cover -->
           <a id="bookurl" href="{{#if book}}{{book.link}}{{else}}#{{/if}}" target="_blank" class="relative z-10 w-full h-full flex items-center justify-center" aria-label="Preview Book Cover">
-            <img id="bookcover" src="{{#if book}}{{book.imageURL}}{{else}}/BookCovers/BookCover_Template.webp{{/if}}" alt="Cover preview" class="max-h-full max-w-full object-contain rounded-sm shadow-md transition-transform duration-300" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'">
+            <img id="bookcover" src="{{#if book}}{{book.image_url}}{{else}}/BookCovers/BookCover_Template.webp{{/if}}" alt="Cover preview" class="max-h-full max-w-full object-contain rounded-sm shadow-md transition-transform duration-300" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'">
           </a>
         </div>
 
@@ -172,17 +172,17 @@
 
             <div class="form-group">
               <div class="flex items-center justify-between mb-1">
-                <label for="imageURL" class="block text-xs font-semibold text-teal-900 uppercase tracking-wider">
+                <label for="image_url" class="block text-xs font-semibold text-teal-900 uppercase tracking-wider">
                   Cover Image URL <span class="text-rose-700">*</span>
                 </label>
-                {{#if (eq role "SuperAdmin")}}
+                {{#if (eq role "superadmin")}}
                 <button type="button" onclick="pickCoverFromBucket()" class="px-2 py-0.5 rounded text-[11px] font-semibold bg-teal-50 hover:bg-teal-100 text-[#0f766e] border border-teal-200 cursor-pointer shadow-2xs inline-flex items-center gap-1 transition-colors" title="Open storage bucket gallery to pick a cover">
                   <i class="fas fa-cloud text-[10px] text-[#0f766e]"></i>
                   <span>Pick from Bucket</span>
                 </button>
                 {{/if}}
               </div>
-              <input id="imageURL" name="imageURL" value="{{#if book}}{{book.imageURL}}{{else}}/BookCovers/BookCover_Template.webp{{/if}}" data-org="{{#if book}}{{book.imageURL}}{{/if}}" placeholder="/BookCovers/... or /mbkbucket/view/... or https://..." required {{#unless (eq role "SuperAdmin")}}readonly title="SuperAdmin permissions required to modify image URL"{{/unless}} class="input-classic w-full px-3 py-2 text-xs">
+              <input id="image_url" name="image_url" value="{{#if book}}{{book.image_url}}{{else}}/BookCovers/BookCover_Template.webp{{/if}}" data-org="{{#if book}}{{book.image_url}}{{/if}}" placeholder="/BookCovers/... or /mbkbucket/view/... or https://..." required {{#unless (eq role "superadmin")}}readonly title="superadmin permissions required to modify image URL"{{/unless}} class="input-classic w-full px-3 py-2 text-xs">
               
               <div class="flex items-center justify-between gap-2 pt-1.5">
                 <div class="flex items-center gap-1.5">
@@ -289,7 +289,7 @@
   }
 
   function setCoverPreset(url) {
-    const imgInput = document.getElementById("imageURL");
+    const imgInput = document.getElementById("image_url");
     if (imgInput && !imgInput.readOnly) {
       imgInput.value = url;
       imgInput.dispatchEvent(new Event('input', { bubbles: true }));
@@ -300,10 +300,10 @@
 
   // Open mbkbucket gallery helper to pick a book cover image (images only)
   async function pickCoverFromBucket() {
-    const imgInput = document.getElementById("imageURL");
+    const imgInput = document.getElementById("image_url");
     if (imgInput && imgInput.readOnly) {
       if (typeof showToast === 'function') {
-        showToast('SuperAdmin permissions required to modify image URL', 'error');
+        showToast('superadmin permissions required to modify image URL', 'error');
       }
       return;
     }
@@ -364,9 +364,9 @@
   function updateBookCard() {
     const name = document.getElementById("name")?.value || "Book Title Preview";
     const description = document.getElementById("description")?.value || "Bibliographic author and syllabus summary...";
-    let imageURL = document.getElementById("imageURL")?.value || "/BookCovers/BookCover_Template.webp";
-    if (imageURL && !imageURL.startsWith('/') && !imageURL.startsWith('http://') && !imageURL.startsWith('https://') && !imageURL.startsWith('data:')) {
-      imageURL = '/' + imageURL;
+    let image_url = document.getElementById("image_url")?.value || "/BookCovers/BookCover_Template.webp";
+    if (image_url && !image_url.startsWith('/') && !image_url.startsWith('http://') && !image_url.startsWith('https://') && !image_url.startsWith('data:')) {
+      image_url = '/' + image_url;
     }
     const link = document.getElementById("link")?.value || "#";
     const mainValue = document.getElementById("main")?.value;
@@ -384,8 +384,8 @@
 
     if (nameEl) nameEl.textContent = name;
     if (descEl) descEl.textContent = description;
-    if (coverEl) coverEl.src = imageURL;
-    if (ambientEl) ambientEl.style.backgroundImage = `url('${imageURL}')`;
+    if (coverEl) coverEl.src = image_url;
+    if (ambientEl) ambientEl.style.backgroundImage = `url('${image_url}')`;
     if (urlEl) urlEl.href = link;
     if (url1El) url1El.href = link;
 
@@ -526,7 +526,7 @@
       syncSemesterChipsUI();
     }
 
-    ["name", "description", "imageURL", "link", "main", "category", "semester", "visible"].forEach(id => {
+    ["name", "description", "image_url", "link", "main", "category", "semester", "visible"].forEach(id => {
       const el = document.getElementById(id);
       if (el) {
         el.addEventListener("input", updateBookCard);
@@ -559,7 +559,7 @@
       name: document.getElementById("name").value.trim(),
       category: document.getElementById("category").value,
       description: document.getElementById("description").value.trim(),
-      imageURL: document.getElementById("imageURL").value.trim(),
+      image_url: document.getElementById("image_url").value.trim(),
       link: document.getElementById("link").value.trim(),
       semester: semesterSelected,
       main: document.getElementById("main").value,

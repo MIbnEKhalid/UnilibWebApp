@@ -1,13 +1,6 @@
 import express from "express";
 import { validateSessionAndRole } from "mbkauthe";
-import {
-  renderSectionsPage,
-  addSection,
-  editSection,
-  deleteSection,
-  bulkDeleteSections,
-  downloadSectionPdf,
-} from "../controllers/section.controller.js";
+import { renderSectionsPage, addSection, editSection, deleteSection, bulkDeleteSections, downloadSectionPdf } from "../controllers/section.controller.js";
 
 const router = express.Router();
 

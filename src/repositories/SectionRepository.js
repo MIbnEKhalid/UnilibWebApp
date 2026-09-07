@@ -1,13 +1,10 @@
 import { randomUUID } from "crypto";
-import {
-  BaseRepository,
-  normalizeBook,
-  normalizeSections,
-} from "./BaseRepository.js";
+import { BaseRepository } from "mbkauthe";
+import { normalizeBook, normalizeSections, serializeSections } from "../utils/normalizers.js";
 
 export class SectionRepository extends BaseRepository {
   async getSectionsByBookId(bookId) {
-    const query = "SELECT id, sections, name, link FROM unilibbook WHERE id = $1";
+    const query = "SELECT id, sections, name, link FROM unilib_books WHERE id = $1";
     const result = await this.query(query, [bookId]);
     if (!result.rows || result.rows.length === 0) return null;
     const book = result.rows[0];
@@ -25,15 +22,15 @@ export class SectionRepository extends BaseRepository {
     if (this.dialect.name === "sqlite") {
       query = `
         SELECT id, sections, name
-        FROM unilibbook
+        FROM unilib_books
         WHERE EXISTS (
-          SELECT 1 FROM json_each(unilibbook.sections)
+          SELECT 1 FROM json_each(unilib_books.sections)
           WHERE json_extract(value, '$.id') = $1 OR CAST(json_extract(value, '$.id') AS TEXT) = $1
         )
       `;
       param = String(sectionId);
     } else {
-      query = "SELECT id, sections, name FROM unilibbook WHERE sections @> $1::jsonb";
+      query = "SELECT id, sections, name FROM unilib_books WHERE sections @> $1::jsonb";
       param = JSON.stringify([{ id: parsedSectionId }]);
     }
 
@@ -48,7 +45,7 @@ export class SectionRepository extends BaseRepository {
 
   async addSection(bookId, { page_start, page_end, name, username }) {
     return this.withTransaction(async (tx) => {
-      const bookResult = await tx.query("SELECT id, sections FROM unilibbook WHERE id = $1", [bookId]);
+      const bookResult = await tx.query("SELECT id, sections FROM unilib_books WHERE id = $1", [bookId]);
       if (!bookResult.rows || bookResult.rows.length === 0) {
         throw new Error("BOOK_NOT_FOUND");
       }
@@ -72,12 +69,12 @@ export class SectionRepository extends BaseRepository {
       };
 
       const updatedSections = [...currentSections, newSection];
-      const sectionsVal = this.dialect.serializeSections(updatedSections);
+      const sectionsVal = serializeSections(updatedSections);
 
       const updateQuery =
         this.dialect.name === "sqlite"
-          ? "UPDATE unilibbook SET sections = $1 WHERE id = $2"
-          : "UPDATE unilibbook SET sections = $1::jsonb WHERE id = $2";
+          ? "UPDATE unilib_books SET sections = $1 WHERE id = $2"
+          : "UPDATE unilib_books SET sections = $1::jsonb WHERE id = $2";
 
       await tx.query(updateQuery, [sectionsVal, bookId]);
       return { newSection, bookId };
@@ -117,11 +114,11 @@ export class SectionRepository extends BaseRepository {
           : section
       );
 
-      const sectionsVal = this.dialect.serializeSections(updatedSections);
+      const sectionsVal = serializeSections(updatedSections);
       const updateQuery =
         this.dialect.name === "sqlite"
-          ? "UPDATE unilibbook SET sections = $1 WHERE id = $2"
-          : "UPDATE unilibbook SET sections = $1::jsonb WHERE id = $2";
+          ? "UPDATE unilib_books SET sections = $1 WHERE id = $2"
+          : "UPDATE unilib_books SET sections = $1::jsonb WHERE id = $2";
 
       await tx.query(updateQuery, [sectionsVal, book.id]);
       const updatedSection = updatedSections.find((s) => String(s.id) === String(sectionId));
@@ -143,12 +140,12 @@ export class SectionRepository extends BaseRepository {
       }
 
       const updatedSections = currentSections.filter((section) => String(section.id) !== String(sectionId));
-      const sectionsVal = this.dialect.serializeSections(updatedSections);
+      const sectionsVal = serializeSections(updatedSections);
 
       const updateQuery =
         this.dialect.name === "sqlite"
-          ? "UPDATE unilibbook SET sections = $1 WHERE id = $2"
-          : "UPDATE unilibbook SET sections = $1::jsonb WHERE id = $2";
+          ? "UPDATE unilib_books SET sections = $1 WHERE id = $2"
+          : "UPDATE unilib_books SET sections = $1::jsonb WHERE id = $2";
 
       await tx.query(updateQuery, [sectionsVal, book.id]);
       return { deletedSection: sectionToDelete, bookId: book.id };
@@ -157,7 +154,7 @@ export class SectionRepository extends BaseRepository {
 
   async bulkDeleteSections(bookId, sectionIds, { username } = {}) {
     return this.withTransaction(async (tx) => {
-      const bookResult = await tx.query("SELECT id, sections FROM unilibbook WHERE id = $1", [bookId]);
+      const bookResult = await tx.query("SELECT id, sections FROM unilib_books WHERE id = $1", [bookId]);
       if (!bookResult.rows || bookResult.rows.length === 0) {
         throw new Error("BOOK_NOT_FOUND");
       }
@@ -172,12 +169,12 @@ export class SectionRepository extends BaseRepository {
       }
 
       const updatedSections = currentSections.filter((section) => !sectionIdSet.has(String(section.id)));
-      const sectionsVal = this.dialect.serializeSections(updatedSections);
+      const sectionsVal = serializeSections(updatedSections);
 
       const updateQuery =
         this.dialect.name === "sqlite"
-          ? "UPDATE unilibbook SET sections = $1 WHERE id = $2"
-          : "UPDATE unilibbook SET sections = $1::jsonb WHERE id = $2";
+          ? "UPDATE unilib_books SET sections = $1 WHERE id = $2"
+          : "UPDATE unilib_books SET sections = $1::jsonb WHERE id = $2";
 
       await tx.query(updateQuery, [sectionsVal, bookId]);
       return {

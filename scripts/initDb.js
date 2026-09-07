@@ -1,13 +1,6 @@
 import config from "../src/config/index.js";
-import {
-  getSqliteConnection,
-  getPostgresConnection,
-  closeConnections,
-} from "../src/db/connection.js";
-import {
-  initSqliteSchema,
-  initPostgresSchema,
-} from "../src/db/schema/init.js";
+import { getSqliteConnection, getPostgresConnection, closeConnections } from "../src/db/connection.js";
+import { initSqliteSchema, initPostgresSchema } from "../src/db/schema/init.js";
 
 async function main() {
   const args = process.argv.slice(2);

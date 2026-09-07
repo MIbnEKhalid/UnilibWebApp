@@ -261,7 +261,7 @@ window.formatSemesterBadge = function(sem) {
 };
 
 // Quick-View Modal
-window.openQuickView = function(bookId, name, description, imageURL, link, category, semester, views) {
+window.openQuickView = function(bookId, name, description, image_url, link, category, semester, views) {
   const modalBackdrop = document.getElementById("quickViewBackdrop");
   if (!modalBackdrop) return;
 
@@ -276,7 +276,7 @@ window.openQuickView = function(bookId, name, description, imageURL, link, categ
   const qvFullPageLink = document.getElementById("qvFullPageLink");
   const qvCoverBlur = document.getElementById("qvCoverBlur");
 
-  const coverSrc = imageURL || '/BookCovers/BookCover_Template.webp';
+  const coverSrc = image_url || '/BookCovers/BookCover_Template.webp';
 
   if (qvTitle) qvTitle.textContent = name;
   if (qvDesc) qvDesc.textContent = description;

@@ -1,14 +1,14 @@
-import { BaseRepository } from "./BaseRepository.js";
+import { BaseRepository } from "mbkauthe";
 
 export class TasjeelRepository extends BaseRepository {
   async getAllSubjects() {
-    const result = await this.query("SELECT id, course_id, subject, href, semester FROM subjects ORDER BY subject ASC");
+    const result = await this.query("SELECT id, course_id, subject, href, semester FROM unilib_subjects ORDER BY subject ASC");
     return result.rows || [];
   }
 
   async getSubjectsBySemester(semester) {
     const result = await this.query(
-      "SELECT id, course_id, subject, href, semester FROM subjects WHERE semester = $1 ORDER BY subject ASC",
+      "SELECT id, course_id, subject, href, semester FROM unilib_subjects WHERE semester = $1 ORDER BY subject ASC",
       [semester]
     );
     return result.rows || [];
@@ -17,8 +17,8 @@ export class TasjeelRepository extends BaseRepository {
   async getMaterialCounts() {
     const countsQuery = `
       SELECT s.course_id AS course_id, COUNT(m.id) AS count
-      FROM subjects s
-      LEFT JOIN materials m ON m.subject_id = s.id
+      FROM unilib_subjects s
+      LEFT JOIN unilib_materials m ON m.subject_id = s.id
       GROUP BY s.course_id
     `;
     const result = await this.query(countsQuery);
@@ -32,8 +32,8 @@ export class TasjeelRepository extends BaseRepository {
   async getMaterialsByCourseId(courseId) {
     const query = `
       SELECT m.name, m.href
-      FROM materials m
-      JOIN subjects s ON m.subject_id = s.id
+      FROM unilib_materials m
+      JOIN unilib_subjects s ON m.subject_id = s.id
       WHERE s.course_id = $1 OR CAST(s.id AS TEXT) = $1
       ORDER BY m.name ASC
     `;
@@ -43,7 +43,7 @@ export class TasjeelRepository extends BaseRepository {
 
   async upsertSubject(courseId, subject, href, semester = "Semester 1") {
     const query = `
-      INSERT INTO subjects (course_id, subject, href, semester, last_synced)
+      INSERT INTO unilib_subjects (course_id, subject, href, semester, last_synced)
       VALUES ($1, $2, $3, $4, $5)
       ON CONFLICT (course_id) DO UPDATE SET 
         subject = EXCLUDED.subject, 
@@ -57,7 +57,7 @@ export class TasjeelRepository extends BaseRepository {
 
   async updateSubjectSemester(courseId, semester) {
     const query = `
-      UPDATE subjects
+      UPDATE unilib_subjects
       SET semester = $1
       WHERE course_id = $2 OR CAST(id AS TEXT) = $2
       RETURNING id, course_id, subject, href, semester;
@@ -68,11 +68,11 @@ export class TasjeelRepository extends BaseRepository {
 
   async upsertMaterials(subjectId, materials) {
     if (!materials || materials.length === 0) {
-      await this.query("DELETE FROM materials WHERE subject_id = $1", [subjectId]);
+      await this.query("DELETE FROM unilib_materials WHERE subject_id = $1", [subjectId]);
       return;
     }
     return this.withTransaction(async (tx) => {
-      await tx.query("DELETE FROM materials WHERE subject_id = $1", [subjectId]);
+      await tx.query("DELETE FROM unilib_materials WHERE subject_id = $1", [subjectId]);
       const now = new Date();
       const valuePlaceholders = [];
       const params = [];
@@ -82,14 +82,14 @@ export class TasjeelRepository extends BaseRepository {
         params.push(subjectId, m.name, m.href, now);
       });
       await tx.query(
-        `INSERT INTO materials (subject_id, name, href, last_synced) VALUES ${valuePlaceholders.join(", ")}`,
+        `INSERT INTO unilib_materials (subject_id, name, href, last_synced) VALUES ${valuePlaceholders.join(", ")}`,
         params
       );
     });
   }
 
   async getSubjectByIdOrCourseId(idOrCourseId) {
-    const query = "SELECT id, course_id, subject, href, semester FROM subjects WHERE course_id = $1 OR CAST(id AS TEXT) = $1 LIMIT 1";
+    const query = "SELECT id, course_id, subject, href, semester FROM unilib_subjects WHERE course_id = $1 OR CAST(id AS TEXT) = $1 LIMIT 1";
     const result = await this.query(query, [String(idOrCourseId)]);
     return result.rows?.[0] || null;
   }
@@ -99,15 +99,15 @@ export class TasjeelRepository extends BaseRepository {
     if (!s) return false;
 
     return this.withTransaction(async (tx) => {
-      await tx.query("DELETE FROM materials WHERE subject_id = $1", [s.id]);
-      const res = await tx.query("DELETE FROM subjects WHERE id = $1", [s.id]);
+      await tx.query("DELETE FROM unilib_materials WHERE subject_id = $1", [s.id]);
+      const res = await tx.query("DELETE FROM unilib_subjects WHERE id = $1", [s.id]);
       return (res.rowCount || 0) > 0;
     });
   }
 
   async addMaterial(subjectId, name, href) {
     const query = `
-      INSERT INTO materials (subject_id, name, href, last_synced)
+      INSERT INTO unilib_materials (subject_id, name, href, last_synced)
       VALUES ($1, $2, $3, $4)
       RETURNING id, subject_id, name, href, last_synced;
     `;
@@ -116,17 +116,17 @@ export class TasjeelRepository extends BaseRepository {
   }
 
   async deleteMaterial(materialId) {
-    const result = await this.query("DELETE FROM materials WHERE id = $1 RETURNING id", [materialId]);
+    const result = await this.query("DELETE FROM unilib_materials WHERE id = $1 RETURNING id", [materialId]);
     return (result.rowCount || 0) > 0;
   }
 
   async getLatestSession() {
     try {
-      const primaryQuery = "SELECT session FROM custlogin WHERE id = 1";
+      const primaryQuery = "SELECT session FROM unilib_custlogin WHERE id = 1";
       let result = await this.query(primaryQuery);
 
       if (!result.rows || result.rows.length === 0) {
-        result = await this.query("SELECT session FROM custlogin ORDER BY id DESC LIMIT 1");
+        result = await this.query("SELECT session FROM unilib_custlogin ORDER BY id DESC LIMIT 1");
       }
 
       return result.rows?.[0]?.session || "";

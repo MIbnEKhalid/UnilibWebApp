@@ -58,7 +58,7 @@ try {
   const adminDbPath = path.resolve(config.sqlitePath || "./data/unilib.sqlite");
   app.use(
     "/dashboard/db",
-    sessRole("SuperAdmin"),
+    sessRole("superadmin"),
     createAdminDbRouter({
       dbPath: adminDbPath,
       basePath: "/dashboard/db",

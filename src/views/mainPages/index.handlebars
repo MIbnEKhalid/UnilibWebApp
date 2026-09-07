@@ -49,7 +49,7 @@
 
             <!-- Book Cover -->
             <div style="width:100%;max-width:200px;aspect-ratio:3/4;border-radius:10px;overflow:hidden;border:1px solid rgba(15,118,110,0.16);box-shadow:0 8px 24px rgba(15,118,110,0.12);background:rgba(215,244,238,0.25);position:relative;display:flex;align-items:center;justify-content:center;padding:0.75rem;">
-              <div style="position:absolute;inset:0;background-size:cover;background-position:center;opacity:0.18;filter:blur(14px);transform:scale(1.1);pointer-events:none;background-image:url('{{this.imageURL}}');"></div>
+              <div style="position:absolute;inset:0;background-size:cover;background-position:center;opacity:0.18;filter:blur(14px);transform:scale(1.1);pointer-events:none;background-image:url('{{this.image_url}}');"></div>
 
               {{#if this.main}}
                 {{#unless (eq this.category 'LabManuals')}}
@@ -59,7 +59,7 @@
                 {{/unless}}
               {{/if}}
 
-              <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" style="position:relative;z-index:1;max-height:100%;max-width:100%;object-fit:contain;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,0.14);" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'">
+              <img src="{{this.image_url}}" alt="Cover of {{this.name}}" style="position:relative;z-index:1;max-height:100%;max-width:100%;object-fit:contain;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,0.14);" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'">
             </div>
 
             <!-- CTAs -->
@@ -313,7 +313,7 @@
           onmouseleave="this.style.borderColor='rgba(15,118,110,0.14)';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.04)';this.style.transform='translateY(0)'">
 
           <div style="position:relative;aspect-ratio:3/4;background:rgba(215,244,238,0.25);overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0.75rem;border-bottom:1px solid rgba(15,118,110,0.10);">
-            <div style="position:absolute;inset:0;background-size:cover;background-position:center;opacity:0.14;filter:blur(14px);transform:scale(1.1);pointer-events:none;background-image:url('{{this.imageURL}}');"></div>
+            <div style="position:absolute;inset:0;background-size:cover;background-position:center;opacity:0.14;filter:blur(14px);transform:scale(1.1);pointer-events:none;background-image:url('{{this.image_url}}');"></div>
 
             <!-- Badges -->
             <div style="position:absolute;top:8px;left:8px;right:8px;z-index:2;display:flex;flex-wrap:wrap;gap:4px;pointer-events:none;">
@@ -336,12 +336,12 @@
 
             <!-- Cover Image -->
             <a href="/book/{{this.id}}" style="position:relative;z-index:1;width:100%;height:100%;display:flex;align-items:center;justify-content:center;" aria-label="View {{this.name}}">
-              <img src="{{this.imageURL}}" alt="Cover of {{this.name}}" style="max-height:100%;max-width:100%;object-fit:contain;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,0.14);transition:transform 0.3s ease;" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'"
+              <img src="{{this.image_url}}" alt="Cover of {{this.name}}" style="max-height:100%;max-width:100%;object-fit:contain;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,0.14);transition:transform 0.3s ease;" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'"
                 onmouseenter="this.style.transform='scale(1.04)'" onmouseleave="this.style.transform='scale(1)'">
             </a>
 
             <!-- Quick View -->
-            <button type="button" onclick="openQuickView('{{this.id}}', '{{this.name}}', '{{this.description}}', '{{this.imageURL}}', '{{this.link}}', '{{this.category}}', '{{this.semester}}', {{this.views}})" id="qv-btn-{{this.id}}"
+            <button type="button" onclick="openQuickView('{{this.id}}', '{{this.name}}', '{{this.description}}', '{{this.image_url}}', '{{this.link}}', '{{this.category}}', '{{this.semester}}', {{this.views}})" id="qv-btn-{{this.id}}"
               style="position:absolute;bottom:8px;left:8px;z-index:2;padding:5px 10px;border-radius:7px;background:rgba(255,255,255,0.92);color:var(--text);border:1px solid rgba(15,118,110,0.18);font-size:11px;font-weight:700;cursor:pointer;transition:all 0.15s ease;display:flex;align-items:center;gap:4px;backdrop-filter:blur(6px);"
               onmouseenter="this.style.background='var(--primary)';this.style.color='#fff';this.style.borderColor='var(--primary)'"
               onmouseleave="this.style.background='rgba(255,255,255,0.92)';this.style.color='var(--text)';this.style.borderColor='rgba(15,118,110,0.18)'">
@@ -405,7 +405,7 @@
 
           <div style="display:flex;align-items:center;gap:0.75rem;min-width:0;flex:1;">
             <div style="width:48px;height:64px;border-radius:8px;background:rgba(215,244,238,0.30);border:1px solid rgba(15,118,110,0.16);padding:3px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
-              <img src="{{this.imageURL}}" alt="Cover" style="max-height:100%;max-width:100%;object-fit:contain;border-radius:4px;" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'">
+              <img src="{{this.image_url}}" alt="Cover" style="max-height:100%;max-width:100%;object-fit:contain;border-radius:4px;" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'">
             </div>
 
             <div style="min-width:0;">
@@ -426,7 +426,7 @@
           </div>
 
           <div style="display:flex;align-items:center;gap:0.4rem;flex-shrink:0;">
-            <button type="button" onclick="openQuickView('{{this.id}}', '{{this.name}}', '{{this.description}}', '{{this.imageURL}}', '{{this.link}}', '{{this.category}}', '{{this.semester}}', {{this.views}})"
+            <button type="button" onclick="openQuickView('{{this.id}}', '{{this.name}}', '{{this.description}}', '{{this.image_url}}', '{{this.link}}', '{{this.category}}', '{{this.semester}}', {{this.views}})"
               style="display:inline-flex;align-items:center;gap:0.35rem;padding:7px 11px;border-radius:7px;background:rgba(255,255,255,0.85);color:var(--text-2);border:1px solid rgba(15,118,110,0.18);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s ease;"
               onmouseenter="this.style.background='var(--primary-lt)';this.style.color='var(--primary)'"
               onmouseleave="this.style.background='rgba(255,255,255,0.85)';this.style.color='var(--text-2)'">

@@ -1,5 +1,3 @@
-import { postgresDialect } from "./dialects/postgres.js";
-
 /**
  * Normalizes semester value from DB representation (PG array, PG string, SQLite JSON string) into a JS Array of strings
  */
@@ -74,73 +72,50 @@ export function expandSemesterValues(semesters) {
 export function normalizeBook(book) {
   if (!book) return null;
   return {
-    ...book,
     id: Number(book.id),
     name: book.name,
     category: book.category,
     description: book.description || "",
-    imageURL: book.imageURL || "BookCover_Template.webp",
+    image_url: book.image_url || "BookCover_Template.webp",
     link: book.link,
     semester: normalizeSemester(book.semester),
     main: Boolean(book.main),
     visible: Boolean(book.visible),
     views: Number(book.views || 0),
     sections: normalizeSections(book.sections),
-    UserName: book.UserName || null,
+    username: book.username || null,
     created_at: book.created_at,
   };
 }
 
-export class BaseRepository {
-  constructor({ db, dialect = postgresDialect } = {}) {
-    this.db = db;
-    this.dialect = dialect;
-  }
-
-  setDb(db, dialect = this.dialect) {
-    this.db = db;
-    this.dialect = dialect;
-  }
-
-  quoteIdentifier(name) {
-    return this.dialect.quoteIdentifier(name);
-  }
-
-  async executeRaw({ text, values = [] }) {
-    return this.db.query({ text, values });
-  }
-
-  async query(text, values = []) {
-    return this.db.query(text, values);
-  }
-
-  cloneWithDb(client) {
-    return new this.constructor({ db: client, dialect: this.dialect });
-  }
-
-  /**
-   * Runs `fn(txRepo)` inside a BEGIN..COMMIT transaction block on a dedicated client.
-   */
-  async withTransaction(fn) {
-    if (!this.db || typeof this.db.connect !== "function") {
-      return fn(this);
-    }
-
-    const client = await this.db.connect();
-    const txRepo = this.cloneWithDb(client);
-
-    try {
-      await client.query("BEGIN");
-      const result = await fn(txRepo);
-      await client.query("COMMIT");
-      return result;
-    } catch (err) {
-      await client.query("ROLLBACK").catch(() => {});
-      throw err;
-    } finally {
-      client.release();
-    }
-  }
+/**
+ * Serializes sections array into JSON string for DB persistence
+ */
+export function serializeSections(val) {
+  return JSON.stringify(val || []);
 }
 
-export default BaseRepository;
+/**
+ * Serializes semester representation for DB persistence
+ */
+export function serializeSemester(val, isSqlite = false) {
+  if (isSqlite) {
+    const arr = Array.isArray(val)
+      ? val
+      : typeof val === "string" && val.includes(",")
+      ? val.split(",").map((s) => s.trim()).filter(Boolean)
+      : [val || "Semester 3"];
+    return JSON.stringify(arr);
+  }
+  const toEnum = (s) => {
+    if (!s) return "Semester3";
+    const str = String(s).trim();
+    const match = str.match(/^Semester\s*(\d+)$/i);
+    return match ? `Semester${match[1]}` : str;
+  };
+  if (Array.isArray(val)) return val.map(toEnum);
+  if (typeof val === "string" && val.includes(",")) {
+    return val.split(",").map((s) => toEnum(s.trim())).filter(Boolean);
+  }
+  return [toEnum(val || "Semester3")];
+}
