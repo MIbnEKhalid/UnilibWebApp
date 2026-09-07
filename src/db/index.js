@@ -22,7 +22,7 @@ export async function initDatabase(options = {}) {
   const dbType = (options.dbType || config.dbType || "sqlite").toLowerCase();
   activeDbType = dbType;
 
-  const { pool, pool2, dialect } = await getActiveDatabase({
+  const { pool, dialect } = await getActiveDatabase({
     dbType,
     sqlitePath: options.sqlitePath || config.sqlitePath,
   });
@@ -30,11 +30,11 @@ export async function initDatabase(options = {}) {
   if (!bookRepoInstance) {
     bookRepoInstance = new BookRepository({ db: pool, dialect });
     sectionRepoInstance = new SectionRepository({ db: pool, dialect });
-    tasjeelRepoInstance = new TasjeelRepository({ db: pool2, dialect });
+    tasjeelRepoInstance = new TasjeelRepository({ db: pool, dialect });
   } else {
     bookRepoInstance.setDb(pool, dialect);
     sectionRepoInstance.setDb(pool, dialect);
-    tasjeelRepoInstance.setDb(pool2, dialect);
+    tasjeelRepoInstance.setDb(pool, dialect);
   }
 
   isInitialized = true;

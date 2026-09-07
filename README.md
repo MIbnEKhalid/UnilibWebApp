@@ -110,9 +110,8 @@ UnilibWebApp/
    DB_TYPE=sqlite
    SQLITE_PATH=./data/unilib.sqlite
    
-   # Optional: PostgreSQL Connections
+   # Optional: PostgreSQL Connection
    # NEON_POSTGRES=postgres://username:password@host:port/database
-   # NEON_POSTGRES2=postgres://username:password@host:port/database
    
    # Optional: Redis Caching
    # UPSTASH_REDIS_REST_URL=https://...

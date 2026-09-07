@@ -39,11 +39,8 @@ async function main() {
       console.warn("⚠ NEON_POSTGRES is not configured in environment; skipping PostgreSQL init.");
     } else {
       try {
-        const { pool, pool2 } = await getPostgresConnection();
+        const { pool } = await getPostgresConnection();
         await initPostgresSchema(pool);
-        if (pool2 && pool2 !== pool) {
-          await initPostgresSchema(pool2);
-        }
         console.log("✓ PostgreSQL database initialized successfully!");
       } catch (err) {
         console.error("✗ Failed to initialize PostgreSQL schema:", err.message);

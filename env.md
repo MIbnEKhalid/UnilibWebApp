@@ -16,12 +16,11 @@
     SQLITE_PATH=./data/unilib.sqlite
     ```
 
-- **NEON_POSTGRES and NEON_POSTGRES2**  
-    Connection strings for the Neon Postgres database.  
+- **NEON_POSTGRES**  
+    Connection string for the Neon Postgres database.  
     Example:
     ```bash
     NEON_POSTGRES=postgres://username:password@host:port/database
-    NEON_POSTGRES2=postgres://username:password@host:port/database
     ```
 
 - **MBKAUTHE_VAR**  

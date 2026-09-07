@@ -21,7 +21,6 @@ export const config = {
   redisUrl: process.env.UPSTASH_REDIS_REST_URL,
   redisToken: process.env.UPSTASH_REDIS_REST_TOKEN,
   postgresUrl: process.env.NEON_POSTGRES,
-  postgres2Url: process.env.NEON_POSTGRES2,
   get dbType() {
     return (process.env.DB_TYPE || (process.env.NEON_POSTGRES ? "postgres" : "sqlite")).toLowerCase();
   },

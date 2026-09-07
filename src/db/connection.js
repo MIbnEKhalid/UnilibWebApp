@@ -6,7 +6,6 @@ import { SqliteAdapter, postgresDialect, sqliteDialect, registerGracefulShutdown
 let sqliteDb = null;
 let sqlitePool = null;
 let postgresPool = null;
-let postgresPool2 = null;
 
 /**
  * Get or initialize SQLite DatabaseSync connection
@@ -47,7 +46,7 @@ export async function getSqliteConnection(customPath = null) {
  * Get or initialize SQLite Pool
  */
 export async function getSqlitePool(customPath = null) {
-  if (sqlitePool) return { pool: sqlitePool, pool2: sqlitePool, dialect: sqliteDialect };
+  if (sqlitePool) return { pool: sqlitePool, dialect: sqliteDialect };
   const db = await getSqliteConnection(customPath);
   sqlitePool = new SqliteAdapter(db, {
     dialect: sqliteDialect,
@@ -55,14 +54,14 @@ export async function getSqlitePool(customPath = null) {
     booleanColumns: ["main", "visible"],
   });
   registerGracefulShutdown(sqlitePool);
-  return { pool: sqlitePool, pool2: sqlitePool, dialect: sqliteDialect };
+  return { pool: sqlitePool, dialect: sqliteDialect };
 }
 
 /**
- * Get or initialize PostgreSQL connection pools
+ * Get or initialize PostgreSQL connection pool
  */
 export async function getPostgresConnection() {
-  if (postgresPool) return { pool: postgresPool, pool2: postgresPool2 || postgresPool, dialect: postgresDialect };
+  if (postgresPool) return { pool: postgresPool, dialect: postgresDialect };
 
   const pkg = await import("pg");
   const { Pool } = pkg.default || pkg;
@@ -78,48 +77,22 @@ export async function getPostgresConnection() {
 
   try {
     const client = await postgresPool.connect();
-    console.log("Connected to PostgreSQL database (pool)!");
+    console.log("Connected to PostgreSQL database!");
     client.release();
   } catch (err) {
-    console.error("Database connection error (pool):", err.message);
-  }
-
-  const pool2Url = config.postgres2Url || config.postgresUrl;
-  if (pool2Url) {
-    const pool2Config = {
-      connectionString: pool2Url,
-      ssl: {
-        rejectUnauthorized: true,
-      },
-      max: 20,
-      idleTimeoutMillis: 60000,
-      connectionTimeoutMillis: 50000,
-    };
-    postgresPool2 = new Pool(pool2Config);
-    try {
-      const client2 = await postgresPool2.connect();
-      console.log("Connected to PostgreSQL database (pool2)!");
-      client2.release();
-    } catch (err) {
-      console.error("Database connection error (pool2):", err.message);
-    }
-  } else {
-    postgresPool2 = postgresPool;
+    console.error("Database connection error:", err.message);
   }
 
   try {
     const { initPostgresSchema } = await import("./schema/init.js");
     await initPostgresSchema(postgresPool);
-    if (postgresPool2 && postgresPool2 !== postgresPool) {
-      await initPostgresSchema(postgresPool2);
-    }
   } catch (schemaErr) {
     console.warn("Notice during PostgreSQL schema initialization:", schemaErr.message);
   }
 
-  registerGracefulShutdown([postgresPool, postgresPool2].filter(Boolean));
+  registerGracefulShutdown([postgresPool].filter(Boolean));
 
-  return { pool: postgresPool, pool2: postgresPool2, dialect: postgresDialect };
+  return { pool: postgresPool, dialect: postgresDialect };
 }
 
 /**
@@ -142,7 +115,6 @@ export async function closeConnections() {
   sqlitePool = null;
   sqliteDb = null;
   postgresPool = null;
-  postgresPool2 = null;
 }
 
 export default {
