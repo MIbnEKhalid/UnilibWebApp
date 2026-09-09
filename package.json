@@ -1,6 +1,6 @@
 {
   "name": "unilibwebapp",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "main": "src/server.js",
   "type": "module",
   "scripts": {
@@ -23,7 +23,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
     "express": "^5.1.0",
-    "express-handlebars": "^8.0.3",
+    "express-handlebars": "^9.0.1",
     "express-rate-limit": "^7.5.0",
     "mbkauthe": "latest",
     "mbkbucket": "latest",
