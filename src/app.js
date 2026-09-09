@@ -9,8 +9,8 @@ import { createRouter as createAdminDbRouter } from "admindb";
 
 import config from "./config/index.js";
 import configureHandlebars from "./config/handlebars.js";
-import rateLimiter from "./middlewares/rateLimiter.js";
-import { notFoundHandler, errorHandler } from "./middlewares/errorHandler.js";
+import rateLimiter from "./middleware/rateLimiter.js";
+import { notFoundHandler, errorHandler } from "./middleware/errorHandler.js";
 import appRoutes from "./routes/index.js";
 
 const __filename = fileURLToPath(import.meta.url);

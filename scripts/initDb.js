@@ -4,56 +4,52 @@ import { initSqliteSchema, initPostgresSchema } from "../src/db/schema/init.js";
 
 async function main() {
   const args = process.argv.slice(2);
-  let dbTypeArg = null;
+  let dbType = null;
   let customSqlitePath = null;
 
   for (const arg of args) {
     if (arg.startsWith("--type=")) {
-      dbTypeArg = arg.split("=")[1].toLowerCase();
+      dbType = arg.split("=")[1].toLowerCase();
     } else if (arg.startsWith("--path=")) {
       customSqlitePath = arg.split("=")[1];
-    } else if (arg === "--all") {
-      dbTypeArg = "all";
+    } else if (!arg.startsWith("--") && !customSqlitePath) {
+      customSqlitePath = arg;
     }
   }
 
-  const targetType = dbTypeArg || config.dbType || "sqlite";
-
-  console.log(`\n--- Starting Database Initialization (Target: ${targetType}) ---`);
-
-  if (targetType === "sqlite" || targetType === "all") {
-    console.log(`\n[SQLite] Initializing schema at: ${customSqlitePath || config.sqlitePath}...`);
+  if (dbType === "sqlite") {
+    const dbPath = customSqlitePath || config.sqlitePath || "./data/unilib.sqlite";
+    console.log(`\n[SQLite] Initializing schema at: ${dbPath}...`);
+    const sqliteDb = await getSqliteConnection(dbPath);
     try {
-      const sqliteDb = await getSqliteConnection(customSqlitePath || config.sqlitePath);
-      initSqliteSchema(sqliteDb);
+      await initSqliteSchema(sqliteDb);
       console.log("✓ SQLite database initialized successfully!");
-    } catch (err) {
-      console.error("✗ Failed to initialize SQLite schema:", err.message);
-      if (targetType !== "all") process.exit(1);
+    } finally {
+      await closeConnections();
     }
-  }
-
-  if (targetType === "postgres" || targetType === "postgresql" || targetType === "all") {
+  } else if (dbType === "postgres" || dbType === "postgresql") {
     console.log(`\n[PostgreSQL] Initializing schema on database...`);
     if (!config.postgresUrl) {
-      console.warn("⚠ NEON_POSTGRES is not configured in environment; skipping PostgreSQL init.");
+      console.warn("⚠ PostgreSQL URL not configured; skipping.");
     } else {
+      const { pool } = await getPostgresConnection();
       try {
-        const { pool } = await getPostgresConnection();
         await initPostgresSchema(pool);
         console.log("✓ PostgreSQL database initialized successfully!");
-      } catch (err) {
-        console.error("✗ Failed to initialize PostgreSQL schema:", err.message);
-        if (targetType !== "all") process.exit(1);
+      } finally {
+        await closeConnections();
       }
     }
+  } else {
+    console.error("Error: Please specify --type=sqlite or --type=postgres");
+    process.exit(1);
   }
 
-  await closeConnections();
   console.log("\nDatabase initialization complete!\n");
+  process.exit(0);
 }
 
 main().catch((err) => {
-  console.error("Fatal error during database init:", err);
+  console.error("Database initialization failed:", err);
   process.exit(1);
 });

@@ -32,13 +32,6 @@ export async function getSqliteConnection(customPath = null) {
     console.log("Connected to in-memory SQLite database!");
   }
 
-  try {
-    const { initSqliteSchema } = await import("./schema/init.js");
-    await initSqliteSchema(sqliteDb);
-  } catch (schemaErr) {
-    console.warn("Notice during SQLite schema initialization:", schemaErr.message);
-  }
-
   return sqliteDb;
 }
 
@@ -83,14 +76,8 @@ export async function getPostgresConnection() {
     console.error("Database connection error:", err.message);
   }
 
-  try {
-    const { initPostgresSchema } = await import("./schema/init.js");
-    await initPostgresSchema(postgresPool);
-  } catch (schemaErr) {
-    console.warn("Notice during PostgreSQL schema initialization:", schemaErr.message);
-  }
-
   registerGracefulShutdown([postgresPool].filter(Boolean));
+
 
   return { pool: postgresPool, dialect: postgresDialect };
 }
