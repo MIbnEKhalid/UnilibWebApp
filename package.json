@@ -1,6 +1,6 @@
 {
   "name": "unilibwebapp",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "main": "src/server.js",
   "type": "module",
   "scripts": {
@@ -8,6 +8,7 @@
     "dev": "nodemon -e js,mjs,cjs,json,handlebars src/server.js",
     "convertToWebp": "node scripts/convertToWebp.js",
     "convertPageImages": "node scripts/convertPageImages.js",
+    "db:init": "node scripts/initDb.js",
     "db:init:postgres": "node scripts/initDb.js --type=postgres",
     "db:init:sqlite": "node scripts/initDb.js --type=sqlite",
     "test": "vitest run"

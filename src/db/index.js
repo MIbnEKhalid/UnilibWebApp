@@ -1,9 +1,9 @@
 import config from "../config/index.js";
 import { getActiveDatabase, closeConnections } from "./connection.js";
 
-import { BookRepository } from "../repositories/BookRepository.js";
-import { SectionRepository } from "../repositories/SectionRepository.js";
-import { TasjeelRepository } from "../repositories/TasjeelRepository.js";
+import { BookRepository } from "../repositories/book.repository.js";
+import { SectionRepository } from "../repositories/section.repository.js";
+import { TasjeelRepository } from "../repositories/tasjeel.repository.js";
 
 export { PostgresAdapter, postgresDialect, SqliteAdapter, sqliteDialect, BaseRepository } from "mbkauthe";
 export { getActiveDatabase, closeConnections };

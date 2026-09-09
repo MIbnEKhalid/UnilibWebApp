@@ -51,10 +51,12 @@ A modern, high-performance web application for organizing, sharing, and archivin
 ```text
 UnilibWebApp/
 ├── data/                  # Local SQLite database storage (unilib.sqlite)
-├── public/                # Static assets, styles, scripts, and book covers
-│   └── Assets/
-│       ├── Scripts/       # Client-side JavaScript
-│       └── Styles/        # Vanilla CSS stylesheets & design system
+├── public/                # Static assets, sitemaps, and book covers
+│   ├── assets/
+│   │   ├── css/           # Vanilla CSS stylesheets & design system
+│   │   ├── js/            # Client-side JavaScript
+│   │   └── images/        # Icons and images
+│   └── BookCovers/        # Default book cover templates
 ├── scripts/               # CLI utility scripts (db init, image/PDF conversion)
 │   ├── convertPageImages.js
 │   ├── convertToWebp.js
@@ -64,17 +66,22 @@ UnilibWebApp/
 │   ├── server.js          # HTTP server bootstrap and cron initialization
 │   ├── config/            # Environment and Handlebars configuration
 │   ├── controllers/       # Route request controllers (Book, Section, Material, PDF)
-│   ├── db/                # Multi-dialect database abstraction and repositories
-│   │   ├── dialects/      # PostgreSQL & SQLite dialect adapters
+│   ├── db/                # Multi-dialect database abstraction
 │   │   ├── schema/        # Schema definitions and initializers
-│   │   ├── BaseRepository.js
-│   │   ├── BookRepository.js
-│   │   ├── SectionRepository.js
-│   │   └── TasjeelRepository.js
-│   ├── middlewares/       # Rate limiter and error handling middlewares
+│   │   ├── connection.js  # SQLite/PostgreSQL connection helpers
+│   │   └── index.js       # DB init + repository proxies
+│   ├── middleware/        # Rate limiter and error handling middleware
+│   ├── repositories/      # Domain repositories
+│   │   ├── book.repository.js
+│   │   ├── section.repository.js
+│   │   └── tasjeel.repository.js
 │   ├── routes/            # Express route modules
 │   ├── services/          # Cache (Redis) and Tasjeel sync services
-│   └── views/             # Handlebars layouts and views
+│   └── utils/             # Shared utilities
+├── views/                 # Handlebars layouts, templates and views
+│   ├── layouts/
+│   ├── mainPages/
+│   └── templates/
 ├── tests/                 # Database abstraction and HTTP integration tests
 ├── env.md                 # Detailed environment variables guide
 └── package.json           # Project manifest and scripts

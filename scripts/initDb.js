@@ -17,6 +17,9 @@ async function main() {
     }
   }
 
+  // Default to the engine configured in the environment when no explicit type is given
+  if (!dbType) dbType = config.dbType;
+
   if (dbType === "sqlite") {
     const dbPath = customSqlitePath || config.sqlitePath || "./data/unilib.sqlite";
     console.log(`\n[SQLite] Initializing schema at: ${dbPath}...`);

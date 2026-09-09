@@ -115,8 +115,8 @@ describe("UnilibWebApp HTTP Integration Tests", () => {
       expect(res.text).toContain("User-agent");
     });
 
-    test("GET /Assets/icon.svg serves static branding icon", async () => {
-      const res = await request(app).get("/Assets/icon.svg");
+    test("GET /assets/images/icon.svg serves static branding icon", async () => {
+      const res = await request(app).get("/assets/images/icon.svg");
       expect(res.status).toBe(200);
       expect(res.headers["content-type"]).toContain("svg");
     });
