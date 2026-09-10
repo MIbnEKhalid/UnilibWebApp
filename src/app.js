@@ -4,7 +4,7 @@ import { fileURLToPath } from "url";
 import compression from "compression";
 import cors from "cors";
 import mbkautheRouter, { sessPerm } from "mbkauthe";
-import mbkbucket from "mbkbucket";
+import { createBucketRouter } from "mbkbucket";
 import { createRouter as createAdminDbRouter } from "admindb";
 
 import config from "./config/index.js";
@@ -71,7 +71,13 @@ try {
 }
 
 // Storage bucket integration
-app.use(mbkbucket);
+app.use(createBucketRouter({
+  authorization: {
+    view: sessPerm(Permissions.storage.view),
+    upload: sessPerm(Permissions.storage.upload),
+    delete: sessPerm(Permissions.storage.delete),
+  },
+}));
 
 // 404 & Global error handlers
 app.use(notFoundHandler);

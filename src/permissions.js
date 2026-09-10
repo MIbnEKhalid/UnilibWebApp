@@ -14,6 +14,11 @@
 import { definePermissions, syncAppPermissions } from "mbkauthe";
 
 const MANIFEST = {
+  storage: {
+    view: "View bucket files",
+    upload: "Upload bucket files",
+    delete: "Delete bucket files",
+  },
   books: {
     view: "View the books dashboard",
     create: "Add books",
