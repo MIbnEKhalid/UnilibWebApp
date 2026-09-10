@@ -3,7 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import compression from "compression";
 import cors from "cors";
-import mbkautheRouter, { sessRole } from "mbkauthe";
+import mbkautheRouter, { sessPerm } from "mbkauthe";
 import mbkbucket from "mbkbucket";
 import { createRouter as createAdminDbRouter } from "admindb";
 
@@ -12,6 +12,7 @@ import configureHandlebars from "./config/handlebars.js";
 import rateLimiter from "./middleware/rate-limiter.js";
 import { notFoundHandler, errorHandler } from "./middleware/error-handler.js";
 import appRoutes from "./routes/index.js";
+import { Permissions } from "./permissions.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -58,7 +59,7 @@ try {
   const adminDbPath = path.resolve(config.sqlitePath || "./data/unilib.sqlite");
   app.use(
     "/dashboard/db",
-    sessRole("superadmin"),
+    sessPerm(Permissions.admindb.access),
     createAdminDbRouter({
       dbPath: adminDbPath,
       basePath: "/dashboard/db",

@@ -1,11 +1,12 @@
 {
   "name": "unilibwebapp",
-  "version": "2.2.4",
+  "version": "2.3.0",
   "main": "src/server.js",
   "type": "module",
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon -e js,mjs,cjs,json,handlebars src/server.js",
+    "sync-permissions": "node scripts/sync-permissions.js",
     "convertToWebp": "node scripts/convertToWebp.js",
     "convertPageImages": "node scripts/convertPageImages.js",
     "db:init": "node scripts/initDb.js",
