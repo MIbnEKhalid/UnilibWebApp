@@ -124,13 +124,18 @@ export const configureHandlebars = (app) => {
       path.join(viewsPath, "notice"),
       viewsPath,
       path.join(nodeModulesPath, "mbkauthe/views"),
+      path.join(nodeModulesPath, "mbkbucket/views"),
     ],
     cache: config.nodeEnv === "production",
     helpers: handlebarsHelpers,
   }));
 
   app.set("view engine", "handlebars");
-  app.set("views", [viewsPath, path.join(nodeModulesPath, "mbkauthe/views")]);
+  app.set("views", [
+    viewsPath,
+    path.join(nodeModulesPath, "mbkauthe/views"),
+    path.join(nodeModulesPath, "mbkbucket/views"),
+  ]);
 };
 
 export default configureHandlebars;
