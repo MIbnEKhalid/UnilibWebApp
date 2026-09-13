@@ -39,9 +39,9 @@ app.use((req, res, next) => {
   const currentUrl = req.originalUrl || req.url || "";
   res.locals.currentUrl = currentUrl;
   res.locals.isAdminPage = currentUrl.startsWith("/dashboard");
-  res.locals.isBooksAdmin = currentUrl === "/dashboard" || currentUrl.startsWith("/dashboard/Unilib") || currentUrl.startsWith("/dashboard/Book");
-  res.locals.isMaterialsAdmin = currentUrl.startsWith("/dashboard/Materials");
-  res.locals.isAddBookPage = currentUrl === "/dashboard/Book/Add";
+  res.locals.isBooksAdmin = currentUrl === "/dashboard" || currentUrl.startsWith("/dashboard/books");
+  res.locals.isMaterialsAdmin = currentUrl.startsWith("/dashboard/materials");
+  res.locals.isAddBookPage = currentUrl === "/dashboard/books/new";
   res.locals.isDbAdmin = currentUrl.startsWith("/dashboard/db");
   next();
 });

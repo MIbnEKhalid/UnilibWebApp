@@ -27,7 +27,8 @@ function validateSectionInput({ page_start, page_end, name, section_number, requ
 // Render sections management page for a book
 export async function renderSectionsPage(req, res) {
   try {
-    const data = await sectionRepository.getSectionsByBookId(req.params.bookId);
+    const bookId = req.params.book_id || req.params.bookId;
+    const data = await sectionRepository.getSectionsByBookId(bookId);
     if (!data) return res.status(404).send("Book not found");
 
     return renderPage(req, res, "mainPages/Sections.handlebars", true, {
@@ -42,7 +43,7 @@ export async function renderSectionsPage(req, res) {
 
 // Add a section to a book
 export async function addSection(req, res) {
-  const bookId = req.params.bookId;
+  const bookId = req.params.book_id || req.params.bookId;
   const { page_start, page_end, name } = req.body;
 
   const error = validateSectionInput({ page_start, page_end, name });
@@ -71,7 +72,7 @@ export async function addSection(req, res) {
 
 // Edit a section
 export async function editSection(req, res) {
-  const sectionId = req.params.sectionId;
+  const sectionId = req.params.section_id || req.params.id || req.params.sectionId;
   const { section_number, page_start, page_end, name } = req.body;
 
   if (!sectionId) return res.status(400).json({ error: "Invalid section ID" });
@@ -106,7 +107,7 @@ export async function editSection(req, res) {
 
 // Delete a section
 export async function deleteSection(req, res) {
-  const sectionId = req.params.sectionId;
+  const sectionId = req.params.section_id || req.params.id || req.params.sectionId;
   if (!sectionId) return res.status(400).json({ error: "Invalid section ID" });
 
   try {
@@ -127,14 +128,11 @@ export async function deleteSection(req, res) {
 
 // Bulk delete sections
 export async function bulkDeleteSections(req, res) {
-  const bookId = req.params.bookId;
+  const bookId = req.params.book_id || req.params.bookId;
   const { sectionIds } = req.body;
 
   if (!Array.isArray(sectionIds) || sectionIds.length === 0) {
     return res.status(400).json({ error: "sectionIds must be a non-empty array" });
-  }
-  if (sectionIds.length > 50) {
-    return res.status(400).json({ error: "Cannot delete more than 50 sections at once" });
   }
 
   const invalid = sectionIds.some((id) => !(Number.isInteger(id) && id > 0) && !(typeof id === "string" && id.trim()));
@@ -168,7 +166,8 @@ export async function bulkDeleteSections(req, res) {
 
 // Download section PDF
 export async function downloadSectionPdf(req, res) {
-  const { bookId, sectionId } = req.params;
+  const bookId = req.params.book_id || req.params.bookId;
+  const sectionId = req.params.section_id || req.params.sectionId || req.params.id;
 
   try {
     const data = await sectionRepository.getSectionsByBookId(bookId);

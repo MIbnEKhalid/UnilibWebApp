@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import config from "../config/index.js";
-import { SqliteAdapter, postgresDialect, sqliteDialect, registerGracefulShutdown, closeAllConnections } from "mbkauthe";
+import { SqliteAdapter, postgresDialect, sqliteDialect, registerGracefulShutdown, closeAllConnections, wrapPoolWithRetry } from "mbkauthe";
 
 let sqliteDb = null;
 let sqlitePool = null;
@@ -59,25 +59,36 @@ export async function getPostgresConnection() {
   const pkg = await import("pg");
   const { Pool } = pkg.default || pkg;
 
+  const connectionTimeoutMillis = Number(process.env.DB_CONNECTION_TIMEOUT_MS) || 15000;
+  const idleTimeoutMillis = Number(process.env.DB_IDLE_TIMEOUT_MS) || 30000;
+
   const poolConfig = {
     connectionString: config.postgresUrl,
     ssl: {
       rejectUnauthorized: true,
     },
+    idleTimeoutMillis,
+    connectionTimeoutMillis,
+    keepAlive: true,
+    keepAliveInitialDelayMillis: 10000,
+    application_name: "unilib-app",
   };
 
   postgresPool = new Pool(poolConfig);
+  wrapPoolWithRetry(postgresPool, {
+    name: "Unilib PostgreSQL",
+    maxRetries: Number(process.env.DB_MAX_RETRIES) || 3,
+  });
 
   try {
     const client = await postgresPool.connect();
     console.log("Connected to PostgreSQL database!");
     client.release();
   } catch (err) {
-    console.error("Database connection error:", err.message);
+    console.error("Database connection error:", err?.message || err);
   }
 
   registerGracefulShutdown([postgresPool].filter(Boolean));
-
 
   return { pool: postgresPool, dialect: postgresDialect };
 }

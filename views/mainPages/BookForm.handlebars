@@ -12,7 +12,7 @@
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-teal-100">
     <div class="space-y-0.5">
       <div class="flex items-center gap-2 text-xs text-teal-700/70">
-        <a href="/dashboard" class="hover:text-[#0f766e] transition-colors">Admin Console</a>
+        <a href="/dashboard/books" class="hover:text-[#0f766e] transition-colors">Admin Console</a>
         <span>/</span>
         <span class="text-teal-900">{{#if isEdit}}Edit Publication{{else}}Catalog Publication{{/if}}</span>
       </div>
@@ -21,7 +21,7 @@
       </h1>
     </div>
 
-    <a href="/dashboard" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-white hover:bg-teal-50 text-teal-900/80 border border-teal-200 text-xs font-semibold uppercase tracking-wider transition-colors shadow-sm self-start sm:self-auto">
+    <a href="/dashboard/books" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-white hover:bg-teal-50 text-teal-900/80 border border-teal-200 text-xs font-semibold uppercase tracking-wider transition-colors shadow-sm self-start sm:self-auto">
       <i class="fas fa-arrow-left text-teal-600/60"></i>
       <span>Back to Registry</span>
     </a>
@@ -252,7 +252,7 @@
           <!-- Actions Footer -->
           <div class="pt-4 border-t border-teal-100 flex flex-col sm:flex-row items-center gap-2.5">
             {{#if isEdit}}
-            <a href="/dashboard/Book/{{id}}/Sections" class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded bg-teal-50 hover:bg-teal-100 text-teal-900/80 border border-teal-200 text-xs font-semibold uppercase tracking-wider transition-colors">
+            <a href="/dashboard/books/{{id}}/sections" class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded bg-teal-50 hover:bg-teal-100 text-teal-900/80 border border-teal-200 text-xs font-semibold uppercase tracking-wider transition-colors">
               <i class="fas fa-list-ul"></i>
               <span>Manage Chapters</span>
             </a>
@@ -568,11 +568,11 @@
 
     try {
       const url = isEdit 
-        ? `/api/admin/Unilib/Book/Edit/${form.dataset.bookId}`
-        : `/api/admin/Unilib/Book/Add`;
+        ? `/api/admin/books/${form.dataset.bookId}`
+        : `/api/admin/books`;
 
       const response = await fetch(url, {
-        method: "POST",
+        method: isEdit ? "PUT" : "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
@@ -582,7 +582,7 @@
         showToast(result.message || 'Publication saved successfully!', 'success');
         setTimeout(() => {
           if (isEdit) window.location.reload();
-          else window.location.href = '/dashboard';
+          else window.location.href = '/dashboard/books';
         }, 800);
       } else {
         showToast(result.error || 'Failed to save publication', 'error');

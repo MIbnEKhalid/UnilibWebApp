@@ -6,7 +6,7 @@
  * This is an administrative operation and is intentionally NOT run on server
  * startup — trigger it explicitly with:
  *
- *     npm run sync-permissions
+ *     npm run sync_permissions
  */
 import dotenv from "dotenv";
 dotenv.config();

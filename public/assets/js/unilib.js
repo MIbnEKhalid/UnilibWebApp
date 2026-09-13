@@ -288,7 +288,7 @@ window.openQuickView = function(bookId, name, description, image_url, link, cate
 
   if (qvReadLink) qvReadLink.onclick = () => trackView(bookId, link);
   if (qvDownloadBtn) qvDownloadBtn.onclick = () => downloadResource(link, bookId);
-  if (qvFullPageLink) qvFullPageLink.href = `/book/${bookId}`;
+  if (qvFullPageLink) qvFullPageLink.href = `/books/${bookId}`;
 
   modalBackdrop.style.display = 'flex';
   document.body.style.overflow = 'hidden';
@@ -304,12 +304,12 @@ window.closeQuickView = function() {
 
 // Citation & Sharing
 window.copyCitation = function(title, description, bookId) {
-  const url = `${window.location.origin}/book/${bookId}`;
+  const url = `${window.location.origin}/books/${bookId}`;
   copyToClipboard(`"${title}" - ${description}. Available online at Unilib: ${url}`, "Academic citation copied to clipboard!");
 };
 
 window.shareBook = function(bookId, bookName) {
-  const bookUrl = `${window.location.origin}/book/${bookId}`;
+  const bookUrl = `${window.location.origin}/books/${bookId}`;
   if (navigator.share) {
     navigator.share({
       title: bookName,
@@ -372,13 +372,13 @@ async function postTrack(endpoint) {
 }
 
 window.trackView = function(bookId, originalUrl) {
-  postTrack(`/api/book/${bookId}/view`);
+  postTrack(`/api/books/${bookId}/view`);
   window.open(originalUrl, '_blank');
 };
 
 window.downloadResource = function(driveLink, bookId = null) {
   try {
-    if (bookId) postTrack(`/api/book/${bookId}/download`);
+    if (bookId) postTrack(`/api/books/${bookId}/download`);
 
     const folderIdMatch = driveLink.match(/\/folders\/([a-zA-Z0-9_-]+)/);
     if (folderIdMatch) {

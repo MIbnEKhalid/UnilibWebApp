@@ -31,7 +31,7 @@
         <span>Export JSON</span>
       </button>
 
-      <a href="/dashboard/Book/Add" id="new-publication-btn"
+      <a href="/dashboard/books/new" id="new-publication-btn"
         style="display:inline-flex;align-items:center;gap:0.45rem;padding:8px 16px;border-radius:8px;background:var(--primary);color:#fff;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;text-decoration:none;box-shadow:0 2px 8px rgba(15,118,110,0.24);transition:all 0.15s ease;"
         onmouseenter="this.style.background='var(--primary-dk)';this.style.transform='translateY(-1px)'"
         onmouseleave="this.style.background='var(--primary)';this.style.transform='translateY(0)'">
@@ -252,7 +252,7 @@
           {{/if}}
         </div>
 
-        <a href="/dashboard/Book/Edit/{{this.id}}" aria-label="Edit {{this.name}}" style="position:relative;z-index:1;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+        <a href="/dashboard/books/{{this.id}}/edit" aria-label="Edit {{this.name}}" style="position:relative;z-index:1;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
           <img src="{{this.image_url}}" alt="Cover of {{this.name}}"
             style="max-height:100%;max-width:100%;object-fit:contain;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,0.14);transition:transform 0.3s ease;"
             loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'"
@@ -264,7 +264,7 @@
       <div style="padding:1rem;flex:1;display:flex;flex-direction:column;gap:0.65rem;">
         <div>
           <h3 style="font-family:var(--font-headings);font-weight:700;font-size:14px;color:var(--text);line-height:1.35;margin-bottom:0.25rem;">
-            <a href="/dashboard/Book/Edit/{{this.id}}" title="{{this.name}}" style="text-decoration:none;color:inherit;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
+            <a href="/dashboard/books/{{this.id}}/edit" title="{{this.name}}" style="text-decoration:none;color:inherit;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
               onmouseenter="this.style.color='var(--primary)'" onmouseleave="this.style.color='inherit'">{{this.name}}</a>
           </h3>
           <p style="font-size:12px;color:var(--text-muted);line-height:1.55;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;" title="{{this.description}}">{{this.description}}</p>
@@ -285,14 +285,14 @@
 
         <!-- Actions -->
         <div style="padding-top:0.65rem;border-top:1px solid rgba(15,118,110,0.10);display:flex;align-items:center;gap:0.4rem;">
-          <a href="/dashboard/Book/Edit/{{this.id}}"
+          <a href="/dashboard/books/{{this.id}}/edit"
             style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:0.35rem;padding:7px 10px;border-radius:7px;background:var(--primary-lt);color:var(--primary-dk);border:1px solid rgba(15,118,110,0.22);font-size:12px;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:0.04em;transition:all 0.15s ease;"
             onmouseenter="this.style.background='var(--primary)';this.style.color='#fff'" onmouseleave="this.style.background='var(--primary-lt)';this.style.color='var(--primary-dk)'">
             <i class="fas fa-edit" style="font-size:10px;"></i>
             <span>Edit</span>
           </a>
 
-          <a href="/dashboard/Book/{{this.id}}/Sections" title="Manage Chapters"
+          <a href="/dashboard/books/{{this.id}}/sections" title="Manage Chapters"
             style="padding:7px 9px;border-radius:7px;background:rgba(255,255,255,0.80);color:var(--text-2);border:1px solid var(--border);font-size:12px;text-decoration:none;display:flex;align-items:center;justify-content:center;transition:all 0.15s ease;"
             onmouseenter="this.style.background='var(--primary-lt)';this.style.color='var(--primary)'" onmouseleave="this.style.background='rgba(255,255,255,0.80)';this.style.color='var(--text-2)'">
             <i class="fas fa-list-ul"></i>
@@ -337,7 +337,7 @@
             <span style="font-size:11px;color:var(--text-muted);"><i class="fas fa-eye" style="font-size:9px;margin-right:2px;"></i>{{formatNumber this.views}}</span>
           </div>
           <h3 style="font-family:var(--font-headings);font-weight:700;font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:0.2rem;">
-            <a href="/dashboard/Book/Edit/{{this.id}}" style="text-decoration:none;color:inherit;" title="{{this.name}}"
+            <a href="/dashboard/books/{{this.id}}/edit" style="text-decoration:none;color:inherit;" title="{{this.name}}"
               onmouseenter="this.style.color='var(--primary)'" onmouseleave="this.style.color='inherit'">{{this.name}}</a>
           </h3>
           <p style="font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="{{this.description}}">{{this.description}}</p>
@@ -345,14 +345,19 @@
       </div>
 
       <div style="display:flex;align-items:center;gap:0.4rem;flex-shrink:0;">
-        <a href="/dashboard/Book/Edit/{{this.id}}"
+        <a href="/dashboard/books/{{this.id}}/edit"
           style="display:inline-flex;align-items:center;gap:0.35rem;padding:7px 12px;border-radius:7px;background:var(--primary-lt);color:var(--primary-dk);border:1px solid rgba(15,118,110,0.22);font-size:12px;font-weight:700;text-decoration:none;transition:all 0.15s ease;"
           onmouseenter="this.style.background='var(--primary)';this.style.color='#fff'" onmouseleave="this.style.background='var(--primary-lt)';this.style.color='var(--primary-dk)'">
           <i class="fas fa-edit" style="font-size:10px;"></i>
           <span>Edit</span>
         </a>
 
-        <a href="/dashboard/Book/{{this.id}}/Sections"
+        <a href="/dashboard/books/{{this.id}}/sections"
+          style="display:inline-flex;align-items:center;gap:0.35rem;padding:7px 11px;border-radius:7px;background:rgba(255,255,255,0.85);color:var(--text-2);border:1px solid var(--border);font-size:12px;font-weight:600;text-decoration:none;transition:all 0.15s ease;"
+          onmouseenter="this.style.background='var(--primary-lt)';this.style.color='var(--primary)'" onmouseleave="this.style.background='rgba(255,255,255,0.85)';this.style.color='var(--text-2)'">
+          <i class="fas fa-list-ul" style="font-size:10px;"></i>
+          <span>Chapters</span>
+        </a>
           style="display:inline-flex;align-items:center;gap:0.35rem;padding:7px 11px;border-radius:7px;background:rgba(255,255,255,0.85);color:var(--text-2);border:1px solid var(--border);font-size:12px;font-weight:600;text-decoration:none;transition:all 0.15s ease;"
           onmouseenter="this.style.background='var(--primary-lt)';this.style.color='var(--primary)'" onmouseleave="this.style.background='rgba(255,255,255,0.85)';this.style.color='var(--text-2)'">
           <i class="fas fa-list-ul" style="font-size:10px;"></i>
@@ -486,7 +491,7 @@
   // Export
   // ================================================================
   function exportBooks() {
-    fetch('/api/admin/Unilib/Book/Export', { credentials: 'include' })
+    fetch('/api/admin/books/export', { credentials: 'include' })
       .then(r => { if (!r.ok) throw new Error('Export failed'); return r.json(); })
       .then(data => {
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -514,8 +519,8 @@
       confirmColor: '#dc2626',
       onConfirm: async () => {
         try {
-          const response = await fetch(`/api/admin/Unilib/Book/Delete/${productId}`, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' }
+          const response = await fetch(`/api/admin/books/${productId}`, {
+            method: 'DELETE', headers: { 'Content-Type': 'application/json' }
           });
           if (response.ok) {
             showToast('Publication deleted successfully!', 'success');
@@ -576,10 +581,10 @@
       confirmColor: visible ? '#16a34a' : '#d97706',
       onConfirm: async () => {
         try {
-          const response = await fetch('/api/admin/Unilib/Book/BulkVisibility', {
+          const response = await fetch('/api/admin/books/bulk-visibility', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ bookIds, visible })
+            body: JSON.stringify({ book_ids: bookIds, visible })
           });
           const data = await response.json();
           if (response.ok) {

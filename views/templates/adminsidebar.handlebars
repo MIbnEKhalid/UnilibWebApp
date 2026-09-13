@@ -34,7 +34,7 @@
       <span class="admin-nav-group-title">Core Registries</span>
 
       <!-- Publications Registry -->
-      <a href="/dashboard" class="admin-nav-item {{#if isBooksAdmin}}{{#unless isAddBookPage}}active{{/unless}}{{/if}}" id="sidebar-link-publications">
+      <a href="/dashboard/books" class="admin-nav-item {{#if isBooksAdmin}}{{#unless isAddBookPage}}active{{/unless}}{{/if}}" id="sidebar-link-publications">
         <div class="admin-nav-icon">
           <i class="fas fa-book-bookmark"></i>
         </div>
@@ -48,7 +48,7 @@
       </a>
 
       <!-- Course Materials -->
-      <a href="/dashboard/Materials" class="admin-nav-item {{#if isMaterialsAdmin}}active{{/if}}" id="sidebar-link-materials">
+      <a href="/dashboard/materials" class="admin-nav-item {{#if isMaterialsAdmin}}active{{/if}}" id="sidebar-link-materials">
         <div class="admin-nav-icon">
           <i class="fas fa-folder-tree"></i>
         </div>
@@ -62,7 +62,7 @@
       </a>
 
       <!-- Add Publication -->
-      <a href="/dashboard/Book/Add" class="admin-nav-item {{#if isAddBookPage}}active{{/if}}" id="sidebar-link-add-book">
+      <a href="/dashboard/books/new" class="admin-nav-item {{#if isAddBookPage}}active{{/if}}" id="sidebar-link-add-book">
         <div class="admin-nav-icon">
           <i class="fas fa-circle-plus"></i>
         </div>
@@ -209,7 +209,7 @@
   async function adminSidebarExportCatalog() {
     try {
       showToast('Preparing catalog export...', 'info');
-      const r = await fetch('/api/admin/Unilib/Book/Export', { credentials: 'include' });
+      const r = await fetch('/api/admin/books/export', { credentials: 'include' });
       if (!r.ok) throw new Error('Export failed');
       const data = await r.json();
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });

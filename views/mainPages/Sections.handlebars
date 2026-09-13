@@ -13,9 +13,9 @@
   <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-teal-100">
     <div class="space-y-0.5">
       <div class="flex items-center gap-2 text-xs text-teal-700/70">
-        <a href="/dashboard" class="hover:text-[#0f766e] transition-colors">Admin Registry</a>
+        <a href="/dashboard/books" class="hover:text-[#0f766e] transition-colors">Admin Registry</a>
         <span>/</span>
-        <a href="/dashboard/Book/Edit/{{book.id}}" class="hover:text-[#0f766e] transition-colors">{{book.name}}</a>
+        <a href="/dashboard/books/{{book.id}}/edit" class="hover:text-[#0f766e] transition-colors">{{book.name}}</a>
         <span>/</span>
         <span class="text-teal-900">Syllabus Breakdown</span>
       </div>
@@ -29,7 +29,7 @@
 
     <!-- Top Action Buttons -->
     <div class="flex items-center gap-2">
-      <a href="/dashboard/Book/Edit/{{book.id}}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-white hover:bg-teal-50 text-teal-900/80 border border-teal-200 text-xs font-semibold uppercase tracking-wider shadow-sm transition-colors">
+      <a href="/dashboard/books/{{book.id}}/edit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-white hover:bg-teal-50 text-teal-900/80 border border-teal-200 text-xs font-semibold uppercase tracking-wider shadow-sm transition-colors">
         <i class="fas fa-edit text-teal-700/70"></i>
         <span>Edit Publication</span>
       </a>
@@ -331,7 +331,8 @@
 
     const sectionId = document.getElementById('sectionId').value;
     const isEdit = sectionId !== '';
-    const url = isEdit ? `/api/admin/section/edit/${sectionId}` : `/api/admin/book/${bookId}/section/add`;
+    const url = isEdit ? `/api/admin/sections/${encodeURIComponent(sectionId)}` : `/api/admin/books/${encodeURIComponent(bookId)}/sections`;
+    const method = isEdit ? 'PUT' : 'POST';
 
     const formData = {
       name: document.getElementById('sectionName').value.trim(),
@@ -346,7 +347,7 @@
     try {
       showLoading(isEdit ? 'Updating chapter...' : 'Indexing chapter...');
       const response = await fetch(url, {
-        method: 'POST',
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
@@ -384,7 +385,7 @@
       onConfirm: async () => {
         try {
           showLoading('Deleting chapter...');
-          const response = await fetch(`/api/admin/section/delete/${sectionId}`, { method: 'POST' });
+          const response = await fetch(`/api/admin/sections/${encodeURIComponent(sectionId)}`, { method: 'DELETE' });
           const result = await response.json();
           if (response.ok) {
             showToast(result.message || 'Chapter deleted successfully!', 'success');
@@ -418,7 +419,7 @@
       onConfirm: async () => {
         try {
           showLoading('Deleting selected chapters...');
-          const response = await fetch(`/api/admin/book/${bookId}/sections/bulk-delete`, {
+          const response = await fetch(`/api/admin/books/${encodeURIComponent(bookId)}/sections/bulk-delete`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ sectionIds: Array.from(selectedSections) }),
@@ -504,7 +505,7 @@
           </div>
 
           <div class="flex items-center gap-1.5 flex-shrink-0 self-end sm:self-auto">
-            <a href="/book/${bookId}/section/${section.id}/download" target="_blank" class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-teal-50 hover:bg-[#0f766e] text-[#0f766e] hover:text-white border border-teal-200 hover:border-[#0f766e] text-xs font-semibold transition-colors">
+            <a href="/books/${bookId}/sections/${section.id}/download" target="_blank" class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-teal-50 hover:bg-[#0f766e] text-[#0f766e] hover:text-white border border-teal-200 hover:border-[#0f766e] text-xs font-semibold transition-colors">
               <i class="fas fa-download text-[10px]"></i>
               <span>PDF</span>
             </a>

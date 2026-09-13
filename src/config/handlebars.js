@@ -35,46 +35,10 @@ function parseSemesterNumbers(sem) {
   return nums.length ? nums : null;
 }
 
+import { commonHandlebarsHelpers } from "mbkauthe";
+
 export const handlebarsHelpers = {
-  formatNumber: (num) => {
-    if (num == null) return "";
-    if (num < 1000) return num;
-    if (num < 1000000) return (num / 1000).toFixed(num % 1000 === 0 ? 0 : 1) + "k";
-    if (num < 1000000000) return (num / 1000000).toFixed(num % 1000000 === 0 ? 0 : 1) + "M";
-    return (num / 1000000000).toFixed(num % 1000000000 === 0 ? 0 : 1) + "B";
-  },
-  truncate: (str, maxLen = 100) => {
-    if (str == null) return "";
-    const s = String(str);
-    return s.length <= maxLen ? s : s.slice(0, maxLen - 1).trimEnd() + "…";
-  },
-  section: function (name, options) {
-    if (!this._sections) this._sections = {};
-    this._sections[name] = options.fn(this);
-    return null;
-  },
-  json: (c) => JSON.stringify(c),
-  eq: (a, b) => a === b || (a != null && b != null && String(a) === String(b)),
-  startsWith: (str, prefix) => typeof str === "string" && str.startsWith(prefix),
-  includes: (arr, val) => (Array.isArray(arr) ? arr.includes(val) : arr === val),
-  join: (arr, sep = ", ") => (Array.isArray(arr) ? arr.join(sep) : arr || ""),
-  or: (a, b) => a || b,
-  not: (a) => !a,
-  gt: (a, b) => a > b,
-  lt: (a, b) => a < b,
-  add: (a, b) => a + b,
-  subtract: (a, b) => a - b,
-  multiply: (a, b) => a * b,
-  min: (a, b) => Math.min(a, b),
-  max: (a, b) => Math.max(a, b),
-  range: (start, end) => Array.from({ length: end - start + 1 }, (_, i) => start + i),
-  encodeURIComponent: (str) => encodeURIComponent(str),
-  validPageRange: (current, total, delta = 2) => {
-    const start = Math.max(1, current - delta);
-    const end = Math.min(total, current + delta);
-    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-  },
-  substr: (str, start, len) => (str == null ? "" : String(str).substr(start, len)),
+  ...commonHandlebarsHelpers,
   formatSemesterBadge: (sem) => {
     const nums = parseSemesterNumbers(sem);
     if (!nums) return sem || "";

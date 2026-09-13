@@ -6,13 +6,15 @@ import { renderSectionsPage, addSection, editSection, deleteSection, bulkDeleteS
 const router = express.Router();
 
 // Public section download route
-router.get("/book/:bookId/section/:sectionId/download", downloadSectionPdf);
+router.get("/books/:book_id/sections/:section_id/download", downloadSectionPdf);
 
-// Admin section management routes
-router.get("/dashboard/Book/:bookId/Sections", sessPerm(Permissions.sections.view), renderSectionsPage);
-router.post("/api/admin/Book/:bookId/Section/Add", sessPerm(Permissions.sections.create), addSection);
-router.post("/api/admin/Section/Edit/:sectionId", sessPerm(Permissions.sections.edit), editSection);
-router.post("/api/admin/Section/Delete/:sectionId", sessPerm(Permissions.sections.delete), deleteSection);
-router.post("/api/admin/Book/:bookId/Sections/BulkDelete", sessPerm(Permissions.sections.delete), bulkDeleteSections);
+// Admin section management page
+router.get("/dashboard/books/:book_id/sections", sessPerm(Permissions.sections.view), renderSectionsPage);
+
+// Admin section management API routes
+router.post("/api/admin/books/:book_id/sections", sessPerm(Permissions.sections.create), addSection);
+router.put("/api/admin/sections/:id", sessPerm(Permissions.sections.edit), editSection);
+router.delete("/api/admin/sections/:id", sessPerm(Permissions.sections.delete), deleteSection);
+router.post("/api/admin/books/:book_id/sections/bulk-delete", sessPerm(Permissions.sections.delete), bulkDeleteSections);
 
 export default router;

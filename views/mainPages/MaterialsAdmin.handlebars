@@ -75,11 +75,11 @@
 
   <!-- Admin Sub-Navigation Tabs -->
   <div class="flex items-center gap-2 border-b border-teal-100 pb-2">
-    <a href="/dashboard" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-teal-800/80 hover:text-teal-950 hover:bg-teal-50 transition-colors flex items-center gap-1.5 uppercase tracking-wider">
+    <a href="/dashboard/books" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-teal-800/80 hover:text-teal-950 hover:bg-teal-50 transition-colors flex items-center gap-1.5 uppercase tracking-wider">
       <i class="fas fa-book-bookmark text-teal-600/60 text-[11px]"></i>
       <span>Book Publications</span>
     </a>
-    <a href="/dashboard/Materials" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-[#0f766e] text-white flex items-center gap-1.5 uppercase tracking-wider shadow-xs">
+    <a href="/dashboard/materials" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-[#0f766e] text-white flex items-center gap-1.5 uppercase tracking-wider shadow-xs">
       <i class="fas fa-archive text-teal-100 text-[11px]"></i>
       <span>Course Materials</span>
     </a>
@@ -408,7 +408,11 @@
     if (syncText) syncText.textContent = 'Syncing...';
 
     try {
-      const resp = await fetch('/api/admin/sync/tasjeel', { credentials: 'same-origin' });
+      const resp = await fetch('/api/admin/materials/sync-tasjeel', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' }
+      });
       const result = await resp.json();
 
       if (result.success) {
@@ -430,8 +434,8 @@
 
   window.changeAdminSubjectSemester = async function(courseId, newSemester) {
     try {
-      const resp = await fetch(`/api/admin/subject/${encodeURIComponent(courseId)}/semester`, {
-        method: 'POST',
+      const resp = await fetch(`/api/admin/subjects/${encodeURIComponent(courseId)}/semester`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'same-origin',
         body: JSON.stringify({ semester: newSemester })
@@ -473,8 +477,8 @@
       confirmColor: '#dc2626',
       onConfirm: async () => {
         try {
-          const resp = await fetch(`/api/admin/subject/${encodeURIComponent(courseId)}/delete`, {
-            method: 'POST',
+          const resp = await fetch(`/api/admin/subjects/${encodeURIComponent(courseId)}`, {
+            method: 'DELETE',
             credentials: 'same-origin'
           });
 
@@ -523,7 +527,7 @@
     if (saveBtn) saveBtn.disabled = true;
 
     try {
-      const resp = await fetch('/api/admin/subject/add', {
+      const resp = await fetch('/api/admin/subjects', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'same-origin',
@@ -578,7 +582,7 @@
     if (saveBtn) saveBtn.disabled = true;
 
     try {
-      const resp = await fetch(`/api/admin/subject/${encodeURIComponent(courseId)}/material/add`, {
+      const resp = await fetch(`/api/admin/subjects/${encodeURIComponent(courseId)}/materials`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'same-origin',
@@ -615,10 +619,28 @@
       confirmColor: '#dc2626',
       onConfirm: async () => {
         try {
-          const resp = await fetch(`/api/admin/material/${encodeURIComponent(materialId)}/delete`, {
-            method: 'POST',
+          const resp = await fetch(`/api/admin/materials/${encodeURIComponent(materialId)}`, {
+            method: 'DELETE',
             credentials: 'same-origin'
           });
+
+          if (!resp.ok) {
+            const err = await resp.json().catch(() => ({}));
+            throw new Error(err.message || 'Failed to delete material');
+          }
+
+          showToast(`Material deleted`, 'success');
+          const card = document.querySelector(`.subject-admin-card[data-courseid="${courseId}"]`);
+          if (card) {
+            card._loaded = false;
+            await loadAdminMaterials(card);
+          }
+        } catch (err) {
+          console.error('Delete material error:', err);
+          showToast(err.message || 'Failed to delete material', 'error');
+        }
+      }
+    });
 
           if (!resp.ok) {
             const err = await resp.json().catch(() => ({}));
@@ -707,7 +729,7 @@
     spinner.style.display = 'flex';
 
     try {
-      const resp = await fetch(`/api/get/all/materials/${encodeURIComponent(courseId)}`, { credentials: 'same-origin' });
+      const resp = await fetch(`/api/subjects/${encodeURIComponent(courseId)}/materials`, { credentials: 'same-origin' });
       if (!resp.ok) throw new Error('Failed to load materials');
 
       const json = await resp.json();

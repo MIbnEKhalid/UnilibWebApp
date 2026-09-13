@@ -181,7 +181,8 @@ export async function deleteBook(req, res) {
 
 // Admin bulk book visibility toggle
 export async function bulkVisibility(req, res) {
-  const { bookIds, visible } = req.body;
+  const bookIds = req.body.book_ids || req.body.bookIds;
+  const { visible } = req.body;
 
   if (!Array.isArray(bookIds) || bookIds.length === 0) {
     return res.status(400).json({ error: "Invalid book IDs" });

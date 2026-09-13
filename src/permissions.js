@@ -42,13 +42,26 @@ const MANIFEST = {
   },
 };
 
-export const Permissions = definePermissions(MANIFEST, { fallbackAppKey: "unilib" });
+const ROLES = {
+  admin: {
+    label: "Library Administrator",
+    description: "Library administration excluding destructive raw database access",
+    permissions: ["books:*", "sections:*", "materials:*", "storage:view", "storage:upload"],
+  },
+  normaluser: {
+    label: "Library Member",
+    description: "View books, sections, materials, and library resources",
+    permissions: ["books:view", "sections:view", "materials:view", "storage:view"],
+  },
+};
 
-/** Register this app's permissions in the catalog (idempotent, best-effort). */
+export const Permissions = definePermissions(MANIFEST, { fallbackAppKey: "unilib", roles: ROLES });
+
+/** Register this app's permissions & roles in the catalog (idempotent, best-effort). */
 export async function syncUnilibPermissions() {
   try {
     const result = await syncAppPermissions(Permissions, { fallbackAppKey: "unilib" });
-    console.log(`[unilib] Permission catalog synced (${result.synced} permissions)`);
+    console.log(`[unilib] Permissions & roles synced (${result.synced} permissions, ${result.rolesSynced} roles)`);
     return result;
   } catch (err) {
     console.warn("[unilib] Permission catalog sync skipped:", err?.message || err);
@@ -57,3 +70,4 @@ export async function syncUnilibPermissions() {
 }
 
 export default Permissions;
+

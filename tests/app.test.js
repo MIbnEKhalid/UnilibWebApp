@@ -44,6 +44,7 @@ describe("UnilibWebApp HTTP Integration Tests", () => {
       visible: true,
     });
 
+    process.env.HEALTH_TEST_KEY = "test-secret-unilib";
     const appModule = await import("../src/app.js");
     app = appModule.default;
   });
@@ -72,8 +73,8 @@ describe("UnilibWebApp HTTP Integration Tests", () => {
       expect(res.text).toContain("Engineering Mechanics");
     });
 
-    test("GET /book/:id renders single book page", async () => {
-      const res = await request(app).get(`/book/${seededBook.id}`);
+    test("GET /books/:id renders single book page", async () => {
+      const res = await request(app).get(`/books/${seededBook.id}`);
       expect(res.status).toBe(200);
       expect(res.text).toContain("Operating Systems Principles");
     });
@@ -86,14 +87,14 @@ describe("UnilibWebApp HTTP Integration Tests", () => {
   });
 
   describe("API Endpoints", () => {
-    test("POST /api/book/:id/view increments book views", async () => {
-      const res = await request(app).post(`/api/book/${seededBook.id}/view`);
+    test("POST /api/books/:id/view increments book views", async () => {
+      const res = await request(app).post(`/api/books/${seededBook.id}/view`);
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
     });
 
-    test("POST /api/book/:id/download responds with success", async () => {
-      const res = await request(app).post(`/api/book/${seededBook.id}/download`);
+    test("POST /api/books/:id/download responds with success", async () => {
+      const res = await request(app).post(`/api/books/${seededBook.id}/download`);
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
     });
