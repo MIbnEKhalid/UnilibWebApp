@@ -11,6 +11,10 @@ describe("UnilibWebApp HTTP Integration Tests", () => {
   let seededBook2;
 
   beforeAll(async () => {
+    process.env.DB_TYPE = "sqlite";
+    process.env.SQLITE_PATH = ":memory:";
+    process.env.NODE_ENV = "test";
+
     // Initialize in-memory SQLite database
     const sqliteDb = await getSqliteConnection(":memory:");
     initSqliteSchema(sqliteDb);
@@ -44,7 +48,6 @@ describe("UnilibWebApp HTTP Integration Tests", () => {
       visible: true,
     });
 
-    process.env.HEALTH_TEST_KEY = "test-secret-unilib";
     const appModule = await import("../src/app.js");
     app = appModule.default;
   });
@@ -106,43 +109,6 @@ describe("UnilibWebApp HTTP Integration Tests", () => {
       expect(res.body.success).toBe(false);
       expect(res.body.error).toBeDefined();
       expect(res.body.error.code).toBe("ROUTE_NOT_FOUND");
-    });
-  });
-
-  describe("Health Route Integration Tests", () => {
-    const healthSecret = "test-secret-unilib";
-
-    test("GET /api/health returns 200 with standard healthy payload", async () => {
-      const res = await request(app).get("/api/health");
-      expect(res.status).toBe(200);
-      expect(res.body.success).toBe(true);
-      expect(res.body.status).toBe("healthy");
-      expect(res.body.app).toBe("unilibwebapp");
-    });
-
-    test("GET /health redirects to /api/health", async () => {
-      const res = await request(app).get("/health");
-      expect(res.status).toBe(302);
-      expect(res.headers.location).toBe("/api/health");
-    });
-
-    test("POST /api/health/test without auth fails with 401", async () => {
-      const res = await request(app).post("/api/health/test");
-      expect(res.status).toBe(401);
-      expect(res.body.success).toBe(false);
-    });
-
-    test("POST /api/health/test with valid secret triggers health run", async () => {
-      process.env.HEALTH_TEST_KEY = healthSecret;
-      const res = await request(app)
-        .post("/api/health/test")
-        .set("x-health-key", healthSecret);
-
-      expect(res.status).toBe(200);
-      expect(res.body.appName).toBe("unilibwebapp");
-      expect(["healthy", "degraded"]).toContain(res.body.health);
-      expect(Array.isArray(res.body.routes)).toBe(true);
-      expect(res.body.summary.totalRoutesChecked).toBeGreaterThan(0);
     });
   });
 

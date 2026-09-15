@@ -11,7 +11,6 @@ import config from "./config/index.js";
 import configureHandlebars from "./config/handlebars.js";
 import rateLimiter from "./middleware/rate-limiter.js";
 import { notFoundHandler, errorHandler } from "./middleware/error-handler.js";
-import { createHealthRouter } from "mbkhealth";
 import appRoutes from "./routes/index.js";
 import { Permissions } from "./permissions.js";
 
@@ -51,10 +50,6 @@ app.use(rateLimiter);
 
 // Auth middleware & routes
 app.use(mbkautheRouter);
-
-// Health monitoring endpoints
-app.use("/api/health", createHealthRouter({ appName: "unilibwebapp", app }));
-app.get("/health", (req, res) => res.redirect("/api/health"));
 
 // Application routes
 app.use(appRoutes);
