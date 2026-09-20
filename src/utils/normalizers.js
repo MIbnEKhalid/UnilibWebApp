@@ -108,14 +108,14 @@ export function serializeSemester(val, isSqlite = false) {
     return JSON.stringify(arr);
   }
   const toEnum = (s) => {
-    if (!s) return "Semester3";
+    if (!s) return "Semester 3";
     const str = String(s).trim();
     const match = str.match(/^Semester\s*(\d+)$/i);
-    return match ? `Semester${match[1]}` : str;
+    return match ? `Semester ${match[1]}` : str;
   };
   if (Array.isArray(val)) return val.map(toEnum);
   if (typeof val === "string" && val.includes(",")) {
     return val.split(",").map((s) => toEnum(s.trim())).filter(Boolean);
   }
-  return [toEnum(val || "Semester3")];
+  return [toEnum(val || "Semester 3")];
 }
