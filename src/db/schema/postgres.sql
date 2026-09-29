@@ -1,3 +1,6 @@
+-- First The DB should have PrereQuisite SQL Query 
+-- for mbkauthe from mbkauthe/docs/schema/.
+
 -- PostgreSQL Schema for UnilibWebApp
 
 DO $$ BEGIN

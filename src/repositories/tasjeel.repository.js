@@ -1,6 +1,13 @@
 import { BaseRepository } from "mbkauthe";
 
 export class TasjeelRepository extends BaseRepository {
+  constructor(adapterOrOptions = {}) {
+    super(adapterOrOptions, {
+      defaultTable: "unilib_subjects",
+      dateColumns: ["last_synced"],
+    });
+  }
+
   async getAllSubjects() {
     const result = await this.query("SELECT id, course_id, subject, href, semester FROM unilib_subjects ORDER BY subject ASC");
     return result.rows || [];

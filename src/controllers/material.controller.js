@@ -112,7 +112,7 @@ export async function downloadMaterialProxy(req, res) {
 export async function renderMaterialsPage(req, res) {
   try {
     const rows = await tasjeelRepository.getAllSubjects();
-    renderPage(req, res, "mainPages/subjects.handlebars", true, {
+    renderPage(req, res, "mainPages/subjects.hbs", true, {
       page: "Subjects & Materials",
       subjects: rows.map(mapSubjectRow),
       defaultSemester: config.defaultSemester,
@@ -121,7 +121,7 @@ export async function renderMaterialsPage(req, res) {
     });
   } catch (err) {
     console.error("Error building subjects page from DB:", err);
-    renderPage(req, res, "mainPages/subjects.handlebars", true, {
+    renderPage(req, res, "mainPages/subjects.hbs", true, {
       page: "Subjects & Materials",
       subjects: [],
       error: err.message,
@@ -145,7 +145,7 @@ export async function renderAdminMaterialsPage(req, res) {
 
     const totalMaterialsFiles = Object.values(counts).reduce((acc, c) => acc + (Number(c) || 0), 0);
 
-    renderPage(req, res, "mainPages/MaterialsAdmin.handlebars", true, {
+    renderPage(req, res, "mainPages/MaterialsAdmin.hbs", true, {
       page: "Materials Management",
       subjects,
       totalSubjects: subjects.length,
@@ -157,7 +157,7 @@ export async function renderAdminMaterialsPage(req, res) {
     });
   } catch (err) {
     console.error("Error building admin materials page from DB:", err);
-    renderPage(req, res, "mainPages/MaterialsAdmin.handlebars", true, {
+    renderPage(req, res, "mainPages/MaterialsAdmin.hbs", true, {
       page: "Materials Management",
       subjects: [],
       error: err.message,

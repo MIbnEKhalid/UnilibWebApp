@@ -1,5 +1,6 @@
 import redis from "../config/redis.js";
 import { cacheGet, cacheSet } from "../services/cache.service.js";
+import { renderPage as mbkautheRenderPage } from "mbkauthe";
 
 export function getSessionLocals(req) {
   const user = req.session?.user;
@@ -11,11 +12,7 @@ export function getSessionLocals(req) {
 }
 
 export async function renderPage(req, res, fileLocation, layout = true, data = {}) {
-  return res.render(fileLocation, {
-    ...data,
-    ...getSessionLocals(req),
-    ...(layout === false ? { layout: false } : {}),
-  });
+  return mbkautheRenderPage(req, res, fileLocation, layout, data);
 }
 
 /**

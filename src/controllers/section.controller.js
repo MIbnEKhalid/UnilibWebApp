@@ -31,7 +31,7 @@ export async function renderSectionsPage(req, res) {
     const data = await sectionRepository.getSectionsByBookId(bookId);
     if (!data) return res.status(404).send("Book not found");
 
-    return renderPage(req, res, "mainPages/Sections.handlebars", true, {
+    return renderPage(req, res, "mainPages/Sections.hbs", true, {
       book: data.book,
       sections: data.sections,
     });

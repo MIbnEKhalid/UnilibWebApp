@@ -3,6 +3,13 @@ import { BaseRepository } from "mbkauthe";
 import { normalizeBook, normalizeSections, serializeSections } from "../utils/normalizers.js";
 
 export class SectionRepository extends BaseRepository {
+  constructor(adapterOrOptions = {}) {
+    super(adapterOrOptions, {
+      defaultTable: "unilib_books",
+      jsonColumns: ["sections"],
+    });
+  }
+
   async getSectionsByBookId(bookId) {
     const query = "SELECT id, sections, name, link FROM unilib_books WHERE id = $1";
     const result = await this.query(query, [bookId]);

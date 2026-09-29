@@ -1,3 +1,6 @@
+-- First The DB should have PrereQuisite SQL Query 
+-- for mbkauthe from mbkauthe/docs/schema/.
+
 -- SQLite Schema for UnilibWebApp
 
 CREATE TABLE IF NOT EXISTS unilib_books (

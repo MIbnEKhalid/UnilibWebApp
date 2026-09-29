@@ -2,6 +2,14 @@ import { BaseRepository } from "mbkauthe";
 import { normalizeBook, expandSemesterValues, serializeSemester } from "../utils/normalizers.js";
 
 export class BookRepository extends BaseRepository {
+  constructor(adapterOrOptions = {}) {
+    super(adapterOrOptions, {
+      defaultTable: "unilib_books",
+      jsonColumns: ["semester", "sections"],
+      booleanColumns: ["main", "visible"],
+    });
+  }
+
   async findBooks({ page = 1, limit = 12, semester = "all", category = "all", search = "", isAdminView = false }) {
     const pageNum = parseInt(page, 10) || 1;
     const limitNum = parseInt(limit, 10) || 12;

@@ -31,7 +31,7 @@ export async function renderUnilibBooks(req, res, view, data = {}) {
   } = req.query;
 
   const semesterFilter = normalizeSemesterFilter(semester);
-  const isAdminView = view === "mainPages/Book.handlebars";
+  const isAdminView = view === "mainPages/Book.hbs";
 
   try {
     const { books, pagination } = await bookRepository.findBooks({
@@ -79,7 +79,7 @@ export async function renderIndex(req, res) {
     });
 
     return renderCachedPage(req, res, {
-      view: "mainPages/index.handlebars",
+      view: "mainPages/index.hbs",
       data: {
         books,
         pagination,
@@ -101,10 +101,10 @@ export async function renderIndex(req, res) {
 export async function renderDashboard(req, res) {
   try {
     const stats = await bookRepository.getDashboardStats();
-    await renderUnilibBooks(req, res, "mainPages/Book.handlebars", { stats });
+    await renderUnilibBooks(req, res, "mainPages/Book.hbs", { stats });
   } catch (err) {
     console.error("Error building dashboard stats:", err);
-    await renderUnilibBooks(req, res, "mainPages/Book.handlebars");
+    await renderUnilibBooks(req, res, "mainPages/Book.hbs");
   }
 }
 
@@ -114,7 +114,7 @@ export async function renderEditBookPage(req, res) {
     const book = await bookRepository.findById(req.params.id);
     if (!book) return res.status(404).json({ error: "Book not found" });
 
-    return renderPage(req, res, "mainPages/BookForm.handlebars", true, {
+    return renderPage(req, res, "mainPages/BookForm.hbs", true, {
       isEdit: true,
       id: req.params.id,
       book,
@@ -209,7 +209,7 @@ export async function bulkVisibility(req, res) {
 
 // Admin render add book page
 export async function renderAddBookPage(req, res) {
-  return renderPage(req, res, "mainPages/BookForm.handlebars", true, {
+  return renderPage(req, res, "mainPages/BookForm.hbs", true, {
     isEdit: false,
     book: null,
   });
@@ -278,7 +278,7 @@ export async function renderSingleBook(req, res) {
     }
 
     return renderCachedPage(req, res, {
-      view: "mainPages/index.handlebars",
+      view: "mainPages/index.hbs",
       data: {
         books: [book],
         singleBookView: true,

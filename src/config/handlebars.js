@@ -80,7 +80,8 @@ export const handlebarsHelpers = {
 };
 
 export const configureHandlebars = (app) => {
-  app.engine("handlebars", engine({
+  app.engine("hbs", engine({
+    extname: ".hbs",
     defaultLayout: "main",
     layoutsDir: path.join(viewsPath, "layouts"),
     partialsDir: [
@@ -94,7 +95,7 @@ export const configureHandlebars = (app) => {
     helpers: handlebarsHelpers,
   }));
 
-  app.set("view engine", "handlebars");
+  app.set("view engine", "hbs");
   app.set("views", [
     viewsPath,
     path.join(nodeModulesPath, "mbkauthe/views"),

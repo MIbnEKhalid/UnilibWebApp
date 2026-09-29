@@ -6,11 +6,11 @@ Allow: /headers/
 # Restrict crawlers from accessing body content
 Disallow: /views/
 Disallow: /routes/
-Disallow: /public/Scripts/
-Disallow: /public/Style/
-Disallow: /Assets/Images/
+Disallow: /public/scripts/
+Disallow: /public/style/
+Disallow: /assets/images/
 
-Allow: /Assets/Scripts/
-Allow: /Assets/Style/
+Allow: /assets/js/
+Allow: /assets/ss/
 
 Sitemap: https://unilib.mbktech.org/sitemap.xml
