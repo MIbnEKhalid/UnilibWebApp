@@ -18,7 +18,7 @@
   "license": "MIT",
   "dependencies": {
     "@upstash/redis": "^1.39.0",
-    "admindb": "file:../admindb",
+    "admindb": "latest",
     "better-sqlite3": "13.0.3",
     "cheerio": "^1.1.2",
     "compression": "^1.8.2",
