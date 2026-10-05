@@ -1,4 +1,3 @@
-import fetch from "node-fetch";
 import { load } from "cheerio";
 import { tasjeelRepository } from "../db/index.js";
 

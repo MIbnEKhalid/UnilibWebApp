@@ -1,6 +1,6 @@
+import { Readable } from "node:stream";
 import { bookRepository } from "../db/index.js";
 import { getDriveDownloadUrl, isValidPdfContentType } from "../utils/drive.util.js";
-import fetch from "node-fetch";
 
 // Stream PDF from Google Drive
 export async function streamPdfFromDrive(req, res) {
@@ -27,7 +27,11 @@ export async function streamPdfFromDrive(req, res) {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", `inline; filename="${filename}"`);
 
-    response.body.pipe(res);
+    if (response.body) {
+      Readable.fromWeb(response.body).pipe(res);
+    } else {
+      res.end();
+    }
   } catch (error) {
     console.error("Error streaming PDF:", error);
     res.status(500).send("Internal Server Error");

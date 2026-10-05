@@ -9,6 +9,7 @@ process.env.SQLITE_PATH = ":memory:";
 
 // Disable Redis in tests
 process.env.REDIS_ENABLED = "false";
+process.env.DEFAULT_SEMESTER = "Semester 4";
 
 // Test secrets
 process.env.MAIN_SECRET_TOKEN = "test-secret-token-unilib";

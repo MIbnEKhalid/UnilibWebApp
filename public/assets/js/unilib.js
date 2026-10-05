@@ -28,7 +28,7 @@ const elements = {
 document.addEventListener("DOMContentLoaded", () => {
   parseUrlParameters();
   initViewMode();
-  setupEventListeners();
+  initCatalogEventListeners();
   initChapterSearch();
   initHeaderAndScroll();
 });
@@ -129,8 +129,8 @@ function updateUrl() {
   window.location.href = `${window.location.pathname}${queryString ? '?' + queryString : ''}`;
 }
 
-// Setup Event Listeners
-function setupEventListeners() {
+// Setup Catalog Event Listeners
+function initCatalogEventListeners() {
   const sInput = elements.searchInput;
   if (sInput) {
     sInput.addEventListener("input", debounce(filterProducts, 350));

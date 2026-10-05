@@ -14,6 +14,7 @@ describe("UnilibWebApp HTTP Integration Tests", () => {
     process.env.DB_TYPE = "sqlite";
     process.env.SQLITE_PATH = ":memory:";
     process.env.NODE_ENV = "test";
+    process.env.DEFAULT_SEMESTER = "Semester 4";
 
     // Initialize in-memory SQLite database
     const sqliteDb = await getSqliteConnection(":memory:");
@@ -32,7 +33,7 @@ describe("UnilibWebApp HTTP Integration Tests", () => {
       description: "Concepts and Design",
       image_url: "os.webp",
       link: "https://example.com/os.pdf",
-      semester: ["Semester4"],
+      semester: ["Semester 1", "Semester 4"],
       main: true,
       visible: true,
     });

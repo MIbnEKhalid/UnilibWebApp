@@ -44,7 +44,11 @@ export class BookRepository extends BaseRepository {
     }
 
     if (search && search.trim()) {
-      conditions.push(`name ILIKE $${params.length + 1}`);
+      if (this.dialect.name === "sqlite") {
+        conditions.push(`LOWER(name) LIKE LOWER($${params.length + 1})`);
+      } else {
+        conditions.push(`name ILIKE $${params.length + 1}`);
+      }
       params.push(`%${search.trim()}%`);
     }
 

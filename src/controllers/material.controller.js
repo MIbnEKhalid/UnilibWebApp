@@ -1,4 +1,4 @@
-import fetch from "node-fetch";
+import { Readable } from "node:stream";
 import { tasjeelRepository } from "../db/index.js";
 import renderPage from "../utils/render.util.js";
 import { syncTasjeel, isLoginPageHtml } from "../services/tasjeel.service.js";
@@ -96,11 +96,10 @@ export async function downloadMaterialProxy(req, res) {
 
     if (contentType) res.setHeader("content-type", contentType);
 
-    if (upstream.body && typeof upstream.body.pipe === "function") {
-      upstream.body.pipe(res);
+    if (upstream.body) {
+      Readable.fromWeb(upstream.body).pipe(res);
     } else {
-      const buffer = Buffer.from(await upstream.arrayBuffer());
-      res.end(buffer);
+      res.end();
     }
   } catch (err) {
     console.error("Download proxy error:", err);

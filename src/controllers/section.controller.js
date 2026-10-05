@@ -1,7 +1,6 @@
 import { sectionRepository, bookRepository } from "../db/index.js";
 import renderPage from "../utils/render.util.js";
 import { getDriveDownloadUrl, isValidPdfContentType } from "../utils/drive.util.js";
-import fetch from "node-fetch";
 import { PDFDocument } from "pdf-lib";
 import { invalidateBookCache, invalidateIndexCaches } from "../services/cache.service.js";
 

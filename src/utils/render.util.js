@@ -16,10 +16,11 @@ export async function renderPage(req, res, fileLocation, layout = true, data = {
 }
 
 /**
- * Renders a page with Vercel Edge CDN headers and optional Upstash Redis distributed caching
+ * Renders a page with Vercel Edge CDN headers and distributed/in-memory caching
  */
 export async function renderCachedPage(req, res, {
   view,
+  fetchData,
   data = {},
   cacheKey,
   ttl = 120,
@@ -35,13 +36,23 @@ export async function renderCachedPage(req, res, {
 
   const isguest = !req.session?.user;
 
-  if (isguest && redis && cacheKey) {
+  if (isguest && cacheKey) {
     const cached = await cacheGet(cacheKey);
     if (cached) return res.send(cached);
   }
 
+  let resolvedData = data;
+  if (typeof fetchData === "function") {
+    try {
+      resolvedData = await fetchData();
+    } catch (err) {
+      console.error(`Error resolving data for ${view}:`, err);
+      return res.status(500).send("Internal Server Error");
+    }
+  }
+
   const renderOptions = {
-    ...data,
+    ...resolvedData,
     ...getSessionLocals(req),
   };
 
@@ -50,7 +61,7 @@ export async function renderCachedPage(req, res, {
       console.error(`Render error for ${view}:`, err);
       return res.status(500).send("Render error");
     }
-    if (isguest && redis && cacheKey) {
+    if (isguest && cacheKey) {
       cacheSet(cacheKey, html, ttl).catch((e) => console.error("Cache set error:", e));
     }
     res.send(html);
@@ -58,3 +69,4 @@ export async function renderCachedPage(req, res, {
 }
 
 export default renderPage;
+

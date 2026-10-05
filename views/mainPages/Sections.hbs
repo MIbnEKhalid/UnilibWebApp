@@ -164,394 +164,422 @@
 </section>
 
 <script>
-  let sections = {{{ json sections }}} || [];
-  let selectedSections = new Set();
-  let bookId = {{{ book.id }}};
+  (function () {
+    let sections = {{{ json sections }}} || [];
+    let selectedSections = new Set();
+    const bookId = Number("{{book.id}}");
 
-  let sectionsList;
-  let bulkActions;
-  let selectedCount;
-  let loadingOverlay;
-  let loadingText;
+    let sectionsList;
+    let bulkActions;
+    let selectedCount;
+    let loadingOverlay;
+    let loadingText;
 
-  document.addEventListener('DOMContentLoaded', function () {
-    sectionsList = document.getElementById('sectionsList');
-    bulkActions = document.getElementById('bulkActions');
-    selectedCount = document.getElementById('selectedCount');
-    loadingOverlay = document.getElementById('loadingOverlay');
-    loadingText = document.getElementById('loadingText');
+    document.addEventListener('DOMContentLoaded', function () {
+      sectionsList = document.getElementById('sectionsList');
+      bulkActions = document.getElementById('bulkActions');
+      selectedCount = document.getElementById('selectedCount');
+      loadingOverlay = document.getElementById('loadingOverlay');
+      loadingText = document.getElementById('loadingText');
 
-    setupEventListeners();
-    renderSections();
-  });
-
-  function setupEventListeners() {
-    const sectionForm = document.getElementById('sectionForm');
-    if (sectionForm) sectionForm.addEventListener('submit', handleFormSubmit);
-
-    const pageStart = document.getElementById('pageStart');
-    const pageEnd = document.getElementById('pageEnd');
-    if (pageStart) pageStart.addEventListener('input', validatePageRange);
-    if (pageEnd) pageEnd.addEventListener('input', validatePageRange);
-
-    const searchInput = document.getElementById('adminChapterSearch');
-    if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
-        const q = e.target.value.toLowerCase().trim();
-        document.querySelectorAll('.section-item').forEach(el => {
-          const name = (el.dataset.name || '').toLowerCase();
-          el.style.display = name.includes(q) ? 'flex' : 'none';
-        });
-      });
-    }
-
-    window.addEventListener('click', function (event) {
-      const modal = document.getElementById('sectionModal');
-      if (event.target === modal) closeModal();
-    });
-  }
-
-  function showLoading(text = 'Processing...') {
-    if (loadingText) loadingText.textContent = text;
-    if (loadingOverlay) loadingOverlay.style.display = 'flex';
-  }
-
-  function hideLoading() {
-    if (loadingOverlay) loadingOverlay.style.display = 'none';
-  }
-
-  function validateForm() {
-    let isValid = true;
-    const errors = {};
-
-    document.querySelectorAll('.form-group').forEach(group => group.classList.remove('error'));
-    document.querySelectorAll('.error-message').forEach(msg => msg.style.display = 'none');
-
-    const sectionName = document.getElementById('sectionName').value.trim();
-    if (!sectionName) {
-      errors.sectionName = 'Chapter title is required';
-      isValid = false;
-    } else if (sectionName.length > 200) {
-      errors.sectionName = 'Title must be under 200 characters';
-      isValid = false;
-    }
-
-    const pageStart = parseInt(document.getElementById('pageStart').value);
-    const pageEnd = parseInt(document.getElementById('pageEnd').value);
-
-    if (!pageStart || pageStart < 1) {
-      errors.pageStart = 'Start page must be 1 or higher';
-      isValid = false;
-    }
-
-    if (!pageEnd || pageEnd < 1) {
-      errors.pageEnd = 'End page must be 1 or higher';
-      isValid = false;
-    }
-
-    if (pageStart && pageEnd && pageStart > pageEnd) {
-      errors.pageEnd = 'End page must be greater than or equal to start page';
-      isValid = false;
-    }
-
-    Object.keys(errors).forEach(field => {
-      const errorElement = document.getElementById(`${field}Error`);
-      if (errorElement) {
-        const formGroup = errorElement.closest('.form-group');
-        errorElement.textContent = errors[field];
-        errorElement.style.display = 'block';
-        if (formGroup) formGroup.classList.add('error');
-      }
+      setupSectionsEventListeners();
+      renderSections();
     });
 
-    return isValid;
-  }
+    function setupSectionsEventListeners() {
+      const sectionForm = document.getElementById('sectionForm');
+      if (sectionForm) sectionForm.addEventListener('submit', handleFormSubmit);
 
-  function validatePageRange() {
-    const pageStart = parseInt(document.getElementById('pageStart').value) || 0;
-    const pageEnd = parseInt(document.getElementById('pageEnd').value) || 0;
-    const calcEl = document.getElementById('pageCountCalc');
+      const pageStart = document.getElementById('pageStart');
+      const pageEnd = document.getElementById('pageEnd');
+      if (pageStart) pageStart.addEventListener('input', validatePageRange);
+      if (pageEnd) pageEnd.addEventListener('input', validatePageRange);
 
-    if (pageStart > 0 && pageEnd >= pageStart) {
-      if (calcEl) calcEl.textContent = `${(pageEnd - pageStart) + 1} pages`;
-    } else {
-      if (calcEl) calcEl.textContent = 'Invalid range';
-    }
-  }
-
-  function showAddSectionModal() {
-    document.getElementById('modalTitle').textContent = 'Index Chapter Section';
-    document.getElementById('sectionId').value = '';
-    document.getElementById('sectionNumber').value = '';
-    document.getElementById('sectionNumberDisplay').style.display = 'none';
-
-    document.getElementById('sectionName').value = '';
-    document.getElementById('pageStart').value = '';
-    document.getElementById('pageEnd').value = '';
-    document.getElementById('pageCountCalc').textContent = '-';
-    document.getElementById('sectionModal').style.display = 'flex';
-
-    document.querySelectorAll('.form-group').forEach(group => group.classList.remove('error'));
-    document.querySelectorAll('.error-message').forEach(msg => msg.style.display = 'none');
-  }
-
-  function editSection(id, number, name, start, end) {
-    document.getElementById('modalTitle').textContent = 'Edit Chapter Section';
-    document.getElementById('sectionId').value = id;
-    document.getElementById('sectionNumber').value = number;
-
-    document.getElementById('sectionNumberDisplay').style.display = 'block';
-    document.getElementById('sectionNumberText').textContent = `Chapter ${number}`;
-
-    document.getElementById('sectionName').value = name;
-    document.getElementById('pageStart').value = start;
-    document.getElementById('pageEnd').value = end;
-    validatePageRange();
-    document.getElementById('sectionModal').style.display = 'flex';
-
-    document.querySelectorAll('.form-group').forEach(group => group.classList.remove('error'));
-    document.querySelectorAll('.error-message').forEach(msg => msg.style.display = 'none');
-  }
-
-  function closeModal() {
-    document.getElementById('sectionModal').style.display = 'none';
-  }
-
-  async function handleFormSubmit(e) {
-    e.preventDefault();
-    if (!validateForm()) return;
-
-    const submitBtn = document.getElementById('submitBtn');
-    const submitText = document.getElementById('submitText');
-    const submitSpinner = document.getElementById('submitSpinner');
-
-    submitBtn.disabled = true;
-    submitText.style.display = 'none';
-    submitSpinner.style.display = 'inline';
-
-    const sectionId = document.getElementById('sectionId').value;
-    const isEdit = sectionId !== '';
-    const url = isEdit ? `/api/admin/sections/${encodeURIComponent(sectionId)}` : `/api/admin/books/${encodeURIComponent(bookId)}/sections`;
-    const method = isEdit ? 'PUT' : 'POST';
-
-    const formData = {
-      name: document.getElementById('sectionName').value.trim(),
-      page_start: parseInt(document.getElementById('pageStart').value),
-      page_end: parseInt(document.getElementById('pageEnd').value),
-    };
-
-    if (isEdit) {
-      formData.section_number = parseInt(document.getElementById('sectionNumber').value);
-    }
-
-    try {
-      showLoading(isEdit ? 'Updating chapter...' : 'Indexing chapter...');
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        showToast(result.message || 'Chapter saved successfully!', 'success');
-        closeModal();
-        setTimeout(() => window.location.reload(), 800);
-      } else {
-        showToast(result.error || 'Failed to save chapter', 'error');
-      }
-    } catch (error) {
-      console.error('Error saving section:', error);
-      showToast('Network error while saving chapter.', 'error');
-    } finally {
-      hideLoading();
-      submitBtn.disabled = false;
-      submitText.style.display = 'inline';
-      submitSpinner.style.display = 'none';
-    }
-  }
-
-  async function deleteSection(sectionId) {
-    const sectionName = document.querySelector(`[data-section-id="${sectionId}"] h3`)?.textContent?.trim() || 'this chapter';
-    showConfirm({
-      title: 'Delete Chapter',
-      subtitle: 'This cannot be undone',
-      message: `Are you sure you want to permanently delete "${sectionName}" from the syllabus breakdown?`,
-      icon: 'fa-trash-alt',
-      iconColor: '#dc2626',
-      confirmText: 'Delete Chapter',
-      confirmColor: '#dc2626',
-      onConfirm: async () => {
-        try {
-          showLoading('Deleting chapter...');
-          const response = await fetch(`/api/admin/sections/${encodeURIComponent(sectionId)}`, { method: 'DELETE' });
-          const result = await response.json();
-          if (response.ok) {
-            showToast(result.message || 'Chapter deleted successfully!', 'success');
-            sections = sections.filter(s => s.id !== sectionId);
-            selectedSections.delete(sectionId);
-            renderSections();
-          } else {
-            showToast(result.error || 'Failed to delete chapter', 'error');
-          }
-        } catch (error) {
-          console.error('Error deleting section:', error);
-          showToast('Network error while deleting chapter.', 'error');
-        } finally {
-          hideLoading();
-        }
-      }
-    });
-  }
-
-  async function bulkDeleteSections() {
-    if (selectedSections.size === 0) return;
-    const count = selectedSections.size;
-    showConfirm({
-      title: 'Bulk Delete Chapters',
-      subtitle: `${count} chapter${count > 1 ? 's' : ''} selected`,
-      message: `Are you sure you want to permanently delete ${count} selected chapter${count > 1 ? 's' : ''} from the syllabus? This cannot be undone.`,
-      icon: 'fa-trash-alt',
-      iconColor: '#dc2626',
-      confirmText: `Delete ${count} Chapter${count > 1 ? 's' : ''}`,
-      confirmColor: '#dc2626',
-      onConfirm: async () => {
-        try {
-          showLoading('Deleting selected chapters...');
-          const response = await fetch(`/api/admin/books/${encodeURIComponent(bookId)}/sections/bulk-delete`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ sectionIds: Array.from(selectedSections) }),
+      const searchInput = document.getElementById('adminChapterSearch');
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          const q = e.target.value.toLowerCase().trim();
+          document.querySelectorAll('.section-item').forEach(el => {
+            const name = (el.dataset.name || '').toLowerCase();
+            el.style.display = name.includes(q) ? 'flex' : 'none';
           });
-          const result = await response.json();
-          if (response.ok) {
-            showToast(result.message || 'Selected chapters deleted!', 'success');
-            sections = sections.filter(s => !selectedSections.has(s.id));
-            selectedSections.clear();
-            renderSections();
-          } else {
-            showToast(result.error || 'Failed to delete chapters', 'error');
-          }
-        } catch (error) {
-          console.error('Error in bulk delete:', error);
-          showToast('Network error during bulk delete', 'error');
-        } finally {
-          hideLoading();
-        }
+        });
       }
-    });
-  }
 
-  function toggleBulkSelection() {
-    const checkboxes = document.querySelectorAll('.section-checkbox:checked');
-    selectedSections.clear();
-    checkboxes.forEach(checkbox => {
-      selectedSections.add(parseInt(checkbox.closest('.section-item').dataset.sectionId));
-    });
-    updateBulkActions();
-  }
-
-  function updateBulkActions() {
-    if (selectedSections.size > 0) {
-      bulkActions.classList.remove('hidden');
-      bulkActions.classList.add('flex');
-      selectedCount.textContent = `${selectedSections.size} item${selectedSections.size > 1 ? 's' : ''} selected`;
-    } else {
-      bulkActions.classList.add('hidden');
-      bulkActions.classList.remove('flex');
-    }
-  }
-
-  function renderSections() {
-    if (!sectionsList) return;
-    const emptyState = document.getElementById('emptyStateDisplay');
-    if (sections.length === 0) {
-      sectionsList.innerHTML = '';
-      if (emptyState) emptyState.style.display = 'block';
-      return;
+      window.addEventListener('click', function (event) {
+        const modal = document.getElementById('sectionModal');
+        if (event.target === modal) closeModal();
+      });
     }
 
-    if (emptyState) emptyState.style.display = 'none';
+    function showLoading(text = 'Processing...') {
+      if (loadingText) loadingText.textContent = text;
+      if (loadingOverlay) loadingOverlay.style.display = 'flex';
+    }
 
-    const sortedSections = [...sections].sort((a, b) => a.section_number - b.section_number);
+    function hideLoading() {
+      if (loadingOverlay) loadingOverlay.style.display = 'none';
+    }
 
-    sectionsList.innerHTML = sortedSections.map(section => {
-      const pageCount = (section.page_end - section.page_start) + 1;
-      const isValidRange = section.page_start <= section.page_end;
-      const statusBadge = isValidRange
-        ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-300">${pageCount} pages</span>`
-        : `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-50 text-rose-800 border border-rose-300">Invalid</span>`;
+    function validateForm() {
+      let isValid = true;
+      const errors = {};
 
-      const checked = selectedSections.has(section.id) ? 'checked' : '';
-      const escapedName = section.name.replace(/'/g, "\\'");
+      document.querySelectorAll('.form-group').forEach(group => group.classList.remove('error'));
+      document.querySelectorAll('.error-message').forEach(msg => msg.style.display = 'none');
 
-      return `
-        <div class="section-item bg-white rounded-lg p-3.5 border border-teal-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm hover:border-stone-400 transition-colors" data-section-id="${section.id}" data-section-number="${section.section_number}" data-name="${section.name}">
-          <div class="flex items-center gap-3 min-w-0 flex-1">
-            <input type="checkbox" class="section-checkbox w-4 h-4 rounded text-[#0f766e] bg-white border-teal-200 focus:ring-[#162e4a] cursor-pointer flex-shrink-0" onchange="toggleBulkSelection()" ${checked}>
-            <div class="w-7 h-7 rounded bg-teal-50 text-[#0f766e] border border-teal-200 flex items-center justify-center text-xs font-bold font-headings flex-shrink-0">
-              ${section.section_number}
-            </div>
-            <div class="space-y-0.5 min-w-0">
-              <h3 class="font-headings font-bold text-xs sm:text-sm text-teal-950 truncate">
-                ${section.name}
-              </h3>
-              <div class="flex items-center gap-2 text-xs text-teal-700/70">
-                <span>Pages: <strong class="text-teal-900">${section.page_start} &ndash; ${section.page_end}</strong></span>
-                ${statusBadge}
+      const sectionName = document.getElementById('sectionName').value.trim();
+      if (!sectionName) {
+        errors.sectionName = 'Chapter title is required';
+        isValid = false;
+      } else if (sectionName.length > 200) {
+        errors.sectionName = 'Title must be under 200 characters';
+        isValid = false;
+      }
+
+      const pageStart = parseInt(document.getElementById('pageStart').value, 10);
+      const pageEnd = parseInt(document.getElementById('pageEnd').value, 10);
+
+      if (!pageStart || pageStart < 1) {
+        errors.pageStart = 'Start page must be 1 or higher';
+        isValid = false;
+      }
+
+      if (!pageEnd || pageEnd < 1) {
+        errors.pageEnd = 'End page must be 1 or higher';
+        isValid = false;
+      }
+
+      if (pageStart && pageEnd && pageStart > pageEnd) {
+        errors.pageEnd = 'End page must be greater than or equal to start page';
+        isValid = false;
+      }
+
+      Object.keys(errors).forEach(field => {
+        const errorElement = document.getElementById(`${field}Error`);
+        if (errorElement) {
+          const formGroup = errorElement.closest('.form-group');
+          errorElement.textContent = errors[field];
+          errorElement.style.display = 'block';
+          if (formGroup) formGroup.classList.add('error');
+        }
+      });
+
+      return isValid;
+    }
+
+    function validatePageRange() {
+      const pageStart = parseInt(document.getElementById('pageStart').value, 10) || 0;
+      const pageEnd = parseInt(document.getElementById('pageEnd').value, 10) || 0;
+      const calcEl = document.getElementById('pageCountCalc');
+
+      if (pageStart > 0 && pageEnd >= pageStart) {
+        if (calcEl) calcEl.textContent = `${(pageEnd - pageStart) + 1} pages`;
+      } else {
+        if (calcEl) calcEl.textContent = 'Invalid range';
+      }
+    }
+
+    function showAddSectionModal() {
+      isSubmitting = false;
+      document.getElementById('modalTitle').textContent = 'Index Chapter Section';
+      document.getElementById('sectionId').value = '';
+      document.getElementById('sectionNumber').value = '';
+      document.getElementById('sectionNumberDisplay').style.display = 'none';
+
+      document.getElementById('sectionName').value = '';
+      document.getElementById('pageStart').value = '';
+      document.getElementById('pageEnd').value = '';
+      document.getElementById('pageCountCalc').textContent = '-';
+      document.getElementById('sectionModal').style.display = 'flex';
+
+      document.querySelectorAll('.form-group').forEach(group => group.classList.remove('error'));
+      document.querySelectorAll('.error-message').forEach(msg => msg.style.display = 'none');
+    }
+
+    function editSection(id, number, name, start, end) {
+      isSubmitting = false;
+      document.getElementById('modalTitle').textContent = 'Edit Chapter Section';
+      document.getElementById('sectionId').value = id;
+      document.getElementById('sectionNumber').value = number;
+
+      document.getElementById('sectionNumberDisplay').style.display = 'block';
+      document.getElementById('sectionNumberText').textContent = `Chapter ${number}`;
+
+      document.getElementById('sectionName').value = name;
+      document.getElementById('pageStart').value = start;
+      document.getElementById('pageEnd').value = end;
+      validatePageRange();
+      document.getElementById('sectionModal').style.display = 'flex';
+
+      document.querySelectorAll('.form-group').forEach(group => group.classList.remove('error'));
+      document.querySelectorAll('.error-message').forEach(msg => msg.style.display = 'none');
+    }
+
+    function closeModal() {
+      isSubmitting = false;
+      document.getElementById('sectionModal').style.display = 'none';
+    }
+
+    let isSubmitting = false;
+
+    async function handleFormSubmit(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      if (isSubmitting) return false;
+      if (!validateForm()) return false;
+
+      isSubmitting = true;
+      const submitBtn = document.getElementById('submitBtn');
+      const submitText = document.getElementById('submitText');
+      const submitSpinner = document.getElementById('submitSpinner');
+
+      if (submitBtn) submitBtn.disabled = true;
+      if (submitText) submitText.style.display = 'none';
+      if (submitSpinner) submitSpinner.style.display = 'inline';
+
+      const sectionId = document.getElementById('sectionId').value;
+      const isEdit = sectionId !== '';
+      const url = isEdit ? `/api/admin/sections/${encodeURIComponent(sectionId)}` : `/api/admin/books/${encodeURIComponent(bookId)}/sections`;
+      const method = isEdit ? 'PUT' : 'POST';
+
+      const formData = {
+        name: document.getElementById('sectionName').value.trim(),
+        page_start: parseInt(document.getElementById('pageStart').value, 10),
+        page_end: parseInt(document.getElementById('pageEnd').value, 10),
+      };
+
+      if (isEdit) {
+        formData.section_number = parseInt(document.getElementById('sectionNumber').value, 10);
+      }
+
+      try {
+        showLoading(isEdit ? 'Updating chapter...' : 'Indexing chapter...');
+        const response = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          showToast(result.message || 'Chapter saved successfully!', 'success');
+          closeModal();
+          setTimeout(() => window.location.reload(), 800);
+        } else {
+          showToast(result.error || 'Failed to save chapter', 'error');
+          isSubmitting = false;
+        }
+      } catch (error) {
+        console.error('Error saving section:', error);
+        showToast('Network error while saving chapter.', 'error');
+        isSubmitting = false;
+      } finally {
+        hideLoading();
+        if (submitBtn) submitBtn.disabled = false;
+        if (submitText) submitText.style.display = 'inline';
+        if (submitSpinner) submitSpinner.style.display = 'none';
+      }
+      return false;
+    }
+
+    async function deleteSection(sectionId) {
+      const sectionName = document.querySelector(`[data-section-id="${sectionId}"] h3`)?.textContent?.trim() || 'this chapter';
+      showConfirm({
+        title: 'Delete Chapter',
+        subtitle: 'This cannot be undone',
+        message: `Are you sure you want to permanently delete "${sectionName}" from the syllabus breakdown?`,
+        icon: 'fa-trash-alt',
+        iconColor: '#dc2626',
+        confirmText: 'Delete Chapter',
+        confirmColor: '#dc2626',
+        onConfirm: async () => {
+          try {
+            showLoading('Deleting chapter...');
+            const response = await fetch(`/api/admin/sections/${encodeURIComponent(sectionId)}`, { method: 'DELETE' });
+            const result = await response.json();
+            if (response.ok) {
+              showToast(result.message || 'Chapter deleted successfully!', 'success');
+              sections = sections.filter(s => String(s.id) !== String(sectionId));
+              selectedSections.delete(String(sectionId));
+              renderSections();
+            } else {
+              showToast(result.error || 'Failed to delete chapter', 'error');
+            }
+          } catch (error) {
+            console.error('Error deleting section:', error);
+            showToast('Network error while deleting chapter.', 'error');
+          } finally {
+            hideLoading();
+          }
+        }
+      });
+    }
+
+    async function bulkDeleteSections() {
+      if (selectedSections.size === 0) return;
+      const count = selectedSections.size;
+      showConfirm({
+        title: 'Bulk Delete Chapters',
+        subtitle: `${count} chapter${count > 1 ? 's' : ''} selected`,
+        message: `Are you sure you want to permanently delete ${count} selected chapter${count > 1 ? 's' : ''} from the syllabus? This cannot be undone.`,
+        icon: 'fa-trash-alt',
+        iconColor: '#dc2626',
+        confirmText: `Delete ${count} Chapter${count > 1 ? 's' : ''}`,
+        confirmColor: '#dc2626',
+        onConfirm: async () => {
+          try {
+            showLoading('Deleting selected chapters...');
+            const response = await fetch(`/api/admin/books/${encodeURIComponent(bookId)}/sections/bulk-delete`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ sectionIds: Array.from(selectedSections) }),
+            });
+            const result = await response.json();
+            if (response.ok) {
+              showToast(result.message || 'Selected chapters deleted!', 'success');
+              sections = sections.filter(s => !selectedSections.has(String(s.id)));
+              selectedSections.clear();
+              renderSections();
+            } else {
+              showToast(result.error || 'Failed to delete chapters', 'error');
+            }
+          } catch (error) {
+            console.error('Error in bulk delete:', error);
+            showToast('Network error during bulk delete', 'error');
+          } finally {
+            hideLoading();
+          }
+        }
+      });
+    }
+
+    function toggleBulkSelection() {
+      const checkboxes = document.querySelectorAll('.section-checkbox:checked');
+      selectedSections.clear();
+      checkboxes.forEach(checkbox => {
+        const id = checkbox.closest('.section-item').dataset.sectionId;
+        if (id) selectedSections.add(String(id));
+      });
+      updateBulkActions();
+    }
+
+    function updateBulkActions() {
+      if (selectedSections.size > 0) {
+        bulkActions.classList.remove('hidden');
+        bulkActions.classList.add('flex');
+        selectedCount.textContent = `${selectedSections.size} item${selectedSections.size > 1 ? 's' : ''} selected`;
+      } else {
+        bulkActions.classList.add('hidden');
+        bulkActions.classList.remove('flex');
+      }
+    }
+
+    function renderSections() {
+      if (!sectionsList) return;
+      const emptyState = document.getElementById('emptyStateDisplay');
+      const statsTotal = document.getElementById('statsTotalChapters');
+      if (statsTotal) statsTotal.textContent = sections.length;
+
+      if (sections.length === 0) {
+        sectionsList.innerHTML = '';
+        if (emptyState) emptyState.style.display = 'block';
+        return;
+      }
+
+      if (emptyState) emptyState.style.display = 'none';
+
+      const sortedSections = [...sections].sort((a, b) => (Number(a.section_number) || 0) - (Number(b.section_number) || 0));
+
+      sectionsList.innerHTML = sortedSections.map(section => {
+        const pageCount = (section.page_end - section.page_start) + 1;
+        const isValidRange = section.page_start <= section.page_end;
+        const statusBadge = isValidRange
+          ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-300">${pageCount} pages</span>`
+          : `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-50 text-rose-800 border border-rose-300">Invalid</span>`;
+
+        const checked = selectedSections.has(String(section.id)) ? 'checked' : '';
+        const escapedName = (section.name || '').replace(/'/g, "\\'");
+
+        return `
+          <div class="section-item bg-white rounded-lg p-3.5 border border-teal-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm hover:border-stone-400 transition-colors" data-section-id="${section.id}" data-section-number="${section.section_number}" data-name="${section.name}">
+            <div class="flex items-center gap-3 min-w-0 flex-1">
+              <input type="checkbox" class="section-checkbox w-4 h-4 rounded text-[#0f766e] bg-white border-teal-200 focus:ring-[#162e4a] cursor-pointer flex-shrink-0" onchange="toggleBulkSelection()" ${checked}>
+              <div class="w-7 h-7 rounded bg-teal-50 text-[#0f766e] border border-teal-200 flex items-center justify-center text-xs font-bold font-headings flex-shrink-0">
+                ${section.section_number}
+              </div>
+              <div class="space-y-0.5 min-w-0">
+                <h3 class="font-headings font-bold text-xs sm:text-sm text-teal-950 truncate">
+                  ${section.name}
+                </h3>
+                <div class="flex items-center gap-2 text-xs text-teal-700/70">
+                  <span>Pages: <strong class="text-teal-900">${section.page_start} &ndash; ${section.page_end}</strong></span>
+                  ${statusBadge}
+                </div>
               </div>
             </div>
+
+            <div class="flex items-center gap-1.5 flex-shrink-0 self-end sm:self-auto">
+              <a href="/books/${bookId}/sections/${section.id}/download" target="_blank" class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-teal-50 hover:bg-[#0f766e] text-[#0f766e] hover:text-white border border-teal-200 hover:border-[#0f766e] text-xs font-semibold transition-colors">
+                <i class="fas fa-download text-[10px]"></i>
+                <span>PDF</span>
+              </a>
+
+              <button onclick="editSection('${section.id}', ${section.section_number}, '${escapedName}', ${section.page_start}, ${section.page_end})" class="p-1.5 rounded bg-teal-50 hover:bg-teal-100 text-teal-900/80 text-xs border border-teal-200 transition-colors" title="Edit Chapter">
+                <i class="fas fa-edit"></i>
+              </button>
+
+              <button onclick="deleteSection('${section.id}')" class="p-1.5 rounded bg-teal-50 hover:bg-rose-700 text-rose-700 hover:text-white border border-teal-200 hover:border-rose-700 text-xs transition-colors" title="Delete Chapter">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
           </div>
-
-          <div class="flex items-center gap-1.5 flex-shrink-0 self-end sm:self-auto">
-            <a href="/books/${bookId}/sections/${section.id}/download" target="_blank" class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-teal-50 hover:bg-[#0f766e] text-[#0f766e] hover:text-white border border-teal-200 hover:border-[#0f766e] text-xs font-semibold transition-colors">
-              <i class="fas fa-download text-[10px]"></i>
-              <span>PDF</span>
-            </a>
-
-            <button onclick="editSection('${section.id}', ${section.section_number}, '${escapedName}', ${section.page_start}, ${section.page_end})" class="p-1.5 rounded bg-teal-50 hover:bg-teal-100 text-teal-900/80 text-xs border border-teal-200 transition-colors" title="Edit Chapter">
-              <i class="fas fa-edit"></i>
-            </button>
-
-            <button onclick="deleteSection('${section.id}')" class="p-1.5 rounded bg-teal-50 hover:bg-rose-700 text-rose-700 hover:text-white border border-teal-200 hover:border-rose-700 text-xs transition-colors" title="Delete Chapter">
-              <i class="fas fa-trash-alt"></i>
-            </button>
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
-
-  // ================================================================
-  // Confirm Modal (shared helper)
-  // ================================================================
-  let _confirmCallback = null;
-  function showConfirm({ title, subtitle = '', message, icon = 'fa-exclamation-triangle', iconColor = '#dc2626', confirmText = 'Confirm', confirmColor = '#dc2626', onConfirm }) {
-    document.getElementById('sc-title').textContent = title;
-    document.getElementById('sc-subtitle').textContent = subtitle;
-    document.getElementById('sc-message').textContent = message;
-    document.getElementById('sc-icon').className = `fas ${icon}`;
-    document.getElementById('sc-icon').style.color = iconColor;
-    document.getElementById('sc-icon-wrap').style.background = `${iconColor}18`;
-    document.getElementById('sc-icon-wrap').style.borderColor = `${iconColor}40`;
-    const okBtn = document.getElementById('sc-ok-btn');
-    okBtn.textContent = confirmText;
-    okBtn.style.background = confirmColor;
-    _confirmCallback = onConfirm;
-    document.getElementById('sectionConfirmModal').style.display = 'flex';
-  }
-  function closeConfirmModal() {
-    document.getElementById('sectionConfirmModal').style.display = 'none';
-    _confirmCallback = null;
-  }
-  document.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById('sectionConfirmModal');
-    if (modal) {
-      modal.addEventListener('click', e => { if (e.target === modal) closeConfirmModal(); });
-      document.getElementById('sc-ok-btn').addEventListener('click', () => { if (_confirmCallback) _confirmCallback(); closeConfirmModal(); });
+        `;
+      }).join('');
     }
-  });
+
+    // ================================================================
+    // Confirm Modal (shared helper)
+    // ================================================================
+    let _confirmCallback = null;
+    function showConfirm({ title, subtitle = '', message, icon = 'fa-exclamation-triangle', iconColor = '#dc2626', confirmText = 'Confirm', confirmColor = '#dc2626', onConfirm }) {
+      document.getElementById('sc-title').textContent = title;
+      document.getElementById('sc-subtitle').textContent = subtitle;
+      document.getElementById('sc-message').textContent = message;
+      document.getElementById('sc-icon').className = `fas ${icon}`;
+      document.getElementById('sc-icon').style.color = iconColor;
+      document.getElementById('sc-icon-wrap').style.background = `${iconColor}18`;
+      document.getElementById('sc-icon-wrap').style.borderColor = `${iconColor}40`;
+      const okBtn = document.getElementById('sc-ok-btn');
+      okBtn.textContent = confirmText;
+      okBtn.style.background = confirmColor;
+      _confirmCallback = onConfirm;
+      document.getElementById('sectionConfirmModal').style.display = 'flex';
+    }
+    function closeConfirmModal() {
+      document.getElementById('sectionConfirmModal').style.display = 'none';
+      _confirmCallback = null;
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      const modal = document.getElementById('sectionConfirmModal');
+      if (modal) {
+        modal.addEventListener('click', e => { if (e.target === modal) closeConfirmModal(); });
+        document.getElementById('sc-ok-btn').addEventListener('click', () => { if (_confirmCallback) _confirmCallback(); closeConfirmModal(); });
+      }
+    });
+
+    // Expose handlers to window for inline HTML onclick / onchange / onsubmit attributes
+    window.showAddSectionModal = showAddSectionModal;
+    window.editSection = editSection;
+    window.closeModal = closeModal;
+    window.handleFormSubmit = handleFormSubmit;
+    window.deleteSection = deleteSection;
+    window.bulkDeleteSections = bulkDeleteSections;
+    window.toggleBulkSelection = toggleBulkSelection;
+    window.validatePageRange = validatePageRange;
+    window.showConfirm = showConfirm;
+    window.closeConfirmModal = closeConfirmModal;
+  })();
 </script>
 
 <!-- Glassmorphic Confirm Modal -->

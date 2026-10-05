@@ -55,7 +55,7 @@ export async function renderUnilibBooks(req, res, view, data = {}) {
   }
 }
 
-// Route for '/' with Edge CDN headers and distributed Redis caching
+// Route for '/' with Edge CDN headers and distributed Redis/memory caching
 export async function renderIndex(req, res) {
   const {
     page = "1",
@@ -68,34 +68,31 @@ export async function renderIndex(req, res) {
   const queryString = new URLSearchParams({ page, limit, semester, category, search }).toString();
   const semesterFilter = normalizeSemesterFilter(semester);
 
-  try {
-    const { books, pagination } = await bookRepository.findBooks({
-      page,
-      limit,
-      semester: semesterFilter,
-      category,
-      search,
-      isAdminView: false,
-    });
-
-    return renderCachedPage(req, res, {
-      view: "mainPages/index.hbs",
-      data: {
+  return renderCachedPage(req, res, {
+    view: "mainPages/index.hbs",
+    fetchData: async () => {
+      const { books, pagination } = await bookRepository.findBooks({
+        page,
+        limit,
+        semester: semesterFilter,
+        category,
+        search,
+        isAdminView: false,
+      });
+      return {
         books,
         pagination,
         filters: { semester: semesterFilter, category, search },
-      },
-      cacheKey: `index:${queryString}`,
-      ttl: 120,
-      sMaxAge: 120,
-      staleWhileRevalidate: 60,
-      headers: { "X-Query-Params": queryString },
-    });
-  } catch (err) {
-    console.error("Error fetching books for index:", err);
-    return res.status(500).send("Internal Server Error");
-  }
+      };
+    },
+    cacheKey: `index:${queryString}`,
+    ttl: 120,
+    sMaxAge: 120,
+    staleWhileRevalidate: 60,
+    headers: { "X-Query-Params": queryString },
+  });
 }
+
 
 // Admin dashboard view
 export async function renderDashboard(req, res) {
@@ -264,39 +261,31 @@ export async function exportBooks(_req, res) {
 export async function renderSingleBook(req, res) {
   const bookId = req.params.id;
 
-  try {
-    const book = await bookRepository.findById(bookId, { mustBeVisible: true });
-    if (!book) {
-      return renderError(res, req, {
-        layout: false,
-        code: 404,
-        error: "Book Not Found",
-        message: "The Book you are looking for does not exist.",
-        pagename: "Home",
-        page: "/",
-      });
-    }
-
-    return renderCachedPage(req, res, {
-      view: "mainPages/index.hbs",
-      data: {
+  return renderCachedPage(req, res, {
+    view: "mainPages/index.hbs",
+    fetchData: async () => {
+      const book = await bookRepository.findById(bookId, { mustBeVisible: true });
+      if (!book) {
+        const notFoundError = new Error("Book not found");
+        notFoundError.isNotFound = true;
+        throw notFoundError;
+      }
+      return {
         books: [book],
         singleBookView: true,
         bookId,
         sections: book.sections || [],
         pagination: { page: 1, limit: 1, total: 1, pages: 1 },
         filters: { semester: book.semester, category: book.category, search: "" },
-      },
-      cacheKey: `book:${bookId}`,
-      ttl: 300,
-      sMaxAge: 300,
-      staleWhileRevalidate: 120,
-    });
-  } catch (err) {
-    console.error("Error fetching book:", err);
-    return res.status(500).send("Internal Server Error");
-  }
+      };
+    },
+    cacheKey: `book:${bookId}`,
+    ttl: 300,
+    sMaxAge: 300,
+    staleWhileRevalidate: 120,
+  });
 }
+
 
 // Generic book action tracking (view / download)
 async function handleTrackAction(req, res, actionType) {

@@ -48,9 +48,7 @@
           <div style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:14px;padding:1.5rem;box-shadow:0 4px 12px rgba(0,0,0,0.04);display:flex;flex-direction:column;align-items:center;gap:1rem;">
 
             <!-- Book Cover -->
-            <div style="width:100%;max-width:200px;aspect-ratio:3/4;border-radius:10px;overflow:hidden;border:1px solid rgba(15,118,110,0.16);box-shadow:0 8px 24px rgba(15,118,110,0.12);background:rgba(215,244,238,0.25);position:relative;display:flex;align-items:center;justify-content:center;padding:0.75rem;">
-              <div style="position:absolute;inset:0;background-size:cover;background-position:center;opacity:0.18;filter:blur(14px);transform:scale(1.1);pointer-events:none;background-image:url('{{this.image_url}}');"></div>
-
+            <div style="width:100%;max-width:200px;aspect-ratio:3/4;border-radius:10px;overflow:hidden;border:1px solid rgba(15,118,110,0.16);box-shadow:0 8px 24px rgba(15,118,110,0.12);background:linear-gradient(135deg, rgba(215,244,238,0.35) 0%, rgba(204,251,241,0.20) 100%);position:relative;display:flex;align-items:center;justify-content:center;padding:0.75rem;">
               {{#if this.main}}
                 {{#unless (eq this.category 'LabManuals')}}
                 <div style="position:absolute;top:8px;left:8px;z-index:2;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;background:var(--warning);color:#fff;box-shadow:0 2px 6px rgba(217,119,6,0.30);display:flex;align-items:center;gap:4px;">
@@ -59,7 +57,7 @@
                 {{/unless}}
               {{/if}}
 
-              <img src="{{this.image_url}}" alt="Cover of {{this.name}}" style="position:relative;z-index:1;max-height:100%;max-width:100%;object-fit:contain;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,0.14);" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'">
+              <img src="{{this.image_url}}" alt="Cover of {{this.name}}" style="position:relative;z-index:1;max-height:100%;max-width:100%;object-fit:contain;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,0.14);" loading="lazy" decoding="async" onerror="this.src='/BookCovers/BookCover_Template.webp'">
             </div>
 
             <!-- CTAs -->
@@ -312,9 +310,7 @@
           onmouseenter="this.style.borderColor='rgba(15,118,110,0.32)';this.style.boxShadow='0 8px 24px rgba(15,118,110,0.12)';this.style.transform='translateY(-2px)'"
           onmouseleave="this.style.borderColor='rgba(15,118,110,0.14)';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.04)';this.style.transform='translateY(0)'">
 
-          <div style="position:relative;aspect-ratio:3/4;background:rgba(215,244,238,0.25);overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0.75rem;border-bottom:1px solid rgba(15,118,110,0.10);">
-            <div style="position:absolute;inset:0;background-size:cover;background-position:center;opacity:0.14;filter:blur(14px);transform:scale(1.1);pointer-events:none;background-image:url('{{this.image_url}}');"></div>
-
+          <div style="position:relative;aspect-ratio:3/4;background:linear-gradient(135deg, rgba(215,244,238,0.35) 0%, rgba(204,251,241,0.20) 100%);overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0.75rem;border-bottom:1px solid rgba(15,118,110,0.10);">
             <!-- Badges -->
             <div style="position:absolute;top:8px;left:8px;right:8px;z-index:2;display:flex;flex-wrap:wrap;gap:4px;pointer-events:none;">
               {{#if this.main}}
@@ -336,7 +332,7 @@
 
             <!-- Cover Image -->
             <a href="/books/{{this.id}}" style="position:relative;z-index:1;width:100%;height:100%;display:flex;align-items:center;justify-content:center;" aria-label="View {{this.name}}">
-              <img src="{{this.image_url}}" alt="Cover of {{this.name}}" style="max-height:100%;max-width:100%;object-fit:contain;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,0.14);transition:transform 0.3s ease;" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'"
+              <img src="{{this.image_url}}" alt="Cover of {{this.name}}" style="max-height:100%;max-width:100%;object-fit:contain;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,0.14);transition:transform 0.3s ease;" loading="lazy" decoding="async" onerror="this.src='/BookCovers/BookCover_Template.webp'"
                 onmouseenter="this.style.transform='scale(1.04)'" onmouseleave="this.style.transform='scale(1)'">
             </a>
 
@@ -404,8 +400,8 @@
           onmouseleave="this.style.borderColor='rgba(15,118,110,0.14)';this.style.boxShadow='none'">
 
           <div style="display:flex;align-items:center;gap:0.75rem;min-width:0;flex:1;">
-            <div style="width:48px;height:64px;border-radius:8px;background:rgba(215,244,238,0.30);border:1px solid rgba(15,118,110,0.16);padding:3px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
-              <img src="{{this.image_url}}" alt="Cover" style="max-height:100%;max-width:100%;object-fit:contain;border-radius:4px;" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'">
+            <div style="width:48px;height:64px;border-radius:8px;background:linear-gradient(135deg, rgba(215,244,238,0.35) 0%, rgba(204,251,241,0.20) 100%);border:1px solid rgba(15,118,110,0.16);padding:3px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
+              <img src="{{this.image_url}}" alt="Cover" style="max-height:100%;max-width:100%;object-fit:contain;border-radius:4px;" loading="lazy" decoding="async" onerror="this.src='/BookCovers/BookCover_Template.webp'">
             </div>
 
             <div style="min-width:0;">
