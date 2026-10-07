@@ -5,23 +5,23 @@
 
   <!-- Sidebar Header -->
   <div class="admin-sidebar-header">
-    <div class="flex items-center justify-between">
-      <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-lg bg-teal-700 text-white flex items-center justify-center shadow-sm">
-          <i class="fas fa-sliders text-xs"></i>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;">
+      <div style="display:flex;align-items:center;gap:0.65rem;min-width:0;">
+        <div style="width:32px;height:32px;border-radius:8px;background:var(--primary,#0f766e);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(15,118,110,0.25);flex-shrink:0;">
+          <i class="fas fa-sliders" style="font-size:12px;"></i>
         </div>
-        <div>
-          <div class="flex items-center gap-1.5">
-            <span class="text-[10px] font-bold uppercase tracking-wider text-teal-800 bg-teal-50 px-1.5 py-0.5 rounded border border-teal-200/80">Console</span>
-            <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" title="System Operational"></span>
+        <div style="min-width:0;">
+          <div style="display:flex;align-items:center;gap:0.35rem;">
+            <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--primary-dk,#0b4f4a);background:var(--primary-lt,#d7f4ee);padding:1px 6px;border-radius:4px;border:1px solid rgba(15,118,110,0.20);">Console</span>
+            <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#10b981;flex-shrink:0;" title="System Operational"></span>
           </div>
-          <h2 class="text-xs font-bold text-teal-950 font-headings tracking-tight leading-tight mt-0.5">Admin Panel</h2>
+          <h2 style="font-size:13px;font-weight:700;color:var(--text,#1f2a2a);font-family:var(--font-headings);letter-spacing:-0.01em;line-height:1.2;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Admin Panel</h2>
         </div>
       </div>
 
       <!-- Mobile Close Button -->
-      <button type="button" onclick="toggleAdminSidebar(false)" class="lg:hidden p-1.5 rounded-lg text-teal-700 hover:text-teal-950 hover:bg-teal-100/60 transition-colors" aria-label="Close sidebar">
-        <i class="fas fa-times text-sm"></i>
+      <button type="button" onclick="toggleAdminSidebar(false)" class="admin-sidebar-close-btn" aria-label="Close sidebar">
+        <i class="fas fa-times"></i>
       </button>
     </div>
   </div>
@@ -81,14 +81,14 @@
           <span class="admin-nav-label">Database Console</span>
           <span class="admin-nav-sub">SQLite UI (AdminDB)</span>
         </div>
-        <i class="fas fa-arrow-up-right-from-square text-[9px] text-teal-600/60 ml-auto"></i>
+        <i class="fas fa-arrow-up-right-from-square" style="font-size:9px;color:rgba(15,118,110,0.6);margin-left:auto;"></i>
       </a>
     </div>
 
     <!-- Group 2: Curriculum Fast Jumps -->
     <div class="admin-nav-group">
       <span class="admin-nav-group-title">Curriculum Filters</span>
-      <div class="grid grid-cols-3 gap-1 px-1 py-0.5">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.35rem;padding:0.15rem 0.25rem;">
         <a href="/dashboard?semester=all" class="admin-sem-jump-pill" title="View All Semesters">All</a>
         <a href="/dashboard?semester=Semester+1" class="admin-sem-jump-pill" title="Semester 1">Sem 1</a>
         <a href="/dashboard?semester=Semester+2" class="admin-sem-jump-pill" title="Semester 2">Sem 2</a>
@@ -106,8 +106,8 @@
       <span class="admin-nav-group-title">Quick Actions</span>
 
       <!-- Export Catalog -->
-      <button type="button" onclick="adminSidebarExportCatalog()" class="admin-nav-item w-full text-left" id="sidebar-btn-export">
-        <div class="admin-nav-icon text-amber-600 bg-amber-50 border-amber-200">
+      <button type="button" onclick="adminSidebarExportCatalog()" class="admin-nav-item w-full text-left" id="sidebar-btn-export" style="width:100%;border:none;">
+        <div class="admin-nav-icon" style="color:#d97706;background:#fffbeb;border-color:#fde68a;">
           <i class="fas fa-file-export"></i>
         </div>
         <div class="admin-nav-content">
@@ -117,8 +117,8 @@
       </button>
 
       <!-- Sync Tasjeel -->
-      <button type="button" onclick="adminSidebarSyncTasjeel()" class="admin-nav-item w-full text-left" id="sidebar-btn-sync">
-        <div class="admin-nav-icon text-teal-600 bg-teal-50 border-teal-200">
+      <button type="button" onclick="adminSidebarSyncTasjeel()" class="admin-nav-item w-full text-left" id="sidebar-btn-sync" style="width:100%;border:none;">
+        <div class="admin-nav-icon" style="color:#0f766e;background:var(--primary-lt,#d7f4ee);border-color:rgba(15,118,110,0.22);">
           <i class="fas fa-rotate" id="sidebarSyncIcon"></i>
         </div>
         <div class="admin-nav-content">
@@ -140,7 +140,7 @@
           <span class="admin-nav-label">Public Catalog</span>
           <span class="admin-nav-sub">Student Books View</span>
         </div>
-        <i class="fas fa-arrow-up-right-from-square text-[9px] text-teal-600/60 ml-auto"></i>
+        <i class="fas fa-arrow-up-right-from-square" style="font-size:9px;color:rgba(15,118,110,0.6);margin-left:auto;"></i>
       </a>
 
       <a href="/materials" target="_blank" rel="noopener noreferrer" class="admin-nav-item" id="sidebar-link-public-materials">
@@ -151,7 +151,7 @@
           <span class="admin-nav-label">Public Materials</span>
           <span class="admin-nav-sub">Student Archives</span>
         </div>
-        <i class="fas fa-arrow-up-right-from-square text-[9px] text-teal-600/60 ml-auto"></i>
+        <i class="fas fa-arrow-up-right-from-square" style="font-size:9px;color:rgba(15,118,110,0.6);margin-left:auto;"></i>
       </a>
 
       <a href="https://mbktech.org/" target="_blank" rel="noopener noreferrer" class="admin-nav-item" id="sidebar-link-mbktech">
@@ -162,7 +162,7 @@
           <span class="admin-nav-label">MBK Tech Hub</span>
           <span class="admin-nav-sub">Main Ecosystem</span>
         </div>
-        <i class="fas fa-arrow-up-right-from-square text-[9px] text-teal-600/60 ml-auto"></i>
+        <i class="fas fa-arrow-up-right-from-square" style="font-size:9px;color:rgba(15,118,110,0.6);margin-left:auto;"></i>
       </a>
     </div>
 
@@ -170,17 +170,17 @@
 
   <!-- Sidebar Footer / System Badge -->
   <div class="admin-sidebar-footer">
-    <div class="p-2 rounded-lg bg-teal-50/70 border border-teal-200/60 text-xs">
-      <div class="flex items-center justify-between text-[11px] font-semibold text-teal-950">
-        <span class="flex items-center gap-1.5">
-          <i class="fas fa-server text-[10px] text-teal-600"></i>
+    <div style="padding:0.55rem 0.75rem;border-radius:8px;background:var(--primary-lt,#d7f4ee);border:1px solid rgba(15,118,110,0.20);font-size:12px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;font-size:11px;font-weight:600;color:var(--text,#1f2a2a);">
+        <span style="display:flex;align-items:center;gap:0.35rem;">
+          <i class="fas fa-server" style="font-size:10px;color:var(--primary,#0f766e);"></i>
           Unilib Core
         </span>
-        <span class="text-teal-700/70 font-mono text-[10px]">v{{appVersion}}</span>
+        <span style="color:var(--primary-dk,#0b4f4a);font-family:var(--font-mono, monospace);font-size:10px;">v{{appVersion}}</span>
       </div>
-      <div class="flex items-center justify-between mt-1 text-[10px] text-teal-800/70">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:0.3rem;font-size:10px;color:var(--text-muted,#667c79);">
         <span>Session Active</span>
-        <button class="text-rose-600 hover:text-rose-800 font-bold ml-1 transition-colors" onclick="logout()" title="Log Out">Logout</button>
+        <button style="color:#dc2626;background:none;border:none;font-weight:700;cursor:pointer;padding:0;font-size:10px;" onclick="logout()" title="Log Out">Logout</button>
       </div>
     </div>
   </div>
@@ -205,6 +205,16 @@
       document.body.style.overflow = '';
     }
   }
+
+  // Close sidebar when pressing Escape
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      const sidebar = document.getElementById('adminSidebar');
+      if (sidebar && sidebar.classList.contains('open')) {
+        toggleAdminSidebar(false);
+      }
+    }
+  });
 
   async function adminSidebarExportCatalog() {
     try {

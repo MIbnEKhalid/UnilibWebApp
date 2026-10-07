@@ -3,28 +3,28 @@
 <link rel="stylesheet" href="/assets/css/common-admin.css?v={{appVersion}}">
 {{/section}}
 
-<section style="width:100%;display:flex;flex-direction:column;gap:1.25rem;" id="books">
+<section style="width:100%;max-width:100%;min-width:0;display:flex;flex-direction:column;gap:1.25rem;box-sizing:border-box;overflow-x:hidden;" id="books">
 
   <!-- ================================================================ -->
   <!-- Page Header                                                        -->
   <!-- ================================================================ -->
-  <div style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:14px;padding:1.25rem 1.5rem;box-shadow:0 4px 12px rgba(0,0,0,0.04);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;">
-    <div style="display:flex;flex-direction:column;gap:0.4rem;">
+  <div class="admin-page-header" style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:14px;padding:1.25rem 1.5rem;box-shadow:0 4px 12px rgba(0,0,0,0.04);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;width:100%;max-width:100%;min-width:0;box-sizing:border-box;">
+    <div style="display:flex;flex-direction:column;gap:0.4rem;min-width:0;max-width:100%;">
       <div style="display:inline-flex;align-items:center;gap:0.4rem;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:var(--primary-lt);color:var(--primary-dk);border:1px solid rgba(15,118,110,0.22);text-transform:uppercase;letter-spacing:0.06em;width:fit-content;">
         <i class="fas fa-compass" style="font-size:10px;"></i>
         <span>Academic Catalog Registry</span>
       </div>
-      <h1 style="font-family:var(--font-headings);font-weight:800;font-size:1.5rem;color:var(--text);letter-spacing:-0.02em;line-height:1.25;">
+      <h1 style="font-family:var(--font-headings);font-weight:800;font-size:1.45rem;color:var(--text);letter-spacing:-0.02em;line-height:1.25;word-break:break-word;">
         Curriculum Material Registry
       </h1>
-      <p style="font-size:13px;color:var(--text-muted);">
+      <p style="font-size:13px;color:var(--text-muted);word-break:break-word;">
         Catalog, configure, inspect consults, manage chapter syllabi, or export digital records.
       </p>
     </div>
 
-    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0.5rem;">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0.5rem;max-width:100%;min-width:0;">
       <button onclick="exportBooks()" id="export-btn"
-        style="display:inline-flex;align-items:center;gap:0.45rem;padding:8px 14px;border-radius:8px;background:rgba(255,255,255,0.85);color:var(--text-2);border:1px solid var(--border);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;cursor:pointer;transition:all 0.15s ease;"
+        style="display:inline-flex;align-items:center;gap:0.45rem;padding:8px 14px;border-radius:8px;background:rgba(255,255,255,0.85);color:var(--text-2);border:1px solid var(--border);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;cursor:pointer;transition:all 0.15s ease;white-space:nowrap;"
         onmouseenter="this.style.background='var(--primary-lt)';this.style.borderColor='var(--primary)'"
         onmouseleave="this.style.background='rgba(255,255,255,0.85)';this.style.borderColor='var(--border)'">
         <i class="fas fa-file-export" style="color:var(--text-muted);font-size:11px;"></i>
@@ -32,7 +32,7 @@
       </button>
 
       <a href="/dashboard/books/new" id="new-publication-btn"
-        style="display:inline-flex;align-items:center;gap:0.45rem;padding:8px 16px;border-radius:8px;background:var(--primary);color:#fff;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;text-decoration:none;box-shadow:0 2px 8px rgba(15,118,110,0.24);transition:all 0.15s ease;"
+        style="display:inline-flex;align-items:center;gap:0.45rem;padding:8px 16px;border-radius:8px;background:var(--primary);color:#fff;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;text-decoration:none;box-shadow:0 2px 8px rgba(15,118,110,0.24);transition:all 0.15s ease;white-space:nowrap;"
         onmouseenter="this.style.background='var(--primary-dk)';this.style.transform='translateY(-1px)'"
         onmouseleave="this.style.background='var(--primary)';this.style.transform='translateY(0)'">
         <i class="fas fa-plus" style="color:#d7f4ee;"></i>
@@ -44,64 +44,64 @@
   <!-- ================================================================ -->
   <!-- Stats Dashboard Row                                               -->
   <!-- ================================================================ -->
-  <div id="stats-row" style="display:grid;grid-template-columns:repeat(2,1fr);gap:0.85rem;">
-    <div class="stat-card" id="stat-card-total" title="Click to show all books" style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:12px;padding:1rem 1.25rem;box-shadow:0 2px 8px rgba(0,0,0,0.03);display:flex;align-items:center;gap:0.9rem;cursor:pointer;transition:all 0.15s ease;">
+  <div id="stats-row" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0.85rem;width:100%;max-width:100%;min-width:0;box-sizing:border-box;">
+    <div class="stat-card" id="stat-card-total" title="Click to show all books" style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:12px;padding:1rem 1.25rem;box-shadow:0 2px 8px rgba(0,0,0,0.03);display:flex;align-items:center;gap:0.9rem;cursor:pointer;transition:all 0.15s ease;min-width:0;box-sizing:border-box;">
       <div style="width:42px;height:42px;border-radius:10px;background:var(--primary-lt);border:1px solid rgba(15,118,110,0.22);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
         <i class="fas fa-book-open" style="font-size:16px;color:var(--primary);"></i>
       </div>
-      <div>
+      <div style="min-width:0;overflow:hidden;">
         <div style="font-family:var(--font-headings);font-weight:800;font-size:1.5rem;color:var(--text);line-height:1;" id="stat-total">{{#if stats}}{{stats.total}}{{else}}{{pagination.total}}{{/if}}</div>
-        <div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-top:2px;">Total Publications</div>
+        <div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Total Publications</div>
       </div>
     </div>
 
-    <div class="stat-card" id="stat-card-views" title="Click to sort by views (highest first)" style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:12px;padding:1rem 1.25rem;box-shadow:0 2px 8px rgba(0,0,0,0.03);display:flex;align-items:center;gap:0.9rem;cursor:pointer;transition:all 0.15s ease;">
-      <div style="width:42px;height:42px;border-radius:10px;background:rgba(22,163,74,0.12);border:1px solid rgba(22,163,74,0.24);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+    <div class="stat-card" id="stat-card-views" title="Click to sort by views (highest first)" style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:12px;padding:1rem 1.25rem;box-shadow:0 2px 8px rgba(0,0,0,0.03);display:flex;align-items:center;gap:0.9rem;cursor:pointer;transition:all 0.15s ease;min-width:0;box-sizing:border-box;">
+      <div style="width:42px;height:42px;border-radius:10px;background:rgba(220,38,38,0.08);border:1px solid rgba(22,163,74,0.24);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
         <i class="fas fa-eye" style="font-size:16px;color:#16a34a;"></i>
       </div>
-      <div>
+      <div style="min-width:0;overflow:hidden;">
         <div style="font-family:var(--font-headings);font-weight:800;font-size:1.5rem;color:var(--text);line-height:1;" id="stat-views">{{#if stats}}{{formatNumber stats.views}}{{else}}0{{/if}}</div>
-        <div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-top:2px;">Total Views (Sort)</div>
+        <div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Total Views</div>
       </div>
     </div>
 
-    <div class="stat-card" id="stat-card-hidden" title="Click to filter hidden books only" style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:12px;padding:1rem 1.25rem;box-shadow:0 2px 8px rgba(0,0,0,0.03);display:flex;align-items:center;gap:0.9rem;cursor:pointer;transition:all 0.15s ease;">
+    <div class="stat-card" id="stat-card-hidden" title="Click to filter hidden books only" style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:12px;padding:1rem 1.25rem;box-shadow:0 2px 8px rgba(0,0,0,0.03);display:flex;align-items:center;gap:0.9rem;cursor:pointer;transition:all 0.15s ease;min-width:0;box-sizing:border-box;">
       <div style="width:42px;height:42px;border-radius:10px;background:rgba(220,38,38,0.08);border:1px solid rgba(220,38,38,0.22);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
         <i class="fas fa-eye-slash" style="font-size:16px;color:#dc2626;"></i>
       </div>
-      <div>
+      <div style="min-width:0;overflow:hidden;">
         <div style="font-family:var(--font-headings);font-weight:800;font-size:1.5rem;color:var(--text);line-height:1;" id="stat-hidden">{{#if stats}}{{stats.hidden}}{{else}}0{{/if}}</div>
-        <div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-top:2px;">Hidden Books</div>
+        <div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Hidden Books</div>
       </div>
     </div>
 
-    <div class="stat-card" id="stat-card-main" title="Click to filter main books only" style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:12px;padding:1rem 1.25rem;box-shadow:0 2px 8px rgba(0,0,0,0.03);display:flex;align-items:center;gap:0.9rem;cursor:pointer;transition:all 0.15s ease;">
+    <div class="stat-card" id="stat-card-main" title="Click to filter main books only" style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:12px;padding:1rem 1.25rem;box-shadow:0 2px 8px rgba(0,0,0,0.03);display:flex;align-items:center;gap:0.9rem;cursor:pointer;transition:all 0.15s ease;min-width:0;box-sizing:border-box;">
       <div style="width:42px;height:42px;border-radius:10px;background:rgba(217,119,6,0.10);border:1px solid rgba(217,119,6,0.24);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
         <i class="fas fa-star" style="font-size:16px;color:#d97706;"></i>
       </div>
-      <div>
+      <div style="min-width:0;overflow:hidden;">
         <div style="font-family:var(--font-headings);font-weight:800;font-size:1.5rem;color:var(--text);line-height:1;" id="stat-main">{{#if stats}}{{stats.main}}{{else}}0{{/if}}</div>
-        <div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-top:2px;">Main Books</div>
+        <div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.07em;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Main Books</div>
       </div>
     </div>
   </div>
 
   <!-- Stats grid responsive -->
   <style>
-    @media (min-width: 640px) { #stats-row { grid-template-columns: repeat(4,1fr) !important; } }
+    @media (min-width: 640px) { #stats-row { grid-template-columns: repeat(4,minmax(0,1fr)) !important; } }
   </style>
 
   <!-- ================================================================ -->
   <!-- Admin Sub-Navigation                                              -->
   <!-- ================================================================ -->
-  <div style="display:flex;align-items:center;gap:0.5rem;border-bottom:1px solid rgba(15,118,110,0.12);padding-bottom:0.65rem;">
+  <div style="display:flex;align-items:center;gap:0.5rem;border-bottom:1px solid rgba(15,118,110,0.12);padding-bottom:0.65rem;width:100%;max-width:100%;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch;box-sizing:border-box;">
     <a href="/dashboard" id="nav-tab-books"
-      style="display:inline-flex;align-items:center;gap:0.45rem;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;text-decoration:none;background:var(--primary);color:#fff;box-shadow:0 2px 6px rgba(15,118,110,0.22);">
+      style="display:inline-flex;align-items:center;gap:0.45rem;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;text-decoration:none;background:var(--primary);color:#fff;box-shadow:0 2px 6px rgba(15,118,110,0.22);white-space:nowrap;flex-shrink:0;">
       <i class="fas fa-book-bookmark" style="color:#d7f4ee;font-size:11px;"></i>
       <span>Book Publications</span>
     </a>
     <a href="/dashboard/Materials" id="nav-tab-materials"
-      style="display:inline-flex;align-items:center;gap:0.45rem;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;text-decoration:none;color:var(--text-2);transition:all 0.15s ease;"
+      style="display:inline-flex;align-items:center;gap:0.45rem;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;text-decoration:none;color:var(--text-2);transition:all 0.15s ease;white-space:nowrap;flex-shrink:0;"
       onmouseenter="this.style.background='var(--primary-lt)';this.style.color='var(--primary-dk)'"
       onmouseleave="this.style.background='transparent';this.style.color='var(--text-2)'">
       <i class="fas fa-archive" style="color:var(--text-muted);font-size:11px;"></i>
@@ -115,16 +115,16 @@
   <!-- ================================================================ -->
   <!-- Search & Filter Toolbar                                           -->
   <!-- ================================================================ -->
-  <div style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:12px;padding:0.85rem 1rem;box-shadow:0 2px 8px rgba(0,0,0,0.03);">
-    <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.75rem;">
+  <div style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.16);border-radius:12px;padding:0.85rem 1rem;box-shadow:0 2px 8px rgba(0,0,0,0.03);width:100%;max-width:100%;min-width:0;box-sizing:border-box;">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.75rem;width:100%;max-width:100%;min-width:0;box-sizing:border-box;">
 
-      <!-- Search -->
-      <div style="display:flex;flex:1;flex-wrap:wrap;align-items:center;gap:0.65rem;min-width:0;">
-        <div style="position:relative;width:100%;max-width:380px;">
+      <!-- Search & Filter -->
+      <div style="display:flex;flex:1 1 240px;flex-wrap:wrap;align-items:center;gap:0.65rem;min-width:0;max-width:100%;">
+        <div style="position:relative;flex:1 1 180px;min-width:0;max-width:100%;">
           <div style="position:absolute;inset-y:0;left:0;padding-left:10px;display:flex;align-items:center;pointer-events:none;">
             <i class="fas fa-search" style="font-size:11px;color:var(--text-muted);"></i>
           </div>
-          <input type="text" id="searchProduct" value="{{filters.search}}" placeholder="Search catalog by title, author... (Press '/')" aria-label="Search books" class="input-classic" style="width:100%;padding:8px 32px 8px 30px;font-size:12px;">
+          <input type="text" id="searchProduct" value="{{filters.search}}" placeholder="Search catalog by title, author... (Press '/')" aria-label="Search books" class="input-classic" style="width:100%;padding:8px 32px 8px 30px;font-size:12px;box-sizing:border-box;min-width:0;">
           <button type="button" id="clearSearch" aria-label="Clear search"
             style="position:absolute;inset-y:0;right:0;padding-right:10px;display:{{#if filters.search}}flex{{else}}none{{/if}};align-items:center;background:none;border:none;cursor:pointer;color:var(--text-muted);">
             <i class="fas fa-times" style="font-size:11px;"></i>
@@ -132,8 +132,8 @@
         </div>
 
         <!-- Category -->
-        <div style="position:relative;width:160px;flex-shrink:0;">
-          <select id="categoryFilter" onchange="filterProducts()" aria-label="Filter by Category" class="input-classic" style="width:100%;padding:8px 28px 8px 10px;font-size:12px;appearance:none;cursor:pointer;">
+        <div style="position:relative;width:140px;max-width:100%;min-width:110px;flex-shrink:0;">
+          <select id="categoryFilter" onchange="filterProducts()" aria-label="Filter by Category" class="input-classic" style="width:100%;padding:8px 28px 8px 10px;font-size:12px;appearance:none;cursor:pointer;box-sizing:border-box;">
             <option value="all" {{#if (or (eq filters.category 'all') (not filters.category))}}selected{{/if}}>All Categories</option>
             <option value="CourseBooks" {{#if (eq filters.category 'CourseBooks')}}selected{{/if}}>Course Books</option>
             <option value="Softwares" {{#if (eq filters.category 'Softwares')}}selected{{/if}}>Softwares</option>
@@ -147,17 +147,15 @@
       </div>
 
       <!-- Count & View Toggle -->
-      <div style="display:flex;align-items:center;gap:0.75rem;flex-shrink:0;">
-        <span style="font-size:12px;color:var(--text-muted);">
+      <div style="display:flex;align-items:center;gap:0.75rem;flex-shrink:0;min-width:0;">
+        <span style="font-size:12px;color:var(--text-muted);white-space:nowrap;">
           <strong style="color:var(--text);">{{pagination.total}}</strong> publications
         </span>
-        <div style="display:flex;align-items:center;padding:3px;border-radius:8px;border:1px solid rgba(15,118,110,0.18);background:rgba(255,255,255,0.70);">
-          <button type="button" id="viewGridBtn" onclick="setViewMode('grid')" title="Grid View"
-            style="padding:5px 9px;border-radius:6px;font-size:12px;border:none;cursor:pointer;background:var(--primary);color:#fff;transition:all 0.15s ease;">
+        <div class="view-toggle-wrap" role="group" aria-label="Catalog View Mode">
+          <button type="button" id="viewGridBtn" class="view-toggle-btn active" onclick="setViewMode('grid')" title="Grid View" aria-label="Switch to Grid View" aria-pressed="true">
             <i class="fas fa-th-large"></i>
           </button>
-          <button type="button" id="viewListBtn" onclick="setViewMode('list')" title="List View"
-            style="padding:5px 9px;border-radius:6px;font-size:12px;border:none;cursor:pointer;background:transparent;color:var(--text-muted);transition:all 0.15s ease;">
+          <button type="button" id="viewListBtn" class="view-toggle-btn" onclick="setViewMode('list')" title="List View" aria-label="Switch to List View" aria-pressed="false">
             <i class="fas fa-list"></i>
           </button>
         </div>
@@ -168,15 +166,15 @@
   <!-- ================================================================ -->
   <!-- Bulk Actions Bar                                                  -->
   <!-- ================================================================ -->
-  <div id="bulkActionsBar" style="display:none;align-items:center;justify-content:space-between;gap:0.75rem;padding:0.75rem 1rem;border-radius:10px;background:rgba(215,244,238,0.60);backdrop-filter:blur(10px);border:1px solid rgba(15,118,110,0.22);box-shadow:0 2px 8px rgba(15,118,110,0.10);">
-    <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:12px;font-weight:700;color:var(--primary-dk);user-select:none;">
-      <input type="checkbox" id="selectAllBooks" onchange="toggleSelectAll(this)" style="width:16px;height:16px;border-radius:4px;accent-color:var(--primary);cursor:pointer;">
-      <span id="selectedCount" style="color:var(--primary);">0 selected</span>
+  <div id="bulkActionsBar" style="display:none;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.75rem;padding:0.75rem 1rem;border-radius:10px;background:rgba(215,244,238,0.60);backdrop-filter:blur(10px);border:1px solid rgba(15,118,110,0.22);box-shadow:0 2px 8px rgba(15,118,110,0.10);width:100%;max-width:100%;min-width:0;box-sizing:border-box;">
+    <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:12px;font-weight:700;color:var(--primary-dk);user-select:none;min-width:0;">
+      <input type="checkbox" id="selectAllBooks" onchange="toggleSelectAll(this)" style="width:16px;height:16px;border-radius:4px;accent-color:var(--primary);cursor:pointer;flex-shrink:0;">
+      <span id="selectedCount" style="color:var(--primary);white-space:nowrap;">0 selected</span>
     </label>
 
-    <div style="display:flex;align-items:center;gap:0.5rem;">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0.4rem;min-width:0;">
       <button onclick="bulkHideBooks()" id="bulk-hide-btn"
-        style="display:inline-flex;align-items:center;gap:0.35rem;padding:6px 12px;border-radius:7px;background:rgba(217,119,6,0.12);color:#92400e;border:1px solid rgba(217,119,6,0.28);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s ease;"
+        style="display:inline-flex;align-items:center;gap:0.35rem;padding:6px 10px;border-radius:7px;background:rgba(217,119,6,0.12);color:#92400e;border:1px solid rgba(217,119,6,0.28);font-size:11px;font-weight:600;cursor:pointer;transition:all 0.15s ease;white-space:nowrap;"
         onmouseenter="this.style.background='#d97706';this.style.color='#fff'"
         onmouseleave="this.style.background='rgba(217,119,6,0.12)';this.style.color='#92400e'">
         <i class="fas fa-eye-slash" style="font-size:10px;"></i>
@@ -184,7 +182,7 @@
       </button>
 
       <button onclick="bulkShowBooks()" id="bulk-show-btn"
-        style="display:inline-flex;align-items:center;gap:0.35rem;padding:6px 12px;border-radius:7px;background:rgba(22,163,74,0.12);color:#14532d;border:1px solid rgba(22,163,74,0.28);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s ease;"
+        style="display:inline-flex;align-items:center;gap:0.35rem;padding:6px 10px;border-radius:7px;background:rgba(22,163,74,0.12);color:#14532d;border:1px solid rgba(22,163,74,0.28);font-size:11px;font-weight:600;cursor:pointer;transition:all 0.15s ease;white-space:nowrap;"
         onmouseenter="this.style.background='#16a34a';this.style.color='#fff'"
         onmouseleave="this.style.background='rgba(22,163,74,0.12)';this.style.color='#14532d'">
         <i class="fas fa-eye" style="font-size:10px;"></i>
@@ -192,7 +190,7 @@
       </button>
 
       <button onclick="clearSelection()" id="bulk-clear-btn"
-        style="display:inline-flex;align-items:center;gap:0.35rem;padding:6px 10px;border-radius:7px;background:rgba(255,255,255,0.85);color:var(--text-2);border:1px solid var(--border);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s ease;"
+        style="display:inline-flex;align-items:center;gap:0.35rem;padding:6px 9px;border-radius:7px;background:rgba(255,255,255,0.85);color:var(--text-2);border:1px solid var(--border);font-size:11px;font-weight:600;cursor:pointer;transition:all 0.15s ease;white-space:nowrap;"
         onmouseenter="this.style.background='var(--primary-lt)'"
         onmouseleave="this.style.background='rgba(255,255,255,0.85)'">
         <i class="fas fa-times" style="font-size:10px;"></i>
@@ -210,7 +208,7 @@
 
     <!-- Grid Card -->
     <article class="item-grid-card"
-      style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.14);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:all 0.2s ease;box-shadow:0 2px 8px rgba(0,0,0,0.04);position:relative;"
+      style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.14);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:all 0.2s ease;box-shadow:0 2px 8px rgba(0,0,0,0.04);position:relative;width:100%;max-width:100%;min-width:0;box-sizing:border-box;"
       id="grid_admin_{{this.id}}"
       onmouseenter="this.style.borderColor='rgba(15,118,110,0.32)';this.style.boxShadow='0 8px 24px rgba(15,118,110,0.12)'"
       onmouseleave="this.style.borderColor='rgba(15,118,110,0.14)';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.04)'">
@@ -222,31 +220,31 @@
       </div>
 
       <!-- Cover -->
-      <div style="position:relative;aspect-ratio:3/4;background:rgba(215,244,238,0.22);overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0.75rem;border-bottom:1px solid rgba(15,118,110,0.10);">
+      <div style="position:relative;aspect-ratio:3/4;background:rgba(215,244,238,0.22);overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0.75rem;border-bottom:1px solid rgba(15,118,110,0.10);width:100%;max-width:100%;min-width:0;box-sizing:border-box;">
         <div style="position:absolute;inset:0;background-size:cover;background-position:center;opacity:0.14;filter:blur(14px);transform:scale(1.1);pointer-events:none;background-image:url('{{this.image_url}}');"></div>
 
         <!-- Badges -->
-        <div style="position:absolute;top:8px;right:8px;z-index:2;display:flex;flex-direction:column;align-items:flex-end;gap:4px;pointer-events:none;">
+        <div style="position:absolute;top:8px;right:8px;z-index:2;display:flex;flex-direction:column;align-items:flex-end;gap:4px;pointer-events:none;max-width:calc(100% - 40px);">
           {{#if this.main}}
             {{#unless (eq this.category 'LabManuals')}}
-            <span style="padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;background:var(--warning);color:#fff;box-shadow:0 2px 4px rgba(0,0,0,0.15);display:flex;align-items:center;gap:3px;">
+            <span style="padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;background:var(--warning);color:#fff;box-shadow:0 2px 4px rgba(0,0,0,0.15);display:flex;align-items:center;gap:3px;white-space:nowrap;">
               <i class="fas fa-star" style="font-size:8px;"></i> Main
             </span>
             {{/unless}}
           {{/if}}
 
           {{#unless this.visible}}
-          <span style="padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;background:rgba(220,38,38,0.12);color:#dc2626;border:1px solid rgba(220,38,38,0.30);display:flex;align-items:center;gap:3px;">
+          <span style="padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;background:rgba(220,38,38,0.12);color:#dc2626;border:1px solid rgba(220,38,38,0.30);display:flex;align-items:center;gap:3px;white-space:nowrap;">
             <i class="fas fa-eye-slash" style="font-size:8px;"></i> Hidden
           </span>
           {{else}}
-          <span style="padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;background:rgba(220,38,38,0.12);color:#16a34a;border:1px solid rgba(22,163,74,0.30);display:flex;align-items:center;gap:3px;">
+          <span style="padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;background:rgba(22,163,74,0.12);color:#16a34a;border:1px solid rgba(22,163,74,0.30);display:flex;align-items:center;gap:3px;white-space:nowrap;">
             <i class="fas fa-check" style="font-size:8px;"></i> Visible
           </span>
           {{/unless}}
 
           {{#if this.semester}}
-          <span style="padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;background:rgba(255,255,255,0.92);color:var(--text-2);border:1px solid var(--border);">
+          <span style="padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;background:rgba(255,255,255,0.92);color:var(--text-2);border:1px solid var(--border);white-space:nowrap;">
             {{formatSemesterBadge this.semester}}
           </span>
           {{/if}}
@@ -261,45 +259,45 @@
       </div>
 
       <!-- Card Body -->
-      <div style="padding:1rem;flex:1;display:flex;flex-direction:column;gap:0.65rem;">
-        <div>
-          <h3 style="font-family:var(--font-headings);font-weight:700;font-size:14px;color:var(--text);line-height:1.35;margin-bottom:0.25rem;">
-            <a href="/dashboard/books/{{this.id}}/edit" title="{{this.name}}" style="text-decoration:none;color:inherit;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
+      <div style="padding:1rem;flex:1;display:flex;flex-direction:column;gap:0.65rem;min-width:0;max-width:100%;width:100%;box-sizing:border-box;">
+        <div style="min-width:0;max-width:100%;width:100%;overflow:hidden;">
+          <h3 style="font-family:var(--font-headings);font-weight:700;font-size:14px;color:var(--text);line-height:1.35;margin-bottom:0.25rem;min-width:0;max-width:100%;overflow:hidden;">
+            <a href="/dashboard/books/{{this.id}}/edit" title="{{this.name}}" style="text-decoration:none;color:inherit;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;min-width:0;"
               onmouseenter="this.style.color='var(--primary)'" onmouseleave="this.style.color='inherit'">{{this.name}}</a>
           </h3>
-          <p style="font-size:12px;color:var(--text-muted);line-height:1.55;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;" title="{{this.description}}">{{this.description}}</p>
+          <p style="font-size:12px;color:var(--text-muted);line-height:1.55;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word;" title="{{this.description}}">{{this.description}}</p>
           {{#if this.username}}
-          <p style="font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:4px;margin-top:0.3rem;">
-            <i class="fas fa-user-edit" style="font-size:10px;color:var(--primary);"></i>
-            <span>{{this.username}}</span>
+          <p style="font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:4px;margin-top:0.3rem;min-width:0;max-width:100%;overflow:hidden;">
+            <i class="fas fa-user-edit" style="font-size:10px;color:var(--primary);flex-shrink:0;"></i>
+            <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;">{{this.username}}</span>
           </p>
           {{/if}}
         </div>
 
         <!-- Stats row -->
-        <div style="display:flex;align-items:center;gap:0.5rem;font-size:11px;color:var(--text-muted);">
-          <span style="display:flex;align-items:center;gap:3px;"><i class="fas fa-eye" style="font-size:9px;"></i> {{formatNumber this.views}}</span>
+        <div style="display:flex;align-items:center;gap:0.5rem;font-size:11px;color:var(--text-muted);min-width:0;max-width:100%;flex-wrap:wrap;">
+          <span style="display:flex;align-items:center;gap:3px;white-space:nowrap;"><i class="fas fa-eye" style="font-size:9px;"></i> {{formatNumber this.views}}</span>
           <span style="color:var(--border-solid);">·</span>
-          <span style="padding:2px 8px;border-radius:20px;background:var(--primary-lt);color:var(--primary-dk);font-weight:700;font-size:10px;">{{this.category}}</span>
+          <span style="padding:2px 8px;border-radius:20px;background:var(--primary-lt);color:var(--primary-dk);font-weight:700;font-size:10px;white-space:nowrap;">{{this.category}}</span>
         </div>
 
         <!-- Actions -->
-        <div style="padding-top:0.65rem;border-top:1px solid rgba(15,118,110,0.10);display:flex;align-items:center;gap:0.4rem;">
+        <div style="padding-top:0.65rem;border-top:1px solid rgba(15,118,110,0.10);display:flex;align-items:center;gap:0.4rem;min-width:0;max-width:100%;width:100%;box-sizing:border-box;">
           <a href="/dashboard/books/{{this.id}}/edit"
-            style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:0.35rem;padding:7px 10px;border-radius:7px;background:var(--primary-lt);color:var(--primary-dk);border:1px solid rgba(15,118,110,0.22);font-size:12px;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:0.04em;transition:all 0.15s ease;"
+            style="flex:1;min-width:0;display:inline-flex;align-items:center;justify-content:center;gap:0.35rem;padding:7px 10px;border-radius:7px;background:var(--primary-lt);color:var(--primary-dk);border:1px solid rgba(15,118,110,0.22);font-size:12px;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:0.04em;transition:all 0.15s ease;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
             onmouseenter="this.style.background='var(--primary)';this.style.color='#fff'" onmouseleave="this.style.background='var(--primary-lt)';this.style.color='var(--primary-dk)'">
-            <i class="fas fa-edit" style="font-size:10px;"></i>
-            <span>Edit</span>
+            <i class="fas fa-edit" style="font-size:10px;flex-shrink:0;"></i>
+            <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Edit</span>
           </a>
 
           <a href="/dashboard/books/{{this.id}}/sections" title="Manage Chapters"
-            style="padding:7px 9px;border-radius:7px;background:rgba(255,255,255,0.80);color:var(--text-2);border:1px solid var(--border);font-size:12px;text-decoration:none;display:flex;align-items:center;justify-content:center;transition:all 0.15s ease;"
+            style="padding:7px 9px;border-radius:7px;background:rgba(255,255,255,0.80);color:var(--text-2);border:1px solid var(--border);font-size:12px;text-decoration:none;display:flex;align-items:center;justify-content:center;transition:all 0.15s ease;flex-shrink:0;"
             onmouseenter="this.style.background='var(--primary-lt)';this.style.color='var(--primary)'" onmouseleave="this.style.background='rgba(255,255,255,0.80)';this.style.color='var(--text-2)'">
             <i class="fas fa-list-ul"></i>
           </a>
 
           <button onclick="deleteProduct('{{this.id}}', '{{this.name}}')" title="Delete"
-            style="padding:7px 9px;border-radius:7px;background:rgba(220,38,38,0.08);color:#dc2626;border:1px solid rgba(220,38,38,0.22);font-size:12px;cursor:pointer;transition:all 0.15s ease;"
+            style="padding:7px 9px;border-radius:7px;background:rgba(220,38,38,0.08);color:#dc2626;border:1px solid rgba(220,38,38,0.22);font-size:12px;cursor:pointer;transition:all 0.15s ease;flex-shrink:0;"
             onmouseenter="this.style.background='#dc2626';this.style.color='#fff'" onmouseleave="this.style.background='rgba(220,38,38,0.08)';this.style.color='#dc2626'">
             <i class="fas fa-trash-alt"></i>
           </button>
@@ -309,12 +307,12 @@
 
     <!-- List Row -->
     <article class="item-list-row"
-      style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.14);border-radius:12px;padding:0.85rem 1rem;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.75rem;transition:all 0.15s ease;"
+      style="background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(15,118,110,0.14);border-radius:12px;padding:0.85rem 1rem;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.75rem;transition:all 0.15s ease;width:100%;max-width:100%;min-width:0;box-sizing:border-box;overflow:hidden;"
       id="list_admin_{{this.id}}"
       onmouseenter="this.style.borderColor='rgba(15,118,110,0.30)';this.style.boxShadow='0 4px 12px rgba(15,118,110,0.08)'"
       onmouseleave="this.style.borderColor='rgba(15,118,110,0.14)';this.style.boxShadow='none'">
 
-      <div style="display:flex;align-items:center;gap:0.75rem;min-width:0;flex:1;">
+      <div style="display:flex;align-items:center;gap:0.75rem;min-width:0;flex:1 1 200px;max-width:100%;overflow:hidden;">
         <input type="checkbox" class="book-select-checkbox" data-book-id="{{this.id}}" onchange="updateBulkActions()" aria-label="Select {{this.name}}"
           style="width:16px;height:16px;border-radius:4px;accent-color:var(--primary);cursor:pointer;flex-shrink:0;">
 
@@ -322,50 +320,45 @@
           <img src="{{this.image_url}}" alt="Cover" style="max-height:100%;max-width:100%;object-fit:contain;border-radius:3px;" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'">
         </div>
 
-        <div style="min-width:0;">
-          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0.35rem;margin-bottom:0.3rem;">
+        <div style="min-width:0;flex:1 1 auto;max-width:100%;overflow:hidden;">
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0.35rem;margin-bottom:0.3rem;min-width:0;max-width:100%;">
             {{#if this.main}}
-            <span style="padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700;background:var(--warning);color:#fff;">Main</span>
+            <span style="padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700;background:var(--warning);color:#fff;white-space:nowrap;">Main</span>
             {{/if}}
             {{#unless this.visible}}
-            <span style="padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(220,38,38,0.12);color:#dc2626;border:1px solid rgba(220,38,38,0.28);">Hidden</span>
+            <span style="padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(220,38,38,0.12);color:#dc2626;border:1px solid rgba(220,38,38,0.28);white-space:nowrap;">Hidden</span>
             {{else}}
-            <span style="padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(22,163,74,0.12);color:#16a34a;border:1px solid rgba(22,163,74,0.28);">Visible</span>
+            <span style="padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(22,163,74,0.12);color:#16a34a;border:1px solid rgba(22,163,74,0.28);white-space:nowrap;">Visible</span>
             {{/unless}}
-            <span style="padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;background:var(--primary-lt);color:var(--primary-dk);border:1px solid rgba(15,118,110,0.22);">{{formatSemesterBadge this.semester}}</span>
-            <span style="padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(255,255,255,0.80);color:var(--text-2);border:1px solid var(--border);">{{this.category}}</span>
-            <span style="font-size:11px;color:var(--text-muted);"><i class="fas fa-eye" style="font-size:9px;margin-right:2px;"></i>{{formatNumber this.views}}</span>
+            <span style="padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;background:var(--primary-lt);color:var(--primary-dk);border:1px solid rgba(15,118,110,0.22);white-space:nowrap;">{{formatSemesterBadge this.semester}}</span>
+            <span style="padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(255,255,255,0.80);color:var(--text-2);border:1px solid var(--border);white-space:nowrap;">{{this.category}}</span>
+            <span style="font-size:11px;color:var(--text-muted);white-space:nowrap;"><i class="fas fa-eye" style="font-size:9px;margin-right:2px;"></i>{{formatNumber this.views}}</span>
           </div>
-          <h3 style="font-family:var(--font-headings);font-weight:700;font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:0.2rem;">
-            <a href="/dashboard/books/{{this.id}}/edit" style="text-decoration:none;color:inherit;" title="{{this.name}}"
+          <h3 style="font-family:var(--font-headings);font-weight:700;font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:0.2rem;min-width:0;max-width:100%;">
+            <a href="/dashboard/books/{{this.id}}/edit" style="text-decoration:none;color:inherit;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;min-width:0;" title="{{this.name}}"
               onmouseenter="this.style.color='var(--primary)'" onmouseleave="this.style.color='inherit'">{{this.name}}</a>
           </h3>
-          <p style="font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="{{this.description}}">{{this.description}}</p>
+          <p style="font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;min-width:0;" title="{{this.description}}">{{this.description}}</p>
         </div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:0.4rem;flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:0.4rem;flex-shrink:0;min-width:0;">
         <a href="/dashboard/books/{{this.id}}/edit"
-          style="display:inline-flex;align-items:center;gap:0.35rem;padding:7px 12px;border-radius:7px;background:var(--primary-lt);color:var(--primary-dk);border:1px solid rgba(15,118,110,0.22);font-size:12px;font-weight:700;text-decoration:none;transition:all 0.15s ease;"
+          style="display:inline-flex;align-items:center;gap:0.35rem;padding:7px 12px;border-radius:7px;background:var(--primary-lt);color:var(--primary-dk);border:1px solid rgba(15,118,110,0.22);font-size:12px;font-weight:700;text-decoration:none;transition:all 0.15s ease;white-space:nowrap;"
           onmouseenter="this.style.background='var(--primary)';this.style.color='#fff'" onmouseleave="this.style.background='var(--primary-lt)';this.style.color='var(--primary-dk)'">
           <i class="fas fa-edit" style="font-size:10px;"></i>
           <span>Edit</span>
         </a>
 
         <a href="/dashboard/books/{{this.id}}/sections"
-          style="display:inline-flex;align-items:center;gap:0.35rem;padding:7px 11px;border-radius:7px;background:rgba(255,255,255,0.85);color:var(--text-2);border:1px solid var(--border);font-size:12px;font-weight:600;text-decoration:none;transition:all 0.15s ease;"
-          onmouseenter="this.style.background='var(--primary-lt)';this.style.color='var(--primary)'" onmouseleave="this.style.background='rgba(255,255,255,0.85)';this.style.color='var(--text-2)'">
-          <i class="fas fa-list-ul" style="font-size:10px;"></i>
-          <span>Chapters</span>
-        </a>
-          style="display:inline-flex;align-items:center;gap:0.35rem;padding:7px 11px;border-radius:7px;background:rgba(255,255,255,0.85);color:var(--text-2);border:1px solid var(--border);font-size:12px;font-weight:600;text-decoration:none;transition:all 0.15s ease;"
+          style="display:inline-flex;align-items:center;gap:0.35rem;padding:7px 11px;border-radius:7px;background:rgba(255,255,255,0.85);color:var(--text-2);border:1px solid var(--border);font-size:12px;font-weight:600;text-decoration:none;transition:all 0.15s ease;white-space:nowrap;"
           onmouseenter="this.style.background='var(--primary-lt)';this.style.color='var(--primary)'" onmouseleave="this.style.background='rgba(255,255,255,0.85)';this.style.color='var(--text-2)'">
           <i class="fas fa-list-ul" style="font-size:10px;"></i>
           <span>Chapters</span>
         </a>
 
         <button onclick="deleteProduct('{{this.id}}', '{{this.name}}')"
-          style="padding:7px 9px;border-radius:7px;background:rgba(220,38,38,0.08);color:#dc2626;border:1px solid rgba(220,38,38,0.22);font-size:12px;cursor:pointer;transition:all 0.15s ease;"
+          style="padding:7px 9px;border-radius:7px;background:rgba(220,38,38,0.08);color:#dc2626;border:1px solid rgba(220,38,38,0.22);font-size:12px;cursor:pointer;transition:all 0.15s ease;flex-shrink:0;"
           onmouseenter="this.style.background='#dc2626';this.style.color='#fff'" onmouseleave="this.style.background='rgba(220,38,38,0.08)';this.style.color='#dc2626'">
           <i class="fas fa-trash-alt"></i>
         </button>

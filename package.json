@@ -1,11 +1,11 @@
 {
   "name": "unilibwebapp",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "main": "src/server.js",
   "type": "module",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon -e js,mjs,cjs,json,handlebars src/server.js",
+    "dev": "node --watch src/server.js",
     "sync_permissions": "node scripts/sync_permissions.js",
     "convertToWebp": "node scripts/convertToWebp.js",
     "convertPageImages": "node scripts/convertPageImages.js",
@@ -37,7 +37,6 @@
   },
   "devDependencies": {
     "@types/supertest": "^7.2.1",
-    "nodemon": "^3.1.14",
     "supertest": "^7.3.1",
     "vite": "^8.3.2",
     "vitest": "5.0.3"

@@ -11,7 +11,7 @@ const state = {
     search: ''
   },
   currentPage: 1,
-  viewMode: localStorage.getItem('unilib_view_mode') || 'grid'
+  viewMode: 'grid'
 };
 
 // DOM Elements Cache
@@ -68,34 +68,54 @@ function normalizeSemesterStr(str) {
 
 // Layout Switcher: Grid vs Table/List View
 function initViewMode() {
-  setViewMode(state.viewMode, false);
+  // Clear stale legacy localStorage key if present
+  try {
+    localStorage.removeItem('unilib_view_mode');
+  } catch (e) {}
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlView = urlParams.get('view');
+
+  let targetMode = 'grid';
+  if (urlView === 'list' || urlView === 'grid') {
+    targetMode = urlView;
+  } else {
+    try {
+      const savedMode = localStorage.getItem('unilib_view_mode_v2');
+      targetMode = (savedMode === 'list') ? 'list' : 'grid';
+    } catch (e) {
+      targetMode = 'grid';
+    }
+  }
+
+  setViewMode(targetMode, false);
 }
 
 window.setViewMode = function(mode, save = true) {
-  state.viewMode = mode;
-  if (save) localStorage.setItem('unilib_view_mode', mode);
+  const normalizedMode = (mode === 'list') ? 'list' : 'grid';
+  state.viewMode = normalizedMode;
+  if (save) {
+    try {
+      localStorage.setItem('unilib_view_mode_v2', normalizedMode);
+    } catch (e) {
+      console.warn('Unable to persist view mode:', e);
+    }
+  }
 
   const container = document.getElementById("catalogContainer");
   if (container) {
     container.classList.remove('view-grid', 'view-list');
-    container.classList.add(mode === 'list' ? 'view-list' : 'view-grid');
+    container.classList.add(normalizedMode === 'list' ? 'view-list' : 'view-grid');
   }
 
   const gridBtn = document.getElementById("viewGridBtn");
   const listBtn = document.getElementById("viewListBtn");
   if (gridBtn && listBtn) {
-    const isList = mode === 'list';
-    listBtn.classList.toggle('bg-teal-50', isList);
-    listBtn.classList.toggle('text-[#0f766e]', isList);
-    listBtn.classList.toggle('border-teal-200', isList);
-    listBtn.classList.toggle('text-teal-700/60', !isList);
-    listBtn.classList.toggle('border-transparent', !isList);
-
-    gridBtn.classList.toggle('bg-teal-50', !isList);
-    gridBtn.classList.toggle('text-[#0f766e]', !isList);
-    gridBtn.classList.toggle('border-teal-200', !isList);
-    gridBtn.classList.toggle('text-teal-700/60', isList);
-    gridBtn.classList.toggle('border-transparent', isList);
+    const isList = (normalizedMode === 'list');
+    gridBtn.classList.toggle('active', !isList);
+    listBtn.classList.toggle('active', isList);
+    gridBtn.setAttribute('aria-pressed', (!isList).toString());
+    listBtn.setAttribute('aria-pressed', isList.toString());
   }
 };
 
@@ -455,10 +475,32 @@ function initHeaderAndScroll() {
   const menuIcon = document.getElementById('menuIcon');
 
   if (mobileToggle && mobileDrawer) {
-    mobileToggle.addEventListener('click', () => {
-      const isHidden = mobileDrawer.classList.contains('hidden');
-      mobileDrawer.classList.toggle('hidden', !isHidden);
-      if (menuIcon) menuIcon.className = isHidden ? 'fas fa-times text-sm' : 'fas fa-bars text-sm';
+    mobileToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = mobileDrawer.classList.contains('open');
+      if (isOpen) {
+        mobileDrawer.classList.remove('open');
+        if (menuIcon) menuIcon.className = 'fas fa-bars';
+      } else {
+        mobileDrawer.classList.add('open');
+        if (menuIcon) menuIcon.className = 'fas fa-times';
+      }
+    });
+
+    // Close on click outside
+    document.addEventListener('click', (e) => {
+      if (mobileDrawer.classList.contains('open') && !mobileDrawer.contains(e.target) && !mobileToggle.contains(e.target)) {
+        mobileDrawer.classList.remove('open');
+        if (menuIcon) menuIcon.className = 'fas fa-bars';
+      }
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileDrawer.classList.contains('open')) {
+        mobileDrawer.classList.remove('open');
+        if (menuIcon) menuIcon.className = 'fas fa-bars';
+      }
     });
   }
 

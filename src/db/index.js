@@ -1,5 +1,6 @@
 import config from "../config/index.js";
-import { getActiveDatabase, closeConnections } from "./connection.js";
+import { getActiveDatabase, getSqliteConnection, closeConnections } from "./connection.js";
+import { initSqliteSchema, initPostgresSchema } from "./schema/init.js";
 
 import { BookRepository } from "../repositories/book.repository.js";
 import { SectionRepository } from "../repositories/section.repository.js";

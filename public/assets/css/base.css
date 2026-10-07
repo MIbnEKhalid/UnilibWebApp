@@ -9,9 +9,9 @@
    -------------------------------------------------------------------------- */
 :root {
   /* Fonts */
-  --font-sans: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-headings: "Sora", "Segoe UI", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", "SF Mono", Consolas, monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
+  --font-headings: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
+  --font-mono: "Segoe UI Mono", "Cascadia Code", Consolas, "Courier New", monospace;
 
   /* Teal Primary Palette */
   --color-teal-50: #f0faf8;
@@ -159,6 +159,16 @@ a {
 .inline-flex { display: inline-flex; }
 .grid { display: grid; }
 .hidden { display: none !important; }
+
+/* Overflow */
+.overflow-auto { overflow: auto; }
+.overflow-hidden { overflow: hidden; }
+.overflow-visible { overflow: visible; }
+.overflow-scroll { overflow: scroll; }
+.overflow-x-auto { overflow-x: auto; }
+.overflow-y-auto { overflow-y: auto; }
+.overflow-x-hidden { overflow-x: hidden; }
+.overflow-y-hidden { overflow-y: hidden; }
 
 .container {
   width: 100%;

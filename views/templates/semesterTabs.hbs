@@ -1,4 +1,4 @@
-<div class="{{#if tabContainerClass}}{{tabContainerClass}}{{else}}flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none select-none{{/if}}" {{#if tabContainerId}}id="{{tabContainerId}}"{{/if}}>
+<div class="{{#if tabContainerClass}}{{tabContainerClass}}{{else}}semester-tabs-container flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none select-none custom-scrollbar{{/if}}" style="width:100%;max-width:100%;min-width:0;box-sizing:border-box;overflow-x:auto;-webkit-overflow-scrolling:touch;display:flex;flex-wrap:nowrap;" {{#if tabContainerId}}id="{{tabContainerId}}"{{/if}}>
   <button type="button" class="{{#if tabClass}}{{tabClass}}{{else}}semester-tab{{/if}}{{#if book}}{{#if (hasSemester book.semester 'all')}} selected{{/if}}{{/if}}" data-semester="all" data-sem="all" onclick="{{#if tabHandler}}{{tabHandler}}{{else}}selectSemesterTab{{/if}}('all')">
     {{#unless hideAllIcon}}<i class="fas fa-layer-group text-[10px] mr-1"></i>{{/unless}}{{#if allLabel}}{{allLabel}}{{else}}All Semesters{{/if}}
   </button>
