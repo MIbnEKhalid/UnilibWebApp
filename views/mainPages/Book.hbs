@@ -253,7 +253,7 @@
         <a href="/dashboard/books/{{this.id}}/edit" aria-label="Edit {{this.name}}" style="position:relative;z-index:1;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
           <img src="{{this.image_url}}" alt="Cover of {{this.name}}"
             style="max-height:100%;max-width:100%;object-fit:contain;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,0.14);transition:transform 0.3s ease;"
-            loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'"
+            loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp{{cacheBust}}'"
             onmouseenter="this.style.transform='scale(1.04)'" onmouseleave="this.style.transform='scale(1)'">
         </a>
       </div>
@@ -317,7 +317,7 @@
           style="width:16px;height:16px;border-radius:4px;accent-color:var(--primary);cursor:pointer;flex-shrink:0;">
 
         <div style="width:44px;height:60px;border-radius:7px;background:rgba(215,244,238,0.25);border:1px solid rgba(15,118,110,0.16);padding:3px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
-          <img src="{{this.image_url}}" alt="Cover" style="max-height:100%;max-width:100%;object-fit:contain;border-radius:3px;" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'">
+          <img src="{{this.image_url}}" alt="Cover" style="max-height:100%;max-width:100%;object-fit:contain;border-radius:3px;" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp{{cacheBust}}'">
         </div>
 
         <div style="min-width:0;flex:1 1 auto;max-width:100%;overflow:hidden;">

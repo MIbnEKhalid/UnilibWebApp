@@ -2,8 +2,8 @@
 {{#section 'head'}}
 <title>{{#if isEdit}}Edit Book{{else}}Add New Book{{/if}} | Unilib Creator Studio</title>
 <link rel="stylesheet" href="/assets/css/common-admin.css?v={{appVersion}}">
-<link rel="stylesheet" href="/mbkbucket/mbkbucket-helper.css">
-<script src="/mbkbucket/mbkbucket-helper.js" defer></script>
+<link rel="stylesheet" href="/mbkbucket/mbkbucket-helper.css{{bcachebust}}">
+<script src="/mbkbucket/mbkbucket-helper.js{{bcachebust}}" defer></script>
 {{/section}}
 
 <section class="w-full space-y-5" id="books">
@@ -78,7 +78,7 @@
 
           <!-- Centered Contained Cover -->
           <a id="bookurl" href="{{#if book}}{{book.link}}{{else}}#{{/if}}" target="_blank" class="relative z-10 w-full h-full flex items-center justify-center" aria-label="Preview Book Cover">
-            <img id="bookcover" src="{{#if book}}{{book.image_url}}{{else}}/BookCovers/BookCover_Template.webp{{/if}}" alt="Cover preview" class="max-h-full max-w-full object-contain rounded-sm shadow-md transition-transform duration-300" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp'">
+            <img id="bookcover" src="{{#if book}}{{book.image_url}}{{else}}/BookCovers/BookCover_Template.webp{{cacheBust}}{{/if}}" alt="Cover preview" class="max-h-full max-w-full object-contain rounded-sm shadow-md transition-transform duration-300" loading="lazy" onerror="this.src='/BookCovers/BookCover_Template.webp{{cacheBust}}'">
           </a>
         </div>
 
@@ -213,7 +213,7 @@
               {{> semesterTabs tabContainerId="semesterChipContainer" tabContainerClass="flex flex-wrap gap-1.5 select-none" tabClass="semester-chip-btn" tabHandler="toggleSemesterChip" shortLabels=true hideAllIcon=true }}
 
               <!-- Native Hidden Select -->
-              <select id="semester" name="semester" data-org='{{json book.semester}}' multiple required class="sr-only">
+              <select id="semester" name="semester" data-org='{{jsonStringify book.semester}}' multiple required class="sr-only">
                 <option value="all" {{#if (hasSemester book.semester "all")}}selected{{/if}}>All Semesters</option>
                 <option value="Semester 1" {{#if (hasSemester book.semester "Semester 1")}}selected{{else}}{{#unless book}}{{#if (eq @root.defaultSemester "Semester 1")}}selected{{/if}}{{/unless}}{{/if}}>Semester 1</option>
                 <option value="Semester 2" {{#if (hasSemester book.semester "Semester 2")}}selected{{else}}{{#unless book}}{{#if (eq @root.defaultSemester "Semester 2")}}selected{{/if}}{{/unless}}{{/if}}>Semester 2</option>

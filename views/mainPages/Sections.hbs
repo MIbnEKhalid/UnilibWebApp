@@ -165,7 +165,7 @@
 
 <script>
   (function () {
-    let sections = {{{ json sections }}} || [];
+    let sections = {{{ jsonStringify sections }}} || [];
     let selectedSections = new Set();
     const bookId = Number("{{book.id}}");
 

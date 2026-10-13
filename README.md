@@ -157,7 +157,7 @@ UnilibWebApp/
 | Command | Description |
 |---|---|
 | `npm start` | Runs the production server (`node src/server.js`) |
-| `npm run dev` | Runs the development server with `nodemon` live-reloading |
+| `npm run dev` | Runs the development server with `node --watch` live-reloading |
 | `npm run db:init` | Automatically initializes schemas for configured database engine |
 | `npm run db:init:sqlite` | Creates SQLite tables, schema, and indexes (`unilib.sqlite`) |
 | `npm run db:init:postgres` | Creates PostgreSQL tables, schema, and indexes |

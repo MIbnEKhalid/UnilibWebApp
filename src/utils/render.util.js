@@ -1,6 +1,5 @@
 import redis from "../config/redis.js";
 import { cacheGet, cacheSet } from "../services/cache.service.js";
-import { renderPage as mbkautheRenderPage } from "mbkauthe";
 
 export function getSessionLocals(req) {
   const user = req.session?.user;
@@ -9,10 +8,6 @@ export function getSessionLocals(req) {
     role: user?.role || "NotLoggedIn",
     userLoggedIn: Boolean(user),
   };
-}
-
-export async function renderPage(req, res, fileLocation, layout = true, data = {}) {
-  return mbkautheRenderPage(req, res, fileLocation, layout, data);
 }
 
 /**
@@ -67,6 +62,3 @@ export async function renderCachedPage(req, res, {
     res.send(html);
   });
 }
-
-export default renderPage;
-

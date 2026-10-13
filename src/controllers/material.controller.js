@@ -1,6 +1,6 @@
 import { Readable } from "node:stream";
 import { tasjeelRepository } from "../db/index.js";
-import renderPage from "../utils/render.util.js";
+import { renderPage } from "mbkutils";
 import { syncTasjeel, isLoginPageHtml } from "../services/tasjeel.service.js";
 import { config } from "../config/index.js";
 

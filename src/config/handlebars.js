@@ -1,11 +1,12 @@
-import { engine } from "express-handlebars";
 import path from "path";
 import { fileURLToPath } from "url";
+import { setupViewEngine, commonHandlebarsHelpers } from "mbkutils";
 import config from "./index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const projectRoot = path.resolve(__dirname, "../../");
 const viewsPath = path.join(__dirname, "../../views");
 const nodeModulesPath = path.join(__dirname, "../../node_modules");
 
@@ -34,8 +35,6 @@ function parseSemesterNumbers(sem) {
 
   return nums.length ? nums : null;
 }
-
-import { commonHandlebarsHelpers } from "mbkauthe";
 
 export const handlebarsHelpers = {
   ...commonHandlebarsHelpers,
@@ -80,27 +79,19 @@ export const handlebarsHelpers = {
 };
 
 export const configureHandlebars = (app) => {
-  app.engine("hbs", engine({
-    extname: ".hbs",
+  setupViewEngine(app, {
+    rootDir: projectRoot,
+    viewsDir: viewsPath,
     defaultLayout: "main",
-    layoutsDir: path.join(viewsPath, "layouts"),
-    partialsDir: [
-      path.join(viewsPath, "templates"),
-      path.join(viewsPath, "notice"),
-      viewsPath,
-      path.join(nodeModulesPath, "mbkauthe/views"),
+    cache: config.nodeEnv === "production",
+    additionalViewsDirs: [
       path.join(nodeModulesPath, "mbkbucket/views"),
     ],
-    cache: config.nodeEnv === "production",
+    additionalPartialsDirs: [
+      path.join(nodeModulesPath, "mbkbucket/views"),
+    ],
     helpers: handlebarsHelpers,
-  }));
-
-  app.set("view engine", "hbs");
-  app.set("views", [
-    viewsPath,
-    path.join(nodeModulesPath, "mbkauthe/views"),
-    path.join(nodeModulesPath, "mbkbucket/views"),
-  ]);
+  });
 };
 
 export default configureHandlebars;
