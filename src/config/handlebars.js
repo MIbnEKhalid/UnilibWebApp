@@ -1,14 +1,29 @@
+import fs from "fs";
 import path from "path";
+import { createRequire } from "module";
 import { fileURLToPath } from "url";
 import { setupViewEngine, commonHandlebarsHelpers } from "mbkutils";
 import config from "./index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const require = createRequire(import.meta.url);
 
-const projectRoot = path.resolve(__dirname, "../../");
-const viewsPath = path.join(__dirname, "../../views");
-const nodeModulesPath = path.join(__dirname, "../../node_modules");
+const projectRoot = fs.existsSync(path.join(process.cwd(), "views"))
+  ? process.cwd()
+  : path.resolve(__dirname, "../../");
+const viewsPath = path.join(projectRoot, "views");
+const nodeModulesPath = path.join(projectRoot, "node_modules");
+
+function resolvePackageViews(pkgName) {
+  try {
+    const pkgJson = require.resolve(`${pkgName}/package.json`);
+    const p = path.join(path.dirname(pkgJson), "views");
+    if (fs.existsSync(p)) return p;
+  } catch {}
+  const fallback = path.join(nodeModulesPath, pkgName, "views");
+  return fs.existsSync(fallback) ? fallback : null;
+}
 
 function parseSemesterNumbers(sem) {
   if (!sem) return null;
@@ -79,17 +94,19 @@ export const handlebarsHelpers = {
 };
 
 export const configureHandlebars = (app) => {
+  const extraViewsDirs = [
+    resolvePackageViews("mbkauthe"),
+    resolvePackageViews("mbkbucket"),
+    resolvePackageViews("mbkutils"),
+  ].filter(Boolean);
+
   setupViewEngine(app, {
     rootDir: projectRoot,
     viewsDir: viewsPath,
     defaultLayout: "main",
     cache: config.nodeEnv === "production",
-    additionalViewsDirs: [
-      path.join(nodeModulesPath, "mbkbucket/views"),
-    ],
-    additionalPartialsDirs: [
-      path.join(nodeModulesPath, "mbkbucket/views"),
-    ],
+    additionalViewsDirs: extraViewsDirs,
+    additionalPartialsDirs: extraViewsDirs,
     helpers: handlebarsHelpers,
   });
 };
