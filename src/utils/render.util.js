@@ -31,6 +31,12 @@ export async function renderCachedPage(req, res, {
 
   const isguest = !req.session?.user;
 
+  if (isguest) {
+    // Prevent express-session or auth middleware from sending Set-Cookie for unauthenticated guest requests
+    // Vercel Edge CDN drops responses from cache if Set-Cookie is present!
+    res.removeHeader("Set-Cookie");
+  }
+
   if (isguest && cacheKey) {
     const cached = await cacheGet(cacheKey);
     if (cached) return res.send(cached);
@@ -55,6 +61,9 @@ export async function renderCachedPage(req, res, {
     if (err) {
       console.error(`Render error for ${view}:`, err);
       return res.status(500).send("Render error");
+    }
+    if (isguest) {
+      res.removeHeader("Set-Cookie");
     }
     if (isguest && cacheKey) {
       cacheSet(cacheKey, html, ttl).catch((e) => console.error("Cache set error:", e));

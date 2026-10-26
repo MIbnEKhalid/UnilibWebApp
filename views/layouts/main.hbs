@@ -27,12 +27,15 @@
 
   <link rel="icon" type="image/svg+xml" href="/assets/images/icon.svg{{cacheBust}}">
 
-  <!-- FontAwesome 6 Icons (Native Local Vendor, Zero External CDN) -->
-  <link rel="stylesheet" href="/assets/vendor/fontawesome/all.min.css?v={{appVersion}}">
+  <!-- Preload Critical Assets -->
+  <link rel="preload" href="/assets/vendor/fontawesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/css/base.css?v={{appVersion}}" as="style">
 
   <!-- Base Stylesheet & Modern Academic Theme (Vanilla CSS) -->
   <link rel="stylesheet" href="/assets/css/base.css?v={{appVersion}}">
   <link rel="stylesheet" href="/assets/css/theme.css?v={{appVersion}}">
+  <!-- FontAwesome 6 Icons (Local Vendor) -->
+  <link rel="stylesheet" href="/assets/vendor/fontawesome/all.min.css?v={{appVersion}}">
   {{#if isAdminPage}}
   <link rel="stylesheet" href="/assets/css/common-admin.css?v={{appVersion}}">
   {{/if}}

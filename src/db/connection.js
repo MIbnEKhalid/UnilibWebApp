@@ -59,14 +59,16 @@ export async function getPostgresConnection() {
   const pkg = await import("pg");
   const { Pool } = pkg.default || pkg;
 
-  const connectionTimeoutMillis = Number(process.env.DB_CONNECTION_TIMEOUT_MS) || 15000;
-  const idleTimeoutMillis = Number(process.env.DB_IDLE_TIMEOUT_MS) || 30000;
+  const connectionTimeoutMillis = Number(process.env.DB_CONNECTION_TIMEOUT_MS) || 5000;
+  const idleTimeoutMillis = Number(process.env.DB_IDLE_TIMEOUT_MS) || 10000;
+  const maxPoolSize = Number(process.env.DB_MAX_POOL) || 5;
 
   const poolConfig = {
     connectionString: config.postgresUrl,
     ssl: {
       rejectUnauthorized: true,
     },
+    max: maxPoolSize,
     idleTimeoutMillis,
     connectionTimeoutMillis,
     keepAlive: true,
