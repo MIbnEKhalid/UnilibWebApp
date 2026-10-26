@@ -6,6 +6,7 @@
       "use": "@vercel/node",
       "config": {
         "includeFiles": [
+          "public/**",
           "views/**",
           "node_modules/mbkauthe/views/**",
           "node_modules/mbkbucket/views/**",
@@ -15,31 +16,6 @@
     }
   ],
   "routes": [
-    {
-      "src": "/assets/(.*)",
-      "headers": {
-        "cache-control": "public, max-age=31536000, immutable"
-      },
-      "dest": "/public/assets/$1"
-    },
-    {
-      "src": "/BookCovers/(.*)",
-      "headers": {
-        "cache-control": "public, max-age=31536000, immutable"
-      },
-      "dest": "/public/BookCovers/$1"
-    },
-    {
-      "src": "/robots.txt",
-      "headers": {
-        "cache-control": "public, max-age=86400"
-      },
-      "dest": "/public/robots.txt"
-    },
-    {
-      "src": "/favicon.ico",
-      "dest": "/public/assets/images/icon.svg"
-    },
     {
       "src": "/(.*)",
       "dest": "/src/app.js"

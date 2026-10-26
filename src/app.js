@@ -25,8 +25,16 @@ app.use(express.json());
 app.use(compression());
 app.set("trust proxy", 1);
 
-// Static assets
-app.use("/", express.static(path.join(__dirname, "../public/"), { maxAge: "1y" }));
+// Static assets (Edge cache maxAge 1y with immutable)
+app.use(
+  express.static(path.join(__dirname, "../public/"), {
+    maxAge: "1y",
+    immutable: true,
+    setHeaders: (res, path) => {
+      res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+    },
+  })
+);
 
 // Template engine setup
 configureHandlebars(app);
