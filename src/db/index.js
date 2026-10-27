@@ -6,8 +6,9 @@ import { BookRepository } from "../repositories/book.repository.js";
 import { SectionRepository } from "../repositories/section.repository.js";
 import { TasjeelRepository } from "../repositories/tasjeel.repository.js";
 
-export { PostgresAdapter, postgresDialect, SqliteAdapter, sqliteDialect, BaseRepository } from "mbkauthe";
-export { getActiveDatabase, closeConnections };
+export { PostgresAdapter, postgresDialect, SqliteAdapter, sqliteDialect, BaseRepository, dblogin, defaultAdapter } from "mbkauthe";
+import { pool } from "./connection.js";
+export { getActiveDatabase, closeConnections, pool };
 
 let activeDbType = null;
 let bookRepoInstance = null;

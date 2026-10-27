@@ -1,11 +1,21 @@
 import fs from "fs";
 import path from "path";
 import config from "../config/index.js";
-import { SqliteAdapter, postgresDialect, sqliteDialect, registerGracefulShutdown, closeAllConnections, wrapPoolWithRetry } from "mbkauthe";
+import {
+  dblogin,
+  defaultAdapter,
+  SqliteAdapter,
+  postgresDialect,
+  sqliteDialect,
+  registerGracefulShutdown,
+  closeAllConnections,
+} from "mbkauthe";
 
 let sqliteDb = null;
 let sqlitePool = null;
-let postgresPool = null;
+
+// Utilize same connection pool as mbkauthe (dblogin)
+export const pool = dblogin;
 
 /**
  * Get or initialize SQLite DatabaseSync connection
@@ -51,48 +61,10 @@ export async function getSqlitePool(customPath = null) {
 }
 
 /**
- * Get or initialize PostgreSQL connection pool
+ * Get or initialize PostgreSQL connection pool (utilizing shared dblogin from mbkauthe)
  */
 export async function getPostgresConnection() {
-  if (postgresPool) return { pool: postgresPool, dialect: postgresDialect };
-
-  const pkg = await import("pg");
-  const { Pool } = pkg.default || pkg;
-
-  const connectionTimeoutMillis = Number(process.env.DB_CONNECTION_TIMEOUT_MS) || 5000;
-  const idleTimeoutMillis = Number(process.env.DB_IDLE_TIMEOUT_MS) || 10000;
-  const maxPoolSize = Number(process.env.DB_MAX_POOL) || 5;
-
-  const poolConfig = {
-    connectionString: config.postgresUrl,
-    ssl: {
-      rejectUnauthorized: true,
-    },
-    max: maxPoolSize,
-    idleTimeoutMillis,
-    connectionTimeoutMillis,
-    keepAlive: true,
-    keepAliveInitialDelayMillis: 10000,
-    application_name: "unilib-app",
-  };
-
-  postgresPool = new Pool(poolConfig);
-  wrapPoolWithRetry(postgresPool, {
-    name: "Unilib PostgreSQL",
-    maxRetries: Number(process.env.DB_MAX_RETRIES) || 3,
-  });
-
-  try {
-    const client = await postgresPool.connect();
-    console.log("Connected to PostgreSQL database!");
-    client.release();
-  } catch (err) {
-    console.error("Database connection error:", err?.message || err);
-  }
-
-  registerGracefulShutdown([postgresPool].filter(Boolean));
-
-  return { pool: postgresPool, dialect: postgresDialect };
+  return { pool: dblogin, dialect: postgresDialect };
 }
 
 /**
@@ -114,7 +86,6 @@ export async function closeConnections() {
   await closeAllConnections();
   sqlitePool = null;
   sqliteDb = null;
-  postgresPool = null;
 }
 
 export default {
@@ -123,4 +94,6 @@ export default {
   getPostgresConnection,
   getActiveDatabase,
   closeConnections,
+  pool,
+  defaultAdapter,
 };
