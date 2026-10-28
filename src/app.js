@@ -6,6 +6,7 @@ import cors from "cors";
 import mbkautheRouter, { sessPerm } from "mbkauthe";
 import { createBucketRouter } from "mbkbucket";
 import { createRouter as createAdminDbRouter } from "admindb";
+import fs from "fs";
 
 import config from "./config/index.js";
 import configureHandlebars from "./config/handlebars.js";
@@ -65,6 +66,10 @@ app.use(appRoutes);
 // AdminDB SQLite database management UI
 try {
   const adminDbPath = path.resolve(config.sqlitePath || "./data/unilib.sqlite");
+  const adminDbDir = path.dirname(adminDbPath);
+  if (!fs.existsSync(adminDbDir)) {
+    fs.mkdirSync(adminDbDir, { recursive: true });
+  }
   app.use(
     "/dashboard/db",
     sessPerm(Permissions.admindb.access),
