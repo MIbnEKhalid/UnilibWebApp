@@ -1,6 +1,6 @@
 {
   "name": "unilibwebapp",
-  "version": "2.9.2",
+  "version": "2.9.3",
   "main": "src/server.js",
   "type": "module",
   "scripts": {
@@ -28,7 +28,7 @@
     "express-handlebars": "^9.0.1",
     "express-rate-limit": "^8.7.0",
     "mbkauthe": "latest",
-    "mbkbucket": "latest",
+    "mbkbucket": "4.3.0",
     "mbkutils": "latest",
     "node-cron": "^4.6.0",
     "pdf-lib": "^1.17.1",
