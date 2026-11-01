@@ -1,15 +1,7 @@
 import fs from "fs";
 import path from "path";
 import config from "../config/index.js";
-import {
-  dblogin,
-  defaultAdapter,
-  SqliteAdapter,
-  postgresDialect,
-  sqliteDialect,
-  registerGracefulShutdown,
-  closeAllConnections,
-} from "mbkauthe";
+import { dblogin, defaultAdapter, SqliteAdapter, postgresDialect, sqliteDialect, registerGracefulShutdown, closeAllConnections } from "mbkauthe";
 
 let sqliteDb = null;
 let sqlitePool = null;
