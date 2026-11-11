@@ -1,15 +1,19 @@
-import { createNotFoundHandler, createErrorHandler } from "mbkutils";
-
-export const notFoundHandler = createNotFoundHandler({
-  appName: "Unilib",
-  defaultPage: "/",
-  defaultPageName: "Home",
-});
+import { createNotFoundHandler, createErrorHandler } from 'mbkutils';
+import { config } from '../config/env.js';
 
 export const errorHandler = createErrorHandler({
-  appName: "Unilib",
-  defaultPage: "/",
-  defaultPageName: "Home",
+    appName: config.appName,
+    defaultPage: '/',
+    defaultPageName: 'Home'
 });
 
-export default { notFoundHandler, errorHandler };
+export const notFoundHandler = createNotFoundHandler({
+    appName: config.appName,
+    defaultPage: '/',
+    defaultPageName: 'Home'
+});
+
+export default {
+    errorHandler,
+    notFoundHandler
+};

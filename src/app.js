@@ -1,98 +1,83 @@
-import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
-import compression from "compression";
-import cors from "cors";
-import mbkautheRouter, { sessPerm } from "mbkauthe";
-import { createBucketRouter } from "mbkbucket";
-import { createRouter as createAdminDbRouter } from "admindb";
-import fs from "fs";
-
-import config from "./config/index.js";
-import configureHandlebars from "./config/handlebars.js";
-import rateLimiter from "./middleware/rate-limiter.js";
-import { notFoundHandler, errorHandler } from "./middleware/error-handler.js";
-import appRoutes from "./routes/index.js";
-import { Permissions } from "./permissions.js";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import express from 'express';
+import { config } from './config/env.js';
+import { setupViewEngine } from './config/view-engine.js';
+import { compressionMiddleware } from './middleware/compression.js';
+import { globalLimiter } from './middleware/rate-limiter.js';
+import { securityHeadersMiddleware } from './middleware/security-headers.js';
+import { botProtectionMiddleware } from './middleware/bot-protection.js';
+import { responseTimeMiddleware } from './middleware/response-time.js';
+import { errorHandler, notFoundHandler } from './middleware/error-handler.js';
+import routes from './routes/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const rootDir = path.resolve(__dirname, '../');
 
 const app = express();
 
-// Middlewares
-app.use(cors());
-app.use(express.json());
-app.use(compression());
-app.set("trust proxy", 1);
+// Trust reverse proxy (essential behind Vercel / Nginx / Cloudflare)
+app.set('trust proxy', 1);
 
-// Static assets (Edge cache maxAge 1y with immutable)
+// 1. Security Headers (Anti-Clickjacking, XSS, MIME sniffing)
+app.use(securityHeadersMiddleware);
+
+// 2. Bot Protection & Malicious Scanner Blocking
+app.use(botProtectionMiddleware);
+
+// 3. Compression
+app.use(compressionMiddleware);
+
+// 4. Body parsing
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+
+// 5. Global baseline rate limiting
+app.use(globalLimiter);
+
+// 6. Handlebars view engine with mbkutils & mbkauthe integration
+setupViewEngine(app);
+
+// 7. Static assets serving with caching
+const publicDir = path.join(rootDir, 'public');
 app.use(
-  express.static(path.join(__dirname, "../public/"), {
-    maxAge: "1y",
-    immutable: true,
-    setHeaders: (res, path) => {
-      res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
-    },
-  })
+    express.static(publicDir, {
+        maxAge: config.isProduction ? '1y' : '1d',
+        immutable: config.isProduction,
+        setHeaders: (res, filePath) => {
+            if (filePath.endsWith('.html')) {
+                res.setHeader('Cache-Control', 'public, max-age=0');
+            } else {
+                res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
+            }
+        }
+    })
 );
 
-// Template engine setup
-configureHandlebars(app);
+// 8. Response latency tracking
+app.use(responseTimeMiddleware);
 
-// Global view locals for cache busting and default config
+// Global view locals for cache busting and application metadata
+let appVersion = '1.0.0';
+try {
+    const pkg = JSON.parse(fs.readFileSync(path.join(rootDir, 'package.json'), 'utf8'));
+    if (pkg.version) appVersion = pkg.version;
+} catch {}
+
 app.use((req, res, next) => {
-  res.locals.appVersion = config.appVersion;
-  res.locals.defaultSemester = config.defaultSemester;
-  const currentUrl = req.originalUrl || req.url || "";
-  res.locals.currentUrl = currentUrl;
-  res.locals.isAdminPage = currentUrl.startsWith("/dashboard");
-  res.locals.isBooksAdmin = currentUrl === "/dashboard" || currentUrl.startsWith("/dashboard/books");
-  res.locals.isMaterialsAdmin = currentUrl.startsWith("/dashboard/materials");
-  res.locals.isAddBookPage = currentUrl === "/dashboard/books/new";
-  res.locals.isDbAdmin = currentUrl.startsWith("/dashboard/db");
-  next();
+    res.locals.appVersion = appVersion;
+    res.locals.cacheBust = `?v=${appVersion}`;
+    res.locals.cachebust = `?v=${appVersion}`;
+    res.locals.currentUrl = req.originalUrl || req.url || '';
+    next();
 });
 
-// Rate limiter
-app.use(rateLimiter);
+// 9. Mount application routes
+app.use(routes);
 
-// Auth middleware & routes
-app.use(mbkautheRouter);
-
-// Application routes
-app.use(appRoutes);
-
-// AdminDB SQLite database management UI
-try {
-  const adminDbPath = path.resolve(config.sqlitePath || "./data/unilib.sqlite");
-  const adminDbDir = path.dirname(adminDbPath);
-  if (!fs.existsSync(adminDbDir)) {
-    fs.mkdirSync(adminDbDir, { recursive: true });
-  }
-  app.use(
-    "/dashboard/db",
-    sessPerm(Permissions.admindb.access),
-    createAdminDbRouter({
-      dbPath: adminDbPath,
-      basePath: "/dashboard/db",
-      auth: false,
-    })
-  );
-} catch (adminDbErr) {
-  console.warn("Could not mount AdminDB router:", adminDbErr.message);
-}
-
-// Storage bucket integration
-app.use(createBucketRouter({
-  authorization: {
-    view: sessPerm(Permissions.storage.view),
-    upload: sessPerm(Permissions.storage.upload),
-    delete: sessPerm(Permissions.storage.delete),
-  },
-}));
-
-// 404 & Global error handlers
+// 10. 404 Handler & Global Error Handler (from mbkutils)
 app.use(notFoundHandler);
 app.use(errorHandler);
 

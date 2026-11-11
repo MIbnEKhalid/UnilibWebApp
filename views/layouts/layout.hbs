@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="description" content="Unilib — University Department Academic Resource Archive. Verified textbooks, laboratory manuals, assignments, and solutions.">
+  <title>{{#if title}}{{title}}{{else}}Unilib — University Resource Library{{/if}}</title>
+  
+  <link rel="icon" type="image/svg+xml" href="/assets/images/icon.svg{{{cacheBust}}}">
+  <link rel="stylesheet" href="/assets/css/unilib.css{{{cacheBust}}}">
+  <script src="/assets/js/network-verifier.js{{{cacheBust}}}"></script>
+</head>
+<body>
+
+  <!-- Modular Academic Navbar Partial -->
+  {{> navbar}}
+
+  <!-- Main View Content -->
+  <main class="unilib-main" id="main-content">
+    {{{body}}}
+  </main>
+
+  <!-- Modular Academic Footer Partial -->
+  {{> footer}}
+
+  <!-- Quick Filter Shortcut (/ or Ctrl+K) and Drawer Toggles -->
+  <script>
+    (function() {
+      window.toggleResourceSections = function(drawerId, btn) {
+        var drawer = document.getElementById(drawerId);
+        if (!drawer) return;
+        var isHidden = drawer.style.display === "none" || !drawer.style.display;
+        drawer.style.display = isHidden ? "block" : "none";
+        if (btn) {
+          btn.classList.toggle("active", isHidden);
+          btn.setAttribute("aria-expanded", isHidden ? "true" : "false");
+        }
+      };
+
+      window.focusArchiveSearch = function() {
+        var filterInput = document.getElementById("liveMaterialFilter") || 
+                          document.getElementById("courseMaterialSearch") || 
+                          document.getElementById("globalSearchInput") ||
+                          document.querySelector(".admin-input-search");
+        if (filterInput) {
+          filterInput.scrollIntoView({ behavior: "smooth", block: "center" });
+          setTimeout(function() {
+            filterInput.focus();
+            if (filterInput.select) filterInput.select();
+          }, 150);
+        } else {
+          window.location.href = "/#liveMaterialFilter";
+        }
+      };
+
+      document.addEventListener("keydown", function(e) {
+        if ((e.key === "/" && !["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)) || 
+            ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k")) {
+          var filterInput = document.getElementById("liveMaterialFilter") || 
+                            document.getElementById("courseMaterialSearch") || 
+                            document.getElementById("globalSearchInput") ||
+                            document.querySelector(".admin-input-search");
+          if (filterInput) {
+            e.preventDefault();
+            filterInput.focus();
+            if (filterInput.select) filterInput.select();
+          }
+        }
+      });
+    })();
+  </script>
+
+</body>
+</html>

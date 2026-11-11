@@ -1,0 +1,814 @@
+<div class="unilib-container admin-form-container">
+
+  <!-- Breadcrumbs -->
+  <nav class="course-breadcrumbs" aria-label="Breadcrumb">
+    <a href="/admin" class="breadcrumb-link">
+      <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+      <span>Admin Console</span>
+    </a>
+    <span class="breadcrumb-separator">/</span>
+    <a href="/admin" class="breadcrumb-link">Materials</a>
+    <span class="breadcrumb-separator">/</span>
+    <span class="breadcrumb-current">{{#if isEdit}}Edit Material{{else}}Upload Resource{{/if}}</span>
+  </nav>
+
+  <!-- Flash Messages -->
+  {{> flash-messages}}
+
+  <!-- Form Card in MBKBucket style -->
+  <div class="card admin-form-card">
+    <div class="form-header">
+      <div class="form-header-main">
+        <div class="admin-kicker">
+          {{#if isEdit}}
+            Academic Storage Catalog &bull; Resource #{{resource.id}}
+          {{else}}
+            Academic Storage Catalog
+          {{/if}}
+        </div>
+        <h1 class="form-header-title">
+          {{#if isEdit}}
+            <svg class="ui-svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);">
+              <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+            </svg>
+            <span>Edit Material Details</span>
+          {{else}}
+            <svg class="ui-svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>
+            </svg>
+            <span>Upload Academic Resource</span>
+          {{/if}}
+        </h1>
+        <p class="form-header-subtitle">
+          {{#if isEdit}}
+            Update metadata, adjust course assignment, configure chapter page slices, or optionally replace the attached storage document.
+          {{else}}
+            Attach textbooks, laboratory manuals, assignment sheets, or verified solutions to curriculum courses.
+          {{/if}}
+        </p>
+      </div>
+
+      {{#if isEdit}}
+        <div class="form-header-quick-links">
+          <a href="/resources/{{resource.id}}/preview" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" title="Preview document in browser">
+            <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+            <span>Preview File</span>
+          </a>
+          <a href="/courses/{{resource.course_code}}" class="btn btn-outline btn-sm" title="View parent course page">
+            <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/>
+            </svg>
+            <span>{{resource.course_code}}</span>
+          </a>
+        </div>
+      {{/if}}
+    </div>
+
+    <form id="resourceUploadForm"
+          action="{{#if isEdit}}/admin/resources/{{resource.id}}/edit{{else}}/admin/resources/upload{{/if}}" 
+          method="POST" 
+          enctype="multipart/form-data">
+
+      <!-- Course & Category Selection Row -->
+      <div class="form-row">
+        <!-- Course Selection -->
+        <div class="form-group">
+          <label class="form-label" for="uploadCourseCode">
+            <span>Assigned Course *</span>
+          </label>
+          <select name="course_code" id="uploadCourseCode" class="form-control" required>
+            <option value="">-- Select Curriculum Course --</option>
+            {{#each courses}}
+              <option value="{{this.code}}" 
+                      {{#if (or (eq this.code ../selectedCourseCode) (eq this.code ../resource.course_code))}}selected{{/if}}>
+                [{{this.code}}] Sem {{this.semester}} &bull; {{this.title}}
+              </option>
+            {{/each}}
+          </select>
+          <span class="form-help">Select the academic course for this file.</span>
+        </div>
+
+        <!-- Resource Category -->
+        <div class="form-group">
+          <label class="form-label" for="uploadType">
+            <span>Material Category *</span>
+          </label>
+          <select name="type" id="uploadType" class="form-control" required>
+            <option value="textbook" {{#if (eq resource.type 'textbook')}}selected{{/if}}>Course Textbook</option>
+            <option value="lab_manual" {{#if (eq resource.type 'lab_manual')}}selected{{/if}}>Laboratory Manual</option>
+            <option value="quiz_assignment" {{#if (eq resource.type 'quiz_assignment')}}selected{{/if}}>Quiz / Coursework Assignment</option>
+            <option value="solution" {{#if (eq resource.type 'solution')}}selected{{/if}}>Solution / Exam Key</option>
+          </select>
+          <span class="form-help">Determines categorization and student badge.</span>
+        </div>
+      </div>
+
+      <!-- Dynamic Linked Solution Panel (Shown when Solution is selected) -->
+      <div class="linked-quiz-panel" id="parentQuizGroup" style="display: {{#if (eq resource.type 'solution')}}block{{else}}none{{/if}};">
+        <div class="linked-quiz-title">
+          <svg class="ui-svg" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+          </svg>
+          <span>Link to Parent Textbook or Coursework (Optional)</span>
+        </div>
+        <select name="parent_resource_id" id="parentResourceId" class="form-control">
+          <option value="">None (Standalone Past Paper / Independent Solution)</option>
+          {{#if textbooks.length}}
+            <optgroup label="Textbooks">
+              {{#each textbooks}}
+                <option value="{{this.id}}" {{#if (eq this.id ../resource.parent_resource_id)}}selected{{/if}}>
+                  {{this.title}}
+                </option>
+              {{/each}}
+            </optgroup>
+          {{/if}}
+          {{#if quizzes.length}}
+            <optgroup label="Quizzes &amp; Homework Assignments">
+              {{#each quizzes}}
+                <option value="{{this.id}}" {{#if (eq this.id ../resource.parent_resource_id)}}selected{{/if}}>
+                  {{this.title}}
+                </option>
+              {{/each}}
+            </optgroup>
+          {{/if}}
+        </select>
+        <span class="form-help" style="color: var(--primary-dk);">
+          When linked, this solution automatically docks directly under the parent card as an attached solution drawer.
+        </span>
+      </div>
+
+      <!-- Dynamic Linked Solution Manual Panel (Shown when Textbook is selected) -->
+      <div class="linked-quiz-panel" id="textbookSolutionGroup" style="display: {{#if (eq resource.type 'textbook')}}block{{else}}none{{/if}};">
+        <div class="linked-quiz-title">
+          <svg class="ui-svg" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+          </svg>
+          <span>Solution Manual / Key Reference (Optional)</span>
+        </div>
+        <select name="solution_resource_id" id="solutionResourceId" class="form-control">
+          <option value="">None (No separate solution manual)</option>
+          {{#each availableSolutions}}
+            <option value="{{this.id}}" {{#if (eq this.id ../linkedSolutionId)}}selected{{/if}}>
+              {{this.title}}
+            </option>
+          {{/each}}
+        </select>
+        <span class="form-help" style="color: var(--primary-dk);">
+          Link an existing solution manual/key in this course to dock it directly inside this textbook card.
+        </span>
+      </div>
+
+      <!-- Material Title -->
+      <div class="form-group">
+        <label class="form-label" for="resourceTitle">
+          <span>Material Title *</span>
+        </label>
+        <input type="text" 
+               name="title" 
+               id="resourceTitle" 
+               class="form-control" 
+               placeholder="e.g. Thomas' Calculus 11th Edition" 
+               value="{{resource.title}}" 
+               required>
+      </div>
+
+      <!-- Description / Context -->
+      <div class="form-group">
+        <label class="form-label" for="resourceDesc">
+          <span>Description / Context (Optional)</span>
+        </label>
+        <textarea name="description" 
+                  id="resourceDesc" 
+                  class="form-control" 
+                  rows="3" 
+                  placeholder="Optional notes, covered chapters, syllabus topics, or lab experiment guidelines...">{{resource.description}}</textarea>
+      </div>
+
+      <!-- Google Drive / External Mirror URL -->
+      <div class="form-group">
+        <label class="form-label" for="resourceDriveUrl">
+          <span>Google Drive Companion URL (Smart-Routed Mirror)</span>
+          <span class="badge" style="background: #f1f5f9; color: var(--text-muted); font-size: 11px; font-weight: 500;">Bandwidth Saving</span>
+        </label>
+        <input type="url"
+               name="drive_url"
+               id="resourceDriveUrl"
+               class="form-control"
+               placeholder="https://drive.google.com/file/d/... or https://drive.google.com/drive/folders/..."
+               value="{{resource.drive_url}}">
+        <span class="form-help">
+          When Google Drive is accessible, student downloads route to Drive automatically to save university bandwidth. If Google Drive is blocked by a campus firewall, downloads seamlessly stream from high-speed MBKBucket.
+        </span>
+      </div>
+
+      <!-- Stored Document File Section -->
+      <div class="form-group">
+        <label class="form-label">
+          <span>{{#if isEdit}}Document File (MBKBucket Storage){{else}}Document File *{{/if}}</span>
+        </label>
+
+        {{#if isEdit}}
+          <!-- Current Attached File Card -->
+          <div class="current-file-card" id="currentFileCard">
+            <div class="current-file-main">
+              <div class="current-file-icon">
+                <span class="file-format-text format-{{resource.file_badge.label}}" style="font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 4px;">{{resource.file_badge.label}}</span>
+              </div>
+              <div class="current-file-meta">
+                <span class="current-file-name" title="{{resource.file_name}}">{{resource.file_name}}</span>
+                <div class="current-file-sub">
+                  <span class="tabular-nums font-semibold">{{resource.formatted_size}}</span>
+                  <span>&bull;</span>
+                  <span class="font-mono" style="color: var(--text-muted); font-size: 11px;">{{resource.file_key}}</span>
+                </div>
+              </div>
+            </div>
+            <div class="current-file-actions">
+              <a href="/resources/{{resource.id}}/preview" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-xs" title="Preview currently uploaded document">
+                <svg class="ui-svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
+                </svg>
+                <span>Preview</span>
+              </a>
+              <button type="button" class="btn btn-outline btn-xs" id="btnToggleReplaceFile" onclick="toggleFileReplaceZone();" title="Replace file with a new document">
+                <svg class="ui-svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>
+                </svg>
+                <span id="replaceFileBtnText">Replace Document</span>
+              </button>
+            </div>
+          </div>
+        {{/if}}
+
+        <!-- Drop Zone UI Container (Hidden by default in edit mode until 'Replace Document' is toggled) -->
+        <div id="dropZoneContainer" style="display: {{#if isEdit}}none{{else}}block{{/if}};">
+          <div id="dropZone" class="upload-drop-zone" onclick="document.getElementById('resourceFile').click();">
+            <div class="drop-zone-content">
+              <div class="drop-icon-wrap">
+                <svg class="ui-svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>
+                </svg>
+              </div>
+              <div class="drop-text">{{#if isEdit}}Drag replacement file here, or {{else}}Drag document here, or {{/if}}<span class="drop-browse-link">browse files</span></div>
+              <div class="drop-hint">Directly stored into MBKBucket object storage provider</div>
+              <div class="drop-formats-row">
+                <span class="drop-fmt-pill">PDF</span>
+                <span class="drop-fmt-pill">DOCX</span>
+                <span class="drop-fmt-pill">ZIP</span>
+                <span class="drop-fmt-pill">PNG</span>
+                <span class="drop-fmt-pill">JPG</span>
+                <span class="drop-fmt-pill">EPUB</span>
+              </div>
+            </div>
+            <!-- Native Input -->
+            <input type="file" 
+                   name="file" 
+                   id="resourceFile" 
+                   style="position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none;"
+                   {{#unless isEdit}}required{{/unless}}>
+          </div>
+
+          <!-- Selected File Preview Card -->
+          <div id="selectedFileBox" class="selected-file-box">
+            <div class="selected-file-info">
+              <span id="selectedFileBadge" class="file-format-text format-PDF" style="padding: 2px 6px; border-radius: 4px; font-size: 10px;">FILE</span>
+              <div>
+                <div id="selectedFileName" class="selected-file-name">document.pdf</div>
+                <div id="selectedFileSize" class="selected-file-size tabular-nums">0 KB</div>
+              </div>
+            </div>
+            <button type="button" class="btn btn-outline btn-xs" onclick="clearSelectedFile(event);">
+              Change File
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chapters & Sections Slicing Section -->
+      <div class="form-group sections-builder-card">
+        <div class="sections-builder-header">
+          <div class="sections-builder-heading">
+            <svg class="ui-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);">
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+              <path d="M6 6h10"/><path d="M6 10h10"/>
+            </svg>
+            <span class="sections-builder-title">Chapters &amp; Sections (Page Range Slicing)</span>
+          </div>
+          <span class="badge" style="background: rgba(15, 118, 110, 0.08); color: var(--primary); font-weight: 600; font-size: 11px;">Optional</span>
+        </div>
+        <p class="sections-builder-desc">
+          {{#if isEdit}}
+            Use the dedicated <strong>Visual PDF Chapter Slicer</strong> page to view every page of this PDF and select start/end pages for each chapter, or edit chapter page numbers below.
+          {{else}}
+            After uploading this PDF, you can open the dedicated <strong>Visual PDF Chapter Slicer</strong> page to visually select start and end pages for each chapter, or add chapter ranges below.
+          {{/if}}
+        </p>
+
+        {{#if isEdit}}
+        <div style="margin-bottom: 0.85rem;">
+          <a href="/admin/resources/{{resource.id}}/slicer" class="btn btn-action btn-sm">
+            <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/>
+            </svg>
+            <span>Open Visual PDF Chapter Slicer Page</span>
+          </a>
+        </div>
+        {{/if}}
+
+        <!-- Hidden input storing serialized JSON payload -->
+        <input type="hidden" name="sections" id="sectionsPayloadInput" value="{{#if sectionsJson}}{{sectionsJson}}{{/if}}">
+
+        <!-- Dynamic List of Section Rows -->
+        <div id="sectionsTableWrapper" class="sections-table-wrapper" style="display: none;">
+          <div class="sections-table-header">
+            <div class="col-num">#</div>
+            <div class="col-title" style="text-align: left;">Chapter Title *</div>
+            <div class="col-page">Start</div>
+            <div class="col-page">End</div>
+            <div class="col-span">Pages</div>
+            <div class="col-action">Remove</div>
+          </div>
+          <div id="sectionsList" class="sections-list"></div>
+        </div>
+
+        <!-- Controls Toolbar -->
+        <div class="sections-toolbar">
+          <button type="button" class="btn btn-outline btn-xs" id="btnAddSection">
+            <svg class="ui-svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            <span>+ Add Chapter</span>
+          </button>
+          <button type="button" class="btn btn-outline btn-xs" id="btnAddTenExperiments" title="Quickly add 10 blank chapter rows">
+            <svg class="ui-svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+            </svg>
+            <span>+ Add 10 Blank Chapters</span>
+          </button>
+          <button type="button" class="btn btn-ghost btn-xs text-danger" id="btnClearSections" style="display: none; margin-left: auto;">
+            Clear All
+          </button>
+        </div>
+      </div>
+
+      <!-- Visibility Toggle Card -->
+      <label class="visibility-toggle-card" for="resourceVisible">
+        <div class="visibility-toggle-left">
+          <input type="checkbox" 
+                 name="is_visible" 
+                 id="resourceVisible" 
+                 value="true" 
+                 class="visibility-checkbox"
+                 {{#if isEdit}}
+                   {{#if resource.is_visible}}checked{{/if}}
+                 {{else}}
+                   checked
+                 {{/if}}
+                 onchange="updateVisibilityBadge(this.checked);">
+          <div>
+            <div class="visibility-info-title">Public Catalog Visibility</div>
+            <div class="visibility-info-desc">
+              When checked, this material is visible to students on course pages, search, and directory listings. When unchecked, it is preserved as an admin/faculty-only draft.
+            </div>
+          </div>
+        </div>
+        <span id="visibilityStatusBadge" class="visibility-status-badge {{#if isEdit}}{{#if resource.is_visible}}live{{else}}hidden{{/if}}{{else}}live{{/if}}">
+          {{#if isEdit}}
+            {{#if resource.is_visible}}Active &bull; Public{{else}}Hidden &bull; Faculty Only{{/if}}
+          {{else}}
+            Active &bull; Public
+          {{/if}}
+        </span>
+      </label>
+
+      <!-- Action Buttons -->
+      <div class="form-footer-actions">
+        {{#if isEdit}}
+          <div style="margin-right: auto; display: flex; align-items: center; gap: 0.5rem;">
+            <button type="button" class="btn btn-ghost btn-sm text-danger" onclick="confirmDeleteResource({{resource.id}}, '{{resource.title}}');" title="Delete resource completely">
+              <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+              </svg>
+              <span>Delete Material</span>
+            </button>
+          </div>
+        {{/if}}
+
+        <a href="/admin" class="btn btn-outline">
+          Cancel
+        </a>
+        <button type="submit" class="btn btn-primary">
+          {{#if isEdit}}
+            <svg class="ui-svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            <span>Save Changes</span>
+          {{else}}
+            <svg class="ui-svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>
+            </svg>
+            <span>Upload and Publish</span>
+          {{/if}}
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+  {{#if isEdit}}
+    <!-- Hidden form for resource deletion -->
+    <form id="deleteResourceForm" action="/admin/resources/{{resource.id}}/delete" method="POST" style="display: none;">
+    </form>
+  {{/if}}
+
+</div>
+
+<!-- Drop Zone, File Replacement, and Dynamic Quiz Loader Script -->
+<script>
+  (function() {
+    var typeSelect = document.getElementById("uploadType");
+    var courseSelect = document.getElementById("uploadCourseCode");
+    var parentGroup = document.getElementById("parentQuizGroup");
+    var parentSelect = document.getElementById("parentResourceId");
+    var textbookSolutionGroup = document.getElementById("textbookSolutionGroup");
+    var solutionResourceSelect = document.getElementById("solutionResourceId");
+    var currentParentId = "{{resource.parent_resource_id}}";
+    var currentLinkedSolutionId = "{{linkedSolutionId}}";
+    var fileInput = document.getElementById("resourceFile");
+    var dropZone = document.getElementById("dropZone");
+    var dropZoneContainer = document.getElementById("dropZoneContainer");
+    var selectedFileBox = document.getElementById("selectedFileBox");
+    var selectedFileName = document.getElementById("selectedFileName");
+    var selectedFileSize = document.getElementById("selectedFileSize");
+    var selectedFileBadge = document.getElementById("selectedFileBadge");
+    var replaceFileBtnText = document.getElementById("replaceFileBtnText");
+
+    window.toggleFileReplaceZone = function() {
+      if (!dropZoneContainer) return;
+      var isHidden = dropZoneContainer.style.display === "none";
+      dropZoneContainer.style.display = isHidden ? "block" : "none";
+      if (replaceFileBtnText) {
+        replaceFileBtnText.textContent = isHidden ? "Cancel Replacement" : "Replace Document";
+      }
+    };
+
+    window.updateVisibilityBadge = function(isChecked) {
+      var badge = document.getElementById("visibilityStatusBadge");
+      if (!badge) return;
+      if (isChecked) {
+        badge.className = "visibility-status-badge live";
+        badge.innerHTML = "Active &bull; Public";
+      } else {
+        badge.className = "visibility-status-badge hidden";
+        badge.innerHTML = "Hidden &bull; Faculty Only";
+      }
+    };
+
+    window.confirmDeleteResource = function(id, title) {
+      if (confirm("Are you sure you want to permanently delete '" + title + "'?\n\nThis removes the physical file from MBKBucket storage and clears all chapter slices.")) {
+        var form = document.getElementById("deleteResourceForm");
+        if (form) form.submit();
+      }
+    };
+
+    function formatBytes(bytes) {
+      if (!bytes || bytes === 0) return "0 B";
+      var k = 1024;
+      var sizes = ["B", "KB", "MB", "GB"];
+      var i = Math.floor(Math.log(bytes) / Math.log(k));
+      return (bytes / Math.pow(k, i)).toFixed(1) + " " + sizes[i];
+    }
+
+    function getExt(name) {
+      var parts = (name || "").split(".");
+      return parts.length > 1 ? parts.pop().toUpperCase() : "FILE";
+    }
+
+    function onFileSelected(file) {
+      if (!file) return;
+      selectedFileName.textContent = file.name;
+      selectedFileSize.textContent = formatBytes(file.size);
+      var ext = getExt(file.name);
+      selectedFileBadge.textContent = ext;
+      selectedFileBadge.className = "file-format-text format-" + ext;
+      selectedFileBox.style.display = "flex";
+      dropZone.style.display = "none";
+    }
+
+    window.clearSelectedFile = function(e) {
+      if (e) e.stopPropagation();
+      fileInput.value = "";
+      selectedFileBox.style.display = "none";
+      dropZone.style.display = "block";
+    };
+
+    if (fileInput) {
+      fileInput.addEventListener("change", function() {
+        if (fileInput.files && fileInput.files[0]) {
+          onFileSelected(fileInput.files[0]);
+        }
+      });
+    }
+
+    if (dropZone) {
+      ["dragenter", "dragover"].forEach(function(evt) {
+        dropZone.addEventListener(evt, function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          dropZone.classList.add("dragover");
+        });
+      });
+
+      ["dragleave", "drop"].forEach(function(evt) {
+        dropZone.addEventListener(evt, function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          dropZone.classList.remove("dragover");
+        });
+      });
+
+      dropZone.addEventListener("drop", function(e) {
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+          fileInput.files = e.dataTransfer.files;
+          onFileSelected(e.dataTransfer.files[0]);
+        }
+      });
+    }
+
+    function updateVisibility() {
+      if (!typeSelect) return;
+      var val = typeSelect.value;
+      if (val === "solution") {
+        if (parentGroup) parentGroup.style.display = "block";
+        if (textbookSolutionGroup) textbookSolutionGroup.style.display = "none";
+        loadCourseParentsAndSolutions();
+      } else if (val === "textbook") {
+        if (parentGroup) parentGroup.style.display = "none";
+        if (textbookSolutionGroup) textbookSolutionGroup.style.display = "block";
+        loadCourseParentsAndSolutions();
+      } else {
+        if (parentGroup) parentGroup.style.display = "none";
+        if (textbookSolutionGroup) textbookSolutionGroup.style.display = "none";
+      }
+    }
+
+    function loadCourseParentsAndSolutions() {
+      var courseCode = courseSelect ? courseSelect.value : "";
+      if (!courseCode) {
+        if (parentSelect) {
+          parentSelect.innerHTML = '<option value="">-- First select a Course above --</option>';
+        }
+        if (solutionResourceSelect) {
+          solutionResourceSelect.innerHTML = '<option value="">-- First select a Course above --</option>';
+        }
+        return;
+      }
+
+      fetch("/admin/quizzes/" + courseCode)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (!data || !data.data) return;
+          var textbooks = data.data.textbooks || [];
+          var quizzes = data.data.quizzes || [];
+          var solutions = data.data.solutions || [];
+
+          if (parentSelect) {
+            var html = '<option value="">None (Standalone Past Paper / Independent Solution)</option>';
+            if (textbooks.length > 0) {
+              html += '<optgroup label="Textbooks">';
+              textbooks.forEach(function(t) {
+                var isSel = (currentParentId && String(t.id) === String(currentParentId)) ? "selected" : "";
+                html += '<option value="' + t.id + '" ' + isSel + '>' + t.title + '</option>';
+              });
+              html += '</optgroup>';
+            }
+            if (quizzes.length > 0) {
+              html += '<optgroup label="Quizzes &amp; Homework Assignments">';
+              quizzes.forEach(function(q) {
+                var isSel = (currentParentId && String(q.id) === String(currentParentId)) ? "selected" : "";
+                html += '<option value="' + q.id + '" ' + isSel + '>' + q.title + '</option>';
+              });
+              html += '</optgroup>';
+            }
+            parentSelect.innerHTML = html;
+          }
+
+          if (solutionResourceSelect) {
+            var solHtml = '<option value="">None (No separate solution manual)</option>';
+            solutions.forEach(function(s) {
+              var isSel = (currentLinkedSolutionId && String(s.id) === String(currentLinkedSolutionId)) ? "selected" : "";
+              solHtml += '<option value="' + s.id + '" ' + isSel + '>' + s.title + '</option>';
+            });
+            solutionResourceSelect.innerHTML = solHtml;
+          }
+        })
+        .catch(function(e) {
+          console.warn("Could not load course parents/solutions:", e);
+        });
+    }
+
+    if (typeSelect) {
+      typeSelect.addEventListener("change", updateVisibility);
+    }
+    if (courseSelect) {
+      courseSelect.addEventListener("change", function() {
+        if (typeSelect && (typeSelect.value === "solution" || typeSelect.value === "textbook")) {
+          loadCourseParentsAndSolutions();
+        }
+      });
+    }
+
+    // --- Sections / Chapters Builder Script ---
+    var sectionsPayloadInput = document.getElementById("sectionsPayloadInput");
+    var sectionsTableWrapper = document.getElementById("sectionsTableWrapper");
+    var sectionsList = document.getElementById("sectionsList");
+    var btnAddSection = document.getElementById("btnAddSection");
+    var btnAddTenExperiments = document.getElementById("btnAddTenExperiments");
+    var btnClearSections = document.getElementById("btnClearSections");
+    var resourceForm = document.getElementById("resourceUploadForm");
+
+    var sectionsState = [];
+
+    try {
+      if (sectionsPayloadInput && sectionsPayloadInput.value) {
+        var parsed = JSON.parse(sectionsPayloadInput.value);
+        if (Array.isArray(parsed)) {
+          sectionsState = parsed;
+        }
+      }
+    } catch (e) {
+      sectionsState = [];
+    }
+
+    function renderSections() {
+      if (!sectionsList || !sectionsTableWrapper) return;
+      if (sectionsState.length === 0) {
+        sectionsTableWrapper.style.display = "none";
+        if (btnClearSections) btnClearSections.style.display = "none";
+        return;
+      }
+
+      sectionsTableWrapper.style.display = "block";
+      if (btnClearSections) btnClearSections.style.display = "inline-flex";
+
+      sectionsList.innerHTML = "";
+      sectionsState.forEach(function(sec, idx) {
+        var row = document.createElement("div");
+        row.className = "section-table-row";
+        var start = parseInt(sec.start_page, 10) || 1;
+        var end = parseInt(sec.end_page, 10) || start;
+        var span = Math.max(1, end - start + 1);
+
+        var titleVal = (sec.title || "").replace(/"/g, "&quot;");
+
+        row.innerHTML = 
+          '<div class="col-num"><span class="section-row-badge">' + (idx + 1) + '</span></div>' +
+          '<div class="col-title">' +
+            '<input type="text" class="form-control form-control-sm sec-title-input" ' +
+                   'data-idx="' + idx + '" placeholder="e.g. Chapter ' + (idx + 1) + ': Title" ' +
+                   'value="' + titleVal + '">' +
+          '</div>' +
+          '<div class="col-page">' +
+            '<input type="number" min="1" class="form-control form-control-sm sec-start-input" ' +
+                   'data-idx="' + idx + '" value="' + start + '">' +
+          '</div>' +
+          '<div class="col-page">' +
+            '<input type="number" min="1" class="form-control form-control-sm sec-end-input" ' +
+                   'data-idx="' + idx + '" value="' + end + '">' +
+          '</div>' +
+          '<div class="col-span">' +
+            '<span class="sec-span-pill tabular-nums" id="span-' + idx + '">' + span + (span === 1 ? ' page' : ' pages') + '</span>' +
+          '</div>' +
+          '<div class="col-action">' +
+            '<button type="button" class="btn btn-ghost btn-xs text-danger sec-remove-btn" data-idx="' + idx + '" title="Remove row">' +
+              '<svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>' +
+              '</svg>' +
+            '</button>' +
+          '</div>';
+
+        sectionsList.appendChild(row);
+      });
+      syncPayload();
+    }
+
+    function syncPayload() {
+      if (!sectionsPayloadInput) return;
+      var clean = sectionsState
+        .filter(function(s) { return (s.title || "").trim().length > 0; })
+        .map(function(s, i) {
+          var start = Math.max(1, parseInt(s.start_page, 10) || 1);
+          var end = Math.max(start, parseInt(s.end_page, 10) || start);
+          return {
+            id: s.id || ("sec-" + (i + 1)),
+            title: s.title.trim(),
+            start_page: start,
+            end_page: end,
+          };
+        });
+      sectionsPayloadInput.value = JSON.stringify(clean);
+    }
+
+    if (sectionsList) {
+      sectionsList.addEventListener("input", function(e) {
+        var target = e.target;
+        var idx = parseInt(target.getAttribute("data-idx"), 10);
+        if (isNaN(idx) || !sectionsState[idx]) return;
+
+        if (target.classList.contains("sec-title-input")) {
+          sectionsState[idx].title = target.value;
+        } else if (target.classList.contains("sec-start-input")) {
+          sectionsState[idx].start_page = parseInt(target.value, 10) || 1;
+        } else if (target.classList.contains("sec-end-input")) {
+          sectionsState[idx].end_page = parseInt(target.value, 10) || 1;
+        }
+
+        var start = Math.max(1, parseInt(sectionsState[idx].start_page, 10) || 1);
+        var end = Math.max(start, parseInt(sectionsState[idx].end_page, 10) || start);
+        var span = Math.max(1, end - start + 1);
+        var spanEl = document.getElementById("span-" + idx);
+        if (spanEl) {
+          spanEl.textContent = span + (span === 1 ? " page" : " pages");
+        }
+        syncPayload();
+      });
+
+      sectionsList.addEventListener("click", function(e) {
+        var btn = e.target.closest(".sec-remove-btn");
+        if (!btn) return;
+        var idx = parseInt(btn.getAttribute("data-idx"), 10);
+        if (!isNaN(idx) && sectionsState[idx]) {
+          sectionsState.splice(idx, 1);
+          renderSections();
+        }
+      });
+    }
+
+    if (btnAddSection) {
+      btnAddSection.addEventListener("click", function() {
+        var nextNum = sectionsState.length + 1;
+        var lastEnd = 0;
+        if (sectionsState.length > 0) {
+          var last = sectionsState[sectionsState.length - 1];
+          lastEnd = parseInt(last.end_page, 10) || 0;
+        }
+        var nextStart = lastEnd > 0 ? lastEnd + 1 : 1;
+        var nextEnd = nextStart + 5;
+        sectionsState.push({
+          id: "sec-" + nextNum,
+          title: "Chapter " + nextNum,
+          start_page: nextStart,
+          end_page: nextEnd,
+        });
+        renderSections();
+      });
+    }
+
+    if (btnAddTenExperiments) {
+      btnAddTenExperiments.addEventListener("click", function() {
+        var base = sectionsState.length;
+        var lastEnd = 0;
+        if (sectionsState.length > 0) {
+          var last = sectionsState[sectionsState.length - 1];
+          lastEnd = parseInt(last.end_page, 10) || 0;
+        }
+        var curPage = lastEnd > 0 ? lastEnd + 1 : 1;
+        for (var i = 1; i <= 10; i++) {
+          var chNum = base + i;
+          sectionsState.push({
+            id: "sec-" + chNum,
+            title: "Chapter " + chNum,
+            start_page: curPage,
+            end_page: curPage + 7,
+          });
+          curPage += 8;
+        }
+        renderSections();
+      });
+    }
+
+    if (btnClearSections) {
+      btnClearSections.addEventListener("click", function() {
+        if (confirm("Remove all chapter ranges?")) {
+          sectionsState = [];
+          renderSections();
+        }
+      });
+    }
+
+    if (resourceForm) {
+      resourceForm.addEventListener("submit", function() {
+        syncPayload();
+      });
+    }
+
+    // Initial render
+    renderSections();
+  })();
+</script>

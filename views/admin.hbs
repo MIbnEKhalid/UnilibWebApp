@@ -1,0 +1,266 @@
+<div class="unilib-container admin-layout">
+
+  <!-- Header -->
+  <header class="admin-page-header">
+    <div>
+      <div class="admin-header-pre">
+        <span class="admin-kicker">Faculty &amp; Admin Console</span>
+      </div>
+      <h1 class="admin-page-title">
+        Academic Materials Catalog
+      </h1>
+      <p class="admin-page-subtitle">
+        Overview metrics and complete listing of university course textbooks, manuals, and assignments.
+      </p>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="admin-actions-bar">
+      <a href="/admin/resources/new" class="btn btn-action btn-sm">
+        <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>
+        </svg>
+        <span>Upload Material</span>
+      </a>
+      <a href="/admin/courses/new" class="btn btn-ghost btn-sm">
+        <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        <span>Add Course</span>
+      </a>
+      <a href="/" class="btn btn-ghost btn-sm" title="View public library">
+        <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+        </svg>
+        <span>Public Archive</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Modular Admin Navigation Partial -->
+  {{> admin-nav activeAdminTab="materials"}}
+
+  <!-- Modular Flash Messages Partial -->
+  {{> flash-messages}}
+
+  <!-- Metrics Ribbon -->
+  <div class="admin-stats-ribbon">
+    <div class="admin-stat-card">
+      <div class="admin-stat-num tabular-nums">{{stats.courses}}</div>
+      <div class="admin-stat-label">Active Courses</div>
+    </div>
+    <div class="admin-stat-card">
+      <div class="admin-stat-num tabular-nums">{{stats.resources}}</div>
+      <div class="admin-stat-label">Academic Materials</div>
+    </div>
+    <div class="admin-stat-card">
+      <div class="admin-stat-num tabular-nums">{{stats.views}}</div>
+      <div class="admin-stat-label">Views Tracked</div>
+    </div>
+    <div class="admin-stat-card">
+      <div class="admin-stat-num tabular-nums">{{stats.storageFormatted}}</div>
+      <div class="admin-stat-label">Storage Allocated</div>
+    </div>
+    <div class="admin-stat-card">
+      <div class="admin-stat-val">{{stats.cacheDriver}}</div>
+      <div class="admin-stat-label">Cache Subsystem</div>
+    </div>
+  </div>
+
+  <!-- Resource Catalog Card -->
+  <div class="admin-panel-card">
+    
+    <!-- Filter Toolbar -->
+    <div class="admin-toolbar">
+      <h2 class="admin-panel-heading">
+        <span>Materials Directory</span>
+        <span class="admin-count-badge tabular-nums">{{resources.length}} found</span>
+      </h2>
+
+      <!-- Search & Filters Form -->
+      <form action="/admin" method="GET" class="admin-filter-form">
+        <input type="text" name="q" class="admin-input admin-input-search" placeholder="Filter title..." value="{{query}}">
+        
+        <select name="course_code" class="admin-select">
+          <option value="">All Courses</option>
+          {{#each courses}}
+            <option value="{{this.code}}" {{#if (eq this.code ../selectedCourseCode)}}selected{{/if}}>
+              [{{this.code}}] {{this.title}}
+            </option>
+          {{/each}}
+        </select>
+
+        <select name="type" class="admin-select">
+          <option value="">All Types</option>
+          <option value="textbook" {{#if (eq selectedType 'textbook')}}selected{{/if}}>Textbooks</option>
+          <option value="lab_manual" {{#if (eq selectedType 'lab_manual')}}selected{{/if}}>Labs</option>
+          <option value="quiz_assignment" {{#if (eq selectedType 'quiz_assignment')}}selected{{/if}}>Quizzes</option>
+          <option value="solution" {{#if (eq selectedType 'solution')}}selected{{/if}}>Solutions</option>
+        </select>
+
+        <button type="submit" class="btn btn-action btn-sm">
+          <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+          </svg>
+          <span>Filter</span>
+        </button>
+
+        {{#if (or query selectedCourseCode selectedType)}}
+          <a href="/admin" class="btn btn-ghost btn-sm" title="Clear Filters">
+            <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+            <span>Reset</span>
+          </a>
+        {{/if}}
+      </form>
+    </div>
+
+    <!-- Materials Table -->
+    {{#if resources.length}}
+      <div class="table-responsive">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Course</th>
+              <th>Category</th>
+              <th>Material Title &amp; Source</th>
+              <th>Visibility</th>
+              <th>Size</th>
+              <th>Views</th>
+              <th>Added</th>
+              <th class="text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each resources}}
+              <tr>
+                <td class="nowrap">
+                  <a href="/courses/{{this.course_code}}" class="table-course-code" title="View Course Archive">
+                    {{this.course_code}}
+                  </a>
+                  <div class="table-subtext">Sem {{this.course_semester}}</div>
+                </td>
+                <td class="nowrap">
+                  <span class="material-type-pill pill-{{this.type}}">
+                    {{#if (eq this.type "textbook")}}Textbook{{/if}}
+                    {{#if (eq this.type "lab_manual")}}Lab Manual{{/if}}
+                    {{#if (eq this.type "quiz_assignment")}}Quiz/HW{{/if}}
+                    {{#if (eq this.type "solution")}}Solution{{/if}}
+                  </span>
+                </td>
+                <td>
+                  <div class="table-title">
+                    {{this.title}}
+                  </div>
+                  <div class="table-file-meta">
+                    <span class="table-ext-tag format-{{this.file_badge.label}}">{{this.file_badge.label}}</span>
+                    <span class="table-filename">{{this.file_name}}</span>
+                    {{#if this.has_sections}}
+                      <a href="/admin/resources/{{this.id}}/slicer" class="has-solution-pill" title="Edit {{this.sections_count}} chapter slices">
+                        <svg class="ui-svg" viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                          <circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/>
+                        </svg>
+                        <span>{{this.sections_count}} ch</span>
+                      </a>
+                    {{/if}}
+                  </div>
+                  {{#if this.parent_title}}
+                    <div class="table-linked-parent">
+                      <svg class="ui-svg" viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                      </svg>
+                      <span>Key for: {{this.parent_title}}</span>
+                    </div>
+                  {{/if}}
+                </td>
+                <td class="nowrap">
+                  {{#if this.is_visible}}
+                    <span class="status-pill status-visible" title="Visible in public student catalog">
+                      <span class="status-dot"></span> Visible
+                    </span>
+                  {{else}}
+                    <span class="status-pill status-hidden" title="Hidden from public catalog">
+                      <span class="status-dot"></span> Hidden
+                    </span>
+                  {{/if}}
+                </td>
+                <td class="nowrap tabular-nums table-muted">
+                  {{this.formatted_size}}
+                </td>
+                <td class="nowrap tabular-nums table-muted">
+                  {{this.views_count}}
+                </td>
+                <td class="nowrap table-muted">
+                  {{#if this.created_at}}{{formatDateOnly this.created_at}}{{else}}&mdash;{{/if}}
+                </td>
+                <td class="nowrap text-right">
+                  <div class="table-action-row">
+                    <!-- Toggle Visibility Button -->
+                    <form action="/admin/resources/{{this.id}}/toggle-visibility" method="POST" style="display: inline;">
+                      <button type="submit" class="btn btn-ghost btn-xs" title="{{#if this.is_visible}}Hide from students{{else}}Publish / show to students{{/if}}">
+                        {{#if this.is_visible}}
+                          <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted);">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                            <line x1="1" y1="1" x2="23" y2="23"/>
+                          </svg>
+                        {{else}}
+                          <svg class="ui-svg text-accent" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);">
+                            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
+                          </svg>
+                        {{/if}}
+                      </button>
+                    </form>
+                    <a href="/resources/{{this.id}}/preview" target="_blank" class="btn btn-ghost btn-xs" title="Preview File">
+                      <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
+                      </svg>
+                    </a>
+                    <a href="/resources/{{this.id}}/download" class="btn btn-ghost btn-xs" title="Download File">
+                      <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>
+                      </svg>
+                    </a>
+                    <a href="/admin/resources/{{this.id}}/slicer" class="btn btn-ghost btn-xs" style="color: var(--primary);" title="Visual PDF Chapter Slicer">
+                      <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/>
+                      </svg>
+                    </a>
+                    <a href="/admin/resources/{{this.id}}/edit" class="btn btn-ghost btn-xs" title="Edit Metadata">
+                      <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                      </svg>
+                    </a>
+                    <form action="/admin/resources/{{this.id}}/delete" method="POST" onsubmit="return confirm('Permanently delete this resource and its physical storage file?');" style="display: inline;">
+                      <button type="submit" class="btn btn-danger-ghost btn-xs" title="Delete Resource">
+                        <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        </svg>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    {{else}}
+      <div class="empty-state-box">
+        <h3 class="empty-title">No Resources Match Filter</h3>
+        <p class="empty-description">
+          Try adjusting your search criteria, or upload a new resource to this course.
+        </p>
+        <a href="/admin/resources/new" class="btn btn-action btn-sm">
+          <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>
+          </svg>
+          <span>Upload Resource Now</span>
+        </a>
+      </div>
+    {{/if}}
+
+  </div>
+
+</div>

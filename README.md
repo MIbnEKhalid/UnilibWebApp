@@ -1,266 +1,201 @@
-# UnilibWebApp
+# Unilib — University Academic Resource Sharing Platform
 
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)]()
+**Unilib** is a clean, modern, fast, and easy-to-use university resource library built for classmates to access and share academic resources without friction.
 
-<p align="center">
-  <img height="64px" src="https://unilib.mbktech.org/icon.svg" alt="Unilib Web App Icon" />
-</p>
-
-<p align="center">
-  <img src="https://skillicons.dev/icons?i=nodejs,express,postgres,sqlite,css,redis" />
-  <img height="48px" src="https://handlebarsjs.com/handlebars-icon.svg" alt="Handlebars" />
-</p>
-
-A modern, high-performance web application for organizing, sharing, and archiving university course materials, lecture notes, lab guides, and textbooks. Features dual database support (PostgreSQL & SQLite), automated university portal synchronization (Tasjeel Sync), Upstash Redis caching, pure Vanilla CSS classical library UI, and advanced administrative controls.
+Students can browse, search, preview, and download textbooks, lab manuals, assignments, quizzes, and solutions without logging in. Authorized administrators can upload, organize, edit, and delete materials with granular server-side permission checks.
 
 ---
 
 ## 🌟 Key Features
 
-- **Multi-Engine Database Support (PostgreSQL & SQLite)**: Built-in abstraction layer supporting Neon PostgreSQL and SQLite (file-based or in-memory) with automated schema initialization and dialect query translation.
-- **University Portal Synchronization (Tasjeel Sync)**: Automated background cron scheduler and manual admin trigger to fetch, organize, and archive subjects and course materials directly from student portals.
-- **Course Materials & Subject Management**: Search and filter subjects by semester, aggregate material counts, view files in-browser, and proxy secure downloads.
-- **Book Catalog & Visibility Management**: Multi-semester tagging (`semester[]`), live search, category filtering, visibility toggles (hide/show), and batch bulk operations.
-- **Lab & Section Extraction**: Organize book sections and lab sheets by page range with UUID tracking and on-demand PDF extraction and downloads.
-- **Performance & Caching**: Fast page loads via Upstash Redis REST caching with transparent fallback to direct DB queries and automated version-based cache busting.
-- **Classical Academic Theme & Vanilla CSS**: Responsive, classical academic library interface built with Handlebars and pure Vanilla CSS (zero build step).
-- **Authentication & Security**: Role-based access control with [mbkauthe](https://github.com/MIbnEKhalid/mbkauthe), cloud bucket integration with `mbkbucket`, rate limiting, and CORS security.
-- **Built-in Automated Testing**: Test suite for database abstractions, repository methods, and HTTP route integration.
+- **Public & Frictionless Access**:
+  - No login required for students to browse courses, search topics, or download files.
+  - Dedicated streaming and preview endpoints (`/resources/:id/download` and `/resources/:id/preview`).
+- **Departmental Semester-First Structure**:
+  - Instant navigation across **Semesters 1 through 8**.
+  - Course cards showing course codes (e.g. `CPE2123`), titles, and material counts.
+  - Pre-seeded core Computer Science / Engineering courses across all 8 semesters.
+- **Categorized Academic Materials**:
+  - 📘 **Textbooks & Reference Books** (PDF, EPUB)
+  - 🔬 **Lab Manuals & Practical Guides** (PDF, DOCX, ZIP)
+  - 📝 **Quizzes & Assignments** (Documents & Images)
+  - 💡 **Solutions & Past Papers**: Supports both **linking directly to a parent assignment/quiz** and **standalone past paper solutions**.
+- **Upstash Redis Caching**:
+  - Powered by `ioredis` with support for Upstash Redis endpoints.
+  - **Zero-config in-memory fallback**: If Redis is unconfigured or temporarily offline, seamlessly falls back to an internal TTL cache.
+  - Automatic cache invalidation upon any course or resource mutation.
+- **Object Storage (`mbkbucket`)**:
+  - Multi-provider support (Local Disk `./data/storage`, Cloudflare R2, AWS S3).
+  - Clean file cleanup on resource deletion to prevent orphaned files.
+- **Authentication & RBAC (`mbkauthe`)**:
+  - All public views open to all users.
+  - Resource uploads, deletions, and course edits strictly protected via `sessPerm(Permissions.resources.create)`, etc.
+  - Embedded Admin Console at `/admin` and visual Database Console at `/admin/db`.
+- **Dual-Database Support**:
+  - Embedded local **SQLite** (`better-sqlite3`) for zero-dependency development.
+  - Scalable production **PostgreSQL** (Neon, Supabase, self-hosted).
 
 ---
 
-## 🛠️ Tech Stack
+## 📁 Project Architecture
 
-| Layer | Technologies |
-|---|---|
-| **Runtime & Backend** | Node.js (ES Modules), Express.js 5.x |
-| **Frontend & Templating** | Handlebars (express-handlebars), Vanilla CSS, Vanilla JS |
-| **Databases** | PostgreSQL (`pg`), SQLite (`node:sqlite` / synchronous SQLite pool) |
-| **Caching** | Upstash Redis (`@upstash/redis`) |
-| **Authentication & Storage** | [mbkauthe](https://github.com/MIbnEKhalid/mbkauthe), `mbkbucket` |
-| **Document & Image Processing** | `pdf-lib`, `pdf-to-img`, `sharp` |
-| **Scheduling & Scraping** | `node-cron`, `cheerio`, `node-fetch` |
-| **Testing** | Node.js Test Runner & Assertion Library (`node:assert/strict`) |
-
----
-
-## 📁 Project Structure
-
-```text
-UnilibWebApp/
-├── data/                  # Local SQLite database storage (unilib.sqlite)
-├── public/                # Static assets, sitemaps, and book covers
+```
+d:\project\unilib\
+├── .env                      # Active runtime environment configuration
+├── .env.example              # Environment variables template
+├── package.json              # Project dependencies & scripts
+├── public/
 │   ├── assets/
-│   │   ├── css/           # Vanilla CSS stylesheets & design system
-│   │   ├── js/            # Client-side JavaScript
-│   │   └── images/        # Icons and images
-│   └── BookCovers/        # Default book cover templates
-├── scripts/               # CLI utility scripts (db init, image/PDF conversion)
-│   ├── convertPageImages.js
-│   ├── convertToWebp.js
-│   └── initDb.js
+│   │   ├── css/
+│   │   │   └── unilib.css    # Dedicated academic design system stylesheet
+│   │   └── images/icon.svg   # Vector brand icon
 ├── src/
-│   ├── app.js             # Express application configuration and middleware
-│   ├── server.js          # HTTP server bootstrap and cron initialization
-│   ├── config/            # Environment and Handlebars configuration
-│   ├── controllers/       # Route request controllers (Book, Section, Material, PDF)
-│   ├── db/                # Multi-dialect database abstraction
-│   │   ├── schema/        # Schema definitions and initializers
-│   │   ├── connection.js  # SQLite/PostgreSQL connection helpers
-│   │   └── index.js       # DB init + repository proxies
-│   ├── middleware/        # Rate limiter and error handling middleware
-│   ├── repositories/      # Domain repositories
-│   │   ├── book.repository.js
-│   │   ├── section.repository.js
-│   │   └── tasjeel.repository.js
-│   ├── routes/            # Express route modules
-│   ├── services/          # Cache (Redis) and Tasjeel sync services
-│   └── utils/             # Shared utilities
-├── views/                 # Handlebars layouts, templates and views
-│   ├── layouts/
-│   ├── mainPages/
-│   └── templates/
-├── tests/                 # Database abstraction and HTTP integration tests
-├── env.md                 # Detailed environment variables guide
-└── package.json           # Project manifest and scripts
+│   ├── app.js                # Express application setup & middleware stack
+│   ├── server.js             # HTTP server entrypoint
+│   ├── permissions.js        # mbkauthe RBAC permissions & roles manifest
+│   ├── config/
+│   │   ├── env.js            # Dotenv & runtime environment parser
+│   │   └── view-engine.js    # Multi-engine Handlebars setup
+│   ├── db/
+│   │   ├── connection.js     # Pool connection helper
+│   │   ├── index.js          # Dynamic SQLite / PostgreSQL database adapter
+│   │   └── schema/
+│   │       ├── sqlite.sql    # SQLite DDL & seed courses (Semesters 1-8)
+│   │       ├── postgres.sql  # PostgreSQL DDL & seed courses
+│   │       └── init.js       # Schema initialization runner
+│   ├── controllers/
+│   │   ├── web.controller.js # Public browsing, search, preview, & downloads
+│   │   ├── admin.controller.js# Protected management, upload, & delete
+│   │   └── api.controller.js # Public & protected REST API endpoints
+│   ├── middleware/
+│   │   ├── upload.js         # Multer multipart upload middleware (100MB limit)
+│   │   ├── bot-protection.js # Scanner & malicious crawler blocking
+│   │   ├── rate-limiter.js   # API & global rate limiting
+│   │   └── security-headers.js# Hardened HTTP security headers
+│   ├── repositories/
+│   │   ├── course.repository.js   # Course queries, semester groupings
+│   │   └── resource.repository.js # Resource persistence & parent-child links
+│   ├── routes/
+│   │   ├── web.routes.js     # Public web pages & stream routes
+│   │   ├── admin.routes.js   # Protected admin portal & actions
+│   │   └── api.routes.js     # REST API
+│   └── services/
+│       ├── cache.service.js   # Upstash Redis client with resilient in-memory fallback
+│       ├── resource.service.js# File upload, streaming, solution linking, cache purging
+│       └── storage.service.js # mbkbucket client abstraction
+├── views/
+│   ├── layouts/layout.hbs    # Master academic layout (dark/light theme, search, navbar)
+│   ├── index.hbs             # Homepage (Semester switcher, course grid, recent uploads)
+│   ├── course.hbs            # Course catalog (Categorized tabs, linked solutions)
+│   ├── search.hbs            # Keyword search results view
+│   ├── admin.hbs             # Protected admin upload, course creation, & resource table
+│   └── error.hbs             # Clean error/notice view
+└── tests/
+    ├── setup.js              # Vitest bootstrap (SQLite test database)
+    ├── app.test.js           # Core smoke and permissions tests
+    └── unilib.test.js        # Comprehensive integration tests (all 21 passing)
 ```
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Quick Start & Setup Instructions
 
-### Prerequisites
+### 1. Prerequisites
+- **Node.js** v20.x or higher (tested on Node 24)
+- **npm** v10+
 
-- **Node.js**: v18.0.0 or higher (v20+ recommended)
-- **Database**: PostgreSQL (e.g. Neon Postgres) or SQLite (no external installation required)
+### 2. Install Dependencies
+Run the following inside `d:\project\unilib`:
 
-### Quick Start
-
-1. **Clone the repository**:
-   ```sh
-   git clone https://github.com/MIbnEKhalid/UnilibWebApp.git
-   cd UnilibWebApp
-   ```
-
-2. **Install dependencies**:
-   ```sh
-   npm install
-   ```
-
-3. **Configure environment variables**:
-   Create a `.env` file in the root directory (refer to [env.md](env.md) for full configuration options):
-   ```env
-   PORT=3333
-   NODE_ENV=development
-   DB_TYPE=sqlite
-   SQLITE_PATH=./data/unilib.sqlite
-   
-   # Optional: PostgreSQL Connection
-   # NEON_POSTGRES=postgres://username:password@host:port/database
-   
-   # Optional: Redis Caching
-   # UPSTASH_REDIS_REST_URL=https://...
-   # UPSTASH_REDIS_REST_TOKEN=...
-   # REDIS_ENABLED=true
-   
-   # Admin Authentication
-   # mbkautheVar='{"APP_NAME":"MBKAUTH","SESSION_SECRET_KEY":"secret","IS_DEPLOYED":"false"}'
-   ```
-
-4. **Initialize the database schema**:
-   ```sh
-   # Initialize based on configured DB_TYPE in .env
-   npm run db:init
-
-   # Or explicitly initialize a specific engine:
-   npm run db:init:sqlite
-   npm run db:init:postgres
-   ```
-
-5. **Start the application**:
-   ```sh
-   # Development mode (with live reload)
-   npm run dev
-
-   # Production mode
-   npm start
-   ```
-
-   Open your browser and navigate to [http://localhost:3333](http://localhost:3333).
-
----
-
-## 📜 Available Scripts
-
-| Command | Description |
-|---|---|
-| `npm start` | Runs the production server (`node src/server.js`) |
-| `npm run dev` | Runs the development server with `node --watch --watch-path=src` live-reloading |
-| `npm run db:init` | Automatically initializes schemas for configured database engine |
-| `npm run db:init:sqlite` | Creates SQLite tables, schema, and indexes (`unilib.sqlite`) |
-| `npm run db:init:postgres` | Creates PostgreSQL tables, schema, and indexes |
-| `npm run test` | Executes the complete test suite (`db.test.js` and `app.test.js`) |
-| `npm run convertToWebp` | Converts cover images to optimized WebP format |
-| `npm run convertPageImages` | Extracts specific PDF pages as high-resolution images |
-
----
-
-## 🔧 CLI & Utility Tools
-
-### 1. Database Initializer
-Initialize database schemas with custom flags:
-```sh
-node scripts/initDb.js --type=sqlite --path=./data/unilib.sqlite
-node scripts/initDb.js --type=postgres
-node scripts/initDb.js --all
+```bash
+npm install --ignore-scripts
 ```
 
-### 2. PDF Page Image Extractor
-Extract individual pages from PDF documents into high-resolution images:
-```sh
-npm run convertPageImages <pdfPath> <pageNumber> <outputFormat> [outputPath]
-```
-- **Supported formats**: `png`, `jpg`, `jpeg`, `webp`, `tiff`, `avif`
-- **Examples**:
-  ```sh
-  # Extract page 1 as PNG (saved to document_page1.png)
-  npm run convertPageImages ./document.pdf 1 png
+### 3. Configure Environment Variables
+Copy `.env.example` to `.env` (or customize the existing `.env`):
 
-  # Extract page 2 as WebP to a custom destination
-  npm run convertPageImages ./document.pdf 2 webp ./output.webp
-  ```
-
-### 3. Image Optimizer (WebP)
-Convert images in `public/BookCovers` to WebP:
-```sh
-npm run convertToWebp                  # Converts while keeping originals
-npm run convertToWebp --delete-old     # Converts and removes original source files
+```bash
+cp .env.example .env
 ```
 
----
+Key environment variables:
 
-## 👥 Usage & Roles
+| Variable | Description | Default / Example |
+| :--- | :--- | :--- |
+| `PORT` | Application HTTP port | `3090` |
+| `BASE_URL` | Base canonical application URL | `http://localhost:3090` |
+| `DB_TYPE` | Database dialect (`sqlite` or `postgres`) | `sqlite` |
+| `SQLITE_PATH` | Path to SQLite file when `DB_TYPE=sqlite` | `./data/unilib.db` |
+| `NEON_POSTGRES` | PostgreSQL connection string when `DB_TYPE=postgres` | `postgresql://user:pass@host/db?sslmode=require` |
+| `REDIS_URL` | Upstash Redis connection string | `rediss://default:token@xxx.upstash.io:6379` |
+| `REDIS_CACHE_ENABLED`| Enable caching (`true` / `false`) | `true` |
+| `BucketConnection` | Storage bucket provider configuration | `{"Local_Disk":{"type":"local","basePath":"./data/storage"}}` |
 
-### 🎓 Students / Public Users
-- **Browse by Semester**: Filter course books, reference materials, and subjects by semester.
-- **Subject Materials**: Explore lecture slides, assignments, and past papers fetched from the portal.
-- **Lab & Section Downloads**: Download individual lab chapters or stream complete textbooks in-browser.
-- **Search & Filter**: Search course materials in real-time.
+> **Note on Upstash Redis**: If `REDIS_URL` is omitted, Unilib automatically activates its built-in in-memory cache without any manual configuration or crashes.
 
-### 🛡️ Administrators (`/dashboard`)
-- **Book Management**: Add, edit, delete, and tag books across multiple semesters.
-- **Bulk Visibility Controls**: Select multiple books to toggle public visibility or perform batch updates.
-- **Section & Lab Manager**: Define page offsets and extracted sections for any textbook (`/dashboard/Book/:bookId/Sections`).
-- **Materials Console**: Manage synced subjects, upload material links, edit semester associations, and trigger manual Tasjeel synchronization (`/dashboard/Materials`).
-- **Export & Analytics**: Track view/download analytics and export book catalogues.
+### 4. Initialize Database Schema
+For **SQLite** (local development):
+```bash
+npm run db:init:sqlite
+```
 
----
+For **PostgreSQL** (e.g., Neon / Supabase):
+```bash
+npm run db:init:postgres
+```
 
-## 🚀 What's New in v2.0.0
+### 5. Seed Example Academic Materials (Optional)
+Populate real textbooks, lab manuals, assignments, and linked solutions across Semesters 1 through 4:
+```bash
+npm run seed
+```
 
-- **Modular `src/` Architecture**: Fully refactored codebase adhering to ES Modules, clean repository design pattern, separated route controllers, services, and middlewares.
-- **Dual Database Engine (PostgreSQL & SQLite)**: Native support for both SQLite (zero-config, local dev, testing) and PostgreSQL (Neon serverless production) with unified query adapters.
-- **Tasjeel Portal Sync Service**: Automated background sync via cron job (`TASJEEL_SYNC_CRON`) with authenticated scraping and manual sync console.
-- **Modern Vanilla CSS Architecture**: Clean, zero-build-step Vanilla CSS styling with custom theme tokens, modern flex/grid layouts, and responsive glassmorphism.
-- **Comprehensive Testing Suite**: Added automated tests covering repository queries, dialect translators, and HTTP endpoints (`npm test`).
-- **UUID Section Management**: Enhanced book section management using standardized UUID identifiers and batch deletion capabilities.
-- **Multi-Semester Array Tagging**: Support for assigning books and subjects across multiple semesters seamlessly.
-- **MBK Ecosystem Integration**: Native integration with `mbkauthe` and `mbkbucket`.
+### 6. Synchronize Permissions
+Register Unilib's permissions with the `mbkauthe` session manager:
+```bash
+npm run sync_permissions
+```
 
----
+### 7. Start the Server
+Start development server with live watch mode:
+```bash
+npm run dev
+```
 
-## ☁️ Deployment
-
-### Deploy on Vercel
-The project includes a pre-configured `vercel.json` for serverless deployment:
-1. Push your repository to GitHub / GitLab.
-2. Import the project into [Vercel](https://vercel.com).
-3. Set your environment variables in the Vercel Project Settings (e.g., `NEON_POSTGRES`, `MBKAUTHE_VAR`, `UPSTASH_REDIS_REST_URL`, etc.).
-4. Deploy!
-
-### Deploy on Node.js Server
-Ensure Node.js 18+ is installed:
-```sh
-npm install --production
-npm run build:css
-npm run db:init
+Or start in standard production mode:
+```bash
 npm start
 ```
 
----
-
-## 📬 Contact & Support
-
-For inquiries, support, or contributions:
-- **Developer**: [Muhammad Bin Khalid](https://github.com/MIbnEKhalid)
-- **Support Portal**: [mbktech.org/Support](https://mbktech.org/Support/?Project=MIbnEKhalidWeb)
-- **Email**: [support@mbktech.org](mailto:support@mbktech.org) or [chmuhammadbinkhalid28@gmail.com](mailto:chmuhammadbinkhalid28@gmail.com)
-- **Website**: [mbktech.org](https://mbktech.org/)
+Visit [http://localhost:3090](http://localhost:3090) in your browser.
 
 ---
 
-<p align="center">
-  <sub>Developed with ❤️ by <a href="https://github.com/MIbnEKhalid">Muhammad Bin Khalid</a> at <a href="https://mbktech.org/">mbktech.org</a></sub>
-</p>
+## 🧪 Testing
+
+Unilib includes a complete Vitest suite testing public access, file streaming, permission barriers, cache invalidation, and end-to-end assignment/solution upload workflows:
+
+```bash
+npm test
+```
+
+---
+
+## 🔐 Permissions Reference
+
+Declared in [`src/permissions.js`](src/permissions.js):
+
+| Permission | Description | Required Role |
+| :--- | :--- | :--- |
+| **Public** (`GET /`, `/courses/:id`, `/resources/:id/download`) | View courses, search, and download files | Anyone (No login required) |
+| `courses:create` | Add new courses to department | `admin` |
+| `courses:delete` | Delete courses and all linked materials | `admin` |
+| `resources:create` | Upload course books, lab manuals, quizzes, solutions | `admin` |
+| `resources:delete` | Remove materials and delete physical files from storage | `admin` |
+| `admin:view` | Access the `/admin` console | `admin` |
+| `admindb:access` | Access embedded visual database runner (`/admin/db`) | `admin` |
+
+---
+
+## 📄 License
+MIT License. Built by Muhammad Bin Khalid for the University Department.

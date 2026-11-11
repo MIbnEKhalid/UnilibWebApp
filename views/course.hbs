@@ -1,0 +1,212 @@
+<div class="unilib-container">
+
+  <!-- Breadcrumb Trail -->
+  <nav class="course-breadcrumbs" aria-label="Breadcrumb">
+    <a href="/" class="breadcrumb-link">
+      <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      <span>Library Archive</span>
+    </a>
+    <span class="breadcrumb-separator">/</span>
+    <span class="breadcrumb-item">Semester {{course.semester}}</span>
+    <span class="breadcrumb-separator">/</span>
+    <span class="breadcrumb-current">{{course.code}}</span>
+  </nav>
+
+  <!-- Course Masthead Header -->
+  <header class="course-detail-header">
+    <div class="course-detail-header-inner">
+      <div class="course-detail-main">
+        <div class="course-badge-row">
+          <span class="course-code-tag">{{course.code}}</span>
+          <span class="course-semester-pill">Semester {{course.semester}}</span>
+          <span class="course-materials-indicator">
+            <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+            </svg>
+            <span class="tabular-nums">{{counts.total}}</span> Course Materials
+          </span>
+        </div>
+
+        <h1 class="course-detail-title">{{course.title}}</h1>
+      </div>
+
+      {{#if userContext.isAuthenticated}}
+        <div class="course-admin-actions">
+          <a href="/admin/resources/new?course_code={{course.code}}" class="btn btn-action btn-sm">
+            <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>
+            </svg>
+            <span>Upload Material to this Course</span>
+          </a>
+        </div>
+      {{/if}}
+    </div>
+  </header>
+
+  <!-- Campus Network Alert Banner (Shown when Google Drive is blocked) -->
+  <div id="driveBlockedBanner" class="campus-network-notice" style="display: none;">
+    <div class="notice-inner">
+      <svg class="ui-svg notice-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+        <line x1="12" y1="9" x2="12" y2="13"/>
+        <line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+      <div class="notice-text">
+        <strong>Campus Network Notice:</strong> Google Drive appears to be firewalled or unreachable on your network. Full book and chapter slice downloads/previews are automatically routed to high-speed <strong>MBKBucket</strong> storage.
+      </div>
+    </div>
+  </div>
+
+  <!-- Category Filter Tabs & In-Course Search -->
+  <div class="course-controls-bar">
+    <nav class="course-tab-bar" id="resourceTabs" aria-label="Course Material Filter">
+      <button type="button" class="course-filter-tab active" data-category="all">
+        <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
+        </svg>
+        <span>All Materials</span>
+        <span class="tab-count-pill tabular-nums">{{counts.total}}</span>
+      </button>
+      <button type="button" class="course-filter-tab" data-category="textbook">
+        <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+        </svg>
+        <span>Textbooks</span>
+        <span class="tab-count-pill tabular-nums">{{counts.textbooks}}</span>
+      </button>
+      <button type="button" class="course-filter-tab" data-category="lab_manual">
+        <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 2v7.31"/><path d="M14 2v7.31"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/>
+        </svg>
+        <span>Lab Manuals</span>
+        <span class="tab-count-pill tabular-nums">{{counts.labManuals}}</span>
+      </button>
+      <button type="button" class="course-filter-tab" data-category="quiz_assignment">
+        <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+        </svg>
+        <span>Quizzes &amp; Assignments</span>
+        <span class="tab-count-pill tabular-nums">{{counts.quizzesAssignments}}</span>
+      </button>
+      <button type="button" class="course-filter-tab" data-category="solution">
+        <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/>
+        </svg>
+        <span>Solutions &amp; Keys</span>
+        <span class="tab-count-pill tabular-nums">{{counts.standaloneSolutions}}</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Course Materials Stack (Optimized via material-card partial) -->
+  <div class="materials-stack" id="resourceList">
+
+    <!-- 1. Textbooks -->
+    {{#each resources.textbooks}}
+      {{> material-card this}}
+    {{/each}}
+
+    <!-- 2. Lab Manuals -->
+    {{#each resources.labManuals}}
+      {{> material-card this}}
+    {{/each}}
+
+    <!-- 3. Quizzes & Assignments -->
+    {{#each resources.quizzesAssignments}}
+      {{> material-card this}}
+    {{/each}}
+
+    <!-- 4. Standalone Solutions -->
+    {{#each resources.standaloneSolutions}}
+      {{> material-card this}}
+    {{/each}}
+
+    {{#if counts.total}}
+      <!-- Filtered Category Empty State -->
+      <div id="courseFilteredEmptyNotice" class="empty-state-box" style="display: none;">
+        <div class="empty-icon-wrap">
+          <svg class="ui-svg" viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/>
+          </svg>
+        </div>
+        <h3 class="empty-title">No Materials in This Category</h3>
+        <p class="empty-description">
+          There are no uploaded items matching this category filter for <strong>{{course.code}}</strong>.
+        </p>
+        <button type="button" id="showAllCourseMaterialsBtn" class="btn btn-outline btn-sm">
+          <span>Show All Materials ({{counts.total}})</span>
+        </button>
+      </div>
+    {{else}}
+      <!-- Empty State -->
+      <div class="empty-state-box">
+        <div class="empty-icon-wrap">
+          <svg class="ui-svg" viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/>
+          </svg>
+        </div>
+        <h3 class="empty-title">No Materials Uploaded Yet</h3>
+        <p class="empty-description">
+          There are currently no textbooks, lab manuals, or problem sets registered for <strong>{{course.code}}</strong>.
+        </p>
+        {{#if userContext.isAuthenticated}}
+          <a href="/admin/resources/new?course_code={{course.code}}" class="btn btn-action btn-sm">
+            <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>
+            </svg>
+            <span>Upload First Material</span>
+          </a>
+        {{/if}}
+      </div>
+    {{/if}}
+
+  </div>
+
+</div>
+
+<!-- Filter Tabs Script -->
+<script>
+  (function() {
+    var tabs = document.querySelectorAll(".course-filter-tab");
+    var cards = document.querySelectorAll("#resourceList .material-card");
+    var filteredEmptyNotice = document.getElementById("courseFilteredEmptyNotice");
+    var showAllBtn = document.getElementById("showAllCourseMaterialsBtn");
+
+    function filterByCategory(cat) {
+      var visible = 0;
+      cards.forEach(function(card) {
+        var cardCat = card.getAttribute("data-category");
+        var hasSol = card.getAttribute("data-has-solution") === "true";
+        if (cat === "all" || cardCat === cat || (cat === "solution" && hasSol)) {
+          card.style.display = "block";
+          visible++;
+        } else {
+          card.style.display = "none";
+        }
+      });
+      if (filteredEmptyNotice) {
+        filteredEmptyNotice.style.display = (cards.length > 0 && visible === 0) ? "block" : "none";
+      }
+    }
+
+    tabs.forEach(function(tab) {
+      tab.addEventListener("click", function() {
+        tabs.forEach(function(t) { t.classList.remove("active"); });
+        tab.classList.add("active");
+        var cat = tab.getAttribute("data-category");
+        filterByCategory(cat);
+        if (tab.scrollIntoView) {
+          tab.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+        }
+      });
+    });
+
+    if (showAllBtn && tabs.length > 0) {
+      showAllBtn.addEventListener("click", function() {
+        tabs[0].click();
+      });
+    }
+  })();
+</script>

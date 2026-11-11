@@ -1,24 +1,27 @@
 #!/usr/bin/env node
 /**
- * Manually register UnilibWebApp's declared permissions in the permission
- * catalog.
+ * Register this application's declared permissions in the centralized
+ * mbkauthe permission catalog.
  *
- * This is an administrative operation and is intentionally NOT run on server
- * startup — trigger it explicitly with:
- *
+ * Automatically triggered by ecosystem's root `init.mjs` or manually via:
  *     npm run sync_permissions
  */
 import dotenv from "dotenv";
 dotenv.config();
 
-const { syncUnilibPermissions } = await import("../src/permissions.js");
+const { syncTemplatePermissions } = await import("../src/permissions.js");
 
-const result = await syncUnilibPermissions();
+try {
+  const result = await syncTemplatePermissions();
 
-if (!result) {
-  console.error("❌ Permission catalog sync did not run (catalog unavailable).");
-  process.exit(1);
+  if (!result) {
+    console.warn("⚠️ Permission catalog sync skipped or catalog unavailable.");
+    process.exit(0);
+  }
+
+  console.log(`✅ Synced ${result.synced} permission(s) for app "${result.appKey}" (roles: ${result.rolesSynced || 0}).`);
+  process.exit(0);
+} catch (err) {
+  console.warn("⚠️ Permission sync warning:", err?.message || err);
+  process.exit(0);
 }
-
-console.log(`✅ Synced ${result.synced} permission(s) for app "${result.appKey}" (deactivated: ${result.deactivated}).`);
-process.exit(0);

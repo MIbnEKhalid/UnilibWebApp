@@ -1,0 +1,234 @@
+<link rel="stylesheet" href="/assets/css/pdf-slicer.css">
+
+<div class="unilib-container admin-layout" style="max-width: 1600px; padding: 1rem 1.25rem;">
+
+  <!-- Header -->
+  <header class="admin-page-header" style="margin-bottom: 1rem;">
+    <div>
+      <div class="admin-header-pre">
+        <span class="admin-kicker">Faculty &amp; Admin Console</span>
+      </div>
+      <h1 class="admin-page-title" style="font-size: 1.5rem; margin-top: 0.2rem;">
+        Visual PDF Chapter Slicer
+      </h1>
+      <p class="admin-page-subtitle" style="font-size: 12.5px;">
+        Click a chapter, then click its Start page and End page on the PDF.
+      </p>
+    </div>
+
+    <div class="admin-actions-bar">
+      {{#if resource}}
+        <a href="/resources/{{resource.id}}/preview?source=mbkbucket" target="_blank" class="btn btn-outline btn-sm">
+          <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+          <span>Open Full PDF</span>
+        </a>
+      {{/if}}
+      <a href="/admin" class="btn btn-ghost btn-sm">
+        <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+        </svg>
+        <span>Back to Materials</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Modular Admin Navigation Partial -->
+  {{> admin-nav activeAdminTab="slicer"}}
+
+  <!-- Modular Flash Messages Partial -->
+  {{> flash-messages}}
+
+  <!-- Clean Book Selector Bar -->
+  <div class="slicer-top-bar">
+    <div class="slicer-top-left">
+      <label for="slicerResourcePicker" class="slicer-top-label">
+        <svg class="ui-svg" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);">
+          <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+          <path d="M6 6h10"/><path d="M6 10h10"/>
+        </svg>
+        <span>Book:</span>
+      </label>
+      <select
+        id="slicerResourcePicker"
+        class="form-control slicer-top-select"
+        onchange="if (this.value) window.location.href = '/admin/resources/' + this.value + '/slicer';"
+      >
+        {{#if pdfResources.length}}
+          {{#each pdfResources}}
+            <option value="{{this.id}}" {{#if (eq this.id ../resource.id)}}selected{{/if}}>
+              [{{this.course_code}}] {{this.title}} ({{this.formatted_size}})
+            </option>
+          {{/each}}
+        {{else}}
+          <option value="">No PDF resources uploaded</option>
+        {{/if}}
+      </select>
+    </div>
+
+    {{#if resource}}
+    <div class="slicer-top-right">
+      <span class="course-code-badge">{{resource.course_code}}</span>
+      <form id="slicerSaveForm" action="/admin/resources/{{resource.id}}/slicer" method="POST" style="margin: 0; display: inline-flex;">
+        <input type="hidden" name="sections" id="slicerSectionsInput" value="{{sectionsJson}}" />
+        <button type="submit" id="slicerSaveBtn" class="btn btn-primary btn-sm">
+          <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          <span>Save Chapters</span>
+        </button>
+      </form>
+    </div>
+    {{/if}}
+  </div>
+
+  {{#if resource}}
+  <!-- Slicer Studio Layout -->
+  <div id="pdfSlicerStudioRoot" class="slicer-main-layout">
+
+    <!-- LEFT: Clean Chapter List -->
+    <aside class="slicer-chapters-sidebar">
+      <div class="slicer-chapters-panel">
+        <div class="slicer-chapters-panel-header">
+          <div class="slicer-chapters-title">Chapters</div>
+          <button type="button" data-slicer-add-slice class="btn btn-action btn-xs">
+            + Add Chapter
+          </button>
+        </div>
+
+        <div class="slicer-chapters-help">
+          Click a chapter, then click pages on the right to set Start &amp; End.
+        </div>
+
+        <!-- Chapters List -->
+        <div data-slicer-slice-list class="slicer-chapters-list"></div>
+
+        <div class="slicer-chapters-panel-footer">
+          <button type="button" data-slicer-add-next class="btn btn-outline btn-xs" style="width: 100%;">
+            + Add Next Chapter
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- RIGHT: Page Grid with Active Chapter Banner -->
+    <main class="slicer-pages-area">
+
+      <!-- Active Chapter Control Bar -->
+      <div class="slicer-active-bar" data-slicer-active-bar>
+        <div class="slicer-active-meta">
+          <span class="slicer-active-label">Editing:</span>
+          <input
+            type="text"
+            id="slicerActiveTitleInput"
+            class="slicer-active-title-input"
+            placeholder="Chapter Title..."
+          />
+          <input
+            type="url"
+            id="slicerActiveDriveInput"
+            class="slicer-active-drive-input"
+            placeholder="Drive URL (optional)..."
+            title="Optional Google Drive companion URL for this chapter"
+          />
+        </div>
+
+        <div class="slicer-active-pickers">
+          <button type="button" class="slicer-pick-btn is-active-target" id="slicerBtnPickStart" title="Click to select Start Page on the PDF">
+            <span class="slicer-pick-tag">Start</span>
+            <span class="slicer-pick-val" id="slicerValStart">Page 1</span>
+          </button>
+
+          <span class="slicer-pick-separator">&rarr;</span>
+
+          <button type="button" class="slicer-pick-btn" id="slicerBtnPickEnd" title="Click to select End Page on the PDF">
+            <span class="slicer-pick-tag">End</span>
+            <span class="slicer-pick-val" id="slicerValEnd">Page 1</span>
+          </button>
+
+          <span class="slicer-pages-count-badge" id="slicerValSpan">1 page</span>
+        </div>
+
+        <div class="slicer-active-status" id="slicerActiveStatusHint">
+          👉 Click any page below to set <strong>Start Page</strong>
+        </div>
+
+        <div class="slicer-active-tools">
+          <span class="slicer-doc-pages-info" data-slicer-page-count>Loading PDF...</span>
+          <select data-slicer-size-select class="slicer-mini-select" title="Change page thumbnail size">
+            <option value="compact">Small Pages</option>
+            <option value="medium" selected>Medium Pages</option>
+            <option value="large">Large Pages</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Loading Spinner -->
+      <div data-slicer-loading class="slicer-loading-notice">
+        <span class="slicer-spinner"></span>
+        <span data-slicer-loading-text>Loading PDF pages...</span>
+      </div>
+
+      <!-- Clean PDF Pages Grid -->
+      <div data-slicer-page-grid data-card-size="medium" class="slicer-grid"></div>
+
+    </main>
+  </div>
+  {{else}}
+  <div class="admin-panel-card" style="text-align: center; padding: 3rem 1.5rem;">
+    <h2 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.4rem;">No PDF Resources Found</h2>
+    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 1.2rem;">
+      Upload a PDF textbook or laboratory manual first, then open this page to slice its chapters.
+    </p>
+    <a href="/admin/resources/new" class="btn btn-primary">Upload PDF Material</a>
+  </div>
+  {{/if}}
+
+</div>
+
+<!-- High-Resolution Page Zoom Modal -->
+<div id="slicerInspectModal" class="slicer-modal-backdrop" aria-hidden="true">
+  <div class="slicer-modal-dialog">
+    <div class="slicer-modal-header">
+      <div class="slicer-modal-title" id="slicerInspectTitle">Page Preview</div>
+      <div class="slicer-modal-actions">
+        <button type="button" id="slicerInspectPrev" class="btn btn-outline btn-xs">&larr; Prev</button>
+        <button type="button" id="slicerInspectNext" class="btn btn-outline btn-xs">Next &rarr;</button>
+        <button type="button" id="slicerInspectSetStart" class="btn btn-action btn-xs">Set Start</button>
+        <button type="button" id="slicerInspectSetEnd" class="btn btn-primary btn-xs">Set End</button>
+        <button type="button" id="slicerInspectClose" class="btn btn-ghost btn-xs">&times;</button>
+      </div>
+    </div>
+    <div class="slicer-modal-body">
+      <canvas id="slicerInspectCanvas" class="slicer-modal-canvas"></canvas>
+    </div>
+  </div>
+</div>
+
+{{#if resource}}
+<script src="/assets/js/pdf-slicer.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const sectionsInput = document.getElementById("slicerSectionsInput");
+    let initialSlices = [];
+    try {
+      initialSlices = JSON.parse(sectionsInput.value || "[]");
+    } catch (e) {
+      initialSlices = [];
+    }
+
+    window.studioSlicer = new window.UnilibPdfSlicer({
+      root: "#pdfSlicerStudioRoot",
+      resourceId: "{{resource.id}}",
+      pdfUrl: "/resources/{{resource.id}}/preview?source=mbkbucket",
+      pdfInfoUrl: "/admin/resources/{{resource.id}}/pdf-info",
+      initialSlices: initialSlices,
+      defaultCardSize: "medium",
+      onChange: function (slices) {
+        sectionsInput.value = JSON.stringify(slices);
+      },
+    });
+  });
+</script>
+{{/if}}

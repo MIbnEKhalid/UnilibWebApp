@@ -1,0 +1,116 @@
+<div class="unilib-container admin-form-container" style="max-width: 640px;">
+
+  <!-- Breadcrumbs -->
+  <nav class="course-breadcrumbs" aria-label="Breadcrumb">
+    <a href="/admin" class="breadcrumb-link">
+      <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+      <span>Admin Console</span>
+    </a>
+    <span class="breadcrumb-separator">/</span>
+    <a href="/admin/courses" class="breadcrumb-link">Courses</a>
+    <span class="breadcrumb-separator">/</span>
+    <span class="breadcrumb-current">{{#if isEdit}}Edit Course ({{course.code}}){{else}}Add New Course{{/if}}</span>
+  </nav>
+
+  <!-- Flash Messages -->
+  {{> flash-messages}}
+
+  <!-- Form Card in MBKBucket style -->
+  <div class="card admin-form-card">
+    <div class="form-header">
+      <div class="admin-kicker">Curriculum Directory</div>
+      <h1 class="form-header-title">
+        {{#if isEdit}}
+          <svg class="ui-svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);">
+            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+          </svg>
+          <span>Edit Course</span>
+        {{else}}
+          <svg class="ui-svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><line x1="12" y1="8" x2="12" y2="14"/><line x1="9" y1="11" x2="15" y2="11"/>
+          </svg>
+          <span>Add New Course</span>
+        {{/if}}
+      </h1>
+      <p class="form-header-subtitle">
+        {{#if isEdit}}
+          Update course code, title, or semester term assignment.
+        {{else}}
+          Register a departmental course to allow students to browse and faculty to upload materials.
+        {{/if}}
+      </p>
+    </div>
+
+    <form action="{{#if isEdit}}/admin/courses/{{course.code}}/edit{{else}}/admin/courses{{/if}}" method="POST">
+
+      <div class="form-row">
+        <!-- Course Code -->
+        <div class="form-group">
+          <label class="form-label" for="courseCode">Course Code *</label>
+          <input type="text" 
+                 name="code" 
+                 id="courseCode" 
+                 class="form-control" 
+                 placeholder="e.g. CPE2123, CCPE1121" 
+                 value="{{course.code}}" 
+                 style="font-family: var(--font-mono); font-weight: 700; letter-spacing: 0.04em;" 
+                 required>
+          <span class="form-help">Unique department identifier code.</span>
+        </div>
+
+        <!-- Semester -->
+        <div class="form-group">
+          <label class="form-label" for="courseSemester">Semester Term *</label>
+          <select name="semester" id="courseSemester" class="form-control" required>
+            <option value="1" {{#if (eq course.semester 1)}}selected{{/if}}>Semester 1</option>
+            <option value="2" {{#if (eq course.semester 2)}}selected{{/if}}>Semester 2</option>
+            <option value="3" {{#if (eq course.semester 3)}}selected{{/if}}>Semester 3</option>
+            <option value="4" {{#if (eq course.semester 4)}}selected{{/if}}>Semester 4</option>
+            <option value="5" {{#if (eq course.semester 5)}}selected{{/if}}>Semester 5</option>
+            <option value="6" {{#if (eq course.semester 6)}}selected{{/if}}>Semester 6</option>
+            <option value="7" {{#if (eq course.semester 7)}}selected{{/if}}>Semester 7</option>
+            <option value="8" {{#if (eq course.semester 8)}}selected{{/if}}>Semester 8</option>
+          </select>
+          <span class="form-help">Academic semester when offered.</span>
+        </div>
+      </div>
+
+      <!-- Course Title -->
+      <div class="form-group">
+        <label class="form-label" for="courseTitle">Course Title *</label>
+        <input type="text" 
+               name="title" 
+               id="courseTitle" 
+               class="form-control" 
+               placeholder="e.g. Distributed Operating Systems" 
+               value="{{course.title}}" 
+               required>
+        <span class="form-help">Official course title as printed on the syllabus.</span>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-footer-actions">
+        <a href="/admin/courses" class="btn btn-outline">
+          Cancel
+        </a>
+        <button type="submit" class="btn btn-primary">
+          {{#if isEdit}}
+            <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            <span>Save Changes</span>
+          {{else}}
+            <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            <span>Add Course</span>
+          {{/if}}
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+</div>

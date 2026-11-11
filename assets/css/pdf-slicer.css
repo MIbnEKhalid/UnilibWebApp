@@ -1,0 +1,630 @@
+/* ==========================================================================
+   Clean & Intuitive PDF Chapter Slicer Studio
+   ========================================================================== */
+
+/* Top Bar: Book selector & save */
+.slicer-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow-xs);
+  flex-wrap: wrap;
+}
+
+.slicer-top-left {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex: 1;
+  min-width: 260px;
+}
+
+.slicer-top-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.slicer-top-select {
+  max-width: 500px;
+  height: 36px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.slicer-top-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Studio Layout */
+.slicer-main-layout {
+  display: grid;
+  grid-template-columns: 290px minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+/* Left Sidebar: Chapters List */
+.slicer-chapters-sidebar {
+  position: sticky;
+  top: 72px;
+  z-index: 20;
+}
+
+.slicer-chapters-panel {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 0.9rem;
+  box-shadow: var(--shadow-xs);
+}
+
+.slicer-chapters-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border-color-light);
+}
+
+.slicer-chapters-title {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.slicer-chapters-help {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+  line-height: 1.35;
+}
+
+.slicer-chapters-list {
+  margin-top: 0.65rem;
+  max-height: calc(100vh - 340px);
+  min-height: 160px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding-right: 2px;
+}
+
+.slicer-chapter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.55rem 0.65rem;
+  border: 1.5px solid #e2e8f0;
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.slicer-chapter-row:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.slicer-chapter-row.is-active {
+  border-color: #0d9488;
+  background: #f0fdfa;
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.15);
+}
+
+.slicer-chapter-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.slicer-chapter-name {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.slicer-chapter-row.is-active .slicer-chapter-name {
+  color: #0f766e;
+}
+
+.slicer-chapter-range {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.slicer-chapter-del {
+  background: none;
+  border: none;
+  padding: 2px 6px;
+  font-size: 16px;
+  color: #94a3b8;
+  cursor: pointer;
+  line-height: 1;
+  border-radius: 4px;
+}
+
+.slicer-chapter-del:hover {
+  background: #fef2f2;
+  color: #ef4444;
+}
+
+.slicer-chapters-panel-footer {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-color-light);
+}
+
+/* Right Main Area & Active Chapter Banner */
+.slicer-pages-area {
+  min-width: 0;
+}
+
+.slicer-active-bar {
+  position: sticky;
+  top: 72px;
+  z-index: 19;
+  background: #ffffff;
+  border: 1.5px solid #0d9488;
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.slicer-active-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.slicer-active-label {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--primary-dk);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.slicer-active-title-input {
+  font-family: var(--font);
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--text);
+  border: 1px solid #cbd5e1;
+  border-radius: var(--radius-xs);
+  padding: 4px 8px;
+  width: 170px;
+}
+
+.slicer-active-title-input:focus {
+  border-color: var(--primary);
+  outline: none;
+}
+
+.slicer-active-drive-input {
+  font-family: var(--font);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border: 1px solid #cbd5e1;
+  border-radius: var(--radius-xs);
+  padding: 4px 8px;
+  width: 160px;
+}
+
+.slicer-active-drive-input:focus {
+  border-color: var(--primary);
+  outline: none;
+  color: var(--text);
+}
+
+.slicer-active-pickers {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.slicer-pick-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 5px 10px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  font-family: var(--font);
+}
+
+.slicer-pick-btn.is-active-target {
+  border-color: #0d9488;
+  background: #ccfbf1;
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.25);
+}
+
+.slicer-pick-tag {
+  font-size: 10.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #475569;
+}
+
+.slicer-pick-btn.is-active-target .slicer-pick-tag {
+  color: #0f766e;
+}
+
+.slicer-pick-val {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.slicer-pick-separator {
+  color: #94a3b8;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.slicer-pages-count-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #047857;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  padding: 3px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.slicer-active-status {
+  font-size: 12.5px;
+  color: #334155;
+  font-weight: 600;
+}
+
+.slicer-active-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.slicer-doc-pages-info {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.slicer-mini-select {
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 6px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xs);
+  background: #ffffff;
+}
+
+/* Page Grid & Clean Cards */
+.slicer-loading-notice {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #f0fdfa;
+  border: 1px solid #99f6e4;
+  border-radius: var(--radius);
+  color: #0f766e;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.slicer-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2.5px solid #99f6e4;
+  border-top-color: #0d9488;
+  border-radius: 50%;
+  animation: slicerSpin 0.75s linear infinite;
+}
+
+@keyframes slicerSpin {
+  to { transform: rotate(360deg); }
+}
+
+.slicer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 0.85rem;
+}
+
+.slicer-grid[data-card-size="compact"] {
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.6rem;
+}
+
+.slicer-grid[data-card-size="large"] {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.1rem;
+}
+
+.slicer-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-xs);
+  cursor: pointer;
+  transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+  user-select: none;
+}
+
+.slicer-card:hover {
+  transform: translateY(-2px);
+  border-color: #0d9488;
+  box-shadow: var(--shadow);
+}
+
+.slicer-card.is-in-range {
+  border-color: #0d9488;
+  background: #f0fdfa;
+  box-shadow: 0 2px 10px rgba(13, 148, 136, 0.18);
+}
+
+.slicer-card.is-start {
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.28);
+}
+
+.slicer-card.is-end {
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.28);
+}
+
+.slicer-card.is-other {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.slicer-flash {
+  animation: slicerFlash 0.9s ease;
+}
+
+@keyframes slicerFlash {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.4); }
+}
+
+.slicer-card-view {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1.35;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.slicer-card-canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.slicer-card-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.slicer-card-ribbon {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  right: 6px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.slicer-ribbon-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 999px;
+  color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.slicer-ribbon-tag.is-start {
+  background: #d97706;
+}
+
+.slicer-ribbon-tag.is-end {
+  background: #059669;
+}
+
+.slicer-ribbon-tag.is-both {
+  background: #0f766e;
+}
+
+/* Hover Quick Actions on Page */
+.slicer-card-hover-actions {
+  position: absolute;
+  bottom: 8px;
+  left: 6px;
+  right: 6px;
+  display: none;
+  justify-content: center;
+  gap: 4px;
+}
+
+.slicer-card:hover .slicer-card-hover-actions {
+  display: flex;
+}
+
+.slicer-card-hover-btn {
+  font-family: var(--font);
+  font-size: 10.5px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.slicer-card-hover-btn.is-start {
+  background: #d97706;
+}
+
+.slicer-card-hover-btn.is-end {
+  background: #059669;
+}
+
+.slicer-card-hover-btn.is-zoom {
+  background: #334155;
+  padding: 3px 6px;
+}
+
+.slicer-card-footer {
+  padding: 0.35rem 0.55rem;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.slicer-card-num {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #334155;
+}
+
+.slicer-card-tag {
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748b;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Zoom Modal */
+.slicer-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.7);
+  padding: 1rem;
+}
+
+.slicer-modal-backdrop.is-open {
+  display: flex;
+}
+
+.slicer-modal-dialog {
+  width: 100%;
+  max-width: 860px;
+  max-height: 90vh;
+  background: #ffffff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.slicer-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 1rem;
+  background: #f8fafc;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.slicer-modal-title {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.slicer-modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.slicer-modal-body {
+  flex: 1;
+  overflow: auto;
+  background: #1e293b;
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.slicer-modal-canvas {
+  max-width: 100%;
+  background: #ffffff;
+  border-radius: 4px;
+}
+
+@media (max-width: 900px) {
+  .slicer-main-layout {
+    grid-template-columns: 1fr;
+  }
+  .slicer-chapters-sidebar {
+    position: static;
+  }
+  .slicer-active-bar {
+    top: 56px;
+  }
+}
+

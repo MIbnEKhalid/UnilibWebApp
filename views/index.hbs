@@ -1,0 +1,347 @@
+<div class="unilib-container">
+  
+  <!-- Masthead / Hero: Precision academic archive layout -->
+  <header class="archive-masthead">
+    <div class="masthead-main">
+      <div class="masthead-eyebrow">
+        <span class="eyebrow-dot"></span>
+        <span>University Curriculum Repository</span>
+      </div>
+      <h1 class="masthead-title">Department Academic Library</h1>
+      <p class="masthead-description">
+        Direct departmental repository of verified course textbooks, laboratory manuals, coursework assignments, and official solutions.
+      </p>
+    </div>
+
+    <!-- Tabular Overview Metrics -->
+    <div class="masthead-metrics" aria-label="Library Overview Metrics">
+      <div class="metric-block">
+        <span class="metric-value tabular-nums">{{stats.courses}}</span>
+        <span class="metric-label">Courses</span>
+      </div>
+      <div class="metric-divider" aria-hidden="true"></div>
+      <div class="metric-block">
+        <span class="metric-value tabular-nums">{{stats.resources}}</span>
+        <span class="metric-label">Materials</span>
+      </div>
+      <div class="metric-divider" aria-hidden="true"></div>
+      <div class="metric-block">
+        <span class="metric-value tabular-nums">{{stats.views}}</span>
+        <span class="metric-label">Views</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Semester Navigation (Precision Segmented Switcher) -->
+  <nav class="semester-strip" aria-label="Semester Filter">
+    <div class="semester-strip-track" id="semesterTabs" role="tablist">
+      {{#each semesters}}
+        <button type="button" 
+                role="tab"
+                class="sem-tab {{#if (eq this.semester ../currentSemester)}}active{{/if}}" 
+                data-sem="{{this.semester}}"
+                aria-selected="{{#if (eq this.semester ../currentSemester)}}true{{else}}false{{/if}}">
+          <span class="sem-tab-text">Semester {{this.semester}}</span>
+          <span class="sem-tab-count tabular-nums">{{this.resource_count}}</span>
+        </button>
+      {{/each}}
+      <button type="button" role="tab" class="sem-tab" data-sem="all" aria-selected="false">
+        <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+          <polyline points="2 17 12 22 22 17"/>
+          <polyline points="2 12 12 17 22 12"/>
+        </svg>
+        <span class="sem-tab-text">All Semesters</span>
+        <span class="sem-tab-count tabular-nums">{{stats.resources}}</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Direct Academic Materials Section -->
+  <section class="materials-section" aria-labelledby="activeSemesterTitle">
+
+    <!-- Campus Network Alert Banner (Shown when Google Drive is blocked) -->
+    <div id="driveBlockedBanner" class="campus-network-notice" style="display: none;">
+      <div class="notice-inner">
+        <svg class="ui-svg notice-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        <div class="notice-text">
+          <strong>Campus Network Notice:</strong> Google Drive appears to be firewalled or unreachable on your network. Full book and chapter slice downloads/previews are automatically routed to high-speed <strong>MBKBucket</strong> storage.
+        </div>
+      </div>
+    </div>
+    
+    <!-- Filter & Live Search Toolbar -->
+    <div class="materials-toolbar">
+      <!-- Active Term Status (accessible reference) -->
+      <div class="toolbar-status">
+        <div class="toolbar-title-row">
+          <h2 id="activeSemesterTitle" class="toolbar-title">
+            <span>Semester {{currentSemester}} Materials</span>
+          </h2>
+          <span id="visibleMaterialCount" class="toolbar-count-pill tabular-nums" aria-live="polite"></span>
+        </div>
+        <span id="activeSemesterSubtitle" class="toolbar-subtitle">Verified documents for this academic term</span>
+      </div>
+
+      <div class="toolbar-controls">
+        <!-- Native Category Filter Dropdown -->
+        <div class="filter-dropdown-wrap">
+          <svg class="ui-svg dropdown-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+          </svg>
+          <select id="materialCategorySelect" class="toolbar-select" aria-label="Filter materials by category">
+            <option value="all" selected>All Categories</option>
+            <option value="textbook">Textbooks</option>
+            <option value="lab_manual">Lab Manuals</option>
+            <option value="quiz_assignment">Quizzes &amp; Assignments</option>
+            <option value="solution">Solutions &amp; Keys</option>
+          </select>
+        </div>
+
+        <!-- Live Instant Search Input -->
+        <div class="live-search-box">
+          <svg class="ui-svg search-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input type="search" id="liveMaterialFilter" class="live-search-input" placeholder="Search course, title, topic..." autocomplete="off" spellcheck="false">
+          <button type="button" id="clearSearchBtn" class="search-clear-btn" style="display: none;" aria-label="Clear search" title="Clear search">
+            <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+          <kbd class="search-kbd-pill desktop-only" id="searchKbdPill">/</kbd>
+        </div>
+      </div>
+    </div>
+
+    <!-- Direct Materials List (Optimized via material-card partial) -->
+    <div class="materials-stack" id="directMaterialList">
+      {{#each allMaterials}}
+        {{> material-card this}}
+      {{/each}}
+
+      <!-- Empty State -->
+      <div id="noMaterialsNotice" class="empty-state-box" style="display: none;">
+        <div class="empty-icon-wrap">
+          <svg class="ui-svg" viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/>
+          </svg>
+        </div>
+        <h3 class="empty-title">No Materials Match Filter</h3>
+        <p class="empty-description">
+          No course materials match the selected criteria for this semester. Try choosing another category or clearing your search term.
+        </p>
+        <div class="empty-actions">
+          <button type="button" id="resetFiltersBtn" class="btn btn-outline btn-sm">
+            <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>
+            </svg>
+            <span>Reset Filters</span>
+          </button>
+          {{#if userContext.isAuthenticated}}
+            <a href="/admin/resources/new" class="btn btn-action btn-sm">
+              <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>
+              </svg>
+              <span>Upload New Material</span>
+            </a>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Course Directory Section (Optimized via course-card partial) -->
+  <section class="course-directory-section" id="courseDirectorySection">
+    <div class="section-heading-row">
+      <div>
+        <div class="toolbar-title-row">
+          <h3 class="section-title" id="courseSectionTitle">
+            <svg class="ui-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+            <span id="courseSectionHeadingText">Courses in Active Semester</span>
+          </h3>
+          <span id="visibleCourseCount" class="toolbar-count-pill tabular-nums"></span>
+        </div>
+        <p class="section-subtitle">
+          Select any course to view its comprehensive syllabus, specific lab guidelines, and dedicated archives.
+        </p>
+      </div>
+    </div>
+
+    <!-- Course Grid using course-card partial -->
+    <div class="courses-grid" id="courseGrid">
+      {{#each semesters}}
+        {{#each this.courses}}
+          {{> course-card this}}
+        {{/each}}
+      {{/each}}
+    </div>
+  </section>
+
+</div>
+
+<!-- Client-side Interactive Filter Script -->
+<script>
+  (function() {
+    var currentSem = "{{currentSemester}}" || "1";
+    var activeSem = currentSem;
+    var activeCategory = "all";
+    var searchQuery = "";
+
+    var semTabs = document.querySelectorAll(".sem-tab");
+    var categorySelect = document.getElementById("materialCategorySelect");
+    var materials = document.querySelectorAll(".material-item");
+    var courses = document.querySelectorAll(".course-card");
+    var semTitle = document.getElementById("activeSemesterTitle");
+    var semSubtitle = document.getElementById("activeSemesterSubtitle");
+    var visibleMaterialCount = document.getElementById("visibleMaterialCount");
+    var visibleCourseCount = document.getElementById("visibleCourseCount");
+    var courseSectionHeadingText = document.getElementById("courseSectionHeadingText");
+    var emptyNotice = document.getElementById("noMaterialsNotice");
+    var liveFilterInput = document.getElementById("liveMaterialFilter");
+    var clearSearchBtn = document.getElementById("clearSearchBtn");
+    var searchKbdPill = document.getElementById("searchKbdPill");
+    var resetFiltersBtn = document.getElementById("resetFiltersBtn");
+
+    function applyFilter() {
+      var visibleCount = 0;
+      var visibleCourses = 0;
+
+      materials.forEach(function(item) {
+        var itemSem = item.getAttribute("data-semester");
+        var itemType = item.getAttribute("data-type");
+        var hasSolution = item.getAttribute("data-has-solution") === "true";
+
+        var semMatch = (activeSem === "all" || itemSem === activeSem);
+        var catMatch = (activeCategory === "all" || 
+                        itemType === activeCategory || 
+                        (activeCategory === "solution" && hasSolution));
+        var searchMatch = !searchQuery || item.textContent.toLowerCase().indexOf(searchQuery) !== -1;
+
+        if (semMatch && catMatch && searchMatch) {
+          item.style.display = "block";
+          visibleCount++;
+        } else {
+          item.style.display = "none";
+        }
+      });
+
+      // Filter course cards
+      courses.forEach(function(card) {
+        var cardSem = card.getAttribute("data-semester");
+        var semMatch = (activeSem === "all" || cardSem === activeSem);
+        var searchMatch = !searchQuery || card.textContent.toLowerCase().indexOf(searchQuery) !== -1;
+        if (semMatch && searchMatch) {
+          card.style.display = "flex";
+          visibleCourses++;
+        } else {
+          card.style.display = "none";
+        }
+      });
+
+      // Empty notice toggle
+      if (emptyNotice) {
+        emptyNotice.style.display = visibleCount === 0 ? "block" : "none";
+      }
+
+      // Update counts
+      if (visibleMaterialCount) {
+        visibleMaterialCount.textContent = visibleCount + (visibleCount === 1 ? " item" : " items");
+      }
+      if (visibleCourseCount) {
+        visibleCourseCount.textContent = visibleCourses + (visibleCourses === 1 ? " course" : " courses");
+      }
+
+      // Search clear button toggle
+      if (clearSearchBtn) {
+        clearSearchBtn.style.display = searchQuery ? "inline-flex" : "none";
+      }
+      if (searchKbdPill) {
+        searchKbdPill.style.display = searchQuery ? "none" : "";
+      }
+
+      // Update titles
+      if (semTitle) {
+        var titleText = activeSem === "all" ? "All Academic Materials" : ("Semester " + activeSem + " Materials");
+        if (searchQuery) {
+          titleText += " — Filtered";
+        }
+        semTitle.querySelector("span").textContent = titleText;
+      }
+      if (semSubtitle) {
+        semSubtitle.textContent = activeSem === "all" 
+          ? "Browse university textbooks, lab manuals, quizzes, and solutions across all semesters."
+          : ("Directly browse all academic resources available for Semester " + activeSem + ".");
+      }
+      if (courseSectionHeadingText) {
+        courseSectionHeadingText.textContent = activeSem === "all"
+          ? "All Curriculum Courses"
+          : ("Courses in Semester " + activeSem);
+      }
+    }
+
+    // Live search input handling
+    if (liveFilterInput) {
+      liveFilterInput.addEventListener("input", function(e) {
+        searchQuery = (e.target.value || "").toLowerCase().trim();
+        applyFilter();
+      });
+    }
+
+    if (clearSearchBtn && liveFilterInput) {
+      clearSearchBtn.addEventListener("click", function() {
+        liveFilterInput.value = "";
+        searchQuery = "";
+        applyFilter();
+        liveFilterInput.focus();
+      });
+    }
+
+    if (resetFiltersBtn) {
+      resetFiltersBtn.addEventListener("click", function() {
+        activeCategory = "all";
+        searchQuery = "";
+        if (liveFilterInput) liveFilterInput.value = "";
+        if (categorySelect) categorySelect.value = "all";
+        applyFilter();
+      });
+    }
+
+    // Category Dropdown Change Handling
+    if (categorySelect) {
+      categorySelect.addEventListener("change", function(e) {
+        activeCategory = e.target.value || "all";
+        applyFilter();
+      });
+    }
+
+    // Tab Click Handling
+    semTabs.forEach(function(tab) {
+      tab.addEventListener("click", function() {
+        semTabs.forEach(function(t) { 
+          t.classList.remove("active");
+          t.setAttribute("aria-selected", "false");
+        });
+        tab.classList.add("active");
+        tab.setAttribute("aria-selected", "true");
+        activeSem = tab.getAttribute("data-sem");
+        applyFilter();
+        if (tab.scrollIntoView) {
+          tab.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+        }
+      });
+    });
+
+    // Initial Filter Execution
+    applyFilter();
+  })();
+</script>

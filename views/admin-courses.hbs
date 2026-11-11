@@ -1,0 +1,166 @@
+<div class="unilib-container admin-layout">
+
+  <!-- Header -->
+  <header class="admin-page-header">
+    <div>
+      <div class="admin-header-pre">
+        <span class="admin-kicker">Faculty &amp; Admin Console</span>
+      </div>
+      <h1 class="admin-page-title">
+        Course Directory Management
+      </h1>
+      <p class="admin-page-subtitle">
+        Curriculum course catalog: view, create, and maintain courses across semesters.
+      </p>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="admin-actions-bar">
+      <a href="/admin/courses/new" class="btn btn-action btn-sm">
+        <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        <span>Add Course</span>
+      </a>
+      <a href="/admin/resources/new" class="btn btn-ghost btn-sm">
+        <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>
+        </svg>
+        <span>Upload Material</span>
+      </a>
+      <a href="/" class="btn btn-ghost btn-sm" title="View public library">
+        <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+        </svg>
+        <span>Public Archive</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Modular Admin Navigation Partial -->
+  {{> admin-nav activeAdminTab="courses"}}
+
+  <!-- Modular Flash Messages Partial -->
+  {{> flash-messages}}
+
+  <!-- Courses Table Card -->
+  <div class="admin-panel-card">
+    
+    <!-- Filter Bar -->
+    <div class="admin-toolbar">
+      <h2 class="admin-panel-heading">
+        <span>Department Courses</span>
+        <span class="admin-count-badge tabular-nums">({{totalCourses}} total)</span>
+      </h2>
+
+      <!-- Search & Filters Form -->
+      <form action="/admin/courses" method="GET" class="admin-filter-form">
+        <input type="text" name="q" class="admin-input admin-input-search" placeholder="Search code or title..." value="{{query}}">
+        
+        <select name="semester" class="admin-select">
+          <option value="">All Semesters</option>
+          {{#each semesterList}}
+            <option value="{{this}}" {{#if (eq this ../selectedSemester)}}selected{{/if}}>
+              Semester {{this}}
+            </option>
+          {{/each}}
+        </select>
+
+        <button type="submit" class="btn btn-action btn-sm">
+          <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+          </svg>
+          <span>Filter</span>
+        </button>
+
+        {{#if (or query selectedSemester)}}
+          <a href="/admin/courses" class="btn btn-ghost btn-sm" title="Clear Filters">
+            <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+            <span>Reset</span>
+          </a>
+        {{/if}}
+      </form>
+    </div>
+
+    <!-- Courses Table -->
+    {{#if courses.length}}
+      <div class="table-responsive">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Course Code</th>
+              <th>Semester</th>
+              <th>Course Title</th>
+              <th>Textbooks</th>
+              <th>Manuals</th>
+              <th>Quizzes</th>
+              <th>Solutions</th>
+              <th>Total</th>
+              <th class="text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each courses}}
+              <tr>
+                <td class="nowrap">
+                  <a href="/courses/{{this.code}}" class="table-course-code" title="View Public Course Archive">
+                    {{this.code}}
+                  </a>
+                </td>
+                <td class="nowrap">
+                  <span class="course-semester-pill">Sem {{this.semester}}</span>
+                </td>
+                <td>
+                  <span class="table-title">{{this.title}}</span>
+                </td>
+                <td class="tabular-nums table-muted">{{this.textbooks}}</td>
+                <td class="tabular-nums table-muted">{{this.lab_manuals}}</td>
+                <td class="tabular-nums table-muted">{{this.quiz_assignments}}</td>
+                <td class="tabular-nums table-muted">{{this.solutions}}</td>
+                <td class="nowrap tabular-nums">
+                  <span class="table-total-count">{{this.resource_count}}</span>
+                </td>
+                <td class="nowrap text-right">
+                  <div class="table-action-row">
+                    <a href="/courses/{{this.code}}" class="btn btn-ghost btn-xs" title="View Course Page">
+                      <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+                      </svg>
+                    </a>
+                    <a href="/admin/resources/new?course_code={{this.code}}" class="btn btn-ghost btn-xs" title="Upload Material to Course">
+                      <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>
+                      </svg>
+                    </a>
+                    <a href="/admin/courses/{{this.code}}/edit" class="btn btn-ghost btn-xs" title="Edit Course Details">
+                      <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                      </svg>
+                    </a>
+                    <form action="/admin/courses/{{this.code}}/delete" method="POST" onsubmit="return confirm('Permanently remove course {{this.code}} from curriculum directory?');" style="display: inline;">
+                      <button type="submit" class="btn btn-danger-ghost btn-xs" title="Delete Course">
+                        <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        </svg>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    {{else}}
+      <div class="empty-state-box">
+        <h3 class="empty-title">No Courses Match Filter</h3>
+        <p class="empty-description">Try adjusting your filter, or add a new course to the curriculum.</p>
+        <a href="/admin/courses/new" class="btn btn-action btn-sm">Add New Course</a>
+      </div>
+    {{/if}}
+
+  </div>
+
+</div>

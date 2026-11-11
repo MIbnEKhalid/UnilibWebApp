@@ -1,129 +1,84 @@
-import { describe, test, expect, beforeAll, afterAll } from "vitest";
+import { describe, test, expect } from "vitest";
 import request from "supertest";
-import { initDatabase, closeDatabase } from "../src/db/index.js";
-import { getSqliteConnection } from "../src/db/connection.js";
-import { initSqliteSchema } from "../src/db/schema/init.js";
+import app from "../src/app.js";
+import { Permissions } from "../src/permissions.js";
 
-describe("UnilibWebApp HTTP Integration Tests", () => {
-  let app;
-  let bookRepository;
-  let seededBook;
-  let seededBook2;
-
-  beforeAll(async () => {
-    process.env.DB_TYPE = "sqlite";
-    process.env.SQLITE_PATH = ":memory:";
-    process.env.NODE_ENV = "test";
-    process.env.DEFAULT_SEMESTER = "Semester 4";
-
-    // Initialize in-memory SQLite database
-    const sqliteDb = await getSqliteConnection(":memory:");
-    initSqliteSchema(sqliteDb);
-
-    const repos = await initDatabase({
-      dbType: "sqlite",
-      sqlitePath: ":memory:",
-    });
-    bookRepository = repos.bookRepository;
-
-    // Seed sample books
-    seededBook = await bookRepository.create({
-      name: "Operating Systems Principles",
-      category: "CourseBooks",
-      description: "Concepts and Design",
-      image_url: "os.webp",
-      link: "https://example.com/os.pdf",
-      semester: ["Semester 1", "Semester 4"],
-      main: true,
-      visible: true,
-    });
-
-    seededBook2 = await bookRepository.create({
-      name: "Engineering Mechanics",
-      category: "CourseBooks",
-      description: "Statics and Dynamics",
-      image_url: "mechanics.webp",
-      link: "https://example.com/mechanics.pdf",
-      semester: ["Semester 2"],
-      main: false,
-      visible: true,
-    });
-
-    const appModule = await import("../src/app.js");
-    app = appModule.default;
+describe("Unilib Core Application Tests", () => {
+  test("Permissions manifest has required features and roles", () => {
+    expect(Permissions).toBeDefined();
+    expect(Permissions.courses).toBeDefined();
+    expect(Permissions.courses.create).toBeDefined();
+    expect(Permissions.resources).toBeDefined();
+    expect(Permissions.resources.create).toBeDefined();
+    expect(Permissions.resources.delete).toBeDefined();
+    expect(Permissions.admin).toBeDefined();
+    expect(Permissions.storage).toBeDefined();
+    expect(Permissions.admindb).toBeDefined();
   });
 
-  afterAll(async () => {
-    await closeDatabase();
+  test("Storage client service exports all expected storage methods", async () => {
+    const storageModule = await import("../src/services/storage.service.js");
+    expect(storageModule.storageService).toBeDefined();
+    expect(typeof storageModule.storageService.upload).toBe("function");
+    expect(typeof storageModule.storageService.download).toBe("function");
+    expect(typeof storageModule.storageService.delete).toBe("function");
   });
 
-  describe("Public Catalog Pages", () => {
-    test("GET / renders home page with default Semester 4 book", async () => {
-      const res = await request(app).get("/");
-      expect(res.status).toBe(200);
-      expect(res.text).toContain("Operating Systems Principles");
-    });
-
-    test("GET /?semester=Semester2 filters books for Semester 2", async () => {
-      const res = await request(app).get("/?semester=Semester2");
-      expect(res.status).toBe(200);
-      expect(res.text).toContain("Engineering Mechanics");
-    });
-
-    test("GET /?semester=all&category=CourseBooks filters by category across all semesters", async () => {
-      const res = await request(app).get("/?semester=all&category=CourseBooks");
-      expect(res.status).toBe(200);
-      expect(res.text).toContain("Operating Systems Principles");
-      expect(res.text).toContain("Engineering Mechanics");
-    });
-
-    test("GET /books/:id renders single book page", async () => {
-      const res = await request(app).get(`/books/${seededBook.id}`);
-      expect(res.status).toBe(200);
-      expect(res.text).toContain("Operating Systems Principles");
-    });
-
-    test("GET /?search=Operating returns matching search results", async () => {
-      const res = await request(app).get("/?search=Operating");
-      expect(res.status).toBe(200);
-      expect(res.text).toContain("Operating Systems Principles");
-    });
+  test("GET /mbkbucket is registered and guarded", async () => {
+    const res = await request(app)
+      .get("/mbkbucket")
+      .set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+    // Should respond (redirect to login or render bucket dashboard)
+    expect([200, 302, 401, 403]).toContain(res.status);
   });
 
-  describe("API Endpoints", () => {
-    test("POST /api/books/:id/view increments book views", async () => {
-      const res = await request(app).post(`/api/books/${seededBook.id}/view`);
-      expect(res.status).toBe(200);
-      expect(res.body.success).toBe(true);
-    });
-
-    test("POST /api/books/:id/download responds with success", async () => {
-      const res = await request(app).post(`/api/books/${seededBook.id}/download`);
-      expect(res.status).toBe(200);
-      expect(res.body.success).toBe(true);
-    });
-
-    test("GET /api/non-existent-unilib-route returns standardized JSON 404 envelope", async () => {
-      const res = await request(app).get("/api/non-existent-unilib-route");
-      expect(res.status).toBe(404);
-      expect(res.headers["content-type"]).toContain("application/json");
-      expect(res.body.success).toBe(false);
-      expect(res.body.error).toBeDefined();
-      expect(res.body.error.code).toBe("ROUTE_NOT_FOUND");
-    });
+  test("GET /admin/db is registered and guarded", async () => {
+    const res = await request(app)
+      .get("/admin/db")
+      .set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+    expect([200, 301, 302, 401, 403]).toContain(res.status);
   });
 
-  describe("Static Assets & Robots", () => {
-    test("GET /robots.txt returns valid robots file", async () => {
-      const res = await request(app).get("/robots.txt");
-      expect(res.status).toBe(200);
-      expect(res.text).toContain("User-agent");
-    });
+  test("GET / renders the Unilib landing page", async () => {
+    const res = await request(app).get("/");
+    expect(res.status).toBe(200);
+    expect(res.text).toContain("Unilib");
+    expect(res.text).toContain("Department Academic Library");
+  });
 
-    test("GET /assets/images/icon.svg serves static branding icon", async () => {
-      const res = await request(app).get("/assets/images/icon.svg");
-      expect(res.status).toBe(200);
-      expect(res.headers["content-type"]).toContain("svg");
-    });
+  test("GET /api/health returns health status envelope", async () => {
+    const res = await request(app)
+      .get("/api/health")
+      .set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+    
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data.status).toBeDefined();
+    expect(res.body.data.database).toBeDefined();
+  });
+
+  test("GET /unknown-route returns 404 handler", async () => {
+    const res = await request(app)
+      .get("/this-route-does-not-exist-at-all-404")
+      .set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+    
+    expect(res.status).toBe(404);
+  });
+
+  test("GET /api/unknown-endpoint returns JSON 404 envelope", async () => {
+    const res = await request(app)
+      .get("/api/v1/non-existent-endpoint")
+      .set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+
+    expect(res.status).toBe(404);
+    expect(res.body.success).toBe(false);
+  });
+
+  test("Malicious scanner user-agents are rejected by bot protection", async () => {
+    const res = await request(app)
+      .get("/")
+      .set("User-Agent", "sqlmap/1.5.2#stable");
+
+    expect([403, 400]).toContain(res.status);
   });
 });

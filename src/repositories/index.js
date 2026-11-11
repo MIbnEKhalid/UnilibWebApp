@@ -1,4 +1,3 @@
-export { BookRepository } from "./book.repository.js";
-export { SectionRepository } from "./section.repository.js";
-export { TasjeelRepository } from "./tasjeel.repository.js";
-export { bookRepository, sectionRepository, tasjeelRepository } from "../db/index.js";
+export { CourseRepository, courseRepository } from "./course.repository.js";
+export { ResourceRepository, resourceRepository } from "./resource.repository.js";
+export default { CourseRepository, courseRepository, ResourceRepository, resourceRepository };

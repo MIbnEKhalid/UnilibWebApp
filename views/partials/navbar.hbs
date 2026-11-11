@@ -1,0 +1,82 @@
+<header class="top-nav">
+  <div class="unilib-container">
+    <div class="top-nav-inner">
+      <!-- Brand Logo -->
+      <a href="/" class="logo" aria-label="Unilib Home">
+        <div class="logo-mark">
+          <img src="/assets/images/icon.svg" alt="Icon">
+        </div>
+        <div class="logo-text-group">
+          <span class="logo-title">Unilib</span>
+          <span class="logo-badge desktop-only">Archive</span>
+        </div>
+      </a>
+
+      <!-- Navigation Actions -->
+      <div class="top-nav-actions">
+        <!-- Campus Network Mirror Status Indicator -->
+        <button type="button" 
+                class="network-status-pill checking" 
+                id="networkStatusIndicator" 
+                onclick="window.toggleMirrorOverride && window.toggleMirrorOverride();" 
+                title="Checking campus network access...">
+          <span class="status-pulse-dot"></span>
+          <span class="status-label" id="networkStatusLabel">Detecting Network...</span>
+        </button>
+
+        <!-- Mobile Quick Search Trigger -->
+        <button type="button"
+                class="btn btn-outline btn-sm btn-icon mobile-only"
+                onclick="window.focusArchiveSearch && window.focusArchiveSearch();"
+                title="Search materials"
+                aria-label="Search materials">
+          <svg class="ui-svg" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.35-4.35"/>
+          </svg>
+        </button>
+
+        <!-- Desktop Keyboard Shortcut Hint -->
+        <button type="button"
+                class="nav-shortcut-hint desktop-only"
+                onclick="window.focusArchiveSearch && window.focusArchiveSearch();"
+                title="Press / or Ctrl+K to search">
+          <svg class="ui-svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.35-4.35"/>
+          </svg>
+          <span>Search</span>
+          <kbd class="shortcut-key">/</kbd>
+        </button>
+
+        {{#if userContext.isAuthenticated}}
+          <a href="/admin" class="btn btn-outline btn-sm" title="Admin Console">
+            <svg class="ui-svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="4" x2="4" y1="21" y2="14"/><line x1="4" x2="4" y1="10" y2="3"/>
+              <line x1="12" x2="12" y1="21" y2="12"/><line x1="12" x2="12" y1="8" y2="3"/>
+              <line x1="20" x2="20" y1="21" y2="16"/><line x1="20" x2="20" y1="12" y2="3"/>
+              <line x1="1" x2="7" y1="14" y2="14"/><line x1="9" x2="15" y1="8" y2="8"/>
+              <line x1="17" x2="23" y1="16" y2="16"/>
+            </svg>
+            <span class="desktop-only">Admin Console</span>
+          </a>
+          <a href="/logout" class="btn btn-outline btn-sm btn-icon" title="Sign out" aria-label="Sign out">
+            <svg class="ui-svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" x2="9" y1="12" y2="12"/>
+            </svg>
+          </a>
+        {{else}}
+          <a href="/admin/unilib" class="btn btn-primary btn-sm" title="Faculty & Admin Access" aria-label="Admin Portal">
+            <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <span class="desktop-only">Admin Portal</span>
+          </a>
+        {{/if}}
+      </div>
+    </div>
+  </div>
+</header>

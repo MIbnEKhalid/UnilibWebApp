@@ -1,83 +1,32 @@
--- First The DB should have PrereQuisite SQL Query 
--- for mbkauthe from mbkauthe/docs/schema/.
+-- Unilib Neon PostgreSQL Schema
+-- Resources are cataloged by course_code (courses are configured via src/config/courses.json)
 
--- PostgreSQL Schema for UnilibWebApp
-
-DO $$ BEGIN
-  CREATE TYPE semesters AS ENUM (
-    'Semester 1',
-    'Semester 2',
-    'Semester 3',
-    'Semester 4',
-    'Semester 5',
-    'Semester 6',
-    'Semester 7',
-    'Semester 8'
-  );
-EXCEPTION
-  WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
-  CREATE TYPE bookcategories AS ENUM (
-    'All',
-    'CourseBooks',
-    'Softwares',
-    'LabManuals',
-    'Other'
-  );
-EXCEPTION
-  WHEN duplicate_object THEN null;
-END $$;
-
-CREATE TABLE IF NOT EXISTS unilib_books (
-  id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  username character varying(50),
-  name TEXT NOT NULL,
-  category bookcategories NOT NULL,
-  description TEXT,
-  image_url TEXT NOT NULL DEFAULT 'BookCover_Template.webp',
-  link TEXT NOT NULL,
-  semester semesters[] NOT NULL DEFAULT ARRAY['Semester 3']::semesters[],
-  main BOOLEAN NOT NULL DEFAULT FALSE,
-  visible BOOLEAN NOT NULL DEFAULT TRUE,
-  views INTEGER NOT NULL DEFAULT 0,
-  sections JSONB DEFAULT '[]'::jsonb,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS unilib_resources (
+    id SERIAL PRIMARY KEY,
+    course_code VARCHAR(32) NOT NULL, -- e.g. 'CPE2123', 'CPE2323'
+    type VARCHAR(32) NOT NULL,        -- 'textbook', 'lab_manual', 'quiz_assignment', 'solution'
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    file_key TEXT NOT NULL,
+    file_name TEXT NOT NULL,
+    file_size BIGINT NOT NULL DEFAULT 0,
+    mime_type VARCHAR(128),
+    parent_resource_id INTEGER REFERENCES unilib_resources(id) ON DELETE SET NULL,
+    drive_url TEXT,
+    sections JSONB,
+    is_visible BOOLEAN NOT NULL DEFAULT TRUE,
+    views_count INTEGER NOT NULL DEFAULT 0,
+    uploader_id VARCHAR(128) DEFAULT 'admin',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_unilib_books_category ON unilib_books(category);
-CREATE INDEX IF NOT EXISTS idx_unilib_books_main ON unilib_books(main);
-CREATE INDEX IF NOT EXISTS idx_unilib_books_visible ON unilib_books(visible);
-CREATE INDEX IF NOT EXISTS idx_unilib_books_category_main ON unilib_books(category, main);
-CREATE INDEX IF NOT EXISTS idx_unilib_books_visible_category ON unilib_books(visible, category);
-CREATE INDEX IF NOT EXISTS idx_unilib_books_created_at ON unilib_books(created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_unilib_books_views ON unilib_books(views DESC);
-
-CREATE TABLE IF NOT EXISTS unilib_subjects (
-  id SERIAL PRIMARY KEY,
-  course_id TEXT UNIQUE NOT NULL,
-  subject TEXT NOT NULL,
-  href TEXT NOT NULL,
-  semester TEXT NOT NULL DEFAULT 'Semester 1',
-  last_synced TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE INDEX IF NOT EXISTS idx_unilib_subjects_course_id ON unilib_subjects(course_id);
-CREATE INDEX IF NOT EXISTS idx_unilib_subjects_semester ON unilib_subjects(semester);
-
-CREATE TABLE IF NOT EXISTS unilib_materials (
-  id SERIAL PRIMARY KEY,
-  subject_id INTEGER NOT NULL REFERENCES unilib_subjects(id) ON DELETE CASCADE,
-  name TEXT NOT NULL,
-  href TEXT NOT NULL,
-  last_synced TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE INDEX IF NOT EXISTS idx_unilib_materials_subject_id ON unilib_materials(subject_id);
-
-CREATE TABLE IF NOT EXISTS unilib_custlogin (
-  id SERIAL PRIMARY KEY,
-  session TEXT,
-  last_synced TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
-);
+CREATE INDEX IF NOT EXISTS idx_unilib_resources_course_code ON unilib_resources(course_code);
+CREATE INDEX IF NOT EXISTS idx_unilib_resources_course_type ON unilib_resources(course_code, type);
+CREATE INDEX IF NOT EXISTS idx_unilib_resources_parent ON unilib_resources(parent_resource_id);
+CREATE INDEX IF NOT EXISTS idx_unilib_resources_sections ON unilib_resources USING GIN (sections);
+CREATE INDEX IF NOT EXISTS idx_unilib_resources_visible ON unilib_resources(is_visible);
+CREATE INDEX IF NOT EXISTS idx_unilib_resources_created_at ON unilib_resources(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_unilib_resources_course_created ON unilib_resources(course_code, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_unilib_resources_upper_course ON unilib_resources(UPPER(course_code));
+CREATE INDEX IF NOT EXISTS idx_unilib_resources_upper_course_type ON unilib_resources(UPPER(course_code), type);

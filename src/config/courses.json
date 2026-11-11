@@ -1,0 +1,327 @@
+[
+  {
+    "code": "CPE1021",
+    "title": "Workshop Practice",
+    "semester": 1
+  },
+  {
+    "code": "CPEG1010",
+    "title": "Taleem ul Quran",
+    "semester": 1
+  },
+  {
+    "code": "CPEG1012",
+    "title": "Islamic Studies/Ethics",
+    "semester": 1
+  },
+  {
+    "code": "CPEG1113",
+    "title": "Functional English",
+    "semester": 1
+  },
+  {
+    "code": "CPEG1311",
+    "title": "Applied Physics Lab",
+    "semester": 1
+  },
+  {
+    "code": "CPEG1312",
+    "title": "Applied Physics",
+    "semester": 1
+  },
+  {
+    "code": "CPEG1513",
+    "title": "Calculus and Analytical Geometry",
+    "semester": 1
+  },
+  {
+    "code": "CPEG1612",
+    "title": "Applications of Information and Communication Technologies",
+    "semester": 1
+  },
+  {
+    "code": "CYG1611",
+    "title": "Application of Information and Communication Technologies Lab",
+    "semester": 1
+  },
+  {
+    "code": "HCPE1071",
+    "title": "Occupational Health and Safety",
+    "semester": 1
+  },
+  {
+    "code": "CCPE1121",
+    "title": "Computer Programming Lab",
+    "semester": 2
+  },
+  {
+    "code": "CCPE1122",
+    "title": "Computer Programming",
+    "semester": 2
+  },
+  {
+    "code": "CPE1211",
+    "title": "Circuit Analysis Lab",
+    "semester": 2
+  },
+  {
+    "code": "CPE1213",
+    "title": "Circuit Analysis",
+    "semester": 2
+  },
+  {
+    "code": "CPEG1022",
+    "title": "Ideology and Constitution of Pakistan",
+    "semester": 2
+  },
+  {
+    "code": "CPEG1412",
+    "title": "Sociology",
+    "semester": 2
+  },
+  {
+    "code": "MCPE1032",
+    "title": "Linear Algebra",
+    "semester": 2
+  },
+  {
+    "code": "MCPE1043",
+    "title": "Applied Differential Equations",
+    "semester": 2
+  },
+  {
+    "code": "CPE1011",
+    "title": "Engineering Drawing ",
+    "semester": 3
+  },
+  {
+    "code": "CPE2053",
+    "title": "Discrete Structures",
+    "semester": 3
+  },
+  {
+    "code": "CPE2121",
+    "title": "Object Oriented Programming Lab ",
+    "semester": 3
+  },
+  {
+    "code": "CPE2123",
+    "title": "Object Oriented Programming ",
+    "semester": 3
+  },
+  {
+    "code": "CPE2231",
+    "title": "Electronic Devices and Circuits Lab",
+    "semester": 3
+  },
+  {
+    "code": "CPE2233",
+    "title": "Electronic Devices and Circuits",
+    "semester": 3
+  },
+  {
+    "code": "CPEG1212",
+    "title": "Personal Grooming",
+    "semester": 3
+  },
+  {
+    "code": "CPEG2812",
+    "title": "Civics and Professional Ethics",
+    "semester": 3
+  },
+  {
+    "code": "MCPE2053",
+    "title": "Complex Variables and Transforms",
+    "semester": 3
+  },
+  {
+    "code": "CPE2131",
+    "title": "Data Structures and Algorithms Lab",
+    "semester": 4
+  },
+  {
+    "code": "CPE2133",
+    "title": "Data Structures and Algorithms",
+    "semester": 4
+  },
+  {
+    "code": "CPE2311",
+    "title": "Digital Logic Design Lab ",
+    "semester": 4
+  },
+  {
+    "code": "CPE2313",
+    "title": "Digital Logic Design ",
+    "semester": 4
+  },
+  {
+    "code": "CPE3411",
+    "title": "Operating Systems Lab ",
+    "semester": 4
+  },
+  {
+    "code": "CPEG2523",
+    "title": "Probability and Statistics",
+    "semester": 4
+  },
+  {
+    "code": "CY3413",
+    "title": "Operating System",
+    "semester": 4
+  },
+  {
+    "code": "MCPE3072",
+    "title": "Numerical Analysis",
+    "semester": 4
+  },
+  {
+    "code": "CPE2321",
+    "title": "Computer Architecture and Organization Lab",
+    "semester": 5
+  },
+  {
+    "code": "CPE2323",
+    "title": "Computer Architecture and Organization",
+    "semester": 5
+  },
+  {
+    "code": "CPE2611",
+    "title": "Signals and Systems Lab",
+    "semester": 5
+  },
+  {
+    "code": "CPE2613",
+    "title": "Signals and Systems",
+    "semester": 5
+  },
+  {
+    "code": "CPE3331",
+    "title": "Microprocessors and Interfacing Lab",
+    "semester": 5
+  },
+  {
+    "code": "CPE3333",
+    "title": "Microprocessors and Interfacing",
+    "semester": 5
+  },
+  {
+    "code": "CPE4523",
+    "title": "Software Engineering",
+    "semester": 5
+  },
+  {
+    "code": "CPEG1123",
+    "title": "Expository Writing",
+    "semester": 5
+  },
+  {
+    "code": "CPE3621",
+    "title": "Digital Signal Processing Lab",
+    "semester": 6
+  },
+  {
+    "code": "CPE3623",
+    "title": "Digital Signal Processing",
+    "semester": 6
+  },
+  {
+    "code": "CPE3631",
+    "title": "Artificial Intelligence Lab",
+    "semester": 6
+  },
+  {
+    "code": "CPE3633",
+    "title": "Artificial Intelligence",
+    "semester": 6
+  },
+  {
+    "code": "CPE4511",
+    "title": "Database Management System Lab",
+    "semester": 6
+  },
+  {
+    "code": "CPE4513",
+    "title": "Database Management System",
+    "semester": 6
+  },
+  {
+    "code": "CPE4711",
+    "title": "Computer Communications and Networks Lab",
+    "semester": 6
+  },
+  {
+    "code": "CPE4713",
+    "title": "Computer Communications and Networks",
+    "semester": 6
+  },
+  {
+    "code": "CPEG1032",
+    "title": "Pakistan Studies",
+    "semester": 6
+  },
+  {
+    "code": "CCPE4193",
+    "title": "Mobile Application Development",
+    "semester": 7
+  },
+  {
+    "code": "CPE3341",
+    "title": "Digital Design Lab",
+    "semester": 7
+  },
+  {
+    "code": "CPE3343",
+    "title": "Digital Design",
+    "semester": 7
+  },
+  {
+    "code": "CPE4912",
+    "title": "Design Project (Part-I)",
+    "semester": 7
+  },
+  {
+    "code": "CPE4XX3",
+    "title": "Depth Elective-I",
+    "semester": 7
+  },
+  {
+    "code": "CPEG4712",
+    "title": "Entrepreneurship",
+    "semester": 7
+  },
+  {
+    "code": "HCPE4062",
+    "title": "Project Management",
+    "semester": 7
+  },
+  {
+    "code": "CPE3XX1",
+    "title": "Depth Elective-II Lab",
+    "semester": 8
+  },
+  {
+    "code": "CPE3XX3",
+    "title": "Depth Elective-II",
+    "semester": 8
+  },
+  {
+    "code": "CPE4924",
+    "title": "Design Project (Part-II)",
+    "semester": 8
+  },
+  {
+    "code": "CPE4XX1",
+    "title": "Depth Elective-III Lab",
+    "semester": 8
+  },
+  {
+    "code": "CPE4XX3B",
+    "title": "Depth Elective-III",
+    "semester": 8
+  },
+  {
+    "code": "CPE4XX4",
+    "title": "Depth Elective-IV",
+    "semester": 8
+  }
+]

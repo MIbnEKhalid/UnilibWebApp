@@ -1,0 +1,199 @@
+<article class="card material-card material-item type-{{this.type}}{{#if this.solutions.length}} has-solutions{{/if}}"
+         data-semester="{{this.course_semester}}"
+         data-type="{{this.type}}"
+         data-category="{{this.type}}"
+         data-course="{{this.course_code}}"
+         data-has-solution="{{#if this.solutions.length}}true{{else}}false{{/if}}"
+         data-has-drive="{{#if this.drive_url}}true{{else}}false{{/if}}">
+  
+  <div class="material-card-body">
+    <div class="material-lead">
+      <!-- Format Badge (mbkbucket file icon stamp) -->
+      <div class="file-icon-badge format-{{this.file_badge.label}}" aria-label="Format: {{this.file_badge.label}}">
+        <span class="file-format-text">{{this.file_badge.label}}</span>
+      </div>
+
+      <!-- Main Content -->
+      <div class="material-content">
+        <!-- Metadata Row -->
+        <div class="material-meta-row">
+          {{#if this.course_code}}
+            <a href="/courses/{{this.course_code}}" class="course-code-badge" title="{{this.course_code}}: {{this.course_title}}">
+              <span class="course-code-text">{{this.course_code}}</span>
+            </a>
+          {{/if}}
+
+          <span class="category-pill cat-{{this.type}}">
+            {{#if (eq this.type "textbook")}}Textbook{{/if}}
+            {{#if (eq this.type "lab_manual")}}Lab Manual{{/if}}
+            {{#if (eq this.type "quiz_assignment")}}Quiz / Assignment{{/if}}
+            {{#if (eq this.type "solution")}}Solution / Key{{/if}}
+          </span>
+
+          {{#if this.solutions.length}}
+            <span class="has-solution-pill" title="Verified solution attached">
+              <svg class="ui-svg" viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              <span>Solution Included</span>
+            </span>
+          {{/if}}
+
+          {{#if this.has_sections}}
+            <span class="has-sections-pill" title="Individual chapters available for separate download">
+              <svg class="ui-svg" viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+                <path d="M6 6h10"/><path d="M6 10h10"/>
+              </svg>
+              <span>{{this.sections_count}} Chapters</span>
+            </span>
+          {{/if}}
+
+          <span class="file-meta-item">
+            <svg class="ui-svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+            </svg>
+            <span class="tabular-nums">{{this.formatted_size}}</span>
+          </span>
+
+          {{#if this.views_count}}
+            <span class="file-meta-item" title="{{this.views_count}} views">
+              <svg class="ui-svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+              <span class="tabular-nums">{{this.views_count}} views</span>
+            </span>
+          {{/if}}
+        </div>
+
+        <!-- Title -->
+        <h3 class="material-title" title="{{this.title}}">
+          {{this.title}}
+        </h3>
+
+        {{#if this.description}}
+          <p class="material-desc">{{this.description}}</p>
+        {{/if}}
+      </div>
+    </div>
+
+    <!-- Actions (Single download button & preview, backend smart-routed) -->
+    <div class="material-actions">
+      {{#if this.has_sections}}
+        <button type="button" class="btn btn-outline btn-sm btn-sections-toggle" aria-expanded="false" onclick="toggleResourceSections('sec-drawer-{{this.id}}', this);" title="Browse chapters and sections">
+          <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+            <path d="M6 6h10"/><path d="M6 10h10"/>
+          </svg>
+          <span>Chapters ({{this.sections_count}})</span>
+          <svg class="ui-svg chevron-icon" viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+      {{/if}}
+
+      <a href="/resources/{{this.id}}/preview" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" title="Preview file in browser">
+        <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
+        </svg>
+        <span>Preview</span>
+      </a>
+      <a href="/resources/{{this.id}}/download" class="btn btn-primary btn-sm" title="Download directly (smart-routed by network status)">
+        <svg class="ui-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>
+        </svg>
+        <span>Download</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Attached Chapters / Sliced Sections Drawer (if any) -->
+  {{#if this.has_sections}}
+    <div id="sec-drawer-{{this.id}}" class="attached-sections-drawer" style="display: none;">
+      <div class="sections-drawer-header">
+        <div class="sections-drawer-title-group">
+          <span class="sections-flag-badge">Chapter Slices</span>
+          <span class="sections-drawer-title">Individual Chapters &amp; Page Slices</span>
+        </div>
+        <span class="sections-drawer-count tabular-nums">{{this.sections_count}} available</span>
+      </div>
+      <div class="sections-grid-list">
+        {{#each this.sections}}
+          <div class="section-slice-item" data-has-drive="{{#if this.drive_url}}true{{else}}false{{/if}}" data-section-id="{{this.id}}">
+            <div class="section-lead">
+              <div class="section-tree-guide">
+                <svg class="ui-svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 10 4 15 9 20"/>
+                  <path d="M20 4v7a4 4 0 0 1-4 4H4"/>
+                </svg>
+              </div>
+              <div class="section-details">
+                <span class="section-slice-title" title="{{this.title}}">{{this.title}}</span>
+                <span class="section-meta-pill tabular-nums">
+                  {{this.page_range_label}} &bull; {{this.page_span_label}}
+                  {{#if this.drive_url}}
+                    <span class="section-mirror-tag" title="Direct Google Drive mirror available">Drive Mirror</span>
+                  {{/if}}
+                </span>
+              </div>
+            </div>
+            <div class="section-actions">
+              <a href="/resources/{{../id}}/sections/{{this.id}}/preview" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-xs btn-section-preview" title="Preview pages {{this.start_page}}–{{this.end_page}} (smart-routed)">
+                <svg class="ui-svg" viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
+                </svg>
+                <span>Preview</span>
+              </a>
+              <a href="/resources/{{../id}}/sections/{{this.id}}/download" class="btn btn-primary btn-xs btn-section-download" title="Download pages {{this.start_page}}–{{this.end_page}} (smart-routed)">
+                <svg class="ui-svg" viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>
+                </svg>
+                <span>Download</span>
+              </a>
+            </div>
+          </div>
+        {{/each}}
+      </div>
+    </div>
+  {{/if}}
+
+  <!-- Attached Linked Solutions Branch (if any) -->
+  {{#if this.solutions.length}}
+    <div class="attached-solutions-list">
+      {{#each this.solutions}}
+        <div class="attached-solution-item">
+          <div class="solution-lead">
+            <div class="solution-tree-guide">
+              <svg class="ui-svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 10 4 15 9 20"/>
+                <path d="M20 4v7a4 4 0 0 1-4 4H4"/>
+              </svg>
+            </div>
+            <div class="solution-details">
+              <div class="solution-badges-inline">
+                <span class="solution-flag-badge">Verified Solution</span>
+                <span class="file-format-text format-{{this.file_badge.label}} solution-format-pill">{{this.file_badge.label}}</span>
+                <span class="solution-meta tabular-nums">{{this.formatted_size}}</span>
+              </div>
+              <span class="solution-title" title="{{this.title}}">{{this.title}}</span>
+            </div>
+          </div>
+          <div class="solution-actions">
+            <a href="/resources/{{this.id}}/preview" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-xs" title="Preview solution">
+              <svg class="ui-svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+              <span>Preview</span>
+            </a>
+            <a href="/resources/{{this.id}}/download" class="btn btn-primary btn-xs" title="Download verified solution">
+              <svg class="ui-svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>
+              </svg>
+              <span>Download Solution</span>
+            </a>
+          </div>
+        </div>
+      {{/each}}
+    </div>
+  {{/if}}
+</article>
