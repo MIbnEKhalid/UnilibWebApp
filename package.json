@@ -1,6 +1,6 @@
 {
   "name": "unilib",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "My New Application — MBKTech ecosystem application",
   "main": "src/server.js",
   "type": "module",
@@ -16,6 +16,8 @@
   "author": "Muhammad Bin Khalid",
   "license": "MIT",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1173.0",
+    "@aws-sdk/s3-request-presigner": "^3.1173.0",
     "admindb": "latest",
     "better-sqlite3": "13.0.3",
     "compression": "^1.8.2",

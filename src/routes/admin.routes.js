@@ -27,6 +27,7 @@ router.post("/courses/:id/delete", sessPerm(Permissions.courses.delete), adminCo
 // 3. Resource Management (Feature-based Pages)
 // ==========================================
 router.get("/resources/new", sessPerm(Permissions.resources.create), adminController.renderUploadResourcePage);
+router.post("/resources/upload-url", sessPerm(Permissions.resources.create), adminController.createResourceUploadUrl);
 router.post("/resources/upload", sessPerm(Permissions.resources.create), uploadResourceMiddleware.single("file"), adminController.uploadResource);
 router.get("/resources/:id/edit", sessPerm(Permissions.resources.edit), adminController.renderEditResourcePage);
 router.post("/resources/:id/edit", sessPerm(Permissions.resources.edit), uploadResourceMiddleware.single("file"), adminController.editResource);

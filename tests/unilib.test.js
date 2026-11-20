@@ -5,10 +5,48 @@ import courseRepository from "../src/repositories/course.repository.js";
 import resourceRepository from "../src/repositories/resource.repository.js";
 import cacheService from "../src/services/cache.service.js";
 import resourceService from "../src/services/resource.service.js";
+import storageService from "../src/services/storage.service.js";
 
 const BROWSER_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
 
 describe("Unilib Academic Platform Tests", () => {
+  test("Direct-upload metadata is accepted only when the stored file matches", async () => {
+    const key = `unilib/cpe1021/textbook/direct_upload_${Date.now()}.pdf`;
+    const buffer = Buffer.from("%PDF-test-direct-upload");
+    await storageService.upload(key, buffer, "application/pdf");
+
+    try {
+      await expect(resourceService.validateUploadedResourceFile({
+        courseCode: "CPE1021",
+        type: "textbook",
+        key,
+        fileName: "direct-upload.pdf",
+        mimeType: "application/pdf",
+        fileSize: buffer.length,
+      })).resolves.toBeUndefined();
+
+      await expect(resourceService.validateUploadedResourceFile({
+        courseCode: "CPE1021",
+        type: "textbook",
+        key,
+        fileName: "direct-upload.pdf",
+        mimeType: "application/pdf",
+        fileSize: buffer.length + 1,
+      })).rejects.toThrow("Uploaded file could not be verified in storage.");
+
+      await expect(resourceService.validateUploadedResourceFile({
+        courseCode: "CPE3333",
+        type: "textbook",
+        key,
+        fileName: "direct-upload.pdf",
+        mimeType: "application/pdf",
+        fileSize: buffer.length,
+      })).rejects.toThrow("Uploaded file does not match the selected course and resource type.");
+    } finally {
+      await storageService.delete(key);
+    }
+  });
+
   test("Static assets are served with their correct MIME types", async () => {
     const cssRes = await request(app).get("/assets/css/unilib.css?v=3.0.0");
     const scriptRes = await request(app).get("/assets/js/network-verifier.js?v=3.0.0");

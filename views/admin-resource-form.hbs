@@ -357,6 +357,8 @@
         </div>
       </div>
 
+      <div id="resourceUploadProgress" role="status" aria-live="polite" style="display: none; margin: 0.75rem 0; color: var(--primary);"></div>
+
       <!-- Visibility Toggle Card -->
       <label class="visibility-toggle-card" for="resourceVisible">
         <div class="visibility-toggle-left">
@@ -632,6 +634,7 @@
     var btnAddTenExperiments = document.getElementById("btnAddTenExperiments");
     var btnClearSections = document.getElementById("btnClearSections");
     var resourceForm = document.getElementById("resourceUploadForm");
+    var uploadProgress = document.getElementById("resourceUploadProgress");
 
     var sectionsState = [];
 
@@ -803,8 +806,86 @@
     }
 
     if (resourceForm) {
-      resourceForm.addEventListener("submit", function() {
+      resourceForm.addEventListener("submit", async function(event) {
         syncPayload();
+        var file = fileInput && fileInput.files && fileInput.files[0];
+        if (!file) return;
+
+        event.preventDefault();
+        var submitButton = resourceForm.querySelector('button[type="submit"]');
+        if (submitButton && submitButton.disabled) return;
+        if (submitButton) {
+          submitButton.disabled = true;
+          submitButton.dataset.originalText = submitButton.innerHTML;
+          submitButton.textContent = "Uploading file...";
+        }
+        if (uploadProgress) {
+          uploadProgress.style.display = "block";
+          uploadProgress.style.color = "var(--primary)";
+          uploadProgress.textContent = "Preparing a secure storage upload...";
+        }
+
+        try {
+          var uploadResponse = await fetch("/admin/resources/upload-url", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              course_code: courseSelect.value,
+              type: typeSelect.value,
+              file_name: file.name,
+              content_type: file.type || "application/octet-stream",
+              file_size: file.size
+            })
+          });
+          var uploadDetails = await uploadResponse.json();
+          if (!uploadResponse.ok || !uploadDetails.success) {
+            throw new Error(uploadDetails.error || "Could not prepare the file upload.");
+          }
+          if (!uploadDetails.direct) {
+            resourceForm.submit();
+            return;
+          }
+
+          if (uploadProgress) uploadProgress.textContent = "Uploading directly to storage...";
+          var storageResponse = await fetch(uploadDetails.uploadUrl, {
+            method: "PUT",
+            headers: uploadDetails.headers,
+            body: file
+          });
+          if (!storageResponse.ok) {
+            throw new Error("Storage rejected the upload (HTTP " + storageResponse.status + "). Check the bucket CORS settings.");
+          }
+
+          [
+            ["uploaded_file_key", uploadDetails.fileKey],
+            ["uploaded_file_name", uploadDetails.fileName],
+            ["uploaded_file_size", String(uploadDetails.fileSize)],
+            ["uploaded_file_type", uploadDetails.mimeType]
+          ].forEach(function(field) {
+            var input = resourceForm.querySelector('input[name="' + field[0] + '"]');
+            if (!input) {
+              input = document.createElement("input");
+              input.type = "hidden";
+              input.name = field[0];
+              resourceForm.appendChild(input);
+            }
+            input.value = field[1];
+          });
+
+          fileInput.disabled = true;
+          if (uploadProgress) uploadProgress.textContent = "Saving resource details...";
+          resourceForm.submit();
+        } catch (error) {
+          if (fileInput) fileInput.disabled = false;
+          if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.innerHTML = submitButton.dataset.originalText || "Upload and Publish";
+          }
+          if (uploadProgress) {
+            uploadProgress.style.color = "var(--danger, #b91c1c)";
+            uploadProgress.textContent = error.message || "Upload failed. Please try again.";
+          }
+        }
       });
     }
 

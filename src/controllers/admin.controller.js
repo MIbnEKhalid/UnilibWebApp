@@ -378,9 +378,15 @@ export async function uploadResource(req, res) {
   try {
     const { course_code, type, title, description, parent_resource_id, solution_resource_id, drive_url, sections, is_visible } = req.body;
     const file = req.file;
+    const uploadedFile = req.body.uploaded_file_key ? {
+      key: req.body.uploaded_file_key,
+      fileName: req.body.uploaded_file_name,
+      fileSize: Number(req.body.uploaded_file_size),
+      mimeType: req.body.uploaded_file_type,
+    } : null;
     const selectedCourseCode = (course_code || "").trim().toUpperCase();
 
-    if (!file) {
+    if (!file && !uploadedFile) {
       return res.redirect("/admin/resources/new?error=Please+select+a+file+to+upload.");
     }
     if (!selectedCourseCode || !type) {
@@ -404,13 +410,14 @@ export async function uploadResource(req, res) {
     const newResource = await resourceService.uploadResource({
       courseCode: selectedCourseCode,
       type,
-      title: title || file.originalname,
+      title: title || uploadedFile?.fileName || file?.originalname,
       description,
       parentResourceId: parent_resource_id || null,
       driveUrl: (drive_url || "").trim() || null,
       sections: parsedSections,
       isVisible,
       file,
+      uploadedFile,
       uploaderId: uploader,
     });
 
@@ -426,6 +433,35 @@ export async function uploadResource(req, res) {
   }
 }
 
+export async function createResourceUploadUrl(req, res) {
+  try {
+    const upload = await resourceService.prepareDirectUpload({
+      courseCode: req.body.course_code,
+      type: req.body.type,
+      fileName: req.body.file_name,
+      contentType: req.body.content_type,
+      fileSize: Number(req.body.file_size),
+    });
+    if (!upload.direct) {
+      return res.json({ success: true, direct: false });
+    }
+
+    return res.json({
+      success: true,
+      direct: true,
+      uploadUrl: upload.url,
+      headers: upload.headers,
+      fileKey: upload.key,
+      fileName: upload.fileName,
+      fileSize: upload.fileSize,
+      mimeType: upload.mimeType,
+    });
+  } catch (err) {
+    console.error("[Unilib Admin] Could not prepare direct resource upload:", err);
+    return res.status(400).json({ success: false, error: err.message || "Could not prepare file upload." });
+  }
+}
+
 /**
  * 11. Handle Resource Update
  * POST /admin/resources/:id/edit
@@ -435,6 +471,12 @@ export async function editResource(req, res) {
     const resourceId = req.params.id;
     const { course_code, type, title, description, parent_resource_id, solution_resource_id, drive_url, sections, is_visible } = req.body;
     const file = req.file;
+    const uploadedFile = req.body.uploaded_file_key ? {
+      key: req.body.uploaded_file_key,
+      fileName: req.body.uploaded_file_name,
+      fileSize: Number(req.body.uploaded_file_size),
+      mimeType: req.body.uploaded_file_type,
+    } : null;
     const selectedCourseCode = (course_code || "").trim().toUpperCase();
 
     let parsedSections = undefined;
@@ -466,7 +508,8 @@ export async function editResource(req, res) {
         sections: parsedSections,
         is_visible: isVisible,
       },
-      file || null
+      file || null,
+      uploadedFile
     );
 
     if (type === "textbook") {
@@ -757,6 +800,7 @@ export default {
   saveResourceSlices,
   getResourcePdfInfo,
   uploadResource,
+  createResourceUploadUrl,
   editResource,
   deleteResource,
   toggleResourceVisibility,

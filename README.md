@@ -130,6 +130,8 @@ Key environment variables:
 | `REDIS_CACHE_ENABLED`| Enable caching (`true` / `false`) | `true` |
 | `BucketConnection` | Storage bucket provider configuration | `{"Local_Disk":{"type":"local","basePath":"./data/storage"}}` |
 
+Admin resource files on S3-compatible storage are uploaded directly to the bucket using short-lived signed URLs, so large files do not pass through the Vercel Function. Configure the bucket CORS policy to allow `PUT` from the Unilib site origin with the `Content-Type`, `Cache-Control`, and `x-amz-server-side-encryption` request headers. Other storage providers keep the existing server upload flow.
+
 > **Note on Upstash Redis**: If `REDIS_URL` is omitted, Unilib automatically activates its built-in in-memory cache without any manual configuration or crashes.
 
 ### 4. Initialize Database Schema

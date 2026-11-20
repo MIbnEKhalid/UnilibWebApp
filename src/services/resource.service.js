@@ -1,5 +1,6 @@
 import { pipeline } from "node:stream/promises";
 import path from "node:path";
+import { randomUUID } from "node:crypto";
 import { renderPage } from "mbkutils";
 import { config } from "../config/env.js";
 import courseRepository from "../repositories/course.repository.js";
@@ -17,6 +18,9 @@ function sanitizeFilename(originalName) {
     .replace(/\s+/g, "_");
   return `${clean || "file"}_${Date.now()}${ext.toLowerCase()}`;
 }
+
+const RESOURCE_TYPES = new Set(["textbook", "lab_manual", "quiz_assignment", "solution"]);
+const MAX_RESOURCE_FILE_SIZE = 100 * 1024 * 1024;
 
 export function formatBytes(bytes, decimals = 1) {
   if (!bytes || bytes === 0) return "0 B";
@@ -281,9 +285,10 @@ export class ResourceService {
     sections = null,
     isVisible = true,
     file,
+    uploadedFile = null,
     uploaderId = "admin",
   }) {
-    if (!file || !file.buffer) {
+    if ((!file || !file.buffer) && !uploadedFile) {
       throw new Error("No file provided for upload.");
     }
 
@@ -293,24 +298,40 @@ export class ResourceService {
       throw new Error(`Course with code ${code} not found.`);
     }
 
-    const safeFilename = sanitizeFilename(file.originalname);
-    const storageKey = `unilib/${course.code.toLowerCase()}/${type}/${safeFilename}`;
+    let storageKey;
+    let originalName;
+    let mimeType;
+    let actualSize;
 
-    // Upload to mbkbucket
-    await storageService.upload(storageKey, file.buffer, file.mimetype);
-
-    const actualSize = Buffer.isBuffer(file.buffer) ? file.buffer.length : (file.size || 0);
+    if (uploadedFile) {
+      ({ key: storageKey, fileName: originalName, mimeType, fileSize: actualSize } = uploadedFile);
+      await this.validateUploadedResourceFile({
+        courseCode: course.code,
+        type,
+        key: storageKey,
+        fileName: originalName,
+        mimeType,
+        fileSize: actualSize,
+      });
+    } else {
+      originalName = file.originalname;
+      mimeType = file.mimetype;
+      const safeFilename = sanitizeFilename(originalName);
+      storageKey = `unilib/${course.code.toLowerCase()}/${type}/${safeFilename}`;
+      await storageService.upload(storageKey, file.buffer, mimeType);
+      actualSize = Buffer.isBuffer(file.buffer) ? file.buffer.length : (file.size || 0);
+    }
 
     // Save record to database
     const resource = await resourceRepository.create({
       course_code: course.code,
       type,
-      title: title || file.originalname,
+      title: title || originalName,
       description,
       file_key: storageKey,
-      file_name: file.originalname,
+      file_name: originalName,
       file_size: actualSize,
-      mime_type: file.mimetype,
+      mime_type: mimeType,
       parent_resource_id: parentResourceId ? parseInt(parentResourceId, 10) : null,
       drive_url: driveUrl || null,
       sections: sections || null,
@@ -324,7 +345,61 @@ export class ResourceService {
     return resource;
   }
 
-  async updateResource(id, data, file = null) {
+  async prepareDirectUpload({ courseCode, type, fileName, contentType, fileSize }) {
+    if (!storageService.supportsDirectUploads()) {
+      return { direct: false };
+    }
+
+    const code = String(courseCode || "").trim().toUpperCase();
+    const course = await courseRepository.findByCode(code);
+    if (!course) {
+      throw new Error(`Course with code ${code} not found.`);
+    }
+    if (!RESOURCE_TYPES.has(type)) {
+      throw new Error("Unsupported resource type.");
+    }
+    if (typeof fileName !== "string" || !fileName.trim() || fileName.length > 255) {
+      throw new Error("A valid file name is required.");
+    }
+    if (!Number.isSafeInteger(fileSize) || fileSize < 1 || fileSize > MAX_RESOURCE_FILE_SIZE) {
+      throw new Error("File size must be between 1 byte and 100 MB.");
+    }
+
+    const mimeType = typeof contentType === "string" && contentType.trim()
+      ? contentType.trim().slice(0, 255)
+      : "application/octet-stream";
+    const storageKey = `unilib/${course.code.toLowerCase()}/${type}/${sanitizeFilename(`${randomUUID()}_${fileName}`)}`;
+    const signedUpload = await storageService.createPresignedUploadUrl(storageKey, mimeType);
+
+    return {
+      direct: true,
+      key: storageKey,
+      fileName: fileName.trim(),
+      fileSize,
+      mimeType,
+      ...signedUpload,
+    };
+  }
+
+  async validateUploadedResourceFile({ courseCode, type, key, fileName, mimeType, fileSize }) {
+    const expectedPrefix = `unilib/${String(courseCode).toLowerCase()}/${type}/`;
+    if (!RESOURCE_TYPES.has(type) || typeof key !== "string" || !key.startsWith(expectedPrefix)) {
+      throw new Error("Uploaded file does not match the selected course and resource type.");
+    }
+    if (typeof fileName !== "string" || !fileName.trim() || !Number.isSafeInteger(Number(fileSize)) ||
+        Number(fileSize) < 1 || Number(fileSize) > MAX_RESOURCE_FILE_SIZE ||
+        typeof mimeType !== "string" || !mimeType.trim()) {
+      throw new Error("Uploaded file details are invalid.");
+    }
+
+    const metadata = await storageService.getMetadata(key);
+    if (!metadata?.exists || Number(metadata.ContentLength) !== Number(fileSize) ||
+        metadata.ContentType !== mimeType) {
+      throw new Error("Uploaded file could not be verified in storage.");
+    }
+  }
+
+  async updateResource(id, data, file = null, uploadedFile = null) {
     const existing = await resourceRepository.findById(id);
     if (!existing) {
       throw new Error(`Resource ${id} not found.`);
@@ -336,9 +411,28 @@ export class ResourceService {
     let fileSize = existing.file_size;
     let mimeType = existing.mime_type;
 
-    if (file) {
-      const sanitizedKey = `unilib/${String(code).toLowerCase()}/${data.type || existing.type}/${sanitizeFilename(file.originalname)}`;
-      await storageService.upload(sanitizedKey, file.buffer, file.mimetype);
+    if (file || uploadedFile) {
+      let sanitizedKey;
+      if (uploadedFile) {
+        sanitizedKey = uploadedFile.key;
+        await this.validateUploadedResourceFile({
+          courseCode: code,
+          type: data.type || existing.type,
+          key: sanitizedKey,
+          fileName: uploadedFile.fileName,
+          mimeType: uploadedFile.mimeType,
+          fileSize: uploadedFile.fileSize,
+        });
+        fileName = uploadedFile.fileName;
+        fileSize = Number(uploadedFile.fileSize);
+        mimeType = uploadedFile.mimeType;
+      } else {
+        sanitizedKey = `unilib/${String(code).toLowerCase()}/${data.type || existing.type}/${sanitizeFilename(file.originalname)}`;
+        await storageService.upload(sanitizedKey, file.buffer, file.mimetype);
+        fileName = file.originalname;
+        fileSize = Buffer.isBuffer(file.buffer) ? file.buffer.length : (file.size || 0);
+        mimeType = file.mimetype;
+      }
 
       if (existing.file_key && existing.file_key !== sanitizedKey) {
         try {
@@ -349,9 +443,6 @@ export class ResourceService {
       }
 
       fileKey = sanitizedKey;
-      fileName = file.originalname;
-      fileSize = Buffer.isBuffer(file.buffer) ? file.buffer.length : (file.size || 0);
-      mimeType = file.mimetype;
     }
 
     const updated = await resourceRepository.update(id, {
@@ -365,7 +456,7 @@ export class ResourceService {
       is_visible: data.is_visible !== undefined ? data.is_visible : undefined,
     });
 
-    if (file) {
+    if (file || uploadedFile) {
       await resourceRepository.query(
         `UPDATE unilib_resources SET file_key = $1, file_name = $2, file_size = $3, mime_type = $4 WHERE id = $5`,
         [fileKey, fileName, fileSize, mimeType, id]
