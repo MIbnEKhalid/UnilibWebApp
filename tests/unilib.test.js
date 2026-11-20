@@ -9,6 +9,24 @@ import resourceService from "../src/services/resource.service.js";
 const BROWSER_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
 
 describe("Unilib Academic Platform Tests", () => {
+  test("Static assets are served with their correct MIME types", async () => {
+    const cssRes = await request(app).get("/assets/css/unilib.css?v=3.0.0");
+    const scriptRes = await request(app).get("/assets/js/network-verifier.js?v=3.0.0");
+    const iconRes = await request(app).get("/assets/images/icon.svg?v=3.0.0");
+
+    expect(cssRes.status).toBe(200);
+    expect(cssRes.header["content-type"]).toContain("text/css");
+    expect(cssRes.text).toContain(":root");
+
+    expect(scriptRes.status).toBe(200);
+    expect(scriptRes.header["content-type"]).toContain("javascript");
+    expect(scriptRes.text).toContain("probeGoogleDrive");
+
+    expect(iconRes.status).toBe(200);
+    expect(iconRes.header["content-type"]).toContain("image/svg+xml");
+    expect(iconRes.body.toString()).toContain("<svg");
+  });
+
   test("Public access to Homepage without login", async () => {
     const res = await request(app)
       .get("/")

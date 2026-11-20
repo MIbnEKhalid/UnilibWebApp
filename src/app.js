@@ -55,6 +55,16 @@ app.use(
         }
     })
 );
+app.use(
+    '/assets',
+    express.static(path.join(rootDir, 'assets'), {
+        maxAge: config.isProduction ? '1y' : '1d',
+        immutable: config.isProduction,
+        setHeaders: (res, filePath) => {
+            res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
+        }
+    })
+);
 
 // 8. Response latency tracking
 app.use(responseTimeMiddleware);

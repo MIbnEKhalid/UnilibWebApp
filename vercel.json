@@ -7,6 +7,7 @@
       "config": {
         "includeFiles": [
           "public/**",
+          "assets/**",
           "views/**",
           "node_modules/mbkauthe/views/**",
           "node_modules/mbkbucket/views/**",

@@ -44,11 +44,10 @@ d:\project\unilib\
 ├── .env                      # Active runtime environment configuration
 ├── .env.example              # Environment variables template
 ├── package.json              # Project dependencies & scripts
-├── public/
-│   ├── assets/
-│   │   ├── css/
-│   │   │   └── unilib.css    # Dedicated academic design system stylesheet
-│   │   └── images/icon.svg   # Vector brand icon
+├── assets/
+│   ├── css/                  # Application stylesheets
+│   ├── images/               # Brand icons and images
+│   └── js/                   # Browser-side scripts
 ├── src/
 │   ├── app.js                # Express application setup & middleware stack
 │   ├── server.js             # HTTP server entrypoint
